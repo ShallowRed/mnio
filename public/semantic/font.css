@@ -1,0 +1,116 @@
+body {
+	font-family: 'Courier Prime';
+}
+
+p {
+	font-family: "Open Sans";
+	line-height: 1.5em;
+	width: 100%;
+}
+
+img ~ h2 {
+	margin-top: 5vh;
+}
+
+video ~ h2 {
+	margin-top: 5vh;
+}
+
+
+@media only screen and (min-width: 1000px) {
+
+	h1 {
+		font-size: 2em;
+		width: 100%;
+	}
+
+	h2 {
+		font-style: 600;
+		width: 100%;
+		color: blue;
+	}
+
+	h3 {
+		font-size: 1.5em;
+		padding: 0em 0em 1em 0em;
+	}
+	h4 {
+		font-size: 1.2em;
+		color: blue;
+		line-height: 0;
+	}
+	h6 {
+		font-size: 1.5em;
+		font-weight: 100;
+		margin: 0 auto;
+		max-width: 500px;
+		line-height: 1.4em;
+		color: darkblue;
+		-webkit-transform: scale(1, 1.05);
+		-moz-transform: scale(1, 1.05);
+		-o-transform: scale(1, 1.05);
+		transform: scale(1, 1.05);
+	}
+	#center p, #center h1 {
+		display: block;
+		width: 100%;
+		max-width: 720px;
+		margin: 0 auto;
+	}
+}
+@media only screen and (max-width: 1000px) {
+
+	h1 {
+		font-size: 1.5em;
+		width: 100%;
+	}
+
+	h2 {
+		font-style: 600;
+		font-size: 1.2em;
+		width: 100%;
+		color: blue;
+	}
+
+	h3 {
+		font-size: 1.3em;
+		padding: 0em 0em 1em 0em;
+	}
+
+	h4 {
+		font-size: 1.1em;
+		color: blue;
+		line-height: 0;
+	}
+	h6 {
+		font-size: 1.2em;
+		font-weight: 100;
+		margin: 0 auto;
+		max-width: 500px;
+		line-height: 1.4em;
+		color: darkblue;
+		-webkit-transform: scale(1, 1.05);
+		-moz-transform: scale(1, 1.05);
+		-o-transform: scale(1, 1.05);
+		transform: scale(1, 1.05);
+	}
+
+}
+
+.liste {
+	list-style: none;
+}
+.lien {
+	position: relative;
+	padding: 0.5em 0;
+}
+.lien a {
+	letter-spacing: 0em;
+	transition: all 0.4s ease;
+}
+.lien:hover a {
+	color: blue;
+	letter-spacing: 0.05em;
+	font-weight: regular;
+	transition: all 0.4s ease;
+}

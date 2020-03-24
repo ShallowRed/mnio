@@ -1,0 +1,64 @@
+<%- include('head'); -%>
+<%- include('header'); -%>
+
+<section>
+	<h1>Tisser en ligne</h1>
+	<div class="texte">
+		<p>Suite au workshop Welcome, nous avons décidé de nous concentrer sur la piste qui nous semblait la plus fertile : Nous voulions créer la première tapisserie collaborative en ligne. L'objectif est double: permettre à tout un chacun, depuis son écran, de contribuer à la réalisation d'une tapisserie, alors qu'il s'agit habituellement d'un privilège d'artiste sélectionné, tout en communiquant sur les savoir-faire et missions du Mobilier National. Nous voulions proposer un jeu dont la gestuelle ferait echo à celle des artisans, et raisonner par analogie entre le scroll de la page web et le metier qui s'enroule au fur et à mesure que la tapisserie progresse. Cependant, "Tisser en ligne", même si ça sonne bien, ça ne se fait pas comme ça.</p>
+		<p>La tapisserie, tradition séculaire de la Manufacture des Gobelins, est une technique de tissage pratiquée dans les ateliers de haute lisse et de basse lisse. Ce savoir-faire est préservé et transmis grâce aux artisans des Gobelins.</p>
+		<p>Les tapisseries créées au sein de l’institution sont sélectionnées par une commission artistique, sur les propositions de "cartons" réalisés par les artistes, avant d'entamer un long processus de traduction en tapisserie. </p>
+	</div>
+	<img class="image" src="img/atelier2C.jpg" alt="sorry">
+	<img class="image" src="img/tapisenversC.jpg" alt="sorry">
+	<div class="texte">
+		<p>Le carton est une maquette à taille réelle de la tapisserie (aujourd’hui souvent obtenu grâce à un agrandissement numérique). Il faut ensuite choisir l’atelier dans lequel sera réalisée l’œuvre, la haute ou basse lisse (selon différents critères spécifiques à la nature de l’œuvre), ainsi que les couleurs à utiliser, décidées par l'oeil éduqué des licièr.e.s du nuancier. Plusieurs échantillons sont ensuite produits en atelier teinture, proposés à l’artiste, avant d’enclencher la réalisation à échelle 1 de la tapisserie. Une œuvre nécessite plusieurs années de tissage pendant lesquelles collaborent deux à quatre liciers-ères. </p>
+		<p>Devant la complexité mise en oeuvre dans ce savoir-faire traditionnel, l'idée de tapisserie en ligne est assez perturbante. Le terme amuse et surprend, c’est du moins ce que nous avons pu constater lors de nos premières rencontres au sein du Mobilier national.</p>
+	</div>
+	<div class="texte">
+		<p>Ainsi, comme nous l’a proposé la directrice du nuancier : faut-il plutôt parler d’un carton collaboratif que d’une tapisserie ?</p><p>Comment retranscrire la frustration à laquelle font parfois face les licièr.e.s lors de la réalisation de différents motifs ?</p><p>En somme, comment allier savoir-faire séculaire et gameplay intuitif ?</p><p>Et surtout, faut-il pousser l’analogie tissage/jeu en ligne jusqu’au bout ? Quelques débuts de réponses vous attendent plus bas…</p>
+	</div>
+	<img class="image" src="img/verbatim2.jpg" alt="sorry">
+	<img class="image" src="img/verbatim1.jpg" alt="sorry">
+</section>
+
+<section>
+	<h1>Comment créer un carton collaboratif en ligne ?</h1>
+	<div class="texte">
+		<p>Le plus simplement exprimé, notre carton collaboratif serait un ensemble de pixel vierge au début de l'expérience. Le carton serait rendu accessible sur un serveur, et plusieurs "joueurs" pourraient éditer en direct la couleur des pixels.</p>
+		<p>Plusieurs "objets" de la sorte existent déjà: En 2005, Alex Tew, un étudiant, créa la <a href="http://www.milliondollarhomepage.com/" target="_blank">Million Dollar Homepage</a>. Il s'agissait d'une page web blanche de 1000px par 1000px, que son créateur proposa à la vente à hauteur de 1$ le pixel. Il récolta facilement un million de dollars pour financer ses études, que de nombreux contributeurs lui versèrent en échange de la publicité potentielle de la page. Chaque zone renvoie en effet vers un lien, d'autant plus visible qu'on a payé de pixels.</p>
+		<p>Plusieurs applications proposent depuis de colorier des espaces virtuels semblables, comme <a href="https://pixelzone.io/?p=-1277,-1112" target="_blank">PixelZone.io</a> ou <a href="https://www.crazygames.com/game/pixelplanet" target="_blank">PixelPlanet</a>, démontrant la faisabilité du concept en terme de programmation et d'hébergement.</p>
+	</div>
+	<img class="image" src="img/mdh.jpg" alt="sorry">
+	<img class="image" src="img/pixalio.jpeg" alt="sorry">
+	<div class="texte">
+		<p>Notre carton en ligne lui, doit respecter plusieurs contraintes nécessaires à sa faisabilité en tapisserie, en plus de proposer dans l'idéal autre chose que des croix gammées. Les différentes règles du jeu, permissions accordées ou non à l'utilisateur vont cadrer en grande partie l'aspect global de la tapisserie ainsi que les propositions graphiques individuelles. Nous souhaitons obtenir des zones suffisamment grandes pour être tissées, permettre à chacun de représenter quelque chose sans crainte d'être effacé par un autre, sans pour autant trop déterminer le résultat à l'avance.</p>
+	</div>
+	<img class="image" src="img/jeu1.gif" alt="sorry">
+</section>
+
+<section>
+	<h2>Comment répartir les joueurs ?</h2>
+	<img class="quart nop" src="img/repartition1.jpg" alt="sorry">
+	<img class="quart nop" src="img/repartition2.jpg" alt="sorry">
+	<img class="quart nop" src="img/repartition3.jpg" alt="sorry">
+	<img class="quart nop" src="img/repartition4.jpg" alt="sorry">
+	<h2>Quel mode de déplacement adopter ?</h2>
+	<img class="image nop" src="img/deplacement1.gif" alt="sorry">
+	<img class="image nop" src="img/deplacement2.gif" alt="sorry">
+	<h2>Comment prédécouper la zone ?</h2>
+	<%- include('d3test'); -%>
+	<video controls loop muted poster="img/poster.jpg">
+		<source type="video/mp4" src="img/voroop1.mp4">
+		<p>Votre navigateur ne prend pas en charge les vidéos HTML5.</p>
+	</video>
+	<h2>Quelle densité (module/joueurs, joueurs/m²) ?</h2>
+	<img class="tiers" src="img/voro1.jpg" alt="sorry">
+	<img class="tiers" src="img/voro2.jpg" alt="sorry">
+	<img class="tiers" src="img/voro3.jpg" alt="sorry">
+	<img class="image" src="img/voro4.jpg" alt="sorry">
+	<h2>Quels outils de dessin ?</h2>
+	<h2>Quel système de niveau/récompense ?</h2>
+	<h2>Quel échelle de lecture possible pour le joueur ?</h2>
+</section>
+
+<%- include('footer'); -%>

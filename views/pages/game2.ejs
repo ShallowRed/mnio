@@ -1,0 +1,46 @@
+ <!DOCTYPE html>
+ <html>
+
+ <head>
+   <link rel="stylesheet" type="text/css" href="semantic/gamemain.css">
+   <link rel="stylesheet" type="text/css" href="semantic/header.css">
+   <link rel="stylesheet" type="text/css" href="semantic/content.css">
+   <link rel="stylesheet" type="text/css" href="semantic/font.css">
+   <link rel="stylesheet" type="text/css" href="semantic/anim.css">
+   <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css?family=Courier+Prime&display=swap" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css?family=Inconsolata&display=swap" rel="stylesheet">
+   <title>A Multiplayer Game</title>
+   <script src="socket.io/socket.io.js"></script>
+   <meta name="viewport" content="width=device-width, height=device-height">
+ </head>
+
+ <body>
+   <%- include('header'); -%>
+
+   <div id="volet">
+     <div id="n_log_in">
+       <input type="text" id="userName" placeholder="Nom d'utilisateur ..." /><br>
+       <input type="password" id="Password" placeholder="Mot de passe ..." /><br>
+       <button id="Login_Register"><a>S'inscrire / Se connecter</a></button>
+     </div>
+   </div>
+   <div style="position: relative;">
+     <canvas id="canvas1"></canvas>
+     <canvas id="canvas2"></canvas>
+   </div>
+   <div id="colortable">
+     <button class="color" id="c1"></button>
+     <button class="color" id="c2"></button>
+     <button class="color" id="c3"></button>
+   </div>
+   <script src="static/jquery-3.4.1.min.js"></script>
+   <script>
+   </script>
+   <script src="static/jquery.touchwipe.1.1.1.js"></script>
+   <script src="static/utils.js"></script>
+   <script src="static/grid.js"></script>
+   <script src="static/movement.js"></script>
+   <script src="static/game.js"></script>
+
+   <%- include('footer'); -%>
