@@ -1,7 +1,7 @@
 {
   "name": "mnio",
-  "version": "0.0.5",
-  "private": false,
+  "version": "0.0.6",
+  "private": true
   "dependencies": {
     "cookie-parser": "^1.4.5",
     "ejs": "^3.0.1",
@@ -16,9 +16,11 @@
   "scripts": {
     "start": "pm2 start process.json && pm2 logs"
   },
-  "description": "jeu de tapisserie en ligne",
-  "main": "server.js",
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShallowRed/mnio.git"
+  },
+  "author": "Lucas Poulain (ShallowRed)",
   "license": "ISC",
-  "devDependencies": {}
-}
+  "description": "jeu de tapisserie en ligne",
+  "homepage": "https://github.com//ShallowRed/mnio#readme"
