@@ -2,7 +2,6 @@
   "name": "mnio",
   "version": "0.0.6",
   "description": "jeu de tapisserie en ligne",
-  "main": "server.js",
   "dependencies": {
     "cookie-parser": "^1.4.5",
     "ejs": "^3.0.1",
@@ -17,7 +16,7 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "pm2 start process.json && pm2 logs"
   },
   "repository": {
     "type": "git",

@@ -35,7 +35,7 @@ document.addEventListener('keydown', function(event) {
 
     case 32: // Spacebar
       if (flag == true) {
-        fillplayercell(player, selectedcolor);
+        fillplayercell(playerpos, selectedcolor);
         break;
 
       } else {

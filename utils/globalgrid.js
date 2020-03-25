@@ -1,9 +1,9 @@
-const rows = 20,
-  cols = 20,
-  vrows = 5,
-  vcols = 5,
+const rows = 125
+  cols = 15,
+  vrows = 6,
+  vcols = 6,
   lw = 15,
-  limit = 4,
+  limit = 5,
   celltimeout = 10;
 
 const port = 82;
@@ -45,13 +45,11 @@ function initgrid() {
 
 // Constructor for new player
 class Player {
-  constructor(socket, playerpos, rdmrow, rdmcol, rdmcolor1, rdmcolor2, rdmcolor3) {
-    this.playerpos = playerpos;
-    this.x = rdmrow;
-    this.y = rdmcol;
-    this.color1 = rdmcolor1; /* Players start with 2 gold coins */
-    this.color2 = rdmcolor2; /* Players start with 2 gold coins */
-    this.color3 = rdmcolor3; /* Players start with 2 gold coins */
+  constructor(position, color1, color2, color3) {
+    this.playerpos = position;
+    this.color1 = color1;
+    this.color2 = color2;
+    this.color3 = color3;
     this.owncells = [];
     this.allowedcells = [];
   }
@@ -59,14 +57,17 @@ class Player {
 
 // Check empty cells, set new player on random available one
 function newrdm(socket, gridstate) {
-  let check = checkempty(gridstate);
-  let emptycells = check.emptycells;
+
   let rdmcolor1 = colors.randomcolor();
   let rdmcolor2 = colors.randomcolor();
   let rdmcolor3 = colors.randomcolor();
-  let rdmpos = emptycells[Math.floor(Math.random() * emptycells.length)];
-  let playerinfo = new Player(socket, rdmpos.id, rdmpos.x, rdmpos.y, rdmcolor1, rdmcolor2, rdmcolor3);
+
+  let check = checkempty(gridstate);
+  let emptycells = check.emptycells;
   gridstate = check.gridstate;
+  let rdmcell = emptycells[Math.floor(Math.random() * emptycells.length)];
+  let playerinfo = new Player(rdmcell.id, rdmcolor1, rdmcolor2, rdmcolor3);
+
   return {
     playerinfo,
     gridstate
@@ -85,13 +86,16 @@ function checkempty(gridstate) {
   });
 
   //Reset the grid and save result in txt file if no empty cells left
-  if (emptycells === undefined || emptycells.length == 0) {
+  if (emptycells.length == 0) {
     writeoutput(gridstate);
     gridstate = initgrid();
+
+    //******* todo generate empty cells list without pus
     gridstate.forEach(function(cell) {
       emptycells.push(cell)
     });
   }
+  //********* todo not return gridstate everytime (only if reset)
   return {
     gridstate,
     emptycells

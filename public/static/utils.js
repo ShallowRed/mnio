@@ -1,8 +1,8 @@
-var canvas1, canvas2, ctx, cellsize, globalrows, globalcols, player,
-selectedcolor, pcolor1, pcolor2, pcolor3, lastcell,
+var canvas1, canvas2, canvas3, master, ctx, cellsize, globalrows, globalcols, playerpos,
+selectedcolor, pcolor1, pcolor2, pcolor3, lastcell, viewsize,
 rows, cols, vrows, vcols, lw, celltimeout;
 
-var localgridstate = [], localpositionlist = [], viewgridstate = [],
+var localgridstate = [], viewgridstate = [], localpositionlist = [], allowedlist = [],
   initflag = 0,
   flag = true;
 
@@ -12,10 +12,6 @@ const c1 = document.getElementById('c1'),
 
 //Set data needed on initialization
 function setinitdata(data) {
-  player = data.playerid;
-  pcolor1 = data.color1;
-  pcolor2 = data.color2;
-  pcolor3 = data.color3;
   localgridstate = data.gridstate;
   localpositionlist = data.positionlist;
   globalrows = data.rows;
@@ -24,15 +20,19 @@ function setinitdata(data) {
   vcols = data.vcols;
   lw = data.lw;
   celltimeout = data.celltimeout;
+  initflag = 1;
+}
 
+function initplayer(playerdata) {
+  playerpos = playerdata.playerpos;
+  pcolor1 = playerdata.color1;
+  pcolor2 = playerdata.color2;
+  pcolor3 = playerdata.color3;
   selectedcolor = pcolor1;
   c1.style.background = pcolor1;
   c1.style.border = "solid 5px black";
   c2.style.background = pcolor2;
   c3.style.background = pcolor3;
-
-  initflag = 1;
-  clog(player);
 }
 
 function selectc1() {
@@ -40,7 +40,7 @@ function selectc1() {
   c1.style.border = "solid 5px black";
   c2.style.border = "solid 5px white";
   c3.style.border = "solid 5px white";
-  drawplayerpos(player, pcolor1);
+  drawplayerpos(playerpos, pcolor1);
 }
 
 function selectc2(pcolor2) {
@@ -48,7 +48,7 @@ function selectc2(pcolor2) {
   c1.style.border = "solid 5px white";
   c2.style.border = "solid 5px black";
   c3.style.border = "solid 5px white";;
-  drawplayerpos(player, pcolor2);
+  drawplayerpos(playerpos, pcolor2);
 }
 
 function selectc3(pcolor3) {
@@ -56,7 +56,7 @@ function selectc3(pcolor3) {
   c1.style.border = "solid 5px white";
   c2.style.border = "solid 5px white";
   c3.style.border = "solid 5px black";
-  drawplayerpos(player, pcolor3);
+  drawplayerpos(playerpos, pcolor3);
 }
 
 // Turn on game visibility when content loaded
@@ -87,3 +87,34 @@ function clog(e) {
 // c3.addEventListener("click", function() {
 //   selectc3();
 // });
+
+//var elem = document.body;
+
+// function openFullscreen() {
+//   if (elem.requestFullscreen) {
+//     elem.requestFullscreen();
+//   } else if (elem.mozRequestFullScreen) {
+//     /* Firefox */
+//     elem.mozRequestFullScreen();
+//   } else if (elem.webkitRequestFullscreen) {
+//     /* Chrome, Safari & Opera */
+//     elem.webkitRequestFullscreen();
+//   } else if (elem.msRequestFullscreen) {
+//     /* IE/Edge */
+//     elem.msRequestFullscreen();
+//   }
+// }
+
+// function openFullscreen() {
+//   const header = document.querySelector(".header");
+//   // Click bascule en mode plein écran
+//   document.onclick = function(event) {
+//     if (document.fullscreenElement) {
+//       document.exitFullscreen();
+//       header.style.display ="flex";
+//     } else {
+//       document.documentElement.requestFullscreen();
+//       header.style.display ="none";
+//     }
+//   };
+// }
