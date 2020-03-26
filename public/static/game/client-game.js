@@ -40,9 +40,9 @@ socket.on("newglobalpos", function(position) {
 
 //Fill other's cells when they do so
 socket.on('newglobalcell', function(globalcell) {
-  editlocalgrid(globalcell.id, globalcell.color);
-  if (isinview(globalcell.id)) {
-    fillcell2(globalcell.id, globalcell.color);
+  editlocalgrid(globalcell.position, globalcell.color);
+  if (isinview(globalcell.position)) {
+    fillcell2(globalcell.position, globalcell.color);
   };
 });
 

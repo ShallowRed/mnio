@@ -23,11 +23,11 @@ function setinitdata(data) {
   initflag = 1;
 }
 
-function initplayer(playerdata) {
-  playerpos = playerdata.playerpos;
-  pcolor1 = playerdata.color1;
-  pcolor2 = playerdata.color2;
-  pcolor3 = playerdata.color3;
+function initplayer(data) {
+  playerpos = data.position;
+  pcolor1 = data.color1;
+  pcolor2 = data.color2;
+  pcolor3 = data.color3;
   selectedcolor = pcolor1;
   c1.style.background = pcolor1;
   c1.style.border = "solid 5px black";

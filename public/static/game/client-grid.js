@@ -10,11 +10,12 @@ function drawgrid(position) {
     };
   });
 
+
   // Draw all colored cells
   let len = localcolorlist.length;
   for (i = 0; i < len; i++) {
     if (localcolorlist[i] !== null) {
-      let position = (i - (i % globalrows)) / globalcols + "_" + (i % globalrows);
+      let position = indextopos(i);
       if (isinview(position)) {
         fillcell(position, localcolorlist[i]);
       };
@@ -92,10 +93,8 @@ function setvieworigin(position) {
   vieworigin = viewx + "_" + viewy;
 }
 
-
-
 function fillcell(position, color) {
-  let cell = setposfromid(position);
+  let cell = postocoord(position);
   ctx2.clearRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize);
   ctx2.fillStyle = color;
   ctx2.fillRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize)
@@ -103,7 +102,7 @@ function fillcell(position, color) {
 
 function fillcell2(position, color) {
 
-  let cell = setposfromid(position);
+  let cell = postocoord(position);
 
   flag = false;
   let celldivy = 0;
@@ -144,12 +143,13 @@ function fillcell2(position, color) {
 }
 
 function clearplayerpos(position) {
-  let cell = setposfromid(position)
+  let cell = postocoord(position)
   ctx3.clearRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize);
 }
 
+//// TODO: make inner rectangles size relative to cellsize
 function drawplayerpos(position, color) {
-  let cell = setposfromid(position);
+  let cell = postocoord(position);
   ctx3.lineWidth = 2;
   ctx3.strokeStyle = color;
   ctx3.strokeRect(cellsize * cell[1] + 9, cellsize * cell[0] + 9, cellsize - 18, cellsize - 18);
@@ -162,18 +162,21 @@ function drawplayerpos(position, color) {
 }
 
 function drawallowed(position) {
-  let cell = setposfromid(position);
+  let cell = postocoord(position);
   ctx.clearRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize);
   ctx.fillStyle = "#e9e9e9";
   ctx.fillRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize)
 };
 
+function postocoord(position) {
+  let coordx = parseInt(position.split('_')[0]) - viewox;
+  let coordy = parseInt(position.split('_')[1]) - viewoy;
+  return [coordx, coordy];
+}
 
-
-function setposfromid(position) {
-  let xpos = parseInt(position.split('_')[0]) - viewox;
-  let ypos = parseInt(position.split('_')[1]) - viewoy;
-  return [xpos, ypos];
+function indextopos(index) {
+  let position = (index - (index % globalrows)) / globalcols + "_" + (index % globalrows);
+  return position;
 }
 
 function isinview(position) {
@@ -185,8 +188,6 @@ function isinview(position) {
     return true;
   }
 };
-
-
 
 //Store colorgrid changes
 function editlocalgrid(position, color) {

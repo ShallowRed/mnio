@@ -2,7 +2,7 @@ const rows = 5,
   cols = 5,
   vrows = 2,
   vcols = 2,
-  lw = 20,
+  lw = 40,
   limit = 10,
   celltimeout = 10;
 
@@ -26,93 +26,117 @@ function setup() {
   }
 }
 
-function initgrid() {
-  let gridstate = [];
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < cols; j++) {
-      let cell = {
-        id: i + "_" + j,
-        x: i,
-        y: j,
-        class: "none",
-        color: "none"
-      };
-      gridstate.push(cell);
-    }
-  }
-  return gridstate;
+function coordtopos(coordx, coordy) {
+  let position = "" + coordx + "_" + coordy + ""
+  return position;
 }
 
-// Constructor for new player
-class Player {
-  constructor(position, color1, color2, color3) {
-    this.playerpos = position;
-    this.color1 = color1;
-    this.color2 = color2;
-    this.color3 = color3;
-    this.owncells = [];
-    this.allowedcells = [];
-  }
+function postocoord(position) {
+  let coordx = parseInt(position.split('_')[0]);
+  let coordy = parseInt(position.split('_')[1]);
+  return [coordx, coordy];
 }
 
-// Check empty cells, set new player on random available one
-function newrdm(socket, gridstate) {
-
-  let rdmcolor1 = colors.randomcolor();
-  let rdmcolor2 = colors.randomcolor();
-  let rdmcolor3 = colors.randomcolor();
-
-  let check = checkempty(gridstate);
-  let emptycells = check.emptycells;
-  gridstate = check.gridstate;
-  let rdmcell = emptycells[Math.floor(Math.random() * emptycells.length)];
-  let playerinfo = new Player(rdmcell.id, rdmcolor1, rdmcolor2, rdmcolor3);
-
-  return {
-    playerinfo,
-    gridstate
-  }
+function postoindex(position) {
+  let xpos = postocoord(position)[0];
+  let ypos = postocoord(position)[1];
+  let index = rows * xpos + ypos;
+  return index;
 }
 
-//Check empty cells left, reset and write file if not
-function checkempty(gridstate) {
+function indextopos(index) {
+  let position = (index - (index % rows)) / cols + "_" + (index % rows);
+  return position;
+}
 
-  //Check for empty cells
+function coordtoindex(xpos, ypos) {
+  let index = rows * xpos + ypos;
+  return index;
+}
+
+function randompos(colorlist) {
   let emptycells = [];
-  gridstate.forEach(function(cell) {
-    if (cell.color == 'none') {
-      emptycells.push(cell);
-    }
+  let i = 0;
+  colorlist.forEach(function(el) {
+    if (el == null) {
+      let index = indextopos(i);
+      emptycells.push(index);
+    };
+    i++;
+  })
+  if (emptycells.length == 0) {
+    resetall(colorlist);
+  }
+  let rdmcell = emptycells[Math.floor(Math.random() * emptycells.length)];
+  return rdmcell;
+}
+
+function setallowedcells(owncells) {
+  //set increasing limit
+  //limit = function(owncells.length);
+
+  let allowedcells = [];
+  let neighbors = [];
+  let xcount = 0;
+  let ycount = 0;
+  let length = 0;
+
+  owncells.forEach(function(cell) {
+    let xpos = postocoord(cell)[0];
+    let ypos = postocoord(cell)[1];
+
+    xcount = xcount + xpos;
+    ycount = ycount + ypos;
+    ++length;
+
+    let upcell = ypos + 1;
+    let downcell = ypos - 1;
+    let leftcell = xpos + 1;
+    let rightcell = xpos - 1;
+
+    let sidecells = [
+      coordtopos(xpos, downcell),
+      coordtopos(xpos, upcell),
+      coordtopos(rightcell, ypos),
+      coordtopos(leftcell, ypos)
+    ];
+
+    sidecells.forEach(function(cell) {
+      if (!neighbors.includes(cell)) {
+        neighbors.push(cell);
+      };
+    });
   });
 
-  //Reset the grid and save result in txt file if no empty cells left
-  if (emptycells.length == 0) {
-    writeoutput(gridstate);
-    gridstate = initgrid();
+  let averagepos = [Math.round(xcount / length), Math.round(ycount / length)];
+  neighbors.forEach(function(cell) {
+    let distfromavx = Math.abs(postocoord(cell)[0] - averagepos[0]);
+    let distfromavy = Math.abs(postocoord(cell)[1] - averagepos[1]);
+    if (distfromavx >= limit || distfromavy >= limit || allowedcells.includes(cell)) {
+      return;
+    } else {
+      allowedcells.push(cell);
+    }
+  });
+  return allowedcells;
+};
 
-    //******* todo generate empty cells list without pus
-    gridstate.forEach(function(cell) {
-      emptycells.push(cell)
-    });
-  }
-  //********* todo not return gridstate everytime (only if reset)
-  return {
-    gridstate,
-    emptycells
-  }
+function resetall(colorlist) {
+  writeoutput(colorlist);
+  // todo : reset everything
+  //colorlist = new Array(rows * cols).fill(null)
 }
 
-//check for existing txt file and write a new one
-function writeoutput(gridstate) {
+function writeoutput(colorlist) {
   let path = 'outputs/' + output + ".txt";
   if (fs.existsSync(path)) {
     let base = output.split('_');
     ++outputn;
     output = base[0] + "_" + outputn;
-    writeoutput(gridstate);
+    writeoutput(colorlist);
     return;
   } else {
-    let data = JSON.stringify(gridstate);
+    let data = JSON.stringify(colorlist);
     fs.writeFile('outputs/' + output + '.txt', data, function(err) {
       if (err) throw err;
     })
@@ -120,9 +144,13 @@ function writeoutput(gridstate) {
 }
 
 module.exports = {
-  newrdm,
-  checkempty,
-  writeoutput,
   setup,
-  initgrid,
+  randompos,
+  coordtopos,
+  coordtoindex,
+  postoindex,
+  postocoord,
+  setallowedcells,
+  writeoutput,
+  resetall
 };
