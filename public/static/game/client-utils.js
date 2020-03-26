@@ -1,5 +1,5 @@
 var canvas1, canvas2, canvas3, master, ctx, cellsize, globalrows, globalcols, playerpos,
-selectedcolor, pcolor1, pcolor2, pcolor3, lastcell, viewsize,
+selectedcolor, pcolor1, pcolor2, pcolor3, lastcell, viewsize, vieworigin, viewox, viewoy,
 rows, cols, vrows, vcols, lw, celltimeout;
 
 var localgridstate = [], viewgridstate = [], localpositionlist = [], allowedlist = [],
@@ -69,7 +69,7 @@ function hidevolet() {
 
 //resize grid and cell on window sizing
 window.addEventListener('resize', function() {
-  drawgrid();
+  drawgrid(playerpos);
 }, true);
 
 function clog(e) {

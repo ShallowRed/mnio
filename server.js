@@ -254,7 +254,6 @@ function isnextok(socket, nextpos) {
 }
 
 function newplayerpos(socket, nextpos, playerpos) {
-
   // Erase last position
   if (playerpos !== 0) {
     socket.broadcast.emit("clearpos", playerpos);
@@ -267,7 +266,6 @@ function newplayerpos(socket, nextpos, playerpos) {
   // Set new position
   players[socket.id].playerpos = nextpos;
   positionlist.push(nextpos);
-  clog(positionlist);
   socket.broadcast.emit("newglobalpos", nextpos);
   socket.emit("newplayerpos", nextpos);
 }

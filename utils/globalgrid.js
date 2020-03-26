@@ -1,9 +1,9 @@
-const rows = 125
-  cols = 15,
-  vrows = 6,
-  vcols = 6,
-  lw = 15,
-  limit = 5,
+const rows = 10,
+  cols = 10,
+  vrows = 2,
+  vcols = 2,
+  lw = 20,
+  limit = 10,
   celltimeout = 10;
 
 const port = 82;

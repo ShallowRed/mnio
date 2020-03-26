@@ -20,8 +20,8 @@ router.get("/tel", function(request, response) {
 router.get("/ap", function(request, response) {
   response.render("pages/ap");
 });
-router.get('/game2', function(request, response) {
-  response.render("pages/game2");
+router.get('/game', function(request, response) {
+  response.render("client-game");
 });
 
 module.exports = router;
