@@ -1,23 +1,3 @@
-html {
-  overflow: hidden;
-}
-
-body {
-  overflow: hidden;
-  height: 100vh;
-}
-
-#canvas1, #canvas2, #canvas3{
-  position: absolute;
-  left: 0;
-  top: 0;
-  overflow: hidden;
-}
-
-#canvas1 {
-  background: white;
-}
-
 #volet {
   position: fixed;
   overflow: hidden;
@@ -34,15 +14,8 @@ body {
   transition: all 0.4s ease;
 }
 
-#n_log_in {
+#logwindow {
   display: block;
-}
-
-#log_in {
-  display: none;
-}
-
-#n_log_in, #log_in {
   width: 40%;
   margin: 25vh 30%;
   position: absolute;
@@ -51,7 +24,7 @@ body {
   z-index: 999;
 }
 
-#Login_Register a {
+#login a {
   font-size: 1.2em;
   font-weight: 800;
   letter-spacing: 0.1em;
@@ -68,7 +41,7 @@ body {
   display: inline-block;
 }
 
-#Login_Register {
+#login {
 	border-radius: 15px;
   width: 100%;
   margin-top: 5vh;
@@ -80,37 +53,9 @@ body {
   transition: all 0.4s ease 0s;
 }
 
-#Login_Register:hover {
+#login:hover {
   cursor: pointer;
   color: #ffffff;
   background: #494949;
   transition: all 0.4s ease 0s;
-}
-
-#colortable {
-  position: absolute;
-  display: flex;
-  flex-flow: column-reverse;
-  align-items: flex-end;
-  right: 0;
-  top: 3.5em;
-  height: 60vh;
-  width:10%;
-  padding: 20vh 5%;
-}
-
-.color {
-  border: solid 5px white;
-
-  border-radius: 10px;
-  z-index: 995;
-  position: relative;
-  margin-bottom: 15px;
-  display: block;
-  box-sizing: border-box;
-  width: 60px;
-  height: 60px;
-}
-.color:hover {
-  cursor: pointer;
 }

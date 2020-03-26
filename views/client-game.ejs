@@ -2,11 +2,12 @@
  <html>
 
  <head>
-   <link rel="stylesheet" type="text/css" href="semantic/gamemain.css">
-   <link rel="stylesheet" type="text/css" href="semantic/header.css">
-   <link rel="stylesheet" type="text/css" href="semantic/content.css">
-   <link rel="stylesheet" type="text/css" href="semantic/font.css">
-   <link rel="stylesheet" type="text/css" href="semantic/anim.css">
+   <link rel="stylesheet" type="text/css" href="semantic/site/header.css">
+   <link rel="stylesheet" type="text/css" href="semantic/site/content.css">
+   <link rel="stylesheet" type="text/css" href="semantic/site/font.css">
+   <link rel="stylesheet" type="text/css" href="semantic/site/anim.css">
+   <link rel="stylesheet" type="text/css" href="semantic/game/game-lobby.css">
+   <link rel="stylesheet" type="text/css" href="semantic/game//game-main.css">
    <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
    <link href="https://fonts.googleapis.com/css?family=Courier+Prime&display=swap" rel="stylesheet">
    <link href="https://fonts.googleapis.com/css?family=Inconsolata&display=swap" rel="stylesheet">
@@ -19,10 +20,10 @@
    <%- include('./elements/header'); -%>
 
    <div id="volet">
-     <div id="n_log_in">
+     <div id="logwindow">
        <input type="text" id="userName" placeholder="Nom d'utilisateur ..." /><br>
        <input type="password" id="Password" placeholder="Mot de passe ..." /><br>
-       <button id="Login_Register"><a>S'inscrire / Se connecter</a></button>
+       <button id="login"><a>S'inscrire / Se connecter</a></button>
      </div>
    </div>
    <div id="master" style="position: relative;">

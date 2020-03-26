@@ -1,0 +1,47 @@
+html {
+  overflow: hidden;
+}
+
+body {
+  overflow: hidden;
+  height: 100vh;
+}
+
+#canvas1, #canvas2, #canvas3{
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: hidden;
+}
+
+#canvas1 {
+  background: white;
+}
+
+#colortable {
+  position: absolute;
+  display: flex;
+  flex-flow: column-reverse;
+  align-items: flex-end;
+  right: 0;
+  top: 3.5em;
+  height: 60vh;
+  width:10%;
+  padding: 20vh 5%;
+}
+
+.color {
+  border: solid 5px white;
+
+  border-radius: 10px;
+  z-index: 995;
+  position: relative;
+  margin-bottom: 15px;
+  display: block;
+  box-sizing: border-box;
+  width: 60px;
+  height: 60px;
+}
+.color:hover {
+  cursor: pointer;
+}

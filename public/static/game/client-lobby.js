@@ -1,11 +1,10 @@
 var socket = io();
 
-var lgr = document.getElementById('Login_Register');
-var logwindow1 = document.getElementById('n_log_in');
-var logwindow2 = document.getElementById('log_in');
+var login = document.getElementById('login');
+var logwindow1 = document.getElementById('logwindow');
 
 // Send a username and a password to server
-lgr.addEventListener('click', function() {
+login.addEventListener('click', function() {
   socket.emit("login_register", {
     user: document.getElementById("userName").value,
     pass: document.getElementById("Password").value
