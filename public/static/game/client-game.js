@@ -5,9 +5,8 @@ socket.on('initplayer', function(playerdata) {
 
 // Receive data needed for initialization, start the game
 socket.on('initdata', function(data) {
+  clog(data);
   setinitdata(data);
-  clog(data.gridstate);
-  clog(data.positionlist);
   hidevolet();
 });
 

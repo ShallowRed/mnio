@@ -1,19 +1,25 @@
 //Render all the grid
 function drawgrid(position) {
   setcanvas();
-  vieworigin = setvieworigin(position);
+  setvieworigin(position);
 
   // Draw all allowed cells
-  allowedlist.forEach(function(cell) {
-    drawallowed(cell);
+  allowedlist.forEach(function(position) {
+    if (isinview(position)) {
+      drawallowed(position);
+    };
   });
 
   // Draw all colored cells
-  localgridstate.forEach(function(cell) {
-    if (isinview(cell.id) && cell.color !== "none") {
-      fillcell(cell.id, cell.color);
+  let len = localcolorlist.length;
+  for (i = 0; i < len; i++) {
+    if (localcolorlist[i] !== null) {
+      let position = (i - (i % globalrows)) / globalcols + "_" + (i % globalrows);
+      if (isinview(position)) {
+        fillcell(position, localcolorlist[i]);
+      };
     };
-  });
+  };
 
   // Draw all positions
   localpositionlist.forEach(function(position) {
@@ -57,7 +63,37 @@ function setcanvas() {
     (window.innerHeight - ch) / 2 + "px " + (window.innerWidth - cw) / 2 + "px";
 }
 
-//fill cell instant according to position and color
+// Set visible cells according to player position
+function setvieworigin(position) {
+
+  let playerx = parseInt(position.split('_')[0]);
+  let playery = parseInt(position.split('_')[1]);
+  let viewgridstate2 = new Array(viewsize * viewsize);
+  let viewx, viewy;
+
+  if (playerx < vrows) { //top
+    viewx = 0;
+  } else if (playerx >= globalrows - vrows) { //bottom
+    viewx = globalrows - viewsize;
+  } else { //center
+    viewx = playerx - vrows;
+  }
+
+  if (playery >= globalcols - vcols) { //right
+    viewy = globalcols - viewsize;
+  } else if (playery < vcols) { // left
+    viewy = 0;
+  } else { //center
+    viewy = playery - vcols;
+  }
+
+  viewox = viewx;
+  viewoy = viewy;
+  vieworigin = viewx + "_" + viewy;
+}
+
+
+
 function fillcell(position, color) {
   let cell = setposfromid(position);
   ctx2.clearRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize);
@@ -65,7 +101,6 @@ function fillcell(position, color) {
   ctx2.fillRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize)
 }
 
-//fill cell animation
 function fillcell2(position, color) {
 
   let cell = setposfromid(position);
@@ -108,57 +143,6 @@ function fillcell2(position, color) {
   }, celltimeout);
 }
 
-// Set visible cells according to player position
-function setvieworigin(position) {
-
-  let playerx = parseInt(position.split('_')[0]);
-  let playery = parseInt(position.split('_')[1]);
-  let viewgridstate2 = new Array(viewsize * viewsize);
-  let viewx, viewy;
-
-  if (playerx < vrows) { //top
-    viewx = 0;
-  } else if (playerx >= globalrows - vrows) { //bottom
-    viewx = globalrows - viewsize;
-  } else { //center
-    viewx = playerx - vrows;
-  }
-
-  if (playery >= globalcols - vcols) { //right
-    viewy = globalcols - viewsize;
-  } else if (playery < vcols) { // left
-    viewy = 0;
-  } else { //center
-    viewy = playery - vcols;
-  }
-
-  viewox = viewx;
-  viewoy = viewy;
-  vieworigin = viewx + "_" + viewy;
-
-  // let vinx = viewx,
-  //   viny = viewy;
-  // for (var i = 0; i < viewgridstate.length; i++) {
-  //   viewgridstate[i] = vinx + "_" + viny;
-  //   vinx++;
-  //   if (vinx >= viewsize) {
-  //     viny++;
-  //     vinx = viewx;
-  //   }
-  // }
-  // clog(viewgridstate);
-
-  return vieworigin;
-}
-
-//Find matching cell on global grid and edit changes
-function editlocalgrid(cellid, cellcolor) {
-  let localcell = localgridstate.find(function(cell) {
-    return cell.id == cellid;
-  });
-  localcell.color = cellcolor;
-}
-
 function clearplayerpos(position) {
   let cell = setposfromid(position)
   ctx3.clearRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize);
@@ -178,13 +162,13 @@ function drawplayerpos(position, color) {
 }
 
 function drawallowed(position) {
-  if (isinview(position)) {
-    let cell = setposfromid(position);
-    ctx.clearRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize);
-    ctx.fillStyle = "#e9e9e9";
-    ctx.fillRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize)
-  };
+  let cell = setposfromid(position);
+  ctx.clearRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize);
+  ctx.fillStyle = "#e9e9e9";
+  ctx.fillRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize)
 };
+
+
 
 function setposfromid(position) {
   let xpos = parseInt(position.split('_')[0]) - viewox;
@@ -201,6 +185,15 @@ function isinview(position) {
     return true;
   }
 };
+
+
+
+//Store colorgrid changes
+function editlocalgrid(position, color) {
+  let xpos = parseInt(position.split('_')[0]);
+  let ypos = parseInt(position.split('_')[1]);
+  localcolorlist[globalrows * xpos + ypos] = color;
+}
 
 function removefromlist(element, list) {
   let index = list.indexOf(element);

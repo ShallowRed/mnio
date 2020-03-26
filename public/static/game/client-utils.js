@@ -2,7 +2,7 @@ var canvas1, canvas2, canvas3, master, ctx, cellsize, globalrows, globalcols, pl
 selectedcolor, pcolor1, pcolor2, pcolor3, lastcell, viewsize, vieworigin, viewox, viewoy,
 rows, cols, vrows, vcols, lw, celltimeout;
 
-var localgridstate = [], viewgridstate = [], localpositionlist = [], allowedlist = [],
+var viewgridstate, localpositionlist = [], allowedlist = [], localcolorlist;
   initflag = 0,
   flag = true;
 
@@ -12,7 +12,7 @@ const c1 = document.getElementById('c1'),
 
 //Set data needed on initialization
 function setinitdata(data) {
-  localgridstate = data.gridstate;
+  localcolorlist = data.colorlist;
   localpositionlist = data.positionlist;
   globalrows = data.rows;
   globalcols = data.cols;
@@ -118,3 +118,17 @@ function clog(e) {
 //     }
 //   };
 // }
+
+// let vinx = viewx,
+//   viny = viewy;
+// for (var i = 0; i < viewgridstate.length; i++) {
+//   viewgridstate[i] = vinx + "_" + viny;
+//   vinx++;
+//   if (vinx >= viewsize) {
+//     viny++;
+//     vinx = viewx;
+//   }
+// }
+// clog(viewgridstate);
+
+// return vieworigin;

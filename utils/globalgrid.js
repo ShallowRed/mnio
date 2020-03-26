@@ -1,5 +1,5 @@
-const rows = 10,
-  cols = 10,
+const rows = 5,
+  cols = 5,
   vrows = 2,
   vcols = 2,
   lw = 20,

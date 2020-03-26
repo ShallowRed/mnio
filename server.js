@@ -86,6 +86,7 @@ app.use(sessionMiddleware);
 
 ////////////////INITIALISE/////////////////
 gridstate = grid.initgrid();
+var colorlist = new Array(rows*cols);
 
 ////////////////ACTUAL CODE/////////////////
 io.on('connection', function(socket) {
@@ -178,7 +179,7 @@ function startusergame(socket) {
   //Send player the data needed for initialization
   socket.emit('initplayer', players[socket.id]);
   socket.emit('initdata', {
-    gridstate: gridstate,
+    colorlist: colorlist,
     positionlist: positionlist,
     rows: rows,
     cols: cols,
@@ -237,7 +238,7 @@ function isnextok(socket, nextpos) {
   let nextcelltry = gridstate.find(function(cell) {
     return cell.id == nextpos;
   });
-
+  // TODO: check with owncells and not gridstate
   if (nextcelltry.class == socket.id) {
     return true;
   } else if (nextcelltry.class !== "none") {
@@ -286,6 +287,12 @@ function newglobalcell(playerpos, color, socket) {
   });
   globalcell.color = color;
   globalcell.class = "" + socket.id;
+
+  // TODO: new method
+  let xpos = parseInt(playerpos.split('_')[0]);
+  let ypos = parseInt(playerpos.split('_')[1]);
+  colorlist[rows*xpos+ypos] = color;
+
 
   //Tell everyone which new cell is coloured
   socket.broadcast.emit('newglobalcell', {
