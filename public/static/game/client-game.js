@@ -12,8 +12,6 @@ socket.on('initdata', function(data) {
   hidevolet();
 });
 
-// TODO use index instead of "x_y" everywhere
-
 //Move player if new position has ben allowed on server side
 socket.on("newplayerpos", function(position) {
   playerpos = position;
@@ -24,25 +22,19 @@ socket.on("newplayerpos", function(position) {
 // TODO clear when they disconnect)
 socket.on("clearpos", function(position) {
   removefromlist(position, positionlist);
-  if (isinview(position)) {
-    clearplayerpos(position);
-  };
+  clearplayerpos(position);
 });
 
 // Set other's new position when they move
 socket.on("newglobalpos", function(position) {
   positionlist.push(position);
-  if (isinview(position)) {
-    drawplayerpos(position, "grey");
-  };
+  drawplayerpos(position, "grey");
 });
 
 //Fill other's cells when they do so
 socket.on('newglobalcell', function(globalcell) {
   colorlist[globalcell.position] = globalcell.color;
-  if (isinview(globalcell.position)) {
-    fillcell2(globalcell.position, globalcell.color);
-  };
+  fillcell2(globalcell.position, globalcell.color);
 });
 
 // Draw the cells where the player is allowed to move
@@ -50,9 +42,7 @@ socket.on('allowedcells', function(allowedcells) {
   allowedcells.forEach(function(position) {
     if (!allowedlist.includes(position)) {
       allowedlist.push(position);
-      if (isinview(position)) {
-        drawallowed(position);
-      };
+      drawallowed(position);
     };
   });
 });

@@ -25,12 +25,11 @@ function setallowedcells(owncells) {
     ++length;
 
     let sidecells = [
-      convert.coordtoindex(xpos, ypos - 1),
-      convert.coordtoindex(xpos, ypos + 1),
-      convert.coordtoindex(xpos - 1, ypos),
-      convert.coordtoindex(xpos + 1, ypos)
+      [xpos, ypos - 1],
+      [xpos, ypos + 1],
+      [xpos - 1, ypos],
+      [xpos + 1, ypos]
     ];
-
     sidecells.forEach(function(cell) {
       if (!neighbors.includes(cell)) {
         neighbors.push(cell);
@@ -41,13 +40,15 @@ function setallowedcells(owncells) {
   let averagepos = [Math.round(xcount / length), Math.round(ycount / length)];
 
   neighbors.forEach(function(cell) {
-    let coord = convert.indextocoord(cell);
-    let distfromavx = Math.abs(coord[0] - averagepos[0]);
-    let distfromavy = Math.abs(coord[1] - averagepos[1]);
-    if (cell < 0 || cell > rows*cols || distfromavx >= limit || distfromavy >= limit || allowedcells.includes(cell)) {
+    let distfromavx = Math.abs(cell[0] - averagepos[0]);
+    let distfromavy = Math.abs(cell[1] - averagepos[1]);
+    let index = convert.coordtoindex(cell);
+    if (cell[0] < 0 || cell[1] < 0 || cell[0] >= rows || cell[1] >= cols ||
+       distfromavx >= limit || distfromavy >= limit ||
+       allowedcells.includes(index)) {
       return;
     } else {
-      allowedcells.push(cell);
+      allowedcells.push(index);
     }
   });
   return allowedcells;

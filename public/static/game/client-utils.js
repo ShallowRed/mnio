@@ -77,59 +77,6 @@ function clog(e) {
   console.log(e)
 };
 
-// c1.addEventListener("click", function() {
+// todo : c1.addEventListener("click", function() {
 //   selectc1();
 // });
-//
-// c2.addEventListener("click", function() {
-//   selectc2();
-// });
-//
-// c3.addEventListener("click", function() {
-//   selectc3();
-// });
-
-//var elem = document.body;
-
-// function openFullscreen() {
-//   if (elem.requestFullscreen) {
-//     elem.requestFullscreen();
-//   } else if (elem.mozRequestFullScreen) {
-//     /* Firefox */
-//     elem.mozRequestFullScreen();
-//   } else if (elem.webkitRequestFullscreen) {
-//     /* Chrome, Safari & Opera */
-//     elem.webkitRequestFullscreen();
-//   } else if (elem.msRequestFullscreen) {
-//     /* IE/Edge */
-//     elem.msRequestFullscreen();
-//   }
-// }
-
-// function openFullscreen() {
-//   const header = document.querySelector(".header");
-//   // Click bascule en mode plein écran
-//   document.onclick = function(event) {
-//     if (document.fullscreenElement) {
-//       document.exitFullscreen();
-//       header.style.display ="flex";
-//     } else {
-//       document.documentElement.requestFullscreen();
-//       header.style.display ="none";
-//     }
-//   };
-// }
-
-// let vinx = viewx,
-//   viny = viewy;
-// for (var i = 0; i < viewgridstate.length; i++) {
-//   viewgridstate[i] = vinx + "_" + viny;
-//   vinx++;
-//   if (vinx >= viewsize) {
-//     viny++;
-//     vinx = viewx;
-//   }
-// }
-// clog(viewgridstate);
-
-// return vieworigin;

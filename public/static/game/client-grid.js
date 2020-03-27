@@ -4,35 +4,27 @@
 function drawgrid(position) {
   setcanvas();
   vieworigin = setvieworigin(position);
-  // Draw all allowed cells
+   // Draw all allowed cells
   allowedlist.forEach(function(position) {
-    if (isinview(position)) {
-      drawallowed(position);
-    };
+    drawallowed(position);
   });
-
   // Draw all colored cells
   let len = colorlist.length;
   for (i = 0; i < len; i++) {
     if (colorlist[i] !== null) {
-      if (isinview(i)) {
-        fillcell(i, colorlist[i]);
-      };
+      fillcell(i, colorlist[i]);
     };
   };
-
   // Draw all positions
   positionlist.forEach(function(position) {
-    if (isinview(position)) {
-      drawplayerpos(position, "grey");
-    };
+    drawplayerpos(position, "grey");
   });
-
   drawplayerpos(position, selectedcolor);
 }
 
 //Set grid parameters according to cell size and window size
 function setcanvas() {
+
   canvas1 = document.getElementById('canvas1');
   canvas2 = document.getElementById('canvas2');
   canvas3 = document.getElementById('canvas3');
@@ -43,27 +35,27 @@ function setcanvas() {
   ctx2.imageSmoothingEnabled = false;
   ctx3.imageSmoothingEnabled = false;
 
-  //Set grid and cell size according to window size
   let w = window.innerWidth;
   let h = window.innerHeight;
   if (w > h) {
     h = Math.round(h * 0.8);
-    w = h
+    w = h;
   } else {
     w = Math.round(w * 0.9);
-    h = w
+    h = w;
   }
   viewsize = vcols + vrows + 1;
   cellsize = Math.round(w / viewsize);
   let cw = cellsize * viewsize;
   let ch = cellsize * viewsize;
+
   canvas1.width = canvas2.width = canvas3.width = cw;
   canvas1.height = canvas2.height = canvas3.height = ch;
   canvas1.style.margin = canvas2.style.margin = canvas3.style.margin =
     (window.innerHeight - ch) / 2 + "px " + (window.innerWidth - cw) / 2 + "px";
+
 }
 
-// Set visible cells according to player position
 function setvieworigin(position) {
   let cell = indextocoord(position);
   let playerx = cell[0];
@@ -85,15 +77,15 @@ function setvieworigin(position) {
   } else { //center
     viewy = playery - vcols;
   }
-  let vieworigin = coordtoindex(viewx, viewy);
+  let vieworigin = [viewx, viewy];
   return vieworigin;
 }
 
 //////////// CANVAS ACTIONS ////////////
-// TODO: use indexposition instead of "x_y"
 
 function fillcell(position, color) {
   let cell = indextocoord(position);
+  if (!isinview(cell)) return;
   ctx2.clearRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize);
   ctx2.fillStyle = color;
   ctx2.fillRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize)
@@ -102,6 +94,7 @@ function fillcell(position, color) {
 function fillcell2(position, color) {
 
   let cell = indextocoord(position);
+  if (!isinview(cell)) return;
 
   flag = false;
   let celldivy = 0;
@@ -143,12 +136,14 @@ function fillcell2(position, color) {
 
 function clearplayerpos(position) {
   let cell = indextocoord(position);
+  if (!isinview(cell)) return;
   ctx3.clearRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize);
 }
 
 // TODO: make inner rectangles size relative to cellsize
 function drawplayerpos(position, color) {
   let cell = indextocoord(position);
+  if (!isinview(cell)) return;
   ctx3.lineWidth = 2;
   ctx3.strokeStyle = color;
   ctx3.strokeRect(cellsize * cell[1] + 9, cellsize * cell[0] + 9, cellsize - 18, cellsize - 18);
@@ -162,6 +157,7 @@ function drawplayerpos(position, color) {
 
 function drawallowed(position) {
   let cell = indextocoord(position);
+  if (!isinview(cell)) return;
   ctx.clearRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize);
   ctx.fillStyle = "#e9e9e9";
   ctx.fillRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize)
@@ -180,16 +176,14 @@ function coordtoindex(xpos, ypos) {
   return index;
 }
 
-function isinview(position) {
-  let cell = indextocoord(position);
-  let viewo = indextocoord(vieworigin);
-  let xdiff = cell[0] - viewo[0];
-  let ydiff = cell[1] - viewo[1];
+function isinview(cell) {
+  let xdiff = cell[0] - vieworigin[0];
+  let ydiff = cell[1] - vieworigin[1];
   if (xdiff < 0 || xdiff > viewsize || ydiff < 0 || ydiff > viewsize) {
     return false;
   } else {
     return true;
-  }
+  };
 };
 
 function removefromlist(element, list) {

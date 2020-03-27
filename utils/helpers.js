@@ -9,8 +9,8 @@ function indextocoord(index) {
   return [coordx, coordy];
 }
 
-function coordtoindex(xpos, ypos) {
-  let index = rows * xpos + ypos;
+function coordtoindex(coord) {
+  let index = rows * coord[0] + coord[1];
   return index;
 }
 

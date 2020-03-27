@@ -112,28 +112,29 @@ io.on('connection', function(socket) {
 
   // PRODUCTION
   // socket.on("login", function(data) {
-    // let login = trylogin(data.user, data.pass);
-    //
-    // if (login == 0) { // if player in db but wrong password
-    //   socket.emit("alert", "Wrong password");
-    //
-    // } else if (login == 1) { // if player not in db
-    //   socket.emit("logged_in");
-    //   startusergame(socket, data.user);
-    //   // req.session.userID = result.insertId;
-    //   // req.session.save();
-    //
-    // } else { // if player in db and right password
-    //   socket.emit("logged_in");
-    //   startusergame(socket, data.user); // TODO retreive last position
-    //   // req.session.userID = rows[0].id;
-    //   // req.session.save();
-    // };
+  // let login = trylogin(data.user, data.pass);
+  //
+  // if (login == 0) { // if player in db but wrong password
+  //   socket.emit("alert", "Wrong password");
+  //
+  // } else if (login == 1) { // if player not in db
+  //   socket.emit("logged_in");
+  //   startusergame(socket, data.user);
+  //   // req.session.userID = result.insertId;
+  //   // req.session.save();
+  //
+  // } else { // if player in db and right password
+  //   socket.emit("logged_in");
+  //   startusergame(socket, data.user); // TODO retreive last position
+  //   // req.session.userID = rows[0].id;
+  //   // req.session.save();
+  // };
   //});
 
   socket.on('askformove', function(direction) {
     let player = players[socket.id];
     let nextpos = isallowed(player, direction, colorlist);
+    clog(nextpos);
     if (nextpos !== false) {
       newplayerpos(socket, nextpos, player.position);
     };
@@ -147,11 +148,9 @@ io.on('connection', function(socket) {
 
 //////////////// FUNCTIONS /////////////////
 
-function startusergame(socket, username) {   // TODO split next/returning player
+function startusergame(socket, username) { // TODO split next/returning player
   let player = players[socket.id] = new Player(colorlist);
-  clog(username);
   players[socket.id].name = username;
-  clog(players);
   socket.emit('initplayer', {
     position: player.position,
     color1: player.color1,
@@ -173,7 +172,7 @@ function startusergame(socket, username) {   // TODO split next/returning player
 
 function newplayerpos(socket, nextpos, lastpos) {
 
- // Erase last position if it's not player's first one
+  // Erase last position if it's not player's first one
   if (lastpos !== null) {
     socket.broadcast.emit("clearpos", lastpos);
   }
@@ -184,10 +183,8 @@ function newplayerpos(socket, nextpos, lastpos) {
   players[socket.id].position = nextpos;
   socket.broadcast.emit("newglobalpos", nextpos);
   socket.emit("newplayerpos", nextpos);
-
-  let name = players[socket.id].username; //////////////////////////////
+  let name = players[socket.id].username;
   clog("Player " + name + " is now on " + nextpos);
-  //clog(players);
 }
 
 function newglobalcell(position, color, socket) {
@@ -202,21 +199,15 @@ function newglobalcell(position, color, socket) {
 
   //edit list of cells owned by player
   let owncells = players[socket.id].owncells;
+  let name = players[socket.id].username;
   if (owncells.includes(position)) { // if already controlled do nothing
-    let name = players[socket.id].username;  //////////////////////////////
     clog("Player " + name + " edited his own cell");
-    //clog(players);
     return;
   } else { //if new possession edit allowed cells
     owncells.push(position);
     let allowedcells = setallowedcells(owncells);
     players[socket.id].allowedcells = allowedcells;
     socket.emit('allowedcells', allowedcells);
-
-    let name = players[socket.id].username;  //////////////////////////////
     clog("Player " + name + " conquered a new cell : " + position);
-    clog("Player " + name + ' has new owned cells list : ' + owncells);
-    clog("Player " + name + ' has new allowed cells list : ' + allowedcells);
-    //clog(players);
   };
 }
