@@ -10,7 +10,7 @@ socket.on('initdata', function(data) {
   hidevolet();
 });
 
-//TODO: use index instead of "x_y" everywhere
+// TODO use index instead of "x_y" everywhere
 
 //Move player if new position has ben allowed on server side
 socket.on("newplayerpos", function(position) {
@@ -19,7 +19,7 @@ socket.on("newplayerpos", function(position) {
 });
 
 //Clear other's last position when they moves
-// (todo :clear when they disconnect)
+// TODO clear when they disconnect)
 socket.on("clearpos", function(position) {
   removefromlist(position, positionlist);
   if (isinview(position)) {

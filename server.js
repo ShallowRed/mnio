@@ -86,8 +86,7 @@ app.use('/img', express.static('public/img'));
 // clog("socket id is :" + socket.id);
 // req.session.save();
 
-// TODO downhere, retreive last position
-// if same session
+// TODO retreive last position if same session
 
 // if (req.session.userID != null) {
 //   clog("session userid is not null")
@@ -115,13 +114,13 @@ io.on('connection', function(socket) {
 
     } else if (login == 1) { // if player not in db
       socket.emit("logged_in");
-      startusergame(socket);
+      startusergame(socket, data.user);
       // req.session.userID = result.insertId;
       // req.session.save();
 
     } else { // if player in db and right password
       socket.emit("logged_in");
-      startusergame(socket); // todo retreive last position
+      startusergame(socket, data.user); // TODO retreive last position
       // req.session.userID = rows[0].id;
       // req.session.save();
     };
@@ -139,24 +138,24 @@ io.on('connection', function(socket) {
     newglobalcell(data[0], data[1], socket);
   });
 
-  // todo here: erase position when player disconnect
+  // TODO erase position when player disconnect
   // socket.on('disconnect', function(socket) {
   // });
 });
 
 //////////////// FUNCTIONS /////////////////
 
-function startusergame(socket) {
-  // TODO : split next player and returning player situations
+function startusergame(socket, username) {   // TODO split next/returning player
   let player = players[socket.id] = new Player(colorlist);
-
+  clog(username);
+  players[socket.id].name = username;
+  clog(players);
   socket.emit('initplayer', {
     position: player.position,
     color1: player.color1,
     color2: player.color2,
     color3: player.color3,
   });
-
   socket.emit('initdata', {
     colorlist: colorlist,
     positionlist: positionlist,
@@ -183,10 +182,13 @@ function newplayerpos(socket, nextpos, lastpos) {
   players[socket.id].position = nextpos;
   socket.broadcast.emit("newglobalpos", nextpos);
   socket.emit("newplayerpos", nextpos);
+
+  let name = players[socket.id].username; //////////////////////////////
+  clog("Player " + name + " is now on " + nextpos);
+  clog(players);
 }
 
 function newglobalcell(position, color, socket) {
-
   //Find matching cell on global grid and edit changes
   colorlist[convert.postoindex(position)] = color;
 
@@ -199,11 +201,20 @@ function newglobalcell(position, color, socket) {
   //edit list of cells owned by player
   let owncells = players[socket.id].owncells;
   if (owncells.includes(position)) { // if already controlled do nothing
+    let name = players[socket.id].username;  //////////////////////////////
+    clog("Player " + name + " edited his own cell");
+    clog(players);
     return;
   } else { //if new possession edit allowed cells
     owncells.push(position);
     let allowedcells = setallowedcells(owncells);
     players[socket.id].allowedcells = allowedcells;
     socket.emit('allowedcells', allowedcells);
+
+    let name = players[socket.id].username;  //////////////////////////////
+    clog("Player " + name + " conquered a new cell : " + position);
+    clog("Player " + name + ' has new owned cells list : ' + owncells);
+    clog("Player " + name + ' has new allowed cells list : ' + allowedcells);
+    clog(players);
   };
 }

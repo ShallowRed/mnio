@@ -3,6 +3,8 @@ const randompos = require(__dirname + '/randompos');
 
 class Player {
   constructor(colorlist) {
+    this.name = null;
+    this.dbid = null;
     this.position = randompos(colorlist);
     this.color1 = randomcolor();
     this.color2 = randomcolor();

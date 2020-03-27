@@ -33,7 +33,7 @@ function loguserin(user, pass, socket) {
           if (!!err)
             throw err;
           //console.log(result);
-          clog("New user created with n° " + result.insertId + " (" + user + ")");
+          console.log("New user created with n° " + result.insertId + " (" + user + ")");
           return 1;
         });
 
@@ -41,7 +41,7 @@ function loguserin(user, pass, socket) {
       return 0;
 
     } else { // If player already in database and right password
-      console.log("User n° " + rows[0].id + " (" + rows[0].Username + ") is back");
+      console.log("Player n° " + rows[0].id + " (" + rows[0].Username + ") is back");
       return 2;
     }
   });

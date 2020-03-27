@@ -93,8 +93,8 @@ function setvieworigin(position) {
   vieworigin = viewx + "_" + viewy;
 }
 
-
 //////////// CANVAS ACTIONS ////////////
+// TODO: use indexposition instead of "x_y"
 
 function fillcell(position, color) {
   let cell = postocoord(position);
@@ -150,7 +150,7 @@ function clearplayerpos(position) {
   ctx3.clearRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize);
 }
 
-//// TODO: make inner rectangles size relative to cellsize
+// TODO: make inner rectangles size relative to cellsize
 function drawplayerpos(position, color) {
   let cell = postocoord(position);
   ctx3.lineWidth = 2;
@@ -170,7 +170,6 @@ function drawallowed(position) {
   ctx.fillStyle = "#e9e9e9";
   ctx.fillRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize)
 };
-
 
 //////////// CANVAS UTILS ////////////
 
