@@ -10,10 +10,7 @@ socket.on('initdata', function(data) {
   hidevolet();
 });
 
-// Ask server for autorization when trying to move
-function askformove(direction) {
-  socket.emit('askformove', direction);
-}
+//TODO: use index instead of "x_y" everywhere
 
 //Move player if new position has ben allowed on server side
 socket.on("newplayerpos", function(position) {
@@ -24,7 +21,7 @@ socket.on("newplayerpos", function(position) {
 //Clear other's last position when they moves
 // (todo :clear when they disconnect)
 socket.on("clearpos", function(position) {
-  removefromlist(position, localpositionlist);
+  removefromlist(position, positionlist);
   if (isinview(position)) {
     clearplayerpos(position);
   };
@@ -32,7 +29,7 @@ socket.on("clearpos", function(position) {
 
 // Set other's new position when they move
 socket.on("newglobalpos", function(position) {
-  localpositionlist.push(position);
+  positionlist.push(position);
   if (isinview(position)) {
     drawplayerpos(position, "grey");
   };
@@ -49,10 +46,12 @@ socket.on('newglobalcell', function(globalcell) {
 // Draw the cells where the player is allowed to move
 socket.on('allowedcells', function(allowedcells) {
   allowedcells.forEach(function(position) {
-    if (allowedlist.includes(position) == false) {
+    if (!allowedlist.includes(position)) {
       allowedlist.push(position);
-      drawallowed(position);
-    }
+      if (isinview(position)) {
+        drawallowed(position);
+      };
+    };
   });
 });
 
@@ -61,4 +60,9 @@ function fillplayercell(position, color) {
   fillcell2(position, color);
   editlocalgrid(position, color);
   socket.emit("newlocalcell", [position, color]);
+}
+
+// Ask server for autorization when trying to move
+function askformove(direction) {
+  socket.emit('askformove', direction);
 }

@@ -1,9 +1,10 @@
-var canvas1, canvas2, canvas3, master, ctx, cellsize, globalrows, globalcols, playerpos,
-selectedcolor, pcolor1, pcolor2, pcolor3, lastcell, viewsize, vieworigin, viewox, viewoy,
-rows, cols, vrows, vcols, lw, celltimeout;
+var canvas1, canvas2, canvas3, ctx, ctx1, ctx2, playerpos;
+var selectedcolor, pcolor1, pcolor2, pcolor3;
+var lastcell, cellsize, globalrows, globalcols, viewsize, vieworigin, viewox, viewoy,
+  rows, cols, vrows, vcols, lw, celltimeout;
 
-var viewgridstate, localpositionlist = [], allowedlist = [], localcolorlist;
-  initflag = 0,
+var positionlist = [], allowedlist = [], colorlist = [];
+var initflag = 0,
   flag = true;
 
 const c1 = document.getElementById('c1'),
@@ -12,8 +13,8 @@ const c1 = document.getElementById('c1'),
 
 //Set data needed on initialization
 function setinitdata(data) {
-  localcolorlist = data.colorlist;
-  localpositionlist = data.positionlist;
+  colorlist = data.colorlist;
+  positionlist = data.positionlist;
   globalrows = data.rows;
   globalcols = data.cols;
   vrows = data.vrows;

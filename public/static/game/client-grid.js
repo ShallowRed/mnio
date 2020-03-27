@@ -1,3 +1,5 @@
+//////////// CANVAS SETUP ////////////
+
 //Render all the grid
 function drawgrid(position) {
   setcanvas();
@@ -10,20 +12,19 @@ function drawgrid(position) {
     };
   });
 
-
   // Draw all colored cells
-  let len = localcolorlist.length;
+  let len = colorlist.length;
   for (i = 0; i < len; i++) {
-    if (localcolorlist[i] !== null) {
+    if (colorlist[i] !== null) {
       let position = indextopos(i);
       if (isinview(position)) {
-        fillcell(position, localcolorlist[i]);
+        fillcell(position, colorlist[i]);
       };
     };
   };
 
   // Draw all positions
-  localpositionlist.forEach(function(position) {
+  positionlist.forEach(function(position) {
     if (isinview(position)) {
       drawplayerpos(position, "grey");
     };
@@ -69,7 +70,6 @@ function setvieworigin(position) {
 
   let playerx = parseInt(position.split('_')[0]);
   let playery = parseInt(position.split('_')[1]);
-  let viewgridstate2 = new Array(viewsize * viewsize);
   let viewx, viewy;
 
   if (playerx < vrows) { //top
@@ -92,6 +92,9 @@ function setvieworigin(position) {
   viewoy = viewy;
   vieworigin = viewx + "_" + viewy;
 }
+
+
+//////////// CANVAS ACTIONS ////////////
 
 function fillcell(position, color) {
   let cell = postocoord(position);
@@ -168,6 +171,9 @@ function drawallowed(position) {
   ctx.fillRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize)
 };
 
+
+//////////// CANVAS UTILS ////////////
+
 function postocoord(position) {
   let coordx = parseInt(position.split('_')[0]) - viewox;
   let coordy = parseInt(position.split('_')[1]) - viewoy;
@@ -193,7 +199,7 @@ function isinview(position) {
 function editlocalgrid(position, color) {
   let xpos = parseInt(position.split('_')[0]);
   let ypos = parseInt(position.split('_')[1]);
-  localcolorlist[globalrows * xpos + ypos] = color;
+  colorlist[globalrows * xpos + ypos] = color;
 }
 
 function removefromlist(element, list) {
