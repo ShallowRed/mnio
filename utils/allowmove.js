@@ -6,8 +6,8 @@ const setup = setparams(),
   cols = setup.cols;
 
 function isallowed(player, direction, colorlist) {
-  let playerx = convert.postocoord(player.position)[0];
-  let playery = convert.postocoord(player.position)[1];
+  let playerx = convert.indextocoord(player.position)[0];
+  let playery = convert.indextocoord(player.position)[1];
   //Evaluate which cell is wanted, cancel if outside the grid
   switch (direction) {
     case "up":
@@ -27,10 +27,9 @@ function isallowed(player, direction, colorlist) {
       playery++;
       break;
   }
-  let nextpos = convert.coordtopos(playerx, playery);
-  let nextposindex = convert.coordtoindex(playerx, playery);
+  let nextpos = convert.coordtoindex(playerx, playery);
   if (!player.allowedcells.includes(nextpos) ||
-    (!player.owncells.includes(nextpos) && colorlist[nextposindex] !== null)) {
+    (!player.owncells.includes(nextpos) && colorlist[nextpos] !== null)) {
     return false;
   } else {
     return nextpos;

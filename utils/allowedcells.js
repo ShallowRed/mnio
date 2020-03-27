@@ -17,23 +17,18 @@ function setallowedcells(owncells) {
   let length = 0;
 
   owncells.forEach(function(cell) {
-    let xpos = convert.postocoord(cell)[0];
-    let ypos = convert.postocoord(cell)[1];
+    let xpos = convert.indextocoord(cell)[0];
+    let ypos = convert.indextocoord(cell)[1];
 
     xcount = xcount + xpos;
     ycount = ycount + ypos;
     ++length;
 
-    let upcell = ypos + 1;
-    let downcell = ypos - 1;
-    let leftcell = xpos + 1;
-    let rightcell = xpos - 1;
-
     let sidecells = [
-      convert.coordtopos(xpos, downcell),
-      convert.coordtopos(xpos, upcell),
-      convert.coordtopos(rightcell, ypos),
-      convert.coordtopos(leftcell, ypos)
+      convert.coordtoindex(xpos, ypos - 1),
+      convert.coordtoindex(xpos, ypos + 1),
+      convert.coordtoindex(xpos - 1, ypos),
+      convert.coordtoindex(xpos + 1, ypos)
     ];
 
     sidecells.forEach(function(cell) {
@@ -46,9 +41,10 @@ function setallowedcells(owncells) {
   let averagepos = [Math.round(xcount / length), Math.round(ycount / length)];
 
   neighbors.forEach(function(cell) {
-    let distfromavx = Math.abs(convert.postocoord(cell)[0] - averagepos[0]);
-    let distfromavy = Math.abs(convert.postocoord(cell)[1] - averagepos[1]);
-    if (distfromavx >= limit || distfromavy >= limit || allowedcells.includes(cell)) {
+    let coord = convert.indextocoord(cell);
+    let distfromavx = Math.abs(coord[0] - averagepos[0]);
+    let distfromavy = Math.abs(coord[1] - averagepos[1]);
+    if (cell < 0 || cell > rows*cols || distfromavx >= limit || distfromavy >= limit || allowedcells.includes(cell)) {
       return;
     } else {
       allowedcells.push(cell);

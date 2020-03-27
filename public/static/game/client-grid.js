@@ -3,8 +3,7 @@
 //Render all the grid
 function drawgrid(position) {
   setcanvas();
-  setvieworigin(position);
-
+  vieworigin = setvieworigin(position);
   // Draw all allowed cells
   allowedlist.forEach(function(position) {
     if (isinview(position)) {
@@ -16,9 +15,8 @@ function drawgrid(position) {
   let len = colorlist.length;
   for (i = 0; i < len; i++) {
     if (colorlist[i] !== null) {
-      let position = indextopos(i);
-      if (isinview(position)) {
-        fillcell(position, colorlist[i]);
+      if (isinview(i)) {
+        fillcell(i, colorlist[i]);
       };
     };
   };
@@ -67,9 +65,9 @@ function setcanvas() {
 
 // Set visible cells according to player position
 function setvieworigin(position) {
-
-  let playerx = parseInt(position.split('_')[0]);
-  let playery = parseInt(position.split('_')[1]);
+  let cell = indextocoord(position);
+  let playerx = cell[0];
+  let playery = cell[1];
   let viewx, viewy;
 
   if (playerx < vrows) { //top
@@ -87,17 +85,15 @@ function setvieworigin(position) {
   } else { //center
     viewy = playery - vcols;
   }
-
-  viewox = viewx;
-  viewoy = viewy;
-  vieworigin = viewx + "_" + viewy;
+  let vieworigin = coordtoindex(viewx, viewy);
+  return vieworigin;
 }
 
 //////////// CANVAS ACTIONS ////////////
 // TODO: use indexposition instead of "x_y"
 
 function fillcell(position, color) {
-  let cell = postocoord(position);
+  let cell = indextocoord(position);
   ctx2.clearRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize);
   ctx2.fillStyle = color;
   ctx2.fillRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize)
@@ -105,7 +101,7 @@ function fillcell(position, color) {
 
 function fillcell2(position, color) {
 
-  let cell = postocoord(position);
+  let cell = indextocoord(position);
 
   flag = false;
   let celldivy = 0;
@@ -146,13 +142,13 @@ function fillcell2(position, color) {
 }
 
 function clearplayerpos(position) {
-  let cell = postocoord(position)
+  let cell = indextocoord(position);
   ctx3.clearRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize);
 }
 
 // TODO: make inner rectangles size relative to cellsize
 function drawplayerpos(position, color) {
-  let cell = postocoord(position);
+  let cell = indextocoord(position);
   ctx3.lineWidth = 2;
   ctx3.strokeStyle = color;
   ctx3.strokeRect(cellsize * cell[1] + 9, cellsize * cell[0] + 9, cellsize - 18, cellsize - 18);
@@ -165,7 +161,7 @@ function drawplayerpos(position, color) {
 }
 
 function drawallowed(position) {
-  let cell = postocoord(position);
+  let cell = indextocoord(position);
   ctx.clearRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize);
   ctx.fillStyle = "#e9e9e9";
   ctx.fillRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize)
@@ -173,33 +169,28 @@ function drawallowed(position) {
 
 //////////// CANVAS UTILS ////////////
 
-function postocoord(position) {
-  let coordx = parseInt(position.split('_')[0]) - viewox;
-  let coordy = parseInt(position.split('_')[1]) - viewoy;
+function indextocoord(index) {
+  let coordx = (index - (index % globalrows)) / globalcols;
+  let coordy = (index % globalcols);
   return [coordx, coordy];
 }
 
-function indextopos(index) {
-  let position = (index - (index % globalrows)) / globalcols + "_" + (index % globalrows);
-  return position;
+function coordtoindex(xpos, ypos) {
+  let index = globalrows * xpos + ypos;
+  return index;
 }
 
 function isinview(position) {
-  let xdiff = parseInt(position.split('_')[0]) - viewox;
-  let ydiff = parseInt(position.split('_')[1]) - viewoy;
+  let cell = indextocoord(position);
+  let viewo = indextocoord(vieworigin);
+  let xdiff = cell[0] - viewo[0];
+  let ydiff = cell[1] - viewo[1];
   if (xdiff < 0 || xdiff > viewsize || ydiff < 0 || ydiff > viewsize) {
     return false;
   } else {
     return true;
   }
 };
-
-//Store colorgrid changes
-function editlocalgrid(position, color) {
-  let xpos = parseInt(position.split('_')[0]);
-  let ypos = parseInt(position.split('_')[1]);
-  colorlist[globalrows * xpos + ypos] = color;
-}
 
 function removefromlist(element, list) {
   let index = list.indexOf(element);

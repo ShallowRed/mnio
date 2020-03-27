@@ -1,6 +1,8 @@
 // Receive player data
 socket.on('initplayer', function(playerdata) {
   initplayer(playerdata);
+  clog(playerdata);
+
 });
 
 // Receive data needed for initialization, start the game
@@ -37,7 +39,7 @@ socket.on("newglobalpos", function(position) {
 
 //Fill other's cells when they do so
 socket.on('newglobalcell', function(globalcell) {
-  editlocalgrid(globalcell.position, globalcell.color);
+  colorlist[globalcell.position] = globalcell.color;
   if (isinview(globalcell.position)) {
     fillcell2(globalcell.position, globalcell.color);
   };
@@ -58,7 +60,7 @@ socket.on('allowedcells', function(allowedcells) {
 //Fill active player cell when he says so
 function fillplayercell(position, color) {
   fillcell2(position, color);
-  editlocalgrid(position, color);
+  colorlist[position] = color;
   socket.emit("newlocalcell", [position, color]);
 }
 

@@ -1,11 +1,11 @@
-const rows = 50;
-const cols = 50;
-const vrows = 10;
-const vcols = 10;
+const rows = 5;
+const cols = 5;
+const vrows = 2;
+const vcols = 2;
 
-const lw = 5;
-const limit = 6;
-const celltimeout = 5;
+const lw = 50;
+const limit = 100;
+const celltimeout = 10;
 
 const port = 82;
 
