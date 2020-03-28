@@ -1,13 +1,12 @@
 // Receive player data
 socket.on('initplayer', function(playerdata) {
+  console.log(playerdata);
   initplayer(playerdata);
-  clog(playerdata);
-
 });
 
 // Receive data needed for initialization, start the game
 socket.on('initdata', function(data) {
-  clog(data);
+  console.log(data);
   setinitdata(data);
   hidevolet();
 });
@@ -21,7 +20,7 @@ socket.on("newplayerpos", function(position) {
 //Clear other's last position when they moves
 // TODO clear when they disconnect)
 socket.on("clearpos", function(position) {
-  removefromlist(position, positionlist);
+  positionlist.splice(positionlist.indexOf(position), 1);
   clearplayerpos(position);
 });
 
@@ -49,12 +48,12 @@ socket.on('allowedcells', function(allowedcells) {
 
 //Fill active player cell when he says so
 function fillplayercell(position, color) {
-  fillcell2(position, color);
   colorlist[position] = color;
+  fillcell2(position, color);
   socket.emit("newlocalcell", [position, color]);
 }
 
 // Ask server for autorization when trying to move
 function askformove(direction) {
-  socket.emit('askformove', direction);
+  socket.emit('ismoveok', direction);
 }

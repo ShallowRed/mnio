@@ -1,4 +1,4 @@
-const convert = require(__dirname + '/helpers');
+const convert = require('../models/converters');
 
 function randompos(colorlist) {
   let emptycells = [];

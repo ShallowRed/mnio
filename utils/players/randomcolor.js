@@ -1,5 +1,4 @@
-function randomcolor() {
-  var colors = new Array("#63b598", "#ce7d78", "#ea9e70", "#a48a9e", "#c6e1e8", "#648177", "#0d5ac1",
+  const colors = new Array("#63b598", "#ce7d78", "#ea9e70", "#a48a9e", "#c6e1e8", "#648177", "#0d5ac1",
     "#f205e6", "#1c0365", "#14a9ad", "#4ca2f9", "#a4e43f", "#d298e2", "#6119d0",
     "#d2737d", "#c0a43c", "#f2510e", "#651be6", "#79806e", "#61da5e", "#cd2f00",
     "#9348af", "#01ac53", "#c5a4fb", "#996635", "#b11573", "#4bb473", "#75d89e",
@@ -40,8 +39,9 @@ function randomcolor() {
     "#f812b3", "#b17fc9", "#8d6c2f", "#d3277a", "#2ca1ae", "#9685eb", "#8a96c6",
     "#dba2e6", "#76fc1b", "#608fa4", "#20f6ba", "#07d7f6", "#dce77a", "#77ecca");
 
-  var rdmcolor = colors[Math.floor(Math.random() * colors.length)];
-  return rdmcolor;
-}
+  function randomcolor() {
+    let rdmcolor = colors[Math.floor(Math.random() * colors.length)];
+    return rdmcolor;
+  }
 
-module.exports = randomcolor;
+  module.exports = randomcolor;

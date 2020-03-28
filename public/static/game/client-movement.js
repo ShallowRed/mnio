@@ -1,28 +1,16 @@
 //Handle touchscreen events
 $(document).touchwipe({
   wipeLeft: function() {
-    if (flag == true) {
-      askformove("left");
-      flag = true;
-    }
+    if (flag) askformove("left");
   },
   wipeRight: function() {
-    if (flag == true) {
-      askformove("right");
-      flag = true;
-    }
+    if (flag) askformove("right");
   },
   wipeUp: function() {
-    if (flag == true) {
-      askformove("down");
-      flag = true;
-    }
+    if (flag) askformove("down");
   },
   wipeDown: function() {
-    if (flag == true) {
-      askformove("up");
-      flag = true;
-    }
+    if (flag) askformove("up");
   },
   min_move_x: 20,
   min_move_y: 20,
@@ -34,69 +22,53 @@ document.addEventListener('keydown', function(event) {
   switch (event.keyCode) {
 
     case 32: // Spacebar
-      if (flag == true) {
-        fillplayercell(playerpos, selectedcolor);
-        break;
+      if (flag) fillplayercell(playerpos, selectedcolor);
+      break;
 
-      } else {
-        break;
+    case 37: // left arrow
+      if (viewsize > 3 ) {
+        --vrows;
+        --vcols;
+        drawgrid(playerpos);
       }
-      // left arrow 37
+      break;
 
-      case 38: // top arrow
-        if (flag == true) {
-          if (selectedcolor == pcolor1) {
-            selectc2(pcolor2);
-            break;
-          } else if (selectedcolor == pcolor2) {
-            selectc3(pcolor3);
-            break;
-          } else {
-            selectc1(pcolor1);
-            break;
-          }
-        } else {
-          break;
-        }
+    case 39: // right arrow
+    if (viewsize + 1 < globalrows ) {
+        ++vrows;
+        ++vcols;
+        drawgrid(playerpos);
+      }
+      break;
 
-        case 40: // bottom arrow
-          if (flag == true) {
-            if (selectedcolor == pcolor1) {
-              selectc3(pcolor3);
-              break;
-            } else if (selectedcolor == pcolor2) {
-              selectc1(pcolor1);
-              break;
-            } else {
-              selectc2(pcolor2);
-              break;
-            }
-          } else {
-            break;
-          }
 
-          case 81: // Q
-            if (flag == true) {
-              askformove("left");
-            }
-            break;
+    case 38: // top arrow
+      if (flag) {
+        if (selectedcolor == pcolor1) selectc2(pcolor2);
+        else if (selectedcolor == pcolor2) selectc3(pcolor3);
+        else selectc1(pcolor1);
+      }
+      break;
 
-          case 90: // Z
-            if (flag == true) {
-              askformove("up");
-            }
-            break;
+    case 40: // bottom arrow
+      if (flag) {
+        if (selectedcolor == pcolor1) selectc3(pcolor3);
+        else if (selectedcolor == pcolor2) selectc1(pcolor1);
+        else selectc2(pcolor2);
+      }
+      break;
 
-          case 68: // D
-            if (flag == true) {
-              askformove("right");
-            }
-            break;
-
-          case 83: // S
-            if (flag == true) {
-              askformove("down");
-            }
-            break;
+    case 81: // Q
+      if (flag) askformove("left");
+      break;
+    case 90: // Z
+      if (flag) askformove("up");
+      break;
+    case 68: // D
+      if (flag) askformove("right");
+      break;
+    case 83: // S
+      if (flag) askformove("down");
+      break;
   }
 });

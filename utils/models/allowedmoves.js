@@ -1,5 +1,5 @@
-const setparams = require(__dirname + '/params');
-const convert = require(__dirname + '/helpers');
+const convert = require('../models/converters');
+const setparams = require('../params');
 
 const setup = setparams(),
   rows = setup.rows,
@@ -11,8 +11,7 @@ function isallowed(player, direction, colorlist) {
   //Evaluate which cell is wanted, cancel if outside the grid
   switch (direction) {
     case "up":
-      if (playerx == 0)
-      return false;
+      if (playerx == 0) return false;
       playerx--;
       break;
     case "down":
@@ -29,13 +28,11 @@ function isallowed(player, direction, colorlist) {
       break;
   }
   let nextpos = convert.coordtoindex([playerx, playery]);
-  if (!player.allowedcells.includes(nextpos)) {
-    return false;
-  } else if (!player.owncells.includes(nextpos) && colorlist[nextpos] !== null) {
-    return false;
-  } else {
-    return nextpos;
-  };
+  if (!player.allowedcells.includes(nextpos)) return false;
+  else if (!player.owncells.includes(nextpos) &&
+            colorlist[nextpos] !== null)
+            return false;
+  else return nextpos;
 };
 
 module.exports = isallowed;

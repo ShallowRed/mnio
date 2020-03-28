@@ -1,5 +1,4 @@
 var socket = io();
-
 var login = document.getElementById('login');
 var logwindow = document.getElementById('logwindow');
 
@@ -15,6 +14,10 @@ login.addEventListener('click', function() {
 socket.on("logged_in", function() {
   console.log("logged in !");
   logwindow.style.display = "none";
+});
+
+socket.on("message", function(data) {
+  console.log(data);
 });
 
 socket.on("alert", function(data) {

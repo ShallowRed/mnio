@@ -4,7 +4,7 @@
 function drawgrid(position) {
   setcanvas();
   vieworigin = setvieworigin(position);
-   // Draw all allowed cells
+  // Draw all allowed cells
   allowedlist.forEach(function(position) {
     drawallowed(position);
   });
@@ -57,9 +57,12 @@ function setcanvas() {
 }
 
 function setvieworigin(position) {
+  clog("player position is : " + position);
   let cell = indextocoord(position);
   let playerx = cell[0];
   let playery = cell[1];
+  clog("player x is : " + playerx);
+  clog("player y is : " + playery);
   let viewx, viewy;
 
   if (playerx < vrows) { //top
@@ -78,14 +81,15 @@ function setvieworigin(position) {
     viewy = playery - vcols;
   }
   let vieworigin = [viewx, viewy];
+  clog("view origin is : " + vieworigin);
   return vieworigin;
 }
 
 //////////// CANVAS ACTIONS ////////////
 
 function fillcell(position, color) {
-  let cell = indextocoord(position);
-  if (!isinview(cell)) return;
+  let cell = isinview(position);
+  if (!cell) return;
   ctx2.clearRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize);
   ctx2.fillStyle = color;
   ctx2.fillRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize)
@@ -93,8 +97,8 @@ function fillcell(position, color) {
 
 function fillcell2(position, color) {
 
-  let cell = indextocoord(position);
-  if (!isinview(cell)) return;
+  let cell = isinview(position);
+  if (!cell) return;
 
   flag = false;
   let celldivy = 0;
@@ -135,15 +139,15 @@ function fillcell2(position, color) {
 }
 
 function clearplayerpos(position) {
-  let cell = indextocoord(position);
-  if (!isinview(cell)) return;
+  let cell = isinview(position);
+  if (!cell) return;
   ctx3.clearRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize);
-}
+};
 
 // TODO: make inner rectangles size relative to cellsize
 function drawplayerpos(position, color) {
-  let cell = indextocoord(position);
-  if (!isinview(cell)) return;
+  let cell = isinview(position);
+  if (!cell) return;
   ctx3.lineWidth = 2;
   ctx3.strokeStyle = color;
   ctx3.strokeRect(cellsize * cell[1] + 9, cellsize * cell[0] + 9, cellsize - 18, cellsize - 18);
@@ -153,11 +157,11 @@ function drawplayerpos(position, color) {
   ctx3.lineWidth = 2;
   ctx3.strokeStyle = color;
   ctx3.strokeRect(cellsize * cell[1] + 14, cellsize * cell[0] + 14, cellsize - 28, cellsize - 28);
-}
+};
 
 function drawallowed(position) {
-  let cell = indextocoord(position);
-  if (!isinview(cell)) return;
+  let cell = isinview(position);
+  if (!cell) return;
   ctx.clearRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize);
   ctx.fillStyle = "#e9e9e9";
   ctx.fillRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize)
@@ -176,19 +180,13 @@ function coordtoindex(xpos, ypos) {
   return index;
 }
 
-function isinview(cell) {
+function isinview(position) {
+  let cell = indextocoord(position);
   let xdiff = cell[0] - vieworigin[0];
   let ydiff = cell[1] - vieworigin[1];
   if (xdiff < 0 || xdiff > viewsize || ydiff < 0 || ydiff > viewsize) {
     return false;
   } else {
-    return true;
+    return [xdiff, ydiff];
   };
 };
-
-function removefromlist(element, list) {
-  let index = list.indexOf(element);
-  if (index > -1) {
-    list.splice(index, 1);
-  };
-}

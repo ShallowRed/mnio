@@ -1,5 +1,5 @@
-const convert = require(__dirname + '/helpers');
-const setparams = require(__dirname + '/params');
+const convert = require('../models/converters');
+const setparams = require('../params');
 
 const setup = setparams(),
   rows = setup.rows,

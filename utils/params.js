@@ -1,7 +1,7 @@
-const rows = 5;
-const cols = 5;
-const vrows = 2;
-const vcols = 2;
+const rows = 20;
+const cols = 20;
+const vrows = 3;
+const vcols = 3;
 
 const lw = 50;
 const limit = 100;

@@ -1,4 +1,4 @@
-const setparams = require(__dirname + '/params');
+const setparams = require('../params');
 const setup = setparams();
 const rows = setup.rows;
 const cols = setup.cols;

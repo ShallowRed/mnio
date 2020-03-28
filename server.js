@@ -6,22 +6,22 @@ const express = require('express');
 const http = require('http');
 const path = require('path');
 const socketIO = require('socket.io');
-const ejsLint = require('ejs-lint');
 const session = require('express-session');
 //const bodyParser = require('body-parser');
-
 const app = express();
-const router = express.Router();
 const server = http.Server(app);
+const router = express.Router();
 const io = socketIO(server);
 
-const routes = require(path.resolve(__dirname, "utils/routes"));
 const setparams = require(path.resolve(__dirname, 'utils/params'));
-const trylogin = require(path.resolve(__dirname, 'utils/login'));
-const convert = require(path.resolve(__dirname, 'utils/helpers'));
-const setallowedcells = require(path.resolve(__dirname, 'utils/allowedcells'));
-const isallowed = require(path.resolve(__dirname, 'utils/allowmove'));
-const Player = require(path.resolve(__dirname, 'utils/newplayer'));
+const trylogin = require(path.resolve(__dirname, 'utils/controlers/login'));
+const setallowedcells = require(path.resolve(__dirname, 'utils/models/allowedcells'));
+const isallowed = require(path.resolve(__dirname, 'utils/models/allowedmoves'));
+const Player = require(path.resolve(__dirname, 'utils/players/newplayer'));
+
+app.use('/', require(path.resolve(__dirname, "utils/controlers/routes"))); //Routes to folders
+app.set('view engine', 'ejs');
+app.set("views", path.resolve(__dirname, "views"));
 
 const setup = setparams(),
   port = setup.port,
@@ -33,21 +33,10 @@ const setup = setparams(),
   limit = setup.limit,
   celltimeout = setup.celltimeout;
 
-// Set port and start server.
 app.set('port', port);
 server.listen(port, function() {
   console.log('Starting server on port ' + port);
 });
-
-//Set view engine
-app.set('view engine', 'ejs');
-app.set("views", path.resolve(__dirname, "views"));
-
-//Routes to folders
-app.use('/', routes);
-app.use('/semantic', express.static('public/semantic'));
-app.use('/static', express.static('public/static'));
-app.use('/img', express.static('public/img'));
 
 // app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({
@@ -131,17 +120,13 @@ io.on('connection', function(socket) {
   // };
   //});
 
-  socket.on('askformove', function(direction) {
-    let player = players[socket.id];
-    let nextpos = isallowed(player, direction, colorlist);
-    clog(nextpos);
-    if (nextpos !== false) {
-      newplayerpos(socket, nextpos, player.position);
-    };
+  socket.on('ismoveok', function(direction) {
+    let nextpos = isallowed(players[socket.id], direction, colorlist);
+    if (nextpos) newplayerpos(socket, nextpos, players[socket.id].position);
   });
 
-  socket.on('newlocalcell', function(data) {
-    newglobalcell(data[0], data[1], socket);
+  socket.on('newlocalcell', function(cell) {
+    newglobalcell(cell[0], cell[1], socket);
   });
   // TODO erase position when player disconnect
 });
@@ -150,7 +135,7 @@ io.on('connection', function(socket) {
 
 function startusergame(socket, username) { // TODO split next/returning player
   let player = players[socket.id] = new Player(colorlist);
-  players[socket.id].name = username;
+  player.name = username;
   socket.emit('initplayer', {
     position: player.position,
     color1: player.color1,
@@ -172,22 +157,24 @@ function startusergame(socket, username) { // TODO split next/returning player
 
 function newplayerpos(socket, nextpos, lastpos) {
 
-  // Erase last position if it's not player's first one
-  if (lastpos !== null) {
-    socket.broadcast.emit("clearpos", lastpos);
-  }
-  positionlist.splice(positionlist.indexOf(lastpos), 1);
-
   // Set new position
   positionlist.push(nextpos);
   players[socket.id].position = nextpos;
-  socket.broadcast.emit("newglobalpos", nextpos);
   socket.emit("newplayerpos", nextpos);
+  socket.broadcast.emit("newglobalpos", nextpos);
+
+  // Erase last position if it's not player's first one
+  if (lastpos) {
+    socket.broadcast.emit("clearpos", lastpos);
+    positionlist.splice(positionlist.indexOf(lastpos), 1);
+  }
+
   let name = players[socket.id].username;
   clog("Player " + name + " is now on " + nextpos);
 }
 
 function newglobalcell(position, color, socket) {
+
   //Find matching cell on global grid and edit changes
   colorlist[position] = color;
 
