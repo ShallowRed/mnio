@@ -1,33 +1,36 @@
-// Receive player data
-socket.on('initplayer', function(playerdata) {
-  console.log(playerdata);
-  initplayer(playerdata);
-});
-
 // Receive data needed for initialization, start the game
 socket.on('initdata', function(data) {
   console.log(data);
-  setinitdata(data);
+  initdata(data);
+  setcanvassize();
+  drawgrid(playerpos);
   hidevolet();
+  let vpos = indextocoord(playerpos);
+  let ppos = [vpos[0]-1, vpos[1]-1];
+  drawposition(coordtoindex(ppos), selectedcolor, ctx4);
 });
 
 //Move player if new position has ben allowed on server side
 socket.on("newplayerpos", function(position) {
+  clearposition(playerpos);
   playerpos = position;
-  drawgrid(position);
-});
-
-//Clear other's last position when they moves
-// TODO clear when they disconnect)
-socket.on("clearpos", function(position) {
-  positionlist.splice(positionlist.indexOf(position), 1);
-  clearplayerpos(position);
+  transcanvas(lastdir);
+  setTimeout(function() {
+    drawgrid(position);
+  }, 500)
 });
 
 // Set other's new position when they move
 socket.on("newglobalpos", function(position) {
   positionlist.push(position);
-  drawplayerpos(position, "grey");
+  drawposition(position, "grey", ctx3);
+});
+
+//Clear other's last position when they moves
+// TODO clear when player is disconnected)
+socket.on("clearpos", function(position) {
+  positionlist.splice(positionlist.indexOf(position), 1);
+  clearposition(position);
 });
 
 //Fill other's cells when they do so
@@ -52,8 +55,9 @@ function fillplayercell(position, color) {
   fillcell2(position, color);
   socket.emit("newlocalcell", [position, color]);
 }
-
+var lastdir;
 // Ask server for autorization when trying to move
 function askformove(direction) {
+  lastdir = direction;
   socket.emit('ismoveok', direction);
 }

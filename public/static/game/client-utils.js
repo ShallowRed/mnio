@@ -1,18 +1,17 @@
-var canvas1, canvas2, canvas3, ctx, ctx1, ctx2, playerpos;
-var selectedcolor, pcolor1, pcolor2, pcolor3;
-var lastcell, cellsize, globalrows, globalcols, viewsize, vieworigin, viewox, viewoy,
-  rows, cols, vrows, vcols, lw, celltimeout;
-
-var positionlist = [], allowedlist = [], colorlist = [];
-var initflag = 0,
-  flag = true;
-
+var globalrows, globalcols, cellsize, vrows, vcols, lw, celltimeout;
+var playerpos, selectedcolor, pcolor1, pcolor2, pcolor3;
+var positionlist, colorlist;
+var allowedlist = [];
+var initflag = 0, flag = true;
 const c1 = document.getElementById('c1'),
   c2 = document.getElementById('c2'),
   c3 = document.getElementById('c3');
 
-//Set data needed on initialization
-function setinitdata(data) {
+const volet = document.getElementById('volet');
+
+  //////////// PARAMETERS INITIALIZATION ////////////
+
+function initdata(data) {
   colorlist = data.colorlist;
   positionlist = data.positionlist;
   globalrows = data.rows;
@@ -22,9 +21,6 @@ function setinitdata(data) {
   lw = data.lw;
   celltimeout = data.celltimeout;
   initflag = 1;
-}
-
-function initplayer(data) {
   playerpos = data.position;
   pcolor1 = data.color1;
   pcolor2 = data.color2;
@@ -36,12 +32,38 @@ function initplayer(data) {
   c3.style.background = pcolor3;
 }
 
+//////////////// CANVAS UTILS ////////////////////
+
+function indextocoord(index) {
+  let coordx = (index - (index % globalrows)) / globalcols;
+  let coordy = (index % globalcols);
+  return [coordx, coordy];
+}
+
+function coordtoindex(coord) {
+  let index = globalrows * coord[0] + coord[1];
+  return index;
+}
+
+function isinview(position) {
+  let globalpos = indextocoord(position);
+  let posinviewx = globalpos[0] - vieworigin[0];
+  let posinviewy = globalpos[1] - vieworigin[1];
+  if (posinviewx < 0 || posinviewx > viewsize || posinviewy < 0 || posinviewy > viewsize) {
+    return false;
+  } else {
+    return [posinviewx, posinviewy];
+  };
+};
+
+//////////////// UI UTILS ////////////////////
+
 function selectc1() {
   selectedcolor = pcolor1;
   c1.style.border = "solid 5px black";
   c2.style.border = "solid 5px white";
   c3.style.border = "solid 5px white";
-  drawplayerpos(playerpos, pcolor1);
+  drawposition(playerpos, pcolor1);
 }
 
 function selectc2(pcolor2) {
@@ -49,7 +71,7 @@ function selectc2(pcolor2) {
   c1.style.border = "solid 5px white";
   c2.style.border = "solid 5px black";
   c3.style.border = "solid 5px white";;
-  drawplayerpos(playerpos, pcolor2);
+  drawposition(playerpos, pcolor2);
 }
 
 function selectc3(pcolor3) {
@@ -57,19 +79,20 @@ function selectc3(pcolor3) {
   c1.style.border = "solid 5px white";
   c2.style.border = "solid 5px white";
   c3.style.border = "solid 5px black";
-  drawplayerpos(playerpos, pcolor3);
+  drawposition(playerpos, pcolor3);
 }
 
 // Turn on game visibility when content loaded
 function hidevolet() {
   volet.style.opacity = "0";
   setTimeout(function() {
-    volet.hidden = true;
+    volet.style.display = "none";
   }, 500);
 }
 
 //resize grid and cell on window sizing
 window.addEventListener('resize', function() {
+  setcanvassize();
   drawgrid(playerpos);
 }, true);
 

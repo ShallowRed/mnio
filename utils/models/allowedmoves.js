@@ -11,27 +11,25 @@ function isallowed(player, direction, colorlist) {
   //Evaluate which cell is wanted, cancel if outside the grid
   switch (direction) {
     case "up":
-      if (playerx == 0) return false;
+      if (playerx == 0) return;
       playerx--;
       break;
     case "down":
-      if (playerx == cols - 1) return false;
+      if (playerx == cols - 1) return;
       playerx++;
       break;
     case "left":
-      if (playery == 0) return false;
+      if (playery == 0) return;
       playery--;
       break;
     case "right":
-      if (playery == rows - 1) return false;
+      if (playery == rows - 1) return;
       playery++;
       break;
   }
   let nextpos = convert.coordtoindex([playerx, playery]);
-  if (!player.allowedcells.includes(nextpos)) return false;
-  else if (!player.owncells.includes(nextpos) &&
-            colorlist[nextpos] !== null)
-            return false;
+  if (!player.allowedcells.includes(nextpos) ||
+    (!player.owncells.includes(nextpos) && colorlist[nextpos] !== null)) return;
   else return nextpos;
 };
 

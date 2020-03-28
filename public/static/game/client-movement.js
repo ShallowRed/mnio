@@ -29,6 +29,7 @@ document.addEventListener('keydown', function(event) {
       if (viewsize > 3 ) {
         --vrows;
         --vcols;
+        setcanvassize();
         drawgrid(playerpos);
       }
       break;
@@ -37,10 +38,10 @@ document.addEventListener('keydown', function(event) {
     if (viewsize + 1 < globalrows ) {
         ++vrows;
         ++vcols;
+        setcanvassize();
         drawgrid(playerpos);
       }
       break;
-
 
     case 38: // top arrow
       if (flag) {
@@ -63,6 +64,7 @@ document.addEventListener('keydown', function(event) {
       break;
     case 90: // Z
       if (flag) askformove("up");
+
       break;
     case 68: // D
       if (flag) askformove("right");
