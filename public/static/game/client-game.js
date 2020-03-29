@@ -2,7 +2,7 @@
 socket.on('initdata', function(data) {
   initdata(data);
   setcanvassize();
-  setplayerposinview(playerpos);
+  setplayerposinview(playerpos, false);
   drawgrid(playerpos);
   drawplayer(selectedcolor);
   hidevolet();
@@ -13,21 +13,21 @@ socket.on("newplayerpos", function(position) {
   playerpos = position;
   flag = false;
   translatecanvas(lastdir, playerpos);
-  setplayerposinview(playerpos);
+  setplayerposinview(playerpos, true);
   setTimeout(function() {
     drawgrid(playerpos);
     flag = true;
-  }, 100)
+  }, trd*1000)
 });
 
 // Set other's new position when they move
 socket.on("newglobalpos", function(position) {
   positionlist.push(position);
+  clog(position);
   drawposition(position, "grey");
 });
 
 //Clear other's last position when they moves
-// TODO clear when player is disconnected)
 socket.on("clearpos", function(position) {
   positionlist.splice(positionlist.indexOf(position), 1);
   clearposition(position);

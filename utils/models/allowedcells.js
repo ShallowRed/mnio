@@ -25,6 +25,7 @@ function setallowedcells(owncells) {
     ++length;
 
     let sidecells = [
+      [xpos, ypos],
       [xpos, ypos - 1],
       [xpos, ypos + 1],
       [xpos - 1, ypos],

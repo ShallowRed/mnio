@@ -26,22 +26,22 @@ document.addEventListener('keydown', function(event) {
       break;
 
     case 37: // left arrow
-      if (viewsize > 3 ) {
+      if (viewsize > 3 && flag) {
         --vrows;
         --vcols;
         setcanvassize();
-        setplayerposinview(playerpos);
+        setplayerposinview(playerpos, false);
         drawplayer(selectedcolor);
         drawgrid(playerpos);
       }
       break;
 
     case 39: // right arrow
-    if (viewsize + 1 < globalrows ) {
+    if (viewsize + 1 < globalrows && flag) {
         ++vrows;
         ++vcols;
         setcanvassize();
-        setplayerposinview(playerpos);
+        setplayerposinview(playerpos, false);
         drawplayer(selectedcolor);
         drawgrid(playerpos);
       }

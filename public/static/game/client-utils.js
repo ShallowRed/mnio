@@ -83,7 +83,7 @@ function hidevolet() {
 //resize grid and cell on window sizing
 window.addEventListener('resize', function() {
   setcanvassize();
-  setplayerposinview(playerpos);
+  setplayerposinview(playerpos, false);
   drawgrid(playerpos);
   drawplayer(selectedcolor);
 }, true);

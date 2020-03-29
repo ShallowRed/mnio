@@ -14,6 +14,8 @@ ctx2.imageSmoothingEnabled = false;
 ctx3.imageSmoothingEnabled = false;
 ctx4.imageSmoothingEnabled = false;
 
+var trd = 0.2;
+
 function setcanvassize() {
   let w = window.innerWidth;
   let h = window.innerHeight;
@@ -40,14 +42,16 @@ function setcanvassize() {
   canvas4.height = cellsize;
 }
 
-function setplayerposinview(playerpos) {
+function setplayerposinview(playerpos, animated) {
+  if (!animated) canvas4.style.transitionDuration = "0s";
+  else canvas4.style.transitionDuration = trd + "s";
   let coord = indextocoord(playerpos);
   if (coord[0] >= globalrows - vrows) coord[0] -= globalrows - viewsize + 2;
   else if (coord[0] >= vrows) coord[0] = vrows - 1;
   if (coord[1] >= globalcols - vcols) coord[1] -= globalcols - viewsize + 2;
   else if (coord[1] >= vcols) coord[1] = vcols - 1;
   canvas4.style.top = coord[0] * cellsize + "px";
-  canvas4.style.left = coord[1]* cellsize + "px";
+  canvas4.style.left = coord[1] * cellsize + "px";
   // TODO: fix can't access cell 0,0
 };
 
@@ -60,7 +64,7 @@ function translatecanvas(direction, playerpos) {
   else if (direction == "right" && coord[1] >= vcols && coord[1] <= globalcols - vcols) dir = "X(-";
   else if (direction == "left" && coord[1] >= vcols - 1 && coord[1] <= globalcols - vcols - 1) dir = "X(";
   if (!dir) return;
-  canvas1.style.transitionDuration = canvas2.style.transitionDuration = canvas3.style.transitionDuration = "0.1s";
+  canvas1.style.transitionDuration = canvas2.style.transitionDuration = canvas3.style.transitionDuration = trd + "s";
   canvas1.style.transform = canvas2.style.transform = canvas3.style.transform = "translate" + dir + cellsize + "px)";
 };
 
@@ -73,15 +77,15 @@ function canvastoorigin(playerpos) {
   else if (coord[1] >= vcols) coefy = 1;
   else coefy = 0;
   canvas1.style.transitionDuration = canvas2.style.transitionDuration =
-  canvas3.style.transitionDuration = "0s";
+    canvas3.style.transitionDuration = "0s";
   canvas1.style.transform = canvas2.style.transform =
-  canvas3.style.transform = "translate(0, 0)";
+    canvas3.style.transform = "translate(0, 0)";
   canvas1.style.position = canvas2.style.position =
-  canvas3.style.position = "absolute";
+    canvas3.style.position = "absolute";
   canvas1.style.top = canvas2.style.top =
-  canvas3.style.top = "-" + cellsize * coefx + "px";
+    canvas3.style.top = "-" + cellsize * coefx + "px";
   canvas1.style.left = canvas2.style.left =
-  canvas3.style.left = "-" + cellsize * coefy + "px";
+    canvas3.style.left = "-" + cellsize * coefy + "px";
 }
 
 //////////// CANVAS DRAWING METHODS ////////////
@@ -135,7 +139,6 @@ function fillcell(position, color) {
 function drawcell(position, color) {
   let cell = isinview(position, playerpos);
   if (!cell) return;
-
   flag = false;
   let celldivy = 0;
   let celldivx = 0;
@@ -189,31 +192,57 @@ function drawallowedcells(position) {
 };
 
 function drawposition(position, color) {
+
   let cell = isinview(position, playerpos);
   if (!cell) return;
   ctx3.lineWidth = 2;
   ctx3.strokeStyle = color;
   ctx3.strokeRect(cellsize * cell[1] + 9, cellsize * cell[0] + 9, cellsize - 18, cellsize - 18);
-  ctx3.lineWidth = 4;
+  ctx3.lineWidth = 8;
   ctx3.strokeStyle = "white";
-  ctx3.strokeRect(cellsize * cell[1] + 12, cellsize * cell[0] + 12, cellsize - 24, cellsize - 24);
+  ctx3.strokeRect(cellsize * cell[1] + 14, cellsize * cell[0] + 14, cellsize - 28, cellsize - 28);
   ctx3.lineWidth = 2;
   ctx3.strokeStyle = color;
-  ctx3.strokeRect(cellsize * cell[1] + 14, cellsize * cell[0] + 14, cellsize - 28, cellsize - 28);
-}; // TODO: Inner rectangles size relative to cellsize
+  ctx3.strokeRect(cellsize * cell[1] + 18, cellsize * cell[0] + 18, cellsize - 36, cellsize - 36);
+  // let cell = isinview(position, playerpos);
+  // if (!cell) clog("not in view");
+  // if (!cell) return;
+  // let lwidth = Math.round(cellsize / 30);
+  // if (lwidth > 0) {
+  //   let xx = lwidth * 1.5;
+  //   let yy = xx + lwidth * 1.5;
+  //   let zz = yy + lwidth * 1.5;
+  //   drawrect(ctx3, lwidth, color, xx, cellsize * cell[0], cellsize * cell[1]);
+  //   drawrect(ctx3, lwidth, "white", yy, cellsize * cell[0], cellsize * cell[1]);
+  //   drawrect(ctx3, lwidth, color, zz, cellsize * cell[0], cellsize * cell[1]);
+  // } else {
+  //   ctx3.fillStyle = "darkgrey";
+  //   ctx3.fillRect(cellsize * cell[0], cellsize * cell[1], cellsize, cellsize);
+  // };
+};
 
 function drawplayer(color) {
-  ctx4.lineWidth = 2;
-  ctx4.strokeStyle = color;
-  ctx4.strokeRect(9, 9, cellsize - 18, cellsize - 18);
-  ctx4.lineWidth = 4;
-  ctx4.strokeStyle = "white";
-  ctx4.strokeRect(12, 12, cellsize - 24, cellsize - 24);
-  ctx4.lineWidth = 2;
-  ctx4.strokeStyle = color;
-  ctx4.strokeRect(14, 14, cellsize - 28, cellsize - 28);
-}; // TODO: Inner rectangles size relative to cellsize
+  let lwidth = Math.round(cellsize / 18);
+  if (lwidth > 0) {
+    let xx = lwidth * 1.5;
+    let yy = xx + lwidth * 1.5;
+    let zz = yy + lwidth * 1.5;
+    drawrect(ctx4, lwidth, color, xx, 0, 0);
+    drawrect(ctx4, lwidth * 2, "white", yy, 0, 0);
+    drawrect(ctx4, lwidth, color, zz, 0, 0);
+  } else {
+    ctx4.fillStyle = "black";
+    ctx4.fillRect(0, 0, cellsize, cellsize);
+  };
+};
 
+function drawrect(ctx, linewidth, color, distance, xstart, ystart) {
+  ctx.lineWidth = linewidth;
+  ctx.strokeStyle = color;
+  ctx.strokeRect(xstart + distance, ystart + distance, cellsize - distance * 2, cellsize - distance * 2);
+}
+
+// TODO: all browsers transitions
 // -webkit-transition: all 0.5s ease;
 // -moz-transition: all 0.5s ease;
 // -ms-transition: all 0.5s ease;

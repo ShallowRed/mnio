@@ -91,14 +91,16 @@ server.listen(port, function() {
 
 var colorlist = new Array(rows * cols).fill(null)
 var positionlist = [];
-var players = {};
+var players ={};
+
+var allClients = [];
 
 io.on('connection', function(socket) {
 
   // TEST
   socket.emit("logged_in");
   startusergame(socket, "test");
-
+  allClients.push(socket.id);
   // PRODUCTION
   // socket.on("login", function(data) {
   // let login = trylogin(data.user, data.pass);
@@ -128,7 +130,14 @@ io.on('connection', function(socket) {
   socket.on('newlocalcell', function(cell) {
     newglobalcell(cell[0], cell[1], socket);
   });
-  // TODO erase position when player disconnect
+
+  socket.on('disconnect', function() {
+     console.log('Got disconnect!');
+     var i = allClients.indexOf(socket);
+     allClients.splice(i, 1);
+     console.log(players[socket.id].position);
+     io.emit("clearpos", players[socket.id].position);
+  });
 });
 
 //////////////// FUNCTIONS /////////////////
