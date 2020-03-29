@@ -30,6 +30,8 @@ document.addEventListener('keydown', function(event) {
         --vrows;
         --vcols;
         setcanvassize();
+        setplayerposinview(playerpos);
+        drawplayer(selectedcolor);
         drawgrid(playerpos);
       }
       break;
@@ -39,6 +41,8 @@ document.addEventListener('keydown', function(event) {
         ++vrows;
         ++vcols;
         setcanvassize();
+        setplayerposinview(playerpos);
+        drawplayer(selectedcolor);
         drawgrid(playerpos);
       }
       break;

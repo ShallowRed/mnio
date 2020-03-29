@@ -30,6 +30,7 @@ function initdata(data) {
   c1.style.border = "solid 5px black";
   c2.style.background = pcolor2;
   c3.style.background = pcolor3;
+  console.log(data);
 }
 
 //////////////// CANVAS UTILS ////////////////////
@@ -45,17 +46,6 @@ function coordtoindex(coord) {
   return index;
 }
 
-function isinview(position) {
-  let globalpos = indextocoord(position);
-  let posinviewx = globalpos[0] - vieworigin[0];
-  let posinviewy = globalpos[1] - vieworigin[1];
-  if (posinviewx < 0 || posinviewx > viewsize || posinviewy < 0 || posinviewy > viewsize) {
-    return false;
-  } else {
-    return [posinviewx, posinviewy];
-  };
-};
-
 //////////////// UI UTILS ////////////////////
 
 function selectc1() {
@@ -63,7 +53,7 @@ function selectc1() {
   c1.style.border = "solid 5px black";
   c2.style.border = "solid 5px white";
   c3.style.border = "solid 5px white";
-  drawposition(playerpos, pcolor1);
+  drawplayer(pcolor1);
 }
 
 function selectc2(pcolor2) {
@@ -71,7 +61,7 @@ function selectc2(pcolor2) {
   c1.style.border = "solid 5px white";
   c2.style.border = "solid 5px black";
   c3.style.border = "solid 5px white";;
-  drawposition(playerpos, pcolor2);
+  drawplayer(pcolor2);
 }
 
 function selectc3(pcolor3) {
@@ -79,7 +69,7 @@ function selectc3(pcolor3) {
   c1.style.border = "solid 5px white";
   c2.style.border = "solid 5px white";
   c3.style.border = "solid 5px black";
-  drawposition(playerpos, pcolor3);
+  drawplayer(pcolor3);
 }
 
 // Turn on game visibility when content loaded
@@ -93,7 +83,9 @@ function hidevolet() {
 //resize grid and cell on window sizing
 window.addEventListener('resize', function() {
   setcanvassize();
+  setplayerposinview(playerpos);
   drawgrid(playerpos);
+  drawplayer(selectedcolor);
 }, true);
 
 function clog(e) {

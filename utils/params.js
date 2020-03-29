@@ -1,9 +1,9 @@
 const rows = 50;
 const cols = 50;
-const vrows = 3;
-const vcols = 3;
+const vrows = 5;
+const vcols = 5;
 
-const lw = 30;
+const lw = 10;
 const limit = 100;
 const celltimeout = 10;
 
