@@ -1,10 +1,8 @@
-const convert = require('../models/converters');
-const setparams = require('../params');
-
-const setup = setparams(),
-  rows = setup.rows,
-  cols = setup.cols,
-  limit = setup.limit;
+const convert = require('./converters');
+const PARAMS = require('./parameters');
+const rows = PARAMS.rows;
+const cols = PARAMS.cols;
+const limit = PARAMS.limit;
 
 function setallowedcells(owncells) {
   //set increasing limit
@@ -44,13 +42,9 @@ function setallowedcells(owncells) {
     let distfromavx = Math.abs(cell[0] - averagepos[0]);
     let distfromavy = Math.abs(cell[1] - averagepos[1]);
     let index = convert.coordtoindex(cell);
-    if (cell[0] < 0 || cell[1] < 0 || cell[0] >= rows || cell[1] >= cols ||
-       distfromavx >= limit || distfromavy >= limit ||
-       allowedcells.includes(index)) {
-      return;
-    } else {
-      allowedcells.push(index);
-    }
+    if (cell[0] >= 0 && cell[1] >= 0 &&  cell[0] < rows && cell[1] < cols &&
+      distfromavx < limit && distfromavy < limit &&
+      !allowedcells.includes(index)) allowedcells.push(index);
   });
   return allowedcells;
 };

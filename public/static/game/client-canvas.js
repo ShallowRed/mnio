@@ -15,6 +15,7 @@ ctx3.imageSmoothingEnabled = false;
 ctx4.imageSmoothingEnabled = false;
 
 var trd = 0.2;
+var lastdir;
 
 function setcanvassize() {
   let w = window.innerWidth;
@@ -40,7 +41,7 @@ function setcanvassize() {
 
   canvas4.width = cellsize;
   canvas4.height = cellsize;
-}
+};
 
 function setplayerposinview(playerpos, animated) {
   if (!animated) canvas4.style.transitionDuration = "0s";
@@ -58,7 +59,7 @@ function setplayerposinview(playerpos, animated) {
 function translatecanvas(direction, playerpos) {
   if (!direction) return;
   let coord = indextocoord(playerpos);
-  let dir
+  let dir;
   if (direction == "up" && coord[0] >= vrows - 1 && coord[0] <= globalrows - vrows - 1) dir = "Y(";
   else if (direction == "down" && coord[0] >= vrows && coord[0] <= globalrows - vrows) dir = "Y(-";
   else if (direction == "right" && coord[1] >= vcols && coord[1] <= globalcols - vcols) dir = "X(-";
@@ -70,12 +71,12 @@ function translatecanvas(direction, playerpos) {
 
 function canvastoorigin(playerpos) {
   let coord = indextocoord(playerpos);
+  let coefx = 0;
+  let coefy = 0;
   if (coord[0] >= globalrows - vrows) coefx = 2;
   else if (coord[0] >= vrows) coefx = 1;
-  else coefx = 0;
   if (coord[1] >= globalcols - vcols) coefy = 2;
   else if (coord[1] >= vcols) coefy = 1;
-  else coefy = 0;
   canvas1.style.transitionDuration = canvas2.style.transitionDuration =
     canvas3.style.transitionDuration = "0s";
   canvas1.style.transform = canvas2.style.transform =
@@ -86,7 +87,7 @@ function canvastoorigin(playerpos) {
     canvas3.style.top = "-" + cellsize * coefx + "px";
   canvas1.style.left = canvas2.style.left =
     canvas3.style.left = "-" + cellsize * coefy + "px";
-}
+};
 
 //////////// CANVAS DRAWING METHODS ////////////
 
@@ -94,7 +95,7 @@ function drawgrid(playerpos) {
   clearallcanvas();
   canvastoorigin(playerpos);
   drawallcanvas();
-}
+};
 
 function clearallcanvas() {
   ctx.clearRect(0, 0, canvas1.width, canvas1.height);
@@ -104,18 +105,18 @@ function clearallcanvas() {
 
 function drawallcanvas() {
   allowedlist.forEach(function(position) { // Draw all allowed cells
-    drawallowedcells(position);
+    drawallowed(position);
   });
-  let len = colorlist.length;
+  let len = ColorList.length;
   for (i = 0; i < len; i++) { // Draw all colored cells
-    if (colorlist[i] !== null) {
-      fillcell(i, colorlist[i]);
+    if (ColorList[i] !== null) {
+      fillcell(i, ColorList[i]);
     };
   };
-  positionlist.forEach(function(pos) { // Draw all positions
+  PositionList.forEach(function(pos) { // Draw all positions
     drawposition(pos, "grey");
   });
-}
+};
 
 function isinview(position, playerpos) {
   let plpos = indextocoord(playerpos);
@@ -183,7 +184,7 @@ function clearposition(position) {
   ctx3.clearRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize);
 };
 
-function drawallowedcells(position) {
+function drawallowed(position) {
   let cell = isinview(position, playerpos);
   if (!cell) return;
   ctx.clearRect(cellsize * cell[1], cellsize * cell[0], cellsize, cellsize);

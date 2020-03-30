@@ -1,7 +1,6 @@
-const setparams = require('../params');
-const setup = setparams();
-const rows = setup.rows;
-const cols = setup.cols;
+const PARAMS = require('./parameters');
+const rows = PARAMS.rows;
+const cols = PARAMS.cols;
 
 function indextocoord(index) {
   let coordx = (index - (index % rows)) / cols;

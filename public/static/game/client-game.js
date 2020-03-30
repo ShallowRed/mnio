@@ -5,6 +5,7 @@ socket.on('initdata', function(data) {
   setplayerposinview(playerpos, false);
   drawgrid(playerpos);
   drawplayer(selectedcolor);
+  flag = true;
   hidevolet();
 });
 
@@ -22,20 +23,19 @@ socket.on("newplayerpos", function(position) {
 
 // Set other's new position when they move
 socket.on("newglobalpos", function(position) {
-  positionlist.push(position);
-  clog(position);
+  PositionList.push(position);
   drawposition(position, "grey");
 });
 
 //Clear other's last position when they moves
 socket.on("clearpos", function(position) {
-  positionlist.splice(positionlist.indexOf(position), 1);
+  PositionList.splice(PositionList.indexOf(position), 1);
   clearposition(position);
 });
 
 //Fill other's cells when they do so
 socket.on('newglobalcell', function(globalcell) {
-  colorlist[globalcell.position] = globalcell.color;
+  ColorList[globalcell.position] = globalcell.color;
   drawcell(globalcell.position, globalcell.color);
 });
 
@@ -44,21 +44,20 @@ socket.on('allowedcells', function(allowedcells) {
   allowedcells.forEach(function(position) {
     if (!allowedlist.includes(position)) {
       allowedlist.push(position);
-      drawallowedcells(position);
+      drawallowed(position);
     };
   });
 });
 
 //Fill active player cell when he says so
 function fillplayercell(position, color) {
-  colorlist[position] = color;
+  ColorList[position] = color;
   drawcell(position, color);
-  socket.emit("newlocalcell", [position, color]);
+  socket.emit("drawcell", [position, color]);
 }
 
-var lastdir;
 // Ask server for autorization when trying to move
 function askformove(direction) {
   lastdir = direction;
-  socket.emit('ismoveok', direction);
+  socket.emit('moveplayer', direction);
 }

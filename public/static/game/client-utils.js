@@ -1,31 +1,38 @@
 var globalrows, globalcols, cellsize, vrows, vcols, lw, celltimeout;
 var playerpos, selectedcolor, pcolor1, pcolor2, pcolor3;
-var positionlist, colorlist;
-var allowedlist = [];
-var initflag = 0, flag = true;
-const c1 = document.getElementById('c1'),
-  c2 = document.getElementById('c2'),
-  c3 = document.getElementById('c3');
+var PositionList, ColorList;
+var allowedlist;
+
+var initflag = 0, flag = false;
+
+const c1 = document.getElementById('c1');
+const c2 = document.getElementById('c2');
+const c3 = document.getElementById('c3');
 
 const volet = document.getElementById('volet');
 
   //////////// PARAMETERS INITIALIZATION ////////////
 
 function initdata(data) {
-  colorlist = data.colorlist;
-  positionlist = data.positionlist;
-  globalrows = data.rows;
-  globalcols = data.cols;
-  vrows = data.vrows;
-  vcols = data.vcols;
-  lw = data.lw;
-  celltimeout = data.celltimeout;
+  ColorList = data.ColorList;
+  PositionList = data.PositionList;
+  allowedlist = data.allowedlist;
+
+  globalrows = data.uiparams[0];
+  globalcols = data.uiparams[1];
+  vrows = data.uiparams[2];
+  vcols = data.uiparams[3];
+  lw = data.uiparams[4];
+  celltimeout = data.uiparams[5];
+
   initflag = 1;
+
   playerpos = data.position;
-  pcolor1 = data.color1;
-  pcolor2 = data.color2;
-  pcolor3 = data.color3;
+  pcolor1 = data.colors[0];
+  pcolor2 = data.colors[1];
+  pcolor3 = data.colors[2];
   selectedcolor = pcolor1;
+
   c1.style.background = pcolor1;
   c1.style.border = "solid 5px black";
   c2.style.background = pcolor2;
@@ -84,8 +91,8 @@ function hidevolet() {
 window.addEventListener('resize', function() {
   setcanvassize();
   setplayerposinview(playerpos, false);
-  drawgrid(playerpos);
   drawplayer(selectedcolor);
+  drawgrid(playerpos);
 }, true);
 
 function clog(e) {
