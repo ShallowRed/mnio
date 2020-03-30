@@ -1,6 +1,5 @@
 var socket = io();
 var login = document.getElementById('login');
-var logwindow = document.getElementById('logwindow');
 
 // Send a username and a password to server
 login.addEventListener('click', function() {
@@ -8,12 +7,6 @@ login.addEventListener('click', function() {
     user: document.getElementById("userName").value,
     pass: document.getElementById("Password").value
   });
-});
-
-// Hide loggin window when server agreed for connection
-socket.on("logged_in", function() {
-  console.log("logged in !");
-  logwindow.style.display = "none";
 });
 
 socket.on("message", function(data) {

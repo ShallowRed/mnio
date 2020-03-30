@@ -1,39 +1,42 @@
-// Receive player data
-socket.on('initplayer', function(playerdata) {
-  console.log(playerdata);
-  initplayer(playerdata);
-});
-
 // Receive data needed for initialization, start the game
 socket.on('initdata', function(data) {
-  console.log(data);
-  setinitdata(data);
+  initdata(data);
+  setcanvassize();
+  setplayerposinview(playerpos, false);
+  drawgrid(playerpos);
+  drawplayer(selectedcolor);
+  flag = true;
   hidevolet();
 });
 
 //Move player if new position has ben allowed on server side
 socket.on("newplayerpos", function(position) {
   playerpos = position;
-  drawgrid(position);
-});
-
-//Clear other's last position when they moves
-// TODO clear when they disconnect)
-socket.on("clearpos", function(position) {
-  positionlist.splice(positionlist.indexOf(position), 1);
-  clearplayerpos(position);
+  flag = false;
+  translatecanvas(lastdir, playerpos);
+  setplayerposinview(playerpos, true);
+  setTimeout(function() {
+    drawgrid(playerpos);
+    flag = true;
+  }, trd*1000)
 });
 
 // Set other's new position when they move
 socket.on("newglobalpos", function(position) {
-  positionlist.push(position);
-  drawplayerpos(position, "grey");
+  PositionList.push(position);
+  drawposition(position, "grey");
+});
+
+//Clear other's last position when they moves
+socket.on("clearpos", function(position) {
+  PositionList.splice(PositionList.indexOf(position), 1);
+  clearposition(position);
 });
 
 //Fill other's cells when they do so
 socket.on('newglobalcell', function(globalcell) {
-  colorlist[globalcell.position] = globalcell.color;
-  fillcell2(globalcell.position, globalcell.color);
+  ColorList[globalcell.position] = globalcell.color;
+  drawcell(globalcell.position, globalcell.color);
 });
 
 // Draw the cells where the player is allowed to move
@@ -48,12 +51,13 @@ socket.on('allowedcells', function(allowedcells) {
 
 //Fill active player cell when he says so
 function fillplayercell(position, color) {
-  colorlist[position] = color;
-  fillcell2(position, color);
-  socket.emit("newlocalcell", [position, color]);
+  ColorList[position] = color;
+  drawcell(position, color);
+  socket.emit("drawcell", [position, color]);
 }
 
 // Ask server for autorization when trying to move
 function askformove(direction) {
-  socket.emit('ismoveok', direction);
+  lastdir = direction;
+  socket.emit('moveplayer', direction);
 }
