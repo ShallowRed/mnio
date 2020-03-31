@@ -57,7 +57,7 @@ io.on('connection', function(socket) {
   socket.on("login", function(data) {
     let user = data.user;
     let pass = data.user;
-    GAME.startplayergame(15, user, socket, OwningList, PaletteList, ColorList, PositionList, PLAYERS);
+    GAME.startplayergame(150, user, socket, OwningList, PaletteList, ColorList, PositionList, PLAYERS);
   });
 
   socket.on('moveplayer', function(direction) {
