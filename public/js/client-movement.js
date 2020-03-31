@@ -49,17 +49,17 @@ document.addEventListener('keydown', function(event) {
 
     case 38: // top arrow
       if (flag) {
-        if (selectedcolor == pcolor1) selectc2(pcolor2);
-        else if (selectedcolor == pcolor2) selectc3(pcolor3);
-        else selectc1(pcolor1);
+        if (selectedcolor == pcolor1) selectc2();
+        else if (selectedcolor == pcolor2) selectc3();
+        else selectc1();
       }
       break;
 
     case 40: // bottom arrow
       if (flag) {
-        if (selectedcolor == pcolor1) selectc3(pcolor3);
-        else if (selectedcolor == pcolor2) selectc1(pcolor1);
-        else selectc2(pcolor2);
+        if (selectedcolor == pcolor1) selectc3();
+        else if (selectedcolor == pcolor2) selectc1();
+        else selectc2();
       }
       break;
 

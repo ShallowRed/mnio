@@ -7,7 +7,7 @@
   width: 100%;
   height: 100%;
   background: #e9e9e9;
-  z-index: 40;
+  z-index: 999;
   -moz-transition: all 0.2s ease;
   -o-transition: all 0.2s ease;
   -webkit-transition: all 0.2s ease;
