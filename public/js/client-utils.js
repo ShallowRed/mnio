@@ -3,15 +3,18 @@ var playerpos, selectedcolor, pcolor1, pcolor2, pcolor3;
 var PositionList, ColorList;
 var allowedlist;
 
-var initflag = 0, flag = false;
+var initflag = 0,
+  flag = false;
 
 const c1 = document.getElementById('c1');
 const c2 = document.getElementById('c2');
-const c3 = document.getElementById('c3');
+const zoomin = document.getElementById('zoomin');
+const zoomout = document.getElementById('zoomout');
+const fill = document.getElementById('fill');
 
 const volet = document.getElementById('volet');
 
-  //////////// PARAMETERS INITIALIZATION ////////////
+//////////// PARAMETERS INITIALIZATION ////////////
 
 function initdata(data) {
   ColorList = data.ColorList;
@@ -63,7 +66,7 @@ function selectc1() {
   drawplayer(pcolor1);
 }
 
-function selectc2(pcolor2) {
+function selectc2() {
   selectedcolor = pcolor2;
   c1.style.border = "solid 5px white";
   c2.style.border = "solid 5px black";
@@ -71,7 +74,7 @@ function selectc2(pcolor2) {
   drawplayer(pcolor2);
 }
 
-function selectc3(pcolor3) {
+function selectc3() {
   selectedcolor = pcolor3;
   c1.style.border = "solid 5px white";
   c2.style.border = "solid 5px white";
@@ -99,6 +102,39 @@ function clog(e) {
   console.log(e)
 };
 
-// todo : c1.addEventListener("click", function() {
-//   selectc1();
-// });
+c1.addEventListener("click", function() {
+  selectc1();
+});
+
+c2.addEventListener("click", function() {
+  selectc2();
+});
+
+c3.addEventListener("click", function() {
+  selectc3();
+});
+
+zoomin.addEventListener("click", function() {
+  if (viewsize > 3 && flag) {
+    --vrows;
+    --vcols;
+    setcanvassize();
+    setplayerposinview(playerpos, false);
+    drawplayer(selectedcolor);
+    drawgrid(playerpos);
+  }});
+
+zoomout.addEventListener("click", function() {
+  if (viewsize + 1 < globalrows && flag) {
+      ++vrows;
+      ++vcols;
+      setcanvassize();
+      setplayerposinview(playerpos, false);
+      drawplayer(selectedcolor);
+      drawgrid(playerpos);
+    }
+});
+
+fill.addEventListener("click", function() {
+  if (flag) fillplayercell(playerpos, selectedcolor);
+});

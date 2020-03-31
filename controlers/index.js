@@ -94,7 +94,7 @@ function DisconnectPlayer(socket, OwningList, PaletteList, PositionList, PLAYERS
   console.log("Player n° " + player.dbid + " (" + player.name + ") got disconnected");
 
   // Save player's owning and palette, clear its last position
-  if (player.dbid !== 150) {  
+  if (player.dbid !== 150) {
     OwningList[player.dbid] = player.owncells;
     PaletteList[player.dbid] = player.colors;
   }
