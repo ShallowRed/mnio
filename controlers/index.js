@@ -18,17 +18,19 @@ const uiparams = [rows, cols, PARAMS.vrows, PARAMS.vcols, PARAMS.lw, PARAMS.cell
 function startplayergame(useridindb, username, socket, OwningList, PaletteList, ColorList, PositionList, PLAYERS) {
 
   // Create a new player in the session
-  let player = PLAYERS[socket.id] = new Player(randompos(ColorList));
-  player.dbid = useridindb;
-  player.name = username;
+  let player =   PLAYERS[socket.id] = new Player(randompos(ColorList));
 
-  // Check if player has already drawn cells
-  if (OwningList[player.dbid]) {
-    player.owncells = OwningList[player.dbid];
-    player.colors = PaletteList[player.dbid];
-    player.position = player.owncells[0];
-    player.allowedcells = setallowedcells(player.owncells);
-  };
+    player.dbid = useridindb;
+    player.name = username;
+
+    // Check if player has already drawn cells
+    if (useridindb !== 150 && OwningList[player.dbid]) {
+      player.owncells = OwningList[player.dbid];
+      player.colors = PaletteList[player.dbid];
+      player.position = player.owncells[0];
+      player.allowedcells = setallowedcells(player.owncells);
+    };
+
 
   // Send info to the player
   socket.emit('initdata', {
@@ -80,7 +82,7 @@ function DrawCell(cell, socket, ColorList, OwningList, PLAYERS) {
   let player = PLAYERS[socket.id];
   if (player.owncells.includes(position)) return;
   player.owncells.push(position);
-  OwningList[player.dbid] = player.owncells;
+  if (player.dbid !== 150) OwningList[player.dbid] = player.owncells;
   let allowedcells = setallowedcells(player.owncells);
   player.allowedcells = allowedcells;
   socket.emit('allowedcells', allowedcells);
@@ -92,8 +94,10 @@ function DisconnectPlayer(socket, OwningList, PaletteList, PositionList, PLAYERS
   console.log("Player n° " + player.dbid + " (" + player.name + ") got disconnected");
 
   // Save player's owning and palette, clear its last position
-  OwningList[player.dbid] = player.owncells;
-  PaletteList[player.dbid] = player.colors;
+  if (player.dbid !== 150) {  
+    OwningList[player.dbid] = player.owncells;
+    PaletteList[player.dbid] = player.colors;
+  }
   PositionList.splice(PositionList.indexOf(player.position), 1);
   socket.broadcast.emit("clearpos", player.position);
 }

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <dwsync>
-<file name="here.bat" server="mnrab.zuh0.com:2242//site/" local="132287330549298843" remote="132289315560000000" Dst="1" />
-<file name="package-lock.json" server="mnrab.zuh0.com:2242//site/" local="132272964097639599" remote="132285843220000000" Dst="1" />
-<file name="package.json" server="mnrab.zuh0.com:2242//site/" local="132285767495468363" remote="132285843220000000" Dst="1" />
-<file name="server.js" server="mnrab.zuh0.com:2242//site/" local="132289310330902123" remote="132289315570000000" Dst="1" />
-<file name="process.json" server="mnrab.zuh0.com:2242//site/" local="132285794775045401" remote="132285843230000000" Dst="1" />
+<file name="devprocess.json" server="zuh0.com:2245//site/" local="132301234313132396" remote="132301242640000000" Dst="2" />
+<file name="devserver.js" server="zuh0.com:2245//site/" local="132301249275388822" remote="132301252130000000" Dst="2" />
+<file name="server.js" server="zuh0.com:2245//site/" local="132301227970000000" remote="132301227970000000" Dst="2" />
+<file name="process.json" server="zuh0.com:2245//site/" local="132301232870000000" remote="132301232870000000" Dst="2" />
+<file name="package.json" server="zuh0.com:2245//site/" local="132301227960000000" remote="132301227960000000" Dst="2" />
+<file name="package-lock.json" server="zuh0.com:2245//site/" local="132301227960000000" remote="132301227960000000" Dst="2" />
 </dwsync>
