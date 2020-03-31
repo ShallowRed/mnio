@@ -8,7 +8,6 @@ const express = require('express');
 const http = require('http');
 const path = require('path');
 const socketIO = require('socket.io');
-const mysql = require('mysql');
 
 const app = express();
 const server = http.Server(app);
@@ -18,7 +17,8 @@ const io = socketIO(server);
 const GAME = require(path.resolve(__dirname, 'controlers'));
 
 const PARAMS = require(path.resolve(__dirname, 'models/parameters'));
-const port = PARAMS.port;
+//const port = PARAMS.port;
+const port = process.env.PORT || 80;
 const rows = PARAMS.rows;
 const cols = PARAMS.cols;
 
@@ -30,23 +30,6 @@ server.listen(port, function() {
 app.use('/', require(path.resolve(__dirname, "controlers/routes")));
 app.set('view engine', 'ejs');
 app.set("views", path.resolve(__dirname, "views"));
-
-const IsUserinDB = "SELECT * FROM users WHERE Username=?";
-const AddUsertoDB = "INSERT INTO users(`Username`, `Password`) VALUES(?, ?)";
-
-const config = {
-  "host": "localhost",
-  "user": "root",
-  "password": "",
-  "base": "mniosql"
-};
-
-var db = mysql.createConnection({
-  host: config.host,
-  user: config.user,
-  password: config.password,
-  database: config.base
-});
 
 var maxplayers = 100;
 
@@ -67,13 +50,6 @@ var OwningList = new Array(maxplayers);
 // Create an object to store active players data
 var PLAYERS = {};
 
-// Connect to mySQL database
-db.connect(function(error) {
-  if (!!error)
-    throw error;
-  console.log('mysql connected to ' + config.host + ", user " + config.user + ", database " + config.base);
-});
-
 //////////////////////////// ON PLAYER CONNECTION //////////////////////////////
 
 io.on('connection', function(socket) {
@@ -81,18 +57,7 @@ io.on('connection', function(socket) {
   socket.on("login", function(data) {
     let user = data.user;
     let pass = data.user;
-    db.query(IsUserinDB, [user], function(err, rows, fields) {
-
-      // If user is not in database, create a new id and start the game
-      if (!rows.length) db.query(AddUsertoDB, [user, pass], function(err, result) {
-        if (!!err) throw err;
-        GAME.startplayergame(result.insertId, user, socket, OwningList, PaletteList, ColorList, PositionList, PLAYERS); // req.session.userID = result.insertId; req.session.save();
-      });
-
-      // If user is in database, start the game if password is right
-      else if (pass == rows[0].Password) GAME.startplayergame(rows[0].id, user, socket, OwningList, PaletteList, ColorList, PositionList, PLAYERS);
-      else socket.emit("alert", "Wrong password");
-    });
+    GAME.startplayergame(15, user, socket, OwningList, PaletteList, ColorList, PositionList, PLAYERS);
   });
 
   socket.on('moveplayer', function(direction) {

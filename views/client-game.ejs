@@ -2,12 +2,8 @@
  <html>
 
  <head>
-   <link rel="stylesheet" type="text/css" href="semantic/site/header.css">
-   <link rel="stylesheet" type="text/css" href="semantic/site/content.css">
-   <link rel="stylesheet" type="text/css" href="semantic/site/font.css">
-   <link rel="stylesheet" type="text/css" href="semantic/site/anim.css">
-   <link rel="stylesheet" type="text/css" href="semantic/game/game-lobby.css">
-   <link rel="stylesheet" type="text/css" href="semantic/game//game-main.css">
+   <link rel="stylesheet" type="text/css" href="css/game-lobby.css">
+   <link rel="stylesheet" type="text/css" href="css/game-main.css">
    <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
    <link href="https://fonts.googleapis.com/css?family=Courier+Prime&display=swap" rel="stylesheet">
    <link href="https://fonts.googleapis.com/css?family=Inconsolata&display=swap" rel="stylesheet">
@@ -17,7 +13,7 @@
  </head>
 
  <body>
-   <%- include('./elements/header'); -%>
+   <!-- <%- include('./elements/header'); -%> -->
 
    <div id="volet">
      <div id="logwindow">
@@ -43,12 +39,12 @@
      <button class="color" id="c2"></button>
      <button class="color" id="c3"></button>
    </div>
-   <script src="static/game/jquery-3.4.1.min.js"></script>
-   <script src="static/game/jquery.touchwipe.1.1.1.js"></script>
-   <script src="static/game/client-utils.js"></script>
-   <script src="static/game/client-lobby.js"></script>
-   <script src="static/game/client-canvas.js"></script>
-   <script src="static/game/client-movement.js"></script>
-   <script src="static/game/client-game.js"></script>
+   <script src="js/jquery-3.4.1.min.js"></script>
+   <script src="js/jquery.touchwipe.1.1.1.js"></script>
+   <script src="js/client-utils.js"></script>
+   <script src="js/client-lobby.js"></script>
+   <script src="js/client-canvas.js"></script>
+   <script src="js/client-movement.js"></script>
+   <script src="js/client-game.js"></script>
 
    <%- include('./elements/footer'); -%>
