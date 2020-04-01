@@ -1,6 +1,0 @@
-- clear when they disconnect) __TODO__ [public\static\game\client-game.js](public\static\game\client-game.js)
-- downhere, retreive last position __TODO__ [server.js](server.js)
-- erase position when player disconnect __TODO__ [server.js](server.js)
-- make inner rectangles size relative to cellsize __TODO__ [public\static\game\client-grid.js](public\static\game\client-grid.js)
-- split next player and returning player situations __TODO__ [server.js](server.js)
-- use index instead of "x_y" everywhere __TODO__ [public\static\game\client-game.js](public\static\game\client-game.js)
