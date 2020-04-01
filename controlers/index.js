@@ -44,7 +44,7 @@ function startplayergame(useridindb, username, socket, OwningList, PaletteList, 
 
   // Send info to others and save position
   PositionList.push(player.position);
-  socket.broadcast.emit("newglobalpos", player.position);
+  socket.broadcast.emit("NewPosition", player.position);
   console.log("Player n° " + useridindb + " (" + username + ") is connected");
 
 };
@@ -57,13 +57,13 @@ function MovePlayer(direction, socket, ColorList, PositionList, PLAYERS) {
   if (!nextposition) return;
 
   // Clear last position
-  socket.broadcast.emit("clearpos", player.position);
+  socket.broadcast.emit("ClearPosition", player.position);
   PositionList.splice(PositionList.indexOf(player.position), 1);
 
   // Set new position
   player.position = nextposition;
   PositionList.push(nextposition);
-  socket.broadcast.emit("newglobalpos", nextposition);
+  socket.broadcast.emit("NewPosition", nextposition);
   socket.emit("newplayerpos", nextposition);
 }
 
@@ -73,7 +73,7 @@ function DrawCell(cell, socket, ColorList, OwningList, PLAYERS) {
 
   // Store color changes and inform everyone
   ColorList[position] = color;
-  socket.broadcast.emit('newglobalcell', {
+  socket.broadcast.emit('NewCell', {
     position: position,
     color: color,
   });
@@ -99,7 +99,7 @@ function DisconnectPlayer(socket, OwningList, PaletteList, PositionList, PLAYERS
     PaletteList[player.dbid] = player.colors;
   }
   PositionList.splice(PositionList.indexOf(player.position), 1);
-  socket.broadcast.emit("clearpos", player.position);
+  socket.broadcast.emit("ClearPosition", player.position);
 }
 
 module.exports = {

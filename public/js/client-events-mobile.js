@@ -16,3 +16,5 @@ $(document).touchwipe({
   min_move_y: 20,
   preventDefaultEvents: true
 });
+
+// TODO: new touchwipe system

@@ -1,9 +1,5 @@
 //////////////////////////// DEPENDENCIES & VARIABLES //////////////////////////
 
-function clog(e) {
-  console.log(e)
-}
-
 const express = require('express');
 const http = require('http');
 const path = require('path');
@@ -50,6 +46,11 @@ var OwningList = new Array(maxplayers);
 var PLAYERS = {};
 
 //////////////////////////// ON PLAYER CONNECTION //////////////////////////////
+
+// TODO: clear dependencies in package.json
+// TODO: clean database system
+// TODO: allow several games at the same
+// TODO: admin page
 
 io.on('connection', function(socket) {
 

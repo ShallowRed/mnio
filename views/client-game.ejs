@@ -1,51 +1,5 @@
- <!DOCTYPE html>
- <html>
-
- <head>
-   <link rel="stylesheet" type="text/css" href="css/game-lobby.css">
-   <link rel="stylesheet" type="text/css" href="css/game-main.css">
-   <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
-   <link href="https://fonts.googleapis.com/css?family=Courier+Prime&display=swap" rel="stylesheet">
-   <link href="https://fonts.googleapis.com/css?family=Inconsolata&display=swap" rel="stylesheet">
-   <title>A Multiplayer Game</title>
-   <script src="socket.io/socket.io.js"></script>
-   <meta name="viewport" content="width=device-width, height=device-height">
- </head>
-
- <body>
-   <!-- <%- include('./elements/header'); -%> -->
-
-   <div id="volet">
-     <div id="logwindow">
-       <input type="text" id="userName" placeholder="Nom d'utilisateur ..." /><br>
-       <input type="password" id="Password" placeholder="Mot de passe ..." /><br>
-       <button id="login"><a>S'inscrire / Se connecter</a></button>
-     </div>
-   </div>
-   <div id="master" style="position: relative;">
-     <canvas class="mapcanvas" id="canvas1"></canvas>
-     <canvas class="mapcanvas" id="canvas2"></canvas>
-     <canvas class="mapcanvas"id="canvas3"></canvas>
-     <canvas id="playercanvas"></canvas>
-   </div>
-
-   <div id="buttons">
-     <button class="fill" id="fill"></button>
-
-     <button class="zoom" id="zoomin"><a>+</a></button>
-     <button class="zoom" id="zoomout"><a>-</a></button>
-
-     <button class="color" id="c1"></button>
-     <button class="color" id="c2"></button>
-     <button class="color" id="c3"></button>
-   </div>
-   <script src="js/jquery-3.4.1.min.js"></script>
-   <script src="js/jquery.touchwipe.1.1.1.js"></script>
-   <script src="js/client-gui.js"></script>
-   <script src="js/client-lobby.js"></script>
-   <script src="js/client-canvas.js"></script>
-   <script src="js/client-events-browser.js"></script>
-   <script src="js/client-events-mobile.js"></script>
-   <script src="js/client-game.js"></script>
-
-   <%- include('./elements/footer'); -%>
+<%- include('./elements/header'); -%>
+<%- include('./elements/logwindow'); -%>
+<%- include('./elements/canvas'); -%>
+<%- include('./elements/gui'); -%>
+<%- include('./elements/footer'); -%>
