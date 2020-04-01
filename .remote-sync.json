@@ -9,7 +9,13 @@
   "port": "2245",
   "target": "/site",
   "ignore": [
-    ".remote-sync.json", ".git/**", ".node_modules/**", ".mnio.md", ".README.md", ".here.bat"
+    ".remote-sync.json",
+    ".git/**",
+    ".gitattributes",
+    ".gitignore",
+    "node_modules/**",
+    "mnio.md",
+    "README.md"
   ],
   "username": "root",
   "password": "Lucastom2!",
