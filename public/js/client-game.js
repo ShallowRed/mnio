@@ -1,22 +1,22 @@
 // Receive data needed for initialization, start the game
 socket.on('initdata', function(data) {
-  initdata(data);
-  setcanvassize();
-  setplayerposinview(playerpos, false);
-  drawgrid(playerpos);
-  drawplayer(selectedcolor);
+  InitData(data);
+  SetCanvasSize();
+  DrawCanvas(PLAYERPOS);
+  SetPlayerInView(PLAYERPOS, false);
+  DrawPlayer(selectedcolor);
   flag = true;
   hidevolet();
 });
 
 //Move player if new position has ben allowed on server side
 socket.on("newplayerpos", function(position) {
-  playerpos = position;
+  PLAYERPOS = position;
   flag = false;
-  translatecanvas(lastdir, playerpos);
-  setplayerposinview(playerpos, true);
+  MoveCanvas(lastdir, PLAYERPOS);
+  SetPlayerInView(PLAYERPOS, true);
   setTimeout(function() {
-    drawgrid(playerpos);
+    DrawCanvas(PLAYERPOS);
     flag = true;
   }, trd*1000)
 });
@@ -34,16 +34,16 @@ socket.on("clearpos", function(position) {
 });
 
 //Fill other's cells when they do so
-socket.on('newglobalcell', function(globalcell) {
-  ColorList[globalcell.position] = globalcell.color;
-  drawcell(globalcell.position, globalcell.color);
+socket.on('newglobalcell', function(cell) {
+  ColorList[cell.position] = cell.color;
+  drawcell(cell.position, cell.color);
 });
 
 // Draw the cells where the player is allowed to move
-socket.on('allowedcells', function(allowedcells) {
-  allowedcells.forEach(function(position) {
-    if (!allowedlist.includes(position)) {
-      allowedlist.push(position);
+socket.on('allowedcells', function(cells) {
+  cells.forEach(function(position) {
+    if (!AllowedList.includes(position)) {
+      AllowedList.push(position);
       drawallowed(position);
     };
   });

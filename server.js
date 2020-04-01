@@ -15,7 +15,7 @@ const router = express.Router();
 const io = socketIO(server);
 
 const GAME = require(path.resolve(__dirname, 'controlers'));
-const DATABASE = require(path.resolve(__dirname, 'controlers/database'));
+//const DATABASE = require(path.resolve(__dirname, 'controlers/database'));
 
 const PARAMS = require(path.resolve(__dirname, 'models/parameters'));
 const port = PARAMS.port;
@@ -53,9 +53,13 @@ var PLAYERS = {};
 
 io.on('connection', function(socket) {
 
-  socket.on("login", function(data) {
-    DATABASE.LogPlayer(data.user, data.pass, socket, OwningList, PaletteList, ColorList, PositionList, PLAYERS);
-  });
+  //test
+  GAME.startplayergame(150, "test", socket, OwningList, PaletteList, ColorList, PositionList, PLAYERS);
+
+  //prod
+  // socket.on("login", function(data) {
+  //   DATABASE.LogPlayer(data.user, data.pass, socket, OwningList, PaletteList, ColorList, PositionList, PLAYERS);
+  // });
 
   socket.on('moveplayer', function(direction) {
     GAME.MovePlayer(direction, socket, ColorList, PositionList, PLAYERS);

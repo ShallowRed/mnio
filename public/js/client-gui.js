@@ -1,7 +1,7 @@
-var globalrows, globalcols, cellsize, vrows, vcols, lw, celltimeout;
-var playerpos, selectedcolor, pcolor1, pcolor2, pcolor3;
+var Grows, Gcols, CellSize, vrows, vcols, lw, celltimeout;
+var PLAYERPOS, selectedcolor, pcolor1, pcolor2, pcolor3;
 var PositionList, ColorList;
-var allowedlist;
+var AllowedList;
 
 var initflag = 0,
   flag = false;
@@ -16,13 +16,13 @@ const volet = document.getElementById('volet');
 
 //////////// PARAMETERS INITIALIZATION ////////////
 
-function initdata(data) {
+function InitData(data) {
   ColorList = data.ColorList;
   PositionList = data.PositionList;
-  allowedlist = data.allowedlist;
+  AllowedList = data.allowedlist;
 
-  globalrows = data.uiparams[0];
-  globalcols = data.uiparams[1];
+  Grows = data.uiparams[0];
+  Gcols = data.uiparams[1];
   vrows = data.uiparams[2];
   vcols = data.uiparams[3];
   lw = data.uiparams[4];
@@ -30,7 +30,7 @@ function initdata(data) {
 
   initflag = 1;
 
-  playerpos = data.position;
+  PLAYERPOS = data.position;
   pcolor1 = data.colors[0];
   pcolor2 = data.colors[1];
   pcolor3 = data.colors[2];
@@ -43,45 +43,6 @@ function initdata(data) {
   console.log(data);
 }
 
-//////////////// CANVAS UTILS ////////////////////
-
-function indextocoord(index) {
-  let coordx = (index - (index % globalrows)) / globalcols;
-  let coordy = (index % globalcols);
-  return [coordx, coordy];
-}
-
-function coordtoindex(coord) {
-  let index = globalrows * coord[0] + coord[1];
-  return index;
-}
-
-//////////////// UI UTILS ////////////////////
-
-function selectc1() {
-  selectedcolor = pcolor1;
-  c1.style.border = "solid 5px black";
-  c2.style.border = "solid 5px white";
-  c3.style.border = "solid 5px white";
-  drawplayer(pcolor1);
-}
-
-function selectc2() {
-  selectedcolor = pcolor2;
-  c1.style.border = "solid 5px white";
-  c2.style.border = "solid 5px black";
-  c3.style.border = "solid 5px white";;
-  drawplayer(pcolor2);
-}
-
-function selectc3() {
-  selectedcolor = pcolor3;
-  c1.style.border = "solid 5px white";
-  c2.style.border = "solid 5px white";
-  c3.style.border = "solid 5px black";
-  drawplayer(pcolor3);
-}
-
 // Turn on game visibility when content loaded
 function hidevolet() {
   volet.style.opacity = "0";
@@ -92,15 +53,38 @@ function hidevolet() {
 
 //resize grid and cell on window sizing
 window.addEventListener('resize', function() {
-  setcanvassize();
-  setplayerposinview(playerpos, false);
-  drawplayer(selectedcolor);
-  drawgrid(playerpos);
+  SetCanvasSize();
+  SetPlayerInView(PLAYERPOS, false);
+  DrawPlayer(selectedcolor);
+  DrawCanvas(PLAYERPOS);
 }, true);
 
-function clog(e) {
-  console.log(e)
-};
+//////////////// UI UTILS ////////////////////
+
+function selectc1() {
+  selectedcolor = pcolor1;
+  c1.style.border = "solid 5px black";
+  c2.style.border = "solid 5px white";
+  c3.style.border = "solid 5px white";
+  DrawPlayer(pcolor1);
+}
+
+function selectc2() {
+  selectedcolor = pcolor2;
+  c1.style.border = "solid 5px white";
+  c2.style.border = "solid 5px black";
+  c3.style.border = "solid 5px white";;
+  DrawPlayer(pcolor2);
+}
+
+function selectc3() {
+  selectedcolor = pcolor3;
+  c1.style.border = "solid 5px white";
+  c2.style.border = "solid 5px white";
+  c3.style.border = "solid 5px black";
+  DrawPlayer(pcolor3);
+}
+
 
 c1.addEventListener("click", function() {
   selectc1();
@@ -115,26 +99,26 @@ c3.addEventListener("click", function() {
 });
 
 zoomin.addEventListener("click", function() {
-  if (viewsize > 3 && flag) {
+  if (ViewSize > 3 && flag) {
     --vrows;
     --vcols;
-    setcanvassize();
-    setplayerposinview(playerpos, false);
-    drawplayer(selectedcolor);
-    drawgrid(playerpos);
+    SetCanvasSize();
+    SetPlayerInView(PLAYERPOS, false);
+    DrawPlayer(selectedcolor);
+    DrawCanvas(PLAYERPOS);
   }});
 
 zoomout.addEventListener("click", function() {
-  if (viewsize + 1 < globalrows && flag) {
+  if (ViewSize + 1 < Grows && flag) {
       ++vrows;
       ++vcols;
-      setcanvassize();
-      setplayerposinview(playerpos, false);
-      drawplayer(selectedcolor);
-      drawgrid(playerpos);
+      SetCanvasSize();
+      SetPlayerInView(PLAYERPOS, false);
+      DrawPlayer(selectedcolor);
+      DrawCanvas(PLAYERPOS);
     }
 });
 
 fill.addEventListener("click", function() {
-  if (flag) fillplayercell(playerpos, selectedcolor);
+  if (flag) fillplayercell(PLAYERPOS, selectedcolor);
 });

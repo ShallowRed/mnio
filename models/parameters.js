@@ -1,8 +1,8 @@
-const rows = 250;
-const cols = 250;
+const rows = 11;
+const cols = 11;
 
-const vrows = 20;
-const vcols = 20;
+const vrows = 5;
+const vcols = 5;
 
 const lw = 10;
 const celltimeout = 10;

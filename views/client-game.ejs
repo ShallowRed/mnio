@@ -23,32 +23,29 @@
      </div>
    </div>
    <div id="master" style="position: relative;">
-     <canvas id="canvas1"></canvas>
-     <canvas id="canvas2"></canvas>
-     <canvas id="canvas3"></canvas>
-     <canvas id="canvas4"></canvas>
+     <canvas class="mapcanvas" id="canvas1"></canvas>
+     <canvas class="mapcanvas" id="canvas2"></canvas>
+     <canvas class="mapcanvas"id="canvas3"></canvas>
+     <canvas id="playercanvas"></canvas>
    </div>
 
    <div id="buttons">
      <button class="fill" id="fill"></button>
-     <br />
-     <br />
-     <br />
-     <button class="zoom" id="zoomin"><a>-</a></button>
-     <button class="zoom" id="zoomout"><a>+</a></button>
-     <br />
-     <br />
-     <br />
+
+     <button class="zoom" id="zoomin"><a>+</a></button>
+     <button class="zoom" id="zoomout"><a>-</a></button>
+
      <button class="color" id="c1"></button>
      <button class="color" id="c2"></button>
      <button class="color" id="c3"></button>
    </div>
    <script src="js/jquery-3.4.1.min.js"></script>
    <script src="js/jquery.touchwipe.1.1.1.js"></script>
-   <script src="js/client-utils.js"></script>
+   <script src="js/client-gui.js"></script>
    <script src="js/client-lobby.js"></script>
    <script src="js/client-canvas.js"></script>
-   <script src="js/client-movement.js"></script>
+   <script src="js/client-events-browser.js"></script>
+   <script src="js/client-events-mobile.js"></script>
    <script src="js/client-game.js"></script>
 
    <%- include('./elements/footer'); -%>
