@@ -1,6 +1,6 @@
 var socket = io();
 
-//////////////////////////////// LOBBY
+////////////////////////////////////////// LOBBY
 
 // Send a username and a password to server
 document.getElementById('login').addEventListener('click', function() {
@@ -10,7 +10,7 @@ document.getElementById('login').addEventListener('click', function() {
   });
 });
 
-//////////////////////////////// GAME INIT
+////////////////////////////////////////// GAME INIT
 
 // Receive data needed for initialization, start the game
 socket.on('initdata', function(data) {
@@ -23,7 +23,7 @@ socket.on('initdata', function(data) {
   hidevolet();
 });
 
-//////////////////////////////// IN-GAME EVENT RECEPTION
+////////////////////////////////////////// IN-GAME EVENT RECEPTION
 
 //Move player if new position has ben allowed on server side
 socket.on("newplayerpos", function(position) {
@@ -31,7 +31,7 @@ socket.on("newplayerpos", function(position) {
   flag = false;
   MoveCanvas(lastdir, PLAYERPOS);
   SetPlayerInView(PLAYERPOS, true);
-  setTimeout(function() {
+  setTimeout(function() { // TODO: replace with requestanimationframe
     DrawCanvas(PLAYERPOS);
     flag = true;
   }, trd*1000)
@@ -65,7 +65,7 @@ socket.on('allowedcells', function(cells) {
   });
 });
 
-//////////////////////////////// IN-GAME EVENT EMISSION
+////////////////////////////////////////// IN-GAME EVENT EMISSION
 
 //Fill active player cell when he says so
 function fillplayercell(position, color) {
@@ -80,8 +80,7 @@ function askformove(direction) {
   socket.emit('moveplayer', direction);
 }
 
-//////////////////////////////// UTILS
-
+////////////////////////////////////////// UTILS
 
 socket.on("message", function(data) {
   console.log(data);

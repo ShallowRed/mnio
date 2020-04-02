@@ -11,7 +11,10 @@ ctx1.imageSmoothingEnabled = ctx2.imageSmoothingEnabled = ctx3.imageSmoothingEna
 var trd = 0.2;
 var lastdir;
 
-//////////////////////////////////////////////////////// CANVAS
+// TODO: fix xy inversion
+// TODO: allow crows and vcols according to window size
+
+//////////////////////////////////////////////////////// MAP
 
 function SetCanvasSize() {
   let w = window.innerWidth;

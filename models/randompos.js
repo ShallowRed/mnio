@@ -1,17 +1,17 @@
 const convert = require('../models/converters');
 
-function randompos(colorlist) {
+function randompos(ColorList) {
   let emptycells = [];
 
-  let len = colorlist.length;
+  let len = ColorList.length;
   for (i = 0; i < len; i++) {
-    if (colorlist[i] == null) {
+    if (ColorList[i] == null) {
       emptycells.push(i);
     };
   };
 
   if (emptycells.length == 0) {
-    resetall(colorlist);
+    resetall(ColorList);
   }
 
   let rdmindex = emptycells[Math.floor(Math.random() * emptycells.length)];

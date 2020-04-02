@@ -10,12 +10,13 @@ const server = http.Server(app);
 const router = express.Router();
 const io = socketIO(server);
 
-const GAME = require(path.resolve(__dirname, 'controlers'));
-//const DATABASE = require(path.resolve(__dirname, 'controlers/database'));
+const Database = require(path.resolve(__dirname, 'controlers/database'));
+const Action = require(path.resolve(__dirname, 'controlers/actions'));
+const DisconnectPlayer = require(path.resolve(__dirname, 'controlers/disconnexion'));
 
 const PARAMS = require(path.resolve(__dirname, 'models/parameters'));
-const port = PARAMS.port;
 const maxplayers = PARAMS.maxplayers;
+const port = PARAMS.port;
 const rows = PARAMS.rows;
 const cols = PARAMS.cols;
 
@@ -36,12 +37,6 @@ var ColorList = new Array(rows * cols).fill(null)
 // Create an array to store the position of each active player on the grid
 var PositionList = [];
 
-// Create an array to store the palettes used by players after deconnection
-var PaletteList = new Array(maxplayers);
-
-// Create an array to store the ownings of each player after deconnection
-var OwningList = new Array(maxplayers);
-
 // Create an object to store active players data
 var PLAYERS = {};
 
@@ -51,27 +46,29 @@ var PLAYERS = {};
 // TODO: clean database system
 // TODO: allow several games at the same
 // TODO: admin page
+// TODO: setup db on remote alpine
 
 io.on('connection', function(socket) {
 
   //test
-  GAME.startplayergame(150, "test", socket, OwningList, PaletteList, ColorList, PositionList, PLAYERS);
+  // InitPlayer(150, "test", socket, OwningList, PaletteList, ColorList, PositionList, PLAYERS);
 
   //prod
-  // socket.on("login", function(data) {
-  //   DATABASE.LogPlayer(data.user, data.pass, socket, OwningList, PaletteList, ColorList, PositionList, PLAYERS);
-  // });
+  socket.on("login", function(data) {
+    Database.LogPlayer(data.user, data.pass, socket, ColorList, PositionList, PLAYERS);
+  });
 
   socket.on('moveplayer', function(direction) {
-    GAME.MovePlayer(direction, socket, ColorList, PositionList, PLAYERS);
+    Action.MovePlayer(direction, socket, ColorList, PositionList, PLAYERS);
   });
 
   socket.on('drawcell', function(cell) {
-    GAME.DrawCell(cell, socket, ColorList, OwningList, PLAYERS);
+    Action.DrawCell(cell, socket, ColorList, PLAYERS);
+    Database.SaveFill(cell[0], PLAYERS[socket.id].dbid, cell[1].split('#')[1]);
   });
 
   socket.on('disconnect', function() {
-    GAME.DisconnectPlayer(socket, OwningList, PaletteList, PositionList, PLAYERS);
+    DisconnectPlayer(socket, PositionList, PLAYERS);
   });
 
 });
