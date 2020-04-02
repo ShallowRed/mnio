@@ -10,9 +10,8 @@ const server = http.Server(app);
 const router = express.Router();
 const io = socketIO(server);
 
+const GAME = require(path.resolve(__dirname, 'controlers'));
 const Database = require(path.resolve(__dirname, 'controlers/database'));
-const Action = require(path.resolve(__dirname, 'controlers/actions'));
-const DisconnectPlayer = require(path.resolve(__dirname, 'controlers/disconnexion'));
 
 const PARAMS = require(path.resolve(__dirname, 'models/parameters'));
 const maxplayers = PARAMS.maxplayers;
@@ -29,6 +28,11 @@ app.use('/', require(path.resolve(__dirname, "controlers/routes")));
 app.set('view engine', 'ejs');
 app.set("views", path.resolve(__dirname, "views"));
 
+// TODO: clear dependencies in package.json
+// TODO: allow several games at the same
+// TODO: admin page
+// TODO: setup db on remote alpine
+
 ////////////////////////////// INITIALIZE //////////////////////////////////////
 
 // Create an array to store the color value of each cell in the grid
@@ -42,33 +46,38 @@ var PLAYERS = {};
 
 //////////////////////////// ON PLAYER CONNECTION //////////////////////////////
 
-// TODO: clear dependencies in package.json
-// TODO: clean database system
-// TODO: allow several games at the same
-// TODO: admin page
-// TODO: setup db on remote alpine
 
 io.on('connection', function(socket) {
 
-  //test
-  // InitPlayer(150, "test", socket, OwningList, PaletteList, ColorList, PositionList, PLAYERS);
-
-  //prod
   socket.on("login", function(data) {
     Database.LogPlayer(data.user, data.pass, socket, ColorList, PositionList, PLAYERS);
   });
 
   socket.on('moveplayer', function(direction) {
-    Action.MovePlayer(direction, socket, ColorList, PositionList, PLAYERS);
+    GAME.MovePlayer(direction, socket, ColorList, PositionList, PLAYERS);
   });
 
   socket.on('drawcell', function(cell) {
-    Action.DrawCell(cell, socket, ColorList, PLAYERS);
+    GAME.DrawCell(cell, socket, ColorList, PLAYERS);
     Database.SaveFill(cell[0], PLAYERS[socket.id].dbid, cell[1].split('#')[1]);
   });
 
   socket.on('disconnect', function() {
-    DisconnectPlayer(socket, PositionList, PLAYERS);
+    if (!PLAYERS[socket.id]) return;
+    GAME.DisconnectPlayer(socket, PositionList, PLAYERS);
+    Database.SavePlayer(PLAYERS[socket.id].dbid, PLAYERS[socket.id].colors);
   });
+
+  socket.on("admin", function() {
+    socket.emit("initadmin", {
+      ColorList: ColorList,
+      rows: rows,
+      cols: cols
+    });
+  })
+
+  socket.on("askfordb", function() {
+    Database.getcanvas();
+  })
 
 });

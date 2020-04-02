@@ -1,11 +1,8 @@
 const express = require('express');
-const http = require('http');
-const path = require('path');
 const socketIO = require('socket.io');
 
 const setallowedcells = require('../models/allowedcells');
 const isallowed = require('../models/allowedmoves');
-const randompos = require('../models/randompos');
 const Player = require('../models/newplayer');
 const PARAMS = require('../models/parameters');
 const uiparams = [PARAMS.rows, PARAMS.cols, PARAMS.vrows, PARAMS.vcols, PARAMS.lw, PARAMS.celltimeout];
@@ -17,6 +14,7 @@ function InitPlayer(userid, username, position, colors, owncells, socket, ColorL
     socket.emit("alert", "Wrong password");
     return;
   }
+
   // Create a new player in the session
   let player = PLAYERS[socket.id] = new Player(userid, username, position, colors, owncells, ColorList);
 
@@ -77,8 +75,19 @@ function DrawCell(cell, socket, ColorList, PLAYERS) {
 
 };
 
+function DisconnectPlayer(socket, PositionList, PLAYERS) {
+  let player = PLAYERS[socket.id];
+
+  // Save player's palette, clear its last position
+  console.log("Player n° " + player.dbid + " (" + player.name + ") got disconnected");
+  PositionList.splice(PositionList.indexOf(player.position), 1);
+  socket.broadcast.emit("ClearPosition", player.position);
+
+}
+
 module.exports = {
   MovePlayer,
   DrawCell,
-  InitPlayer
+  InitPlayer,
+  DisconnectPlayer
 };

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Mnio admin log page</title>
+	<meta name="viewport" content="width=device-width, height=device-height">
+</head>
+<body>
+<div style="width: 500px; margin: 45vh auto;">
+  <h3>Mnio admin</h3>
+  <input type="password" id="Password" placeholder="Mot de passe ..." />
+  <button id="login"><a>Valider</a></button>
+  <button hidden id="admin"><a href="/adminpage">Se connecter</a></button>
+</div>
+<script>document.getElementById("login").addEventListener("click",function(){let e=document.getElementById("Password").value;fetch("/adminlog",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user:{password:e}})}),document.getElementById("admin").hidden=!1});
+</script>
+
+</body>
+</html>
