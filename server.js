@@ -12,12 +12,11 @@ const io = socketIO(server);
 
 const GAME = require(path.resolve(__dirname, 'controlers'));
 const Database = require(path.resolve(__dirname, 'controlers/database'));
-
-const PARAMS = require(path.resolve(__dirname, 'models/parameters'));
-const maxplayers = PARAMS.maxplayers;
-const port = PARAMS.port;
-const rows = PARAMS.rows;
-const cols = PARAMS.cols;
+const Config = require(path.resolve(__dirname, 'controlers/config'));
+const maxplayers = Config.maxplayers;
+const port = Config.port;
+const rows = Config.rows;
+const cols = Config.cols;
 
 app.set('port', port);
 server.listen(port, function() {
@@ -28,10 +27,8 @@ app.use('/', require(path.resolve(__dirname, "controlers/routes")));
 app.set('view engine', 'ejs');
 app.set("views", path.resolve(__dirname, "views"));
 
-// TODO: clear dependencies in package.json
 // TODO: allow several games at the same
-// TODO: admin page
-// TODO: setup db on remote alpine
+// TODO: improve admin page
 
 ////////////////////////////// INITIALIZE //////////////////////////////////////
 
@@ -46,26 +43,27 @@ var PLAYERS = {};
 
 //////////////////////////// ON PLAYER CONNECTION //////////////////////////////
 
-
 io.on('connection', function(socket) {
 
-  socket.on("login", function(data) {
-    Database.LogPlayer(data.user, data.pass, socket, ColorList, PositionList, PLAYERS);
-  });
+  // socket.on("login", function(data) {
+  //   Database.LogPlayer(data.user, data.pass, socket, ColorList, PositionList, PLAYERS);
+  // });
 
-  socket.on('moveplayer', function(direction) {
+  GAME.InitPlayer("test", 150, null, [], [], socket, ColorList, PositionList, PLAYERS);
+
+  socket.on('MovePlayer', function(direction) {
     GAME.MovePlayer(direction, socket, ColorList, PositionList, PLAYERS);
   });
 
-  socket.on('drawcell', function(cell) {
+  socket.on('DrawCell', function(cell) {
     GAME.DrawCell(cell, socket, ColorList, PLAYERS);
-    Database.SaveFill(cell[0], PLAYERS[socket.id].dbid, cell[1].split('#')[1]);
+    // Database.SaveFill(cell[0], PLAYERS[socket.id].dbid, cell[1].split('#')[1]);
   });
 
   socket.on('disconnect', function() {
     if (!PLAYERS[socket.id]) return;
     GAME.DisconnectPlayer(socket, PositionList, PLAYERS);
-    Database.SavePlayer(PLAYERS[socket.id].dbid, PLAYERS[socket.id].colors);
+    // Database.SavePlayer(PLAYERS[socket.id].dbid, PLAYERS[socket.id].colors);
   });
 
   socket.on("admin", function() {
@@ -77,7 +75,7 @@ io.on('connection', function(socket) {
   })
 
   socket.on("askfordb", function() {
-    Database.getcanvas();
+    //Database.getcanvas();
   })
 
 });

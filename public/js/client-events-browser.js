@@ -7,11 +7,11 @@ document.addEventListener('keydown', function(event) {
       break;
 
     case 37: // left arrow
-      if (ViewSize > 3) zoominview();
+      zoominview();
       break;
 
     case 39: // right arrow
-      if (ViewSize + 1 < Grows) zoomoutview();
+      zoomoutview();
       break;
 
     case 38: // top arrow
@@ -50,22 +50,4 @@ function selectdown() {
   if (selectedcolor == pcolor1) selectc2();
   else if (selectedcolor == pcolor2) selectc3();
   else selectc1();
-}
-
-function zoominview() {
-  --vrows;
-  --vcols;
-  SetCanvasSize();
-  SetPlayerInView(PLAYERPOS, false);
-  DrawPlayer(selectedcolor);
-  DrawCanvas(PLAYERPOS);
-}
-
-function zoomoutview() {
-  ++vrows;
-  ++vcols;
-  SetCanvasSize();
-  SetPlayerInView(PLAYERPOS, false);
-  DrawPlayer(selectedcolor);
-  DrawCanvas(PLAYERPOS);
 }

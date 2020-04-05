@@ -1,4 +1,5 @@
 var socket = io();
+var lastdir;
 
 ////////////////////////////////////////// LOBBY
 
@@ -13,28 +14,27 @@ document.getElementById('login').addEventListener('click', function() {
 ////////////////////////////////////////// GAME INIT
 
 // Receive data needed for initialization, start the game
-socket.on('initdata', function(data) {
-  InitData(data);
+socket.on('InitData', function(data) {
+  console.log("yess");
+  InitGame(data);
   SetCanvasSize();
-  SetPlayerInView(PLAYERPOS, false);
   DrawCanvas(PLAYERPOS);
-  DrawPlayer(selectedcolor);
-  flag = true;
+  SetPlayerInView(PLAYERPOS, false);
+  DrawPlayer();
   hidevolet();
+  flag = true;
 });
 
 ////////////////////////////////////////// IN-GAME EVENT RECEPTION
 
 //Move player if new position has ben allowed on server side
-socket.on("newplayerpos", function(position) {
-  PLAYERPOS = position;
+socket.on("NewPlayerPos", function(position) {
   flag = false;
+  PLAYERPOS = position;
   MoveCanvas(lastdir, PLAYERPOS);
   SetPlayerInView(PLAYERPOS, true);
-  setTimeout(function() { // TODO: replace with requestanimationframe
-    DrawCanvas(PLAYERPOS);
-    flag = true;
-  }, trd*1000)
+  window.DRAW.setup();
+  window.DRAW.frame();
 });
 
 // Set other's new position when they move
@@ -52,11 +52,11 @@ socket.on("ClearPosition", function(position) {
 //Fill other's cells when they do so
 socket.on('NewCell', function(cell) {
   ColorList[cell.position] = cell.color;
-  drawcell(cell.position, cell.color);
+  fillcell(cell.position, cell.color);
 });
 
 // Draw the cells where the player is allowed to move
-socket.on('allowedcells', function(cells) {
+socket.on('AllowedCells', function(cells) {
   cells.forEach(function(position) {
     if (!AllowedList.includes(position)) {
       AllowedList.push(position);
@@ -71,13 +71,13 @@ socket.on('allowedcells', function(cells) {
 function fillplayercell(position, color) {
   ColorList[position] = color;
   drawcell(position, color);
-  socket.emit("drawcell", [position, color]);
+  socket.emit("DrawCell", [position, color]);
 }
 
 // Ask server for autorization when trying to move
 function askformove(direction) {
   lastdir = direction;
-  socket.emit('moveplayer', direction);
+  socket.emit('MovePlayer', direction);
 }
 
 ////////////////////////////////////////// UTILS

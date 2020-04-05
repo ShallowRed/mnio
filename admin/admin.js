@@ -45,8 +45,8 @@ socket.on('NewCell', function(cell) {
 function DrawCanvas() {
   let w = window.innerWidth;
   let h = window.innerHeight;
-  if (w > h) h = w = Math.round(h * 0.95);
-  else w = h = Math.round(w * 0.95);
+  if (w > h) h = w = Math.round(h * 0.85);
+  else w = h = Math.round(w * 0.85);
   canvas.width = w;
   canvas.height = h;
 

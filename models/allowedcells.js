@@ -1,8 +1,8 @@
 const convert = require('./converters');
-const PARAMS = require('./parameters');
-const rows = PARAMS.rows;
-const cols = PARAMS.cols;
-const limit = PARAMS.limit;
+const Config = require('../controlers/config');
+const rows = Config.rows;
+const cols = Config.cols;
+var limit = 200;
 
 function setallowedcells(owncells) {
   //set increasing limit
@@ -37,6 +37,9 @@ function setallowedcells(owncells) {
   });
 
   let averagepos = [Math.round(xcount / length), Math.round(ycount / length)];
+  // if (owncells.length>10) limit = Math.sqrt(owncells.length);
+  // limit = Math.round(Math.pow(Math.sqrt(owncells.length) + 2), 2);
+  console.log(limit);
 
   neighbors.forEach(function(cell) {
     let distfromavx = Math.abs(cell[0] - averagepos[0]);

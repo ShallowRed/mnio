@@ -1,6 +1,6 @@
 const rdmcolor = require('./randomcolor');
 const randompos = require('./randompos');
-const setallowedcells = require('.//allowedcells');
+const setallowedcells = require('./allowedcells');
 
 class Player {
   constructor(userindb, username, position, colors, owncells, ColorList) {

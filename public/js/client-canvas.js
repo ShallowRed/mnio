@@ -1,48 +1,123 @@
-var ViewSize;
+// TODO: fix xy inversion
+
 var master = document.getElementById('master');
 var PlayerCanvas = document.getElementById('playercanvas');
+var shadow = document.getElementById('shadow');
 var MapCanvas = document.querySelectorAll(".mapcanvas");
 var ctx1 = MapCanvas[0].getContext('2d');
 var ctx2 = MapCanvas[1].getContext('2d');
 var ctx3 = MapCanvas[2].getContext('2d');
 var playerctx = PlayerCanvas.getContext('2d');
+
 ctx1.imageSmoothingEnabled = ctx2.imageSmoothingEnabled = ctx3.imageSmoothingEnabled = playerctx.imageSmoothingEnabled = false;
 
-var trd = 0.2;
-var lastdir;
+var Grows, Gcols, ViewSizeX, ViewSizeY, vrows, vcols, celltimeout, lw;
+var PositionList, ColorList, AllowedList;
 
-// TODO: fix xy inversion
-// TODO: allow crows and vcols according to window size
+var maxcells = 14;
+var mincells = 5;
+var CellSize = 100;
+var duration = 0.2;
+var shift;
 
-//////////////////////////////////////////////////////// MAP
+//////////////////////////////////////////////////////// INIT
+
+// TODO: shift improvement
+function InitData(data) {
+  ColorList = data.ColorList;
+  PositionList = data.PositionList;
+  AllowedList = data.allowedlist;
+  Grows = data.uiparams[0];
+  Gcols = data.uiparams[1];
+}
 
 function SetCanvasSize() {
+
   let w = window.innerWidth;
   let h = window.innerHeight;
-  if (w > h) {
-    h = Math.round(h * 0.95);
-    w = h;
-  } else {
-    w = Math.round(w * 0.95);
-    h = w;
-  }
-  ViewSize = vcols + vrows + 1;
-  CellSize = Math.round(w / ViewSize);
-  let cw = CellSize * ViewSize - CellSize * 2;
-  let ch = CellSize * ViewSize - CellSize * 2;
+  if (w > 650) w -= 100;
+  else h -= 100;
 
-  master.style.width = "" + cw + "px";
-  master.style.height = "" + ch + "px";
-  master.style.margin = (window.innerHeight - ch) / 2 + "px " + (window.innerWidth - cw) / 2 + "px";
+  ViewSizeX = Math.round(w / CellSize) + 1;
+  ViewSizeY = Math.round(h / CellSize) + 1;
+
+  if (ViewSizeX > maxcells) {
+    ViewSizeX = maxcells + 1;
+    CellSize = Math.round(w / ViewSizeX);
+    ViewSizeY = Math.round(h / CellSize) + 1;
+  } else if (ViewSizeX < mincells) {
+    ViewSizeX = mincells + 1;
+    CellSize = Math.round(w / mincells);
+    ViewSizeY = Math.round(h / CellSize) + 1;
+  }
+
+  if (ViewSizeY > maxcells) {
+    ViewSizeY = maxcells + 2;
+    CellSize = Math.round(w / maxcells);
+    ViewSizeX = Math.round(w / CellSize) + 1;
+  } else if (ViewSizeY < mincells) {
+    ViewSizeY = mincells + 2;
+    CellSize = Math.round(h / mincells);
+    ViewSizeX = Math.round(w / CellSize) + 1;
+  }
+
+  if (ViewSizeX % 2 == 0) ViewSizeX--;
+  if (ViewSizeY % 2 == 0) ViewSizeY--;
+
+  vrows = (ViewSizeX - 1) / 2;
+  vcols = (ViewSizeY - 1) / 2;
+  lw = Math.round(CellSize / 6);
+
+  master.style.width = "" + CellSize * (ViewSizeX - 2) + "px";
+  master.style.height = "" + CellSize * (ViewSizeY - 2) + "px";
+  master.style.margin = (h - CellSize * (ViewSizeY - 2)) / 2 + "px " + (w - CellSize * (ViewSizeX - 2)) / 2 + "px";
+
+  topmask.style.height = (h - CellSize * (ViewSizeY - 2)) / 2 + "px ";
+  bottommask.style.height = (h - CellSize * (ViewSizeY - 2)) / 2 + "px ";
+  leftmask.style.width = (w - CellSize * (ViewSizeX - 2)) / 2 + "px ";
+  rightmask.style.width = (w - CellSize * (ViewSizeX - 2)) / 2 + "px ";
+
+  if (w > 650) rightmask.style.width = 100 + (w - CellSize * (ViewSizeX - 2)) / 2 + "px ";
+  else bottommask.style.height = 100 + (h - CellSize * (ViewSizeY - 2)) / 2 + "px ";
 
   for (let i = 0; i < 3; i++) {
-    MapCanvas[i].width = cw + CellSize * 2;
-    MapCanvas[i].height = ch + CellSize * 2;;
+    MapCanvas[i].width = CellSize * ViewSizeX;
+    MapCanvas[i].height = CellSize * ViewSizeY;
   }
 
-  PlayerCanvas.width = CellSize;
-  PlayerCanvas.height = CellSize;
+  shift = Math.round(CellSize / 8);
+  PlayerCanvas.width = CellSize - shift * 4;
+  PlayerCanvas.height = CellSize - shift * 4;
+  shadow.style.width = CellSize - shift * 2 -2+ "px";
+  shadow.style.height = CellSize - shift * 2 -2+ "px";
+  shadow.style.borderRadius = shift + "px";
+  PlayerCanvas.style.borderWidth = shift + "px";
+  PlayerCanvas.style.borderRadius = shift + "px";
+
 };
+
+//////////////////////////////////////////////////////// PLAYER // TODO: improve scaling of player // TODO: fix can't access cell 0,0
+
+function SetPlayerInView(PLAYERPOS, animated) {
+  if (!animated) shadow.style.transitionDuration = PlayerCanvas.style.transitionDuration = "0s";
+  else shadow.style.transitionDuration = PlayerCanvas.style.transitionDuration = duration + "s";
+  let coord = indextocoord(PLAYERPOS);
+
+  if (coord[0] >= Grows - vcols) coord[0] += ViewSizeY - Gcols - 2;
+  else if (coord[0] >= vcols) coord[0] = vcols - 1;
+  if (coord[1] >= Gcols - vrows) coord[1] += ViewSizeX - Grows - 2;
+  else if (coord[1] >= vrows) coord[1] = vrows - 1;
+
+  shadow.style.top = PlayerCanvas.style.top = coord[0] * CellSize + shift + "px";
+  shadow.style.left = PlayerCanvas.style.left = coord[1] * CellSize + shift + "px";
+};
+
+function DrawPlayer() {
+  PlayerCanvas.style.background = selectedcolor;
+};
+
+
+//////////////////////////////////////////////////////// MAP
 
 function DrawCanvas(PLAYERPOS) {
   ClearCanvas();
@@ -75,15 +150,14 @@ function MoveCanvas(direction, PLAYERPOS) {
   if (!direction) return;
   let coord = indextocoord(PLAYERPOS);
   let dir;
-
-  if (direction == "up" && coord[0] >= vrows - 1 && coord[0] <= Grows - vrows - 1) dir = "Y(";
-  else if (direction == "down" && coord[0] >= vrows && coord[0] <= Grows - vrows) dir = "Y(-";
-  else if (direction == "right" && coord[1] >= vcols && coord[1] <= Gcols - vcols) dir = "X(-";
-  else if (direction == "left" && coord[1] >= vcols - 1 && coord[1] <= Gcols - vcols - 1) dir = "X(";
+  if (direction == "up" && coord[0] >= vcols - 1 && coord[0] <= Grows - vcols - 1) dir = "Y(";
+  else if (direction == "down" && coord[0] >= vcols && coord[0] <= Grows - vcols) dir = "Y(-";
+  else if (direction == "right" && coord[1] >= vrows && coord[1] <= Gcols - vrows) dir = "X(-";
+  else if (direction == "left" && coord[1] >= vrows - 1 && coord[1] <= Gcols - vrows - 1) dir = "X(";
   if (!dir) return;
 
   for (let i = 0; i < 3; i++) {
-    MapCanvas[i].style.transitionDuration = trd + "s";
+    MapCanvas[i].style.transitionDuration = duration + "s";
     MapCanvas[i].style.transform = "translate" + dir + CellSize + "px)";
   };
 };
@@ -93,13 +167,13 @@ function canvastoorigin(PLAYERPOS) {
   let coefx = 0;
   let coefy = 0;
 
-  if (coord[0] >= Grows - vrows) coefx = 2;
-  else if (coord[0] >= vrows) coefx = 1;
-  if (coord[1] >= Gcols - vcols) coefy = 2;
-  else if (coord[1] >= vcols) coefy = 1;
+  if (coord[0] >= Grows - vcols) coefx = 2;
+  else if (coord[0] >= vcols) coefx = 1;
+  if (coord[1] >= Gcols - vrows) coefy = 2;
+  else if (coord[1] >= vrows) coefy = 1;
 
   for (let i = 0; i < 3; i++) {
-    MapCanvas[i].style.transitionDuration = "s";
+    MapCanvas[i].style.transitionDuration = "0s";
     MapCanvas[i].style.transform = "translate(0, 0)";
     MapCanvas[i].style.position = "absolute";
     MapCanvas[i].style.top = "-" + CellSize * coefx + "px";
@@ -107,37 +181,19 @@ function canvastoorigin(PLAYERPOS) {
   };
 };
 
-//////////////////////////////////////////////////////// PLAYER
-
-function SetPlayerInView(PLAYERPOS, animated) {
-
-  if (!animated) PlayerCanvas.style.transitionDuration = "0s";
-  else PlayerCanvas.style.transitionDuration = trd + "s";
-
-  let coord = indextocoord(PLAYERPOS);
-  if (coord[0] >= Grows - vrows) coord[0] -= Grows - ViewSize + 2;
-  else if (coord[0] >= vrows) coord[0] = vrows - 1;
-  if (coord[1] >= Gcols - vcols) coord[1] -= Gcols - ViewSize + 2;
-  else if (coord[1] >= vcols) coord[1] = vcols - 1;
-
-  PlayerCanvas.style.top = coord[0] * CellSize + "px";
-  PlayerCanvas.style.left = coord[1] * CellSize + "px";
-  // TODO: fix can't access cell 0,0
-};
-
-function DrawPlayer(color) {
-  let lwidth = Math.round(CellSize / 18);
-  if (lwidth > 0) {
-    let xx = lwidth * 1.5;
-    let yy = xx + lwidth * 1.5;
-    let zz = yy + lwidth * 1.5;
-    drawrect(playerctx, lwidth, color, xx, 0, 0);
-    drawrect(playerctx, lwidth * 2, "white", yy, 0, 0);
-    drawrect(playerctx, lwidth, color, zz, 0, 0);
-  } else {
-    playerctx.fillStyle = "black";
-    playerctx.fillRect(0, 0, CellSize, CellSize);
-  };
+DRAW = {
+  setup: function() {
+    DRAW.start = Date.now();
+  },
+  frame: function() {
+    DRAW.delta = (Date.now() - DRAW.start) / 1000;
+    if (DRAW.delta >= duration) {
+      DrawCanvas(PLAYERPOS);
+      flag = true;
+      return;
+    }
+    DRAW.animationFrame = window.requestAnimationFrame(DRAW.frame);
+  }
 };
 
 //////////////////////////////////////////////////////// CELL
@@ -146,12 +202,12 @@ function isinview(position, PLAYERPOS) {
   let plpos = indextocoord(PLAYERPOS);
   let cellpos = indextocoord(position);
 
-  if (plpos[0] >= Grows - vrows) cellpos[0] -= (Grows - ViewSize);
-  else if (plpos[0] >= vrows) cellpos[0] -= (plpos[0] - vrows);
-  if (plpos[1] >= Gcols - vcols) cellpos[1] -= (Gcols - ViewSize);
-  else if (plpos[1] >= vcols) cellpos[1] -= (plpos[1] - vcols);
+  if (plpos[0] >= Grows - vcols) cellpos[0] += ViewSizeY - Gcols;
+  else if (plpos[0] >= vcols) cellpos[0] += vcols - plpos[0];
+  if (plpos[1] >= Gcols - vrows) cellpos[1] += ViewSizeX - Grows;
+  else if (plpos[1] >= vrows) cellpos[1] += vrows - plpos[1];
 
-  if (cellpos[0] < 0 || cellpos[0] > ViewSize || cellpos[1] < 0 || cellpos[1] > ViewSize) return;
+  if (cellpos[0] < 0 || cellpos[0] > ViewSizeY || cellpos[1] < 0 || cellpos[1] > ViewSizeX) return;
   else return [cellpos[0], cellpos[1]];
 };
 
@@ -168,42 +224,46 @@ function drawcell(position, color) {
   let cell = isinview(position, PLAYERPOS);
   if (!cell) return;
   flag = false;
-  let celldivy = 0;
-  let celldivx = 0;
-  let posy;
-
-  var strokey = setInterval(function() {
-    posy = CellSize * cell[0] + CellSize - celldivy - (lw / 2);
-
-    celldivx = celldivx + lw;
-    ctx2.beginPath();
-    ctx2.moveTo(CellSize * cell[1], posy);
-    ctx2.lineWidth = lw;
-    ctx2.strokeStyle = color;
-    ctx2.fillStyle = color;
-    ctx2.lineTo(CellSize * cell[1] + celldivx, posy);
-    ctx2.stroke();
-    ctx2.closePath();
-
-    if (celldivx >= CellSize - lw) {
-      celldivy = celldivy + lw;
-      ctx2.moveTo(CellSize * cell[1], posy);
-      ctx2.lineWidth = lw;
-      ctx2.strokeStyle = color;
-      ctx2.fillStyle = color;
-      ctx2.lineTo(CellSize * cell[1] + CellSize, posy);
-      ctx2.stroke();
-      ctx2.closePath();
-      celldivx = 0;
-    }
-
-    if (celldivy >= CellSize - lw) {
-      fillcell(position);
-      flag = true;
-      clearInterval(strokey);
-    }
-  }, celltimeout);
+  window.FILL.setup(CellSize * cell[1], CellSize * (cell[0] + 1), lw, color);
+  window.FILL.frame();
 }
+
+FILL = {
+  setup: function(cellx, celly, linewidth, color) {
+    FILL.divx = 0;
+    FILL.divy = 0;
+    FILL.posx = cellx;
+    FILL.posy = celly;
+    FILL.lw = linewidth;
+    FILL.color = color;
+    ctx2.lineWidth = linewidth;
+  },
+  frame: function() {
+    if (FILL.divx == CellSize) {
+      FILL.divy += FILL.lw;
+      FILL.divx = 0;
+    }
+    FILL.divx += Math.round(CellSize / 8);
+    if (FILL.divx >= CellSize * 0.65) {
+      FILL.divx = CellSize;
+    }
+    if (FILL.divy > CellSize * 4.5 / 6) {
+      FILL.lw = CellSize - FILL.divy;
+      ctx2.lineWidth = FILL.lw;
+      FILL.divy = CellSize - FILL.lw;
+    }
+    ctx2.strokeStyle = FILL.color;
+    ctx2.beginPath();
+    ctx2.moveTo(FILL.posx, FILL.posy - FILL.divy - FILL.lw / 2);
+    ctx2.lineTo(FILL.posx + FILL.divx, FILL.posy - FILL.divy - FILL.lw / 2);
+    ctx2.stroke();
+    if (FILL.divy > CellSize * 4.5 / 6 && FILL.divx == CellSize) {
+      flag = true;
+      return;
+    };
+    FILL.animationFrame = window.requestAnimationFrame(FILL.frame);
+  }
+};
 
 function drawallowed(position) {
   let cell = isinview(position, PLAYERPOS);
@@ -227,6 +287,12 @@ function drawposition(position, color) {
   ctx3.strokeRect(CellSize * cell[1] + 18, CellSize * cell[0] + 18, CellSize - 36, CellSize - 36);
 };
 
+function drawrect(ctx, linewidth, color, distance, start) {
+  ctx.lineWidth = linewidth;
+  ctx.strokeStyle = color;
+  ctx.strokeRect(start + distance, start + distance, CellSize - distance * 2, CellSize - distance * 2);
+}
+
 function clearposition(position) {
   let cell = isinview(position, PLAYERPOS);
   if (!cell) return;
@@ -234,12 +300,6 @@ function clearposition(position) {
 };
 
 //////////////////////////////////////////////////////// UTILS
-
-function drawrect(ctx, linewidth, color, distance, xstart, ystart) {
-  ctx.lineWidth = linewidth;
-  ctx.strokeStyle = color;
-  ctx.strokeRect(xstart + distance, ystart + distance, CellSize - distance * 2, CellSize - distance * 2);
-}
 
 function indextocoord(index) {
   let coordx = (index - (index % Grows)) / Gcols;
@@ -252,9 +312,20 @@ function coordtoindex(coord) {
   return index;
 }
 
-// TODO: all browsers transitions
-// -webkit-transition: all 0.5s ease;
-// -moz-transition: all 0.5s ease;
-// -ms-transition: all 0.5s ease;
-// -o-transition: all 0.5s ease;
-// transition: all 0.5s ease;
+function zoominview() {
+  if (CellSize > 100) return;
+  CellSize += 3;
+  SetCanvasSize();
+  SetPlayerInView(PLAYERPOS, false);
+  DrawPlayer();
+  DrawCanvas(PLAYERPOS);
+}
+
+function zoomoutview() {
+  if (CellSize < 10) return;
+  CellSize -= 3;
+  SetCanvasSize();
+  SetPlayerInView(PLAYERPOS, false);
+  DrawPlayer();
+  DrawCanvas(PLAYERPOS);
+}

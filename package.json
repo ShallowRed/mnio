@@ -4,7 +4,6 @@
   "description": "jeu de tapisserie en ligne",
   "dependencies": {
     "cookie-parser": "^1.4.5",
-    "ejs": "^3.0.1",
     "ejs-lint": "^1.0.1",
     "express": "^4.17.1",
     "express-mysql-session": "^2.1.4",
@@ -16,7 +15,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "pm2 start devprocess.json && pm2 logs",
+    "test": "pm2 start process.json && pm2 logs",
     "start": "pm2 start process.json && pm2 logs"
   },
   "repository": {

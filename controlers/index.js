@@ -1,31 +1,27 @@
 const express = require('express');
 const socketIO = require('socket.io');
 
-const setallowedcells = require('../models/allowedcells');
-const isallowed = require('../models/allowedmoves');
+const Config = require('./config');
 const Player = require('../models/newplayer');
-const PARAMS = require('../models/parameters');
-const uiparams = [PARAMS.rows, PARAMS.cols, PARAMS.vrows, PARAMS.vcols, PARAMS.lw, PARAMS.celltimeout];
-const rows = PARAMS.rows;
-const cols = PARAMS.cols;
+const isallowed = require('../models/allowedmoves');
+const setallowedcells = require('../models/allowedcells');
 
 function InitPlayer(userid, username, position, colors, owncells, socket, ColorList, PositionList, PLAYERS) {
   if (!userid) {
     socket.emit("alert", "Wrong password");
     return;
   }
-
   // Create a new player in the session
   let player = PLAYERS[socket.id] = new Player(userid, username, position, colors, owncells, ColorList);
 
   // Send info to the player
-  socket.emit('initdata', {
+  socket.emit('InitData', {
     position: player.position,
     colors: player.colors,
     allowedlist: player.allowedcells,
     ColorList: ColorList,
     PositionList: PositionList,
-    uiparams: uiparams
+    uiparams: [Config.rows, Config.cols]
   });
 
   // Send info to others and save position
@@ -50,7 +46,7 @@ function MovePlayer(direction, socket, ColorList, PositionList, PLAYERS) {
   player.position = nextposition;
   PositionList.push(nextposition);
   socket.broadcast.emit("NewPosition", nextposition);
-  socket.emit("newplayerpos", nextposition);
+  socket.emit("NewPlayerPos", nextposition);
 
 }
 
@@ -71,7 +67,7 @@ function DrawCell(cell, socket, ColorList, PLAYERS) {
   player.owncells.push(position);
   let allowedcells = setallowedcells(player.owncells);
   player.allowedcells = allowedcells;
-  socket.emit('allowedcells', allowedcells);
+  socket.emit('AllowedCells', allowedcells);
 
 };
 

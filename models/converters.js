@@ -1,6 +1,6 @@
-const PARAMS = require('./parameters');
-const rows = PARAMS.rows;
-const cols = PARAMS.cols;
+const Config = require('../controlers/config');
+const rows = Config.rows;
+const cols = Config.cols;
 
 function indextocoord(index) {
   let coordx = (index - (index % rows)) / cols;

@@ -1,16 +1,9 @@
 const mysql = require('mysql');
-const PARAMS = require('../models/parameters');
-const rows = PARAMS.rows;
-const cols = PARAMS.cols;
+const Config = require('./config');
+const rows = Config.rows;
+const cols = Config.cols;
 const GAME = require('./index');
-// const InitPlayer = require('./initplayer');
-
-const config = {
-  "host": "localhost",
-  "user": "root",
-  "password": "",
-  "base": "mniosql"
-};
+const config = Config.conf;
 
 var db = mysql.createConnection({
   host: config.host,
@@ -45,9 +38,6 @@ db.connect(function(error) {
 
   db.query(CreateUsersTable, function(err, result) {
     if (err) throw err;
-    db.query("INSERT INTO users (`Username`, `Password`) VALUES(?, ?)", ["admin", "Lucastom2!"], function(err, result) {
-      if (err) throw err;
-    });
   });
 
   db.query(CreateGamesTable, function(err, result) {
@@ -56,7 +46,6 @@ db.connect(function(error) {
 
   db.query(SaveGame, [rows, cols, GAMEDATE], function(err, result) {
     if (err) throw err;
-    console.log("Game saved in Games table with name " + GAMEDATE);
 
     db.query(GetGameid, [GAMEDATE], function(err, rows) {
       if (err) throw err;
@@ -157,9 +146,12 @@ function LogPlayer(user, pass, socket, ColorList, PositionList, PLAYERS) {
 const Testdb = "SHOW FULL TABLES FROM mniosql LIKE '%grid'"
 
 function getcanvas() {
-  db.query(Testdb, function(err, result, ) {
+  db.query(Testdb, function(err, result) {
     if (!!err) throw err;
     console.log(result);
+    result.forEach(function(el) {
+      console.log(el);
+    });
   });
 }
 
