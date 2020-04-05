@@ -1,331 +1,363 @@
 // TODO: fix xy inversion
 
 var master = document.getElementById('master');
+var MapCanvas = document.querySelectorAll(".mapcanvas");
 var PlayerCanvas = document.getElementById('playercanvas');
 var shadow = document.getElementById('shadow');
-var MapCanvas = document.querySelectorAll(".mapcanvas");
 var ctx1 = MapCanvas[0].getContext('2d');
 var ctx2 = MapCanvas[1].getContext('2d');
 var ctx3 = MapCanvas[2].getContext('2d');
 var playerctx = PlayerCanvas.getContext('2d');
-
 ctx1.imageSmoothingEnabled = ctx2.imageSmoothingEnabled = ctx3.imageSmoothingEnabled = playerctx.imageSmoothingEnabled = false;
 
-var Grows, Gcols, ViewSizeX, ViewSizeY, vrows, vcols, celltimeout, lw;
-var PositionList, ColorList, AllowedList;
+// TODO: improve scaling of player
+// TODO: fix can't access cell 0,0
 
-var maxcells = 14;
-var mincells = 5;
-var CellSize = 100;
-var duration = 0.2;
-var shift;
+GAME = {
 
-//////////////////////////////////////////////////////// INIT
+  init: function(data) {
+    PLAYER.init(data);
+    MAP.init();
+    this.colors = data.ColorList;
+    this.positions = data.PositionList;
+    this.allowed = data.allowedlist;
+    this.rows = data.uiparams[0];
+    this.cols = data.uiparams[1];
+    initflag = 1;
+    c1.style.background = PLAYER.color1;
+    c1.style.border = "solid 2px black";
+    c2.style.background = PLAYER.pcolor2;
+    c3.style.background = PLAYER.pcolor3;
+    console.log(data);
+    HideLobby();
+    flag = true;
+  },
 
-// TODO: shift improvement
-function InitData(data) {
-  ColorList = data.ColorList;
-  PositionList = data.PositionList;
-  AllowedList = data.allowedlist;
-  Grows = data.uiparams[0];
-  Gcols = data.uiparams[1];
-}
-
-function SetCanvasSize() {
-
-  let w = window.innerWidth;
-  let h = window.innerHeight;
-  if (w > 650) w -= 100;
-  else h -= 100;
-
-  ViewSizeX = Math.round(w / CellSize) + 1;
-  ViewSizeY = Math.round(h / CellSize) + 1;
-
-  if (ViewSizeX > maxcells) {
-    ViewSizeX = maxcells + 1;
-    CellSize = Math.round(w / ViewSizeX);
-    ViewSizeY = Math.round(h / CellSize) + 1;
-  } else if (ViewSizeX < mincells) {
-    ViewSizeX = mincells + 1;
-    CellSize = Math.round(w / mincells);
-    ViewSizeY = Math.round(h / CellSize) + 1;
+  draw: function() {
+    MAP.update();
+    PLAYER.update(false);
+    PLAYER.draw();
+    MAP.draw();
   }
 
-  if (ViewSizeY > maxcells) {
-    ViewSizeY = maxcells + 2;
-    CellSize = Math.round(w / maxcells);
-    ViewSizeX = Math.round(w / CellSize) + 1;
-  } else if (ViewSizeY < mincells) {
-    ViewSizeY = mincells + 2;
-    CellSize = Math.round(h / mincells);
-    ViewSizeX = Math.round(w / CellSize) + 1;
-  }
-
-  if (ViewSizeX % 2 == 0) ViewSizeX--;
-  if (ViewSizeY % 2 == 0) ViewSizeY--;
-
-  vrows = (ViewSizeX - 1) / 2;
-  vcols = (ViewSizeY - 1) / 2;
-  lw = Math.round(CellSize / 6);
-
-  master.style.width = "" + CellSize * (ViewSizeX - 2) + "px";
-  master.style.height = "" + CellSize * (ViewSizeY - 2) + "px";
-  master.style.margin = (h - CellSize * (ViewSizeY - 2)) / 2 + "px " + (w - CellSize * (ViewSizeX - 2)) / 2 + "px";
-
-  topmask.style.height = (h - CellSize * (ViewSizeY - 2)) / 2 + "px ";
-  bottommask.style.height = (h - CellSize * (ViewSizeY - 2)) / 2 + "px ";
-  leftmask.style.width = (w - CellSize * (ViewSizeX - 2)) / 2 + "px ";
-  rightmask.style.width = (w - CellSize * (ViewSizeX - 2)) / 2 + "px ";
-
-  if (w > 650) rightmask.style.width = 100 + (w - CellSize * (ViewSizeX - 2)) / 2 + "px ";
-  else bottommask.style.height = 100 + (h - CellSize * (ViewSizeY - 2)) / 2 + "px ";
-
-  for (let i = 0; i < 3; i++) {
-    MapCanvas[i].width = CellSize * ViewSizeX;
-    MapCanvas[i].height = CellSize * ViewSizeY;
-  }
-
-  shift = Math.round(CellSize / 8);
-  PlayerCanvas.width = CellSize - shift * 4;
-  PlayerCanvas.height = CellSize - shift * 4;
-  shadow.style.width = CellSize - shift * 2 -2+ "px";
-  shadow.style.height = CellSize - shift * 2 -2+ "px";
-  shadow.style.borderRadius = shift + "px";
-  PlayerCanvas.style.borderWidth = shift + "px";
-  PlayerCanvas.style.borderRadius = shift + "px";
-
-};
-
-//////////////////////////////////////////////////////// PLAYER // TODO: improve scaling of player // TODO: fix can't access cell 0,0
-
-function SetPlayerInView(PLAYERPOS, animated) {
-  if (!animated) shadow.style.transitionDuration = PlayerCanvas.style.transitionDuration = "0s";
-  else shadow.style.transitionDuration = PlayerCanvas.style.transitionDuration = duration + "s";
-  let coord = indextocoord(PLAYERPOS);
-
-  if (coord[0] >= Grows - vcols) coord[0] += ViewSizeY - Gcols - 2;
-  else if (coord[0] >= vcols) coord[0] = vcols - 1;
-  if (coord[1] >= Gcols - vrows) coord[1] += ViewSizeX - Grows - 2;
-  else if (coord[1] >= vrows) coord[1] = vrows - 1;
-
-  shadow.style.top = PlayerCanvas.style.top = coord[0] * CellSize + shift + "px";
-  shadow.style.left = PlayerCanvas.style.left = coord[1] * CellSize + shift + "px";
-};
-
-function DrawPlayer() {
-  PlayerCanvas.style.background = selectedcolor;
-};
-
-
-//////////////////////////////////////////////////////// MAP
-
-function DrawCanvas(PLAYERPOS) {
-  ClearCanvas();
-  canvastoorigin(PLAYERPOS);
-
-  // Draw all allowed cells
-  AllowedList.forEach(function(position) {
-    drawallowed(position)
-  })
-
-  // Draw all colored cells
-  let len = ColorList.length;
-  for (i = 0; i < len; i++)
-    if (ColorList[i] !== null) fillcell(i, ColorList[i]);
-
-  // Draw all positions
-  PositionList.forEach(function(position) {
-    drawposition(position, "grey");
-  });
-
-};
-
-function ClearCanvas() {
-  ctx1.clearRect(0, 0, canvas2.width, canvas2.height);
-  ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
-  ctx3.clearRect(0, 0, canvas3.width, canvas3.height);
-};
-
-function MoveCanvas(direction, PLAYERPOS) {
-  if (!direction) return;
-  let coord = indextocoord(PLAYERPOS);
-  let dir;
-  if (direction == "up" && coord[0] >= vcols - 1 && coord[0] <= Grows - vcols - 1) dir = "Y(";
-  else if (direction == "down" && coord[0] >= vcols && coord[0] <= Grows - vcols) dir = "Y(-";
-  else if (direction == "right" && coord[1] >= vrows && coord[1] <= Gcols - vrows) dir = "X(-";
-  else if (direction == "left" && coord[1] >= vrows - 1 && coord[1] <= Gcols - vrows - 1) dir = "X(";
-  if (!dir) return;
-
-  for (let i = 0; i < 3; i++) {
-    MapCanvas[i].style.transitionDuration = duration + "s";
-    MapCanvas[i].style.transform = "translate" + dir + CellSize + "px)";
-  };
-};
-
-function canvastoorigin(PLAYERPOS) {
-  let coord = indextocoord(PLAYERPOS);
-  let coefx = 0;
-  let coefy = 0;
-
-  if (coord[0] >= Grows - vcols) coefx = 2;
-  else if (coord[0] >= vcols) coefx = 1;
-  if (coord[1] >= Gcols - vrows) coefy = 2;
-  else if (coord[1] >= vrows) coefy = 1;
-
-  for (let i = 0; i < 3; i++) {
-    MapCanvas[i].style.transitionDuration = "0s";
-    MapCanvas[i].style.transform = "translate(0, 0)";
-    MapCanvas[i].style.position = "absolute";
-    MapCanvas[i].style.top = "-" + CellSize * coefx + "px";
-    MapCanvas[i].style.left = "-" + CellSize * coefy + "px";
-  };
 };
 
 DRAW = {
-  setup: function() {
-    DRAW.start = Date.now();
+  init: function() {
+    PLAYER.update(true);
+    MAP.move(lastdir);
+    this.start = Date.now();
+    this.frame();
   },
+
   frame: function() {
+
     DRAW.delta = (Date.now() - DRAW.start) / 1000;
-    if (DRAW.delta >= duration) {
-      DrawCanvas(PLAYERPOS);
+    if (DRAW.delta >= MAP.duration) {
+      MAP.draw();
       flag = true;
       return;
     }
+
     DRAW.animationFrame = window.requestAnimationFrame(DRAW.frame);
+  },
+
+};
+
+PLAYER = {
+
+  init: function(data) {
+    this.position = data.position;
+    this.color1 = data.colors[0];
+    this.pcolor2 = data.colors[1];
+    this.pcolor3 = data.colors[2];
+    this.selectedcolor = data.colors[0];
+  },
+
+  update: function(animated) {
+
+    let coord = CELL.indextocoord(this.position);
+    this.vx = this.x = coord[0];
+    this.vy = this.y = coord[1];
+    this.isup = this.isdown = this.isleft = this.isright = false;
+    if (this.x >= GAME.rows - MAP.hcols) {
+      this.vx = this.x + MAP.cols - GAME.cols - 2
+      this.isdown = true;
+    } else if (this.x >= MAP.hcols) {
+      this.vx = MAP.hcols - 1
+      this.isup = true;
+    };
+    if (this.y >= GAME.cols - MAP.hrows) {
+      this.vy = this.y + MAP.rows - GAME.rows - 2
+      this.isright = true;
+    } else if (this.y >= MAP.hrows) {
+      this.isleft = true;
+      this.vy = MAP.hrows - 1
+    };
+
+    if (!animated) shadow.style.transitionDuration = PlayerCanvas.style.transitionDuration = "0s";
+    else shadow.style.transitionDuration = PlayerCanvas.style.transitionDuration = MAP.duration + "s";
+    shadow.style.top = PlayerCanvas.style.top = this.vx * MAP.CellSize + MAP.shift + "px";
+    shadow.style.left = PlayerCanvas.style.left = this.vy * MAP.CellSize + MAP.shift + "px";
+  },
+
+  draw: function() {
+    PlayerCanvas.style.background = PLAYER.selectedcolor;
   }
+
 };
 
-//////////////////////////////////////////////////////// CELL
+MAP = {
 
-function isinview(position, PLAYERPOS) {
-  let plpos = indextocoord(PLAYERPOS);
-  let cellpos = indextocoord(position);
+  init: function() {
+    this.maxcells = 14;
+    this.mincells = 5;
+    this.CellSize = 50;
+    this.duration = 0.2;
+  },
 
-  if (plpos[0] >= Grows - vcols) cellpos[0] += ViewSizeY - Gcols;
-  else if (plpos[0] >= vcols) cellpos[0] += vcols - plpos[0];
-  if (plpos[1] >= Gcols - vrows) cellpos[1] += ViewSizeX - Grows;
-  else if (plpos[1] >= vrows) cellpos[1] += vrows - plpos[1];
+  update: function() {
 
-  if (cellpos[0] < 0 || cellpos[0] > ViewSizeY || cellpos[1] < 0 || cellpos[1] > ViewSizeX) return;
-  else return [cellpos[0], cellpos[1]];
+    let w = window.innerWidth;
+    let h = window.innerHeight;
+    if (w > 650) w -= 100;
+    else h -= 100;
+
+    this.rows = Math.round(w / this.CellSize) + 1;
+    this.cols = Math.round(h / this.CellSize) + 1;
+
+    if (this.rows > this.maxcells) {
+      this.rows = this.maxcells + 1;
+      this.CellSize = Math.round(w / this.rows);
+      this.cols = Math.round(h / this.CellSize) + 1;
+    } else if (this.rows < this.mincells) {
+      this.rows = this.mincells + 1;
+      this.CellSize = Math.round(w / this.mincells);
+      this.cols = Math.round(h / this.CellSize) + 1;
+    }
+
+    if (this.cols > this.maxcells) {
+      this.cols = this.maxcells + 2;
+      this.CellSize = Math.round(w / this.maxcells);
+      this.rows = Math.round(w / this.CellSize) + 1;
+    } else if (this.cols < this.mincells) {
+      this.cols = this.mincells + 2;
+      this.CellSize = Math.round(h / this.mincells);
+      this.rows = Math.round(w / this.CellSize) + 1;
+    }
+
+    if (this.rows % 2 == 0) this.rows--;
+    if (this.cols % 2 == 0) this.cols--;
+
+    this.hrows = (this.rows - 1) / 2;
+    this.hcols = (this.cols - 1) / 2;
+    this.lw = Math.round(this.CellSize / 6);
+
+    master.style.width = "" + this.CellSize * (this.rows - 2) + "px";
+    master.style.height = "" + this.CellSize * (this.cols - 2) + "px";
+    master.style.margin = (h - this.CellSize * (this.cols - 2)) / 2 + "px " + (w - this.CellSize * (this.rows - 2)) / 2 + "px";
+
+    topmask.style.height = (h - this.CellSize * (this.cols - 2)) / 2 + "px ";
+    bottommask.style.height = (h - this.CellSize * (this.cols - 2)) / 2 + "px ";
+    leftmask.style.width = (w - this.CellSize * (this.rows - 2)) / 2 + "px ";
+    rightmask.style.width = (w - this.CellSize * (this.rows - 2)) / 2 + "px ";
+
+    if (w > 650) rightmask.style.width = 100 + (w - this.CellSize * (this.rows - 2)) / 2 + "px ";
+    else bottommask.style.height = 100 + (h - this.CellSize * (this.cols - 2)) / 2 + "px ";
+
+    for (let i = 0; i < 3; i++) {
+      MapCanvas[i].width = this.CellSize * this.rows;
+      MapCanvas[i].height = this.CellSize * this.cols;
+    }
+
+    this.shift = Math.round(this.CellSize / 8);
+    PlayerCanvas.width = this.CellSize - this.shift * 4;
+    PlayerCanvas.height = this.CellSize - this.shift * 4;
+    shadow.style.width = this.CellSize - this.shift * 2 - 2 + "px";
+    shadow.style.height = this.CellSize - this.shift * 2 - 2 + "px";
+    shadow.style.borderRadius = this.shift + "px";
+    PlayerCanvas.style.borderWidth = this.shift + "px";
+    PlayerCanvas.style.borderRadius = this.shift + "px";
+
+  },
+
+  draw: function() {
+    this.clear();
+    this.toOrigin();
+
+    // Draw all allowed cells
+    GAME.allowed.forEach(function(position) {
+      CELL.allow(position)
+    })
+
+    // Draw all colored cells
+    let len = GAME.colors.length;
+    for (i = 0; i < len; i++)
+      if (GAME.colors[i] !== null) CELL.fill(i, GAME.colors[i]);
+
+    // Draw all positions
+    GAME.positions.forEach(function(position) {
+      CELL.position(position, "grey");
+    });
+
+  },
+
+  move: function(dir) {
+    if (!dir) return;
+    let axis;
+    if (dir == "up" && PLAYER.x >= this.hcols - 1 && PLAYER.x <= GAME.rows - this.hcols - 1) axis = "Y(";
+    else if (dir == "down" && PLAYER.x >= this.hcols && PLAYER.x <= GAME.rows - this.hcols) axis = "Y(-";
+    else if (dir == "right" && PLAYER.y >= this.hrows && PLAYER.y <= GAME.cols - this.hrows) axis = "X(-";
+    else if (dir == "left" && PLAYER.y >= this.hrows - 1 && PLAYER.y <= GAME.cols - this.hrows - 1) axis = "X(";
+    if (!axis) return;
+    for (let i = 0; i < 3; i++) {
+      MapCanvas[i].style.transitionDuration = this.duration + "s";
+      MapCanvas[i].style.transform = "translate" + axis + this.CellSize + "px)";
+    };
+  },
+
+  toOrigin: function() {
+    let coefx = 0;
+    let coefy = 0;
+
+    if (PLAYER.isdown) coefx = 2;
+    else if (PLAYER.isup) coefx = 1;
+    if (PLAYER.isright) coefy = 2;
+    else if (PLAYER.isleft) coefy = 1;
+
+    for (let i = 0; i < 3; i++) {
+      MapCanvas[i].style.transitionDuration = "0s";
+      MapCanvas[i].style.transform = "translate(0, 0)";
+      MapCanvas[i].style.position = "absolute";
+      MapCanvas[i].style.top = "-" + this.CellSize * coefx + "px";
+      MapCanvas[i].style.left = "-" + this.CellSize * coefy + "px";
+    };
+  },
+
+  clear: function() {
+    ctx1.clearRect(0, 0, canvas2.width, canvas2.height);
+    ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
+    ctx3.clearRect(0, 0, canvas3.width, canvas3.height);
+  },
+
+  zoomin: function() {
+    if (this.CellSize > 100) return;
+    this.CellSize += 3;
+    GAME.draw();
+  },
+
+  zoomout: function() {
+    if (this.CellSize < 10) return;
+    this.CellSize -= 3;
+    GAME.draw();
+  }
+
 };
 
-function fillcell(position, color) {
-  let cell = isinview(position, PLAYERPOS);
-  if (!cell) return;
+CELL = {
 
-  ctx2.clearRect(CellSize * cell[1], CellSize * cell[0], CellSize, CellSize);
-  ctx2.fillStyle = color;
-  ctx2.fillRect(CellSize * cell[1], CellSize * cell[0], CellSize, CellSize)
-}
+  check: function(position) {
+    let plpos = this.indextocoord(PLAYER.position);
+    let cellpos = this.indextocoord(position);
 
-function drawcell(position, color) {
-  let cell = isinview(position, PLAYERPOS);
-  if (!cell) return;
-  flag = false;
-  window.FILL.setup(CellSize * cell[1], CellSize * (cell[0] + 1), lw, color);
-  window.FILL.frame();
-}
+    if (PLAYER.isdown) cellpos[0] += MAP.cols - GAME.rows;
+    else if (PLAYER.isup) cellpos[0] += MAP.hcols - plpos[0];
+    if (PLAYER.isright) cellpos[1] += MAP.rows - GAME.rows;
+    else if (PLAYER.isleft) cellpos[1] += MAP.hrows - plpos[1];
+
+    if (cellpos[0] < 0 || cellpos[0] > MAP.cols || cellpos[1] < 0 || cellpos[1] > MAP.rows) return;
+    else return [cellpos[0], cellpos[1]];
+  },
+
+  fill: function(position, color) {
+    let cell = this.check(position, this.position);
+    if (!cell) return;
+
+    ctx2.clearRect(MAP.CellSize * cell[1], MAP.CellSize * cell[0], MAP.CellSize, MAP.CellSize);
+    ctx2.fillStyle = color;
+    ctx2.fillRect(MAP.CellSize * cell[1], MAP.CellSize * cell[0], MAP.CellSize, MAP.CellSize)
+  },
+
+  position: function(position, color) {
+    let cell = CELL.check(position, PLAYER.position);
+    if (!cell) return;
+    ctx3.lineWidth = 2;
+    ctx3.strokeStyle = color;
+    ctx3.strokeRect(MAP.CellSize * cell[1] + 9, MAP.CellSize * cell[0] + 9, MAP.CellSize - 18, MAP.CellSize - 18);
+    ctx3.lineWidth = 8;
+    ctx3.strokeStyle = "white";
+    ctx3.strokeRect(MAP.CellSize * cell[1] + 14, MAP.CellSize * cell[0] + 14, MAP.CellSize - 28, MAP.CellSize - 28);
+    ctx3.lineWidth = 2;
+    ctx3.strokeStyle = color;
+    ctx3.strokeRect(MAP.CellSize * cell[1] + 18, MAP.CellSize * cell[0] + 18, MAP.CellSize - 36, MAP.CellSize - 36);
+  },
+
+  clear: function(position) {
+    let cell = CELL.check(position, PLAYER.position);
+    if (!cell) return;
+    ctx3.clearRect(MAP.CellSize * cell[1], MAP.CellSize * cell[0], MAP.CellSize, MAP.CellSize);
+  },
+
+  allow: function(position) {
+    let cell = this.check(position, PLAYER.position);
+    if (!cell) return;
+    ctx1.clearRect(MAP.CellSize * cell[1], MAP.CellSize * cell[0], MAP.CellSize, MAP.CellSize);
+    ctx1.fillStyle = "#e9e9e9";
+    ctx1.fillRect(MAP.CellSize * cell[1], MAP.CellSize * cell[0], MAP.CellSize, MAP.CellSize)
+  },
+
+  draw: function(position, color) {
+    let cell = this.check(position, this.position);
+    if (!cell) return;
+    flag = false;
+    window.FILL.setup(MAP.CellSize * cell[1], MAP.CellSize * (cell[0] + 1), MAP.lw, color);
+    window.FILL.frame();
+  },
+
+  indextocoord: function(index) {
+    let coordx = (index - (index % GAME.rows)) / GAME.cols;
+    let coordy = (index % GAME.cols);
+    return [coordx, coordy];
+  }
+
+};
 
 FILL = {
+
   setup: function(cellx, celly, linewidth, color) {
-    FILL.divx = 0;
-    FILL.divy = 0;
-    FILL.posx = cellx;
-    FILL.posy = celly;
-    FILL.lw = linewidth;
-    FILL.color = color;
-    ctx2.lineWidth = linewidth;
+    this.divx = 0;
+    this.divy = 0;
+    this.posx = cellx;
+    this.posy = celly;
+    this.lw = MAP.lw;
+    this.color = color;
+    ctx2.lineWidth = MAP.lw;
   },
+
   frame: function() {
-    if (FILL.divx == CellSize) {
+    if (FILL.divx == MAP.CellSize) {
       FILL.divy += FILL.lw;
       FILL.divx = 0;
     }
-    FILL.divx += Math.round(CellSize / 8);
-    if (FILL.divx >= CellSize * 0.65) {
-      FILL.divx = CellSize;
+    FILL.divx += Math.round(MAP.CellSize / 8);
+    if (FILL.divx >= MAP.CellSize * 0.65) {
+      FILL.divx = MAP.CellSize;
     }
-    if (FILL.divy > CellSize * 4.5 / 6) {
-      FILL.lw = CellSize - FILL.divy;
+    if (FILL.divy > MAP.CellSize * 4.5 / 6) {
+      FILL.lw = MAP.CellSize - FILL.divy;
       ctx2.lineWidth = FILL.lw;
-      FILL.divy = CellSize - FILL.lw;
+      FILL.divy = MAP.CellSize - FILL.lw;
     }
     ctx2.strokeStyle = FILL.color;
     ctx2.beginPath();
     ctx2.moveTo(FILL.posx, FILL.posy - FILL.divy - FILL.lw / 2);
     ctx2.lineTo(FILL.posx + FILL.divx, FILL.posy - FILL.divy - FILL.lw / 2);
     ctx2.stroke();
-    if (FILL.divy > CellSize * 4.5 / 6 && FILL.divx == CellSize) {
+    if (FILL.divy > MAP.CellSize * 4.5 / 6 && FILL.divx == MAP.CellSize) {
       flag = true;
       return;
     };
     FILL.animationFrame = window.requestAnimationFrame(FILL.frame);
   }
+
 };
-
-function drawallowed(position) {
-  let cell = isinview(position, PLAYERPOS);
-  if (!cell) return;
-  ctx1.clearRect(CellSize * cell[1], CellSize * cell[0], CellSize, CellSize);
-  ctx1.fillStyle = "#e9e9e9";
-  ctx1.fillRect(CellSize * cell[1], CellSize * cell[0], CellSize, CellSize)
-};
-
-function drawposition(position, color) {
-  let cell = isinview(position, PLAYERPOS);
-  if (!cell) return;
-  ctx3.lineWidth = 2;
-  ctx3.strokeStyle = color;
-  ctx3.strokeRect(CellSize * cell[1] + 9, CellSize * cell[0] + 9, CellSize - 18, CellSize - 18);
-  ctx3.lineWidth = 8;
-  ctx3.strokeStyle = "white";
-  ctx3.strokeRect(CellSize * cell[1] + 14, CellSize * cell[0] + 14, CellSize - 28, CellSize - 28);
-  ctx3.lineWidth = 2;
-  ctx3.strokeStyle = color;
-  ctx3.strokeRect(CellSize * cell[1] + 18, CellSize * cell[0] + 18, CellSize - 36, CellSize - 36);
-};
-
-function drawrect(ctx, linewidth, color, distance, start) {
-  ctx.lineWidth = linewidth;
-  ctx.strokeStyle = color;
-  ctx.strokeRect(start + distance, start + distance, CellSize - distance * 2, CellSize - distance * 2);
-}
-
-function clearposition(position) {
-  let cell = isinview(position, PLAYERPOS);
-  if (!cell) return;
-  ctx3.clearRect(CellSize * cell[1], CellSize * cell[0], CellSize, CellSize);
-};
-
-//////////////////////////////////////////////////////// UTILS
-
-function indextocoord(index) {
-  let coordx = (index - (index % Grows)) / Gcols;
-  let coordy = (index % Gcols);
-  return [coordx, coordy];
-}
-
-function coordtoindex(coord) {
-  let index = Grows * coord[0] + coord[1];
-  return index;
-}
-
-function zoominview() {
-  if (CellSize > 100) return;
-  CellSize += 3;
-  SetCanvasSize();
-  SetPlayerInView(PLAYERPOS, false);
-  DrawPlayer();
-  DrawCanvas(PLAYERPOS);
-}
-
-function zoomoutview() {
-  if (CellSize < 10) return;
-  CellSize -= 3;
-  SetCanvasSize();
-  SetPlayerInView(PLAYERPOS, false);
-  DrawPlayer();
-  DrawCanvas(PLAYERPOS);
-}

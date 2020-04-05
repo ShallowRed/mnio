@@ -15,14 +15,8 @@ document.getElementById('login').addEventListener('click', function() {
 
 // Receive data needed for initialization, start the game
 socket.on('InitData', function(data) {
-  console.log("yess");
-  InitGame(data);
-  SetCanvasSize();
-  DrawCanvas(PLAYERPOS);
-  SetPlayerInView(PLAYERPOS, false);
-  DrawPlayer();
-  hidevolet();
-  flag = true;
+  GAME.init(data);
+  GAME.draw();
 });
 
 ////////////////////////////////////////// IN-GAME EVENT RECEPTION
@@ -30,37 +24,34 @@ socket.on('InitData', function(data) {
 //Move player if new position has ben allowed on server side
 socket.on("NewPlayerPos", function(position) {
   flag = false;
-  PLAYERPOS = position;
-  MoveCanvas(lastdir, PLAYERPOS);
-  SetPlayerInView(PLAYERPOS, true);
-  window.DRAW.setup();
-  window.DRAW.frame();
+  PLAYER.position = position;
+  window.DRAW.init();
 });
 
 // Set other's new position when they move
 socket.on("NewPosition", function(position) {
-  PositionList.push(position);
-  drawposition(position, "grey");
+  GAME.positions.push(position);
+  CELL.position(position, "grey");
 });
 
 //Clear other's last position when they moves
 socket.on("ClearPosition", function(position) {
-  PositionList.splice(PositionList.indexOf(position), 1);
-  clearposition(position);
+  GAME.positions.splice(GAME.positions.indexOf(position), 1);
+  CELL.clear(position);
 });
 
 //Fill other's cells when they do so
 socket.on('NewCell', function(cell) {
-  ColorList[cell.position] = cell.color;
-  fillcell(cell.position, cell.color);
+  GAME.colors[cell.position] = cell.color;
+  CELL.fill(cell.position, cell.color);
 });
 
 // Draw the cells where the player is allowed to move
 socket.on('AllowedCells', function(cells) {
   cells.forEach(function(position) {
-    if (!AllowedList.includes(position)) {
-      AllowedList.push(position);
-      drawallowed(position);
+    if (!GAME.allowed.includes(position)) {
+      GAME.allowed.push(position);
+      CELL.allow(position);
     };
   });
 });
@@ -68,9 +59,9 @@ socket.on('AllowedCells', function(cells) {
 ////////////////////////////////////////// IN-GAME EVENT EMISSION
 
 //Fill active player cell when he says so
-function fillplayercell(position, color) {
-  ColorList[position] = color;
-  drawcell(position, color);
+function DrawCell(position, color) {
+  GAME.colors[position] = color;
+  CELL.draw(position, color);
   socket.emit("DrawCell", [position, color]);
 }
 

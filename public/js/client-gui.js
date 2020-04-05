@@ -1,14 +1,11 @@
-var PLAYERPOS;
-var selectedcolor, pcolor1, pcolor2, pcolor3;
-
 var initflag = 0;
 var flag = false;
 
 const c1 = document.getElementById('c1');
 const c2 = document.getElementById('c2');
+const c3 = document.getElementById('c3');
 const zoomin = document.getElementById('zoomin');
 const zoomout = document.getElementById('zoomout');
-const fill = document.getElementById('fill');
 
 const topmask = document.getElementById('topmask');
 const bottommask = document.getElementById('bottommask');
@@ -17,97 +14,81 @@ const rightmask = document.getElementById('rightmask');
 
 const volet = document.getElementById('volet');
 
-//////////// PARAMETERS INITIALIZATION ////////////
-
-function InitGame(data) {
-  InitData(data);
-  initflag = 1;
-
-  PLAYERPOS = data.position;
-  pcolor1 = data.colors[0];
-  pcolor2 = data.colors[1];
-  pcolor3 = data.colors[2];
-  selectedcolor = pcolor1;
-
-  c1.style.background = pcolor1;
-  c1.style.border = "solid 2px black";
-  c2.style.background = pcolor2;
-  c3.style.background = pcolor3;
-  console.log(data);
-}
+//////////////// UI UTILS ////////////////////
 
 // Turn on game visibility when content loaded
-function hidevolet() {
+function HideLobby() {
   volet.style.opacity = "0";
   setTimeout(function() {
     volet.style.display = "none";
   }, 500);
 }
 
-//resize grid and cell on window sizing
-window.addEventListener('resize', function() {
-  SetCanvasSize();
-  SetPlayerInView(PLAYERPOS, false);
-  DrawPlayer();
-  DrawCanvas(PLAYERPOS);
-}, true);
-
-//////////////// UI UTILS ////////////////////
-
+// // TODO: fix broken color selection
 function selectc1() {
-  selectedcolor = pcolor1;
+  PLAYER.selectedcolor = PLAYER.color1;
   c1.style.border = "solid 2px black";
   c2.style.border = "solid 2px white";
   c3.style.border = "solid 2px white";
-  DrawPlayer();
+  PLAYER.draw();
 }
 
 function selectc2() {
-  selectedcolor = pcolor2;
+  PLAYER.selectedcolor = PLAYER.color2;
   c1.style.border = "solid 2px white";
   c2.style.border = "solid 2px black";
   c3.style.border = "solid 2px white";;
-  DrawPlayer();
+  PLAYER.draw();
 }
 
 function selectc3() {
-  selectedcolor = pcolor3;
+  PLAYER.selectedcolor = PLAYER.color3;
   c1.style.border = "solid 2px white";
   c2.style.border = "solid 2px white";
   c3.style.border = "solid 2px black";
-  DrawPlayer();
+  PLAYER.draw();
 }
 
+function selectup() {
+  if (PLAYER.selectedcolor == PLAYER.color1) selectc3();
+  else if (PLAYER.selectedcolor == PLAYER.color2) selectc1();
+  else selectc2();
+}
+
+function selectdown() {
+  if (PLAYER.selectedcolor == PLAYER.color1) selectc2();
+  else if (PLAYER.selectedcolor == PLAYER.color2) selectc3();
+  else selectc1();
+}
 
 c1.addEventListener("click", function() {
   selectc1();
- fillplayercell(PLAYERPOS, selectedcolor);
+  DrawCell(PLAYER.position, PLAYER.selectedcolor);
 });
 
 c2.addEventListener("click", function() {
   selectc2();
-  fillplayercell(PLAYERPOS, selectedcolor);
+  DrawCell(PLAYER.position, PLAYER.selectedcolor);
 });
 
 c3.addEventListener("click", function() {
   selectc3();
-  fillplayercell(PLAYERPOS, selectedcolor);
+  DrawCell(PLAYER.position, PLAYER.selectedcolor);
 });
 
-
-// TODO: scroll with mouse
-// TODO: log scale for scrolling
+// TODO: scroll with mouse  // TODO: log scale for scrolling
 zoomin.addEventListener("click", function() {
-  if (flag) zoominview();
+  if (flag) MAP.zoomin();
 });
 
 zoomout.addEventListener("click", function() {
-  if (flag) zoomoutview();
+  if (flag) MAP.zoomout();
 });
 
-fill.addEventListener("click", function() {
-  if (flag) fillplayercell(PLAYERPOS, selectedcolor);
-});
+//resize grid and cell on window sizing
+window.addEventListener('resize', function() {
+  GAME.draw();
+}, true);
 
 // TODO: button flip button left/right side
 
@@ -121,25 +102,25 @@ fill.addEventListener("click", function() {
   for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
     window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
     window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] ||
-    window[vendors[x] + 'CancelRequestAnimationFrame'];
+      window[vendors[x] + 'CancelRequestAnimationFrame'];
   }
 
   if (!window.requestAnimationFrame)
-  window.requestAnimationFrame = function(callback, element) {
-    var currTime = new Date().getTime();
-    var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-    var id = window.setTimeout(function() {
-      callback(currTime + timeToCall);
-    },
-    timeToCall);
-    lastTime = currTime + timeToCall;
-    return id;
-  };
+    window.requestAnimationFrame = function(callback, element) {
+      var currTime = new Date().getTime();
+      var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+      var id = window.setTimeout(function() {
+          callback(currTime + timeToCall);
+        },
+        timeToCall);
+      lastTime = currTime + timeToCall;
+      return id;
+    };
 
   if (!window.cancelAnimationFrame)
-  window.cancelAnimationFrame = function(id) {
-    clearTimeout(id);
-  };
+    window.cancelAnimationFrame = function(id) {
+      clearTimeout(id);
+    };
 }());
 
 window.FILL = window.FILL || {};

@@ -39,7 +39,7 @@ function setallowedcells(owncells) {
   let averagepos = [Math.round(xcount / length), Math.round(ycount / length)];
   // if (owncells.length>10) limit = Math.sqrt(owncells.length);
   // limit = Math.round(Math.pow(Math.sqrt(owncells.length) + 2), 2);
-  console.log(limit);
+  //console.log(limit);
 
   neighbors.forEach(function(cell) {
     let distfromavx = Math.abs(cell[0] - averagepos[0]);

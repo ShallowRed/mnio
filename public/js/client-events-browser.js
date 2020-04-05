@@ -3,15 +3,15 @@ document.addEventListener('keydown', function(event) {
   if (flag) switch (event.keyCode) {
 
     case 32: // Spacebar
-      fillplayercell(PLAYERPOS, selectedcolor);
+      DrawCell(PLAYER.position, PLAYER.selectedcolor);
       break;
 
     case 37: // left arrow
-      zoominview();
+      MAP.zoomin();
       break;
 
     case 39: // right arrow
-      zoomoutview();
+      MAP.zoomout();
       break;
 
     case 38: // top arrow
@@ -39,15 +39,3 @@ document.addEventListener('keydown', function(event) {
       break;
   }
 });
-
-function selectup() {
-  if (selectedcolor == pcolor1) selectc3();
-  else if (selectedcolor == pcolor2) selectc1();
-  else selectc2();
-}
-
-function selectdown() {
-  if (selectedcolor == pcolor1) selectc2();
-  else if (selectedcolor == pcolor2) selectc3();
-  else selectc1();
-}
