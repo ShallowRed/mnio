@@ -1,22 +1,13 @@
-var initflag = 0;
-var flag = false;
-
+const volet = document.getElementById('volet');
 const c1 = document.getElementById('c1');
 const c2 = document.getElementById('c2');
 const c3 = document.getElementById('c3');
 const zoomin = document.getElementById('zoomin');
 const zoomout = document.getElementById('zoomout');
-
-const topmask = document.getElementById('topmask');
-const bottommask = document.getElementById('bottommask');
-const leftmask = document.getElementById('leftmask');
-const rightmask = document.getElementById('rightmask');
-
-const volet = document.getElementById('volet');
+var flag = false;
 
 //////////////// UI UTILS ////////////////////
 
-// Turn on game visibility when content loaded
 function HideLobby() {
   volet.style.opacity = "0";
   setTimeout(function() {
@@ -24,7 +15,6 @@ function HideLobby() {
   }, 500);
 }
 
-// // TODO: fix broken color selection
 function selectc1() {
   PLAYER.selectedcolor = PLAYER.color1;
   c1.style.border = "solid 2px black";
@@ -49,34 +39,21 @@ function selectc3() {
   PLAYER.draw();
 }
 
-function selectup() {
-  if (PLAYER.selectedcolor == PLAYER.color1) selectc3();
-  else if (PLAYER.selectedcolor == PLAYER.color2) selectc1();
-  else selectc2();
-}
-
-function selectdown() {
-  if (PLAYER.selectedcolor == PLAYER.color1) selectc2();
-  else if (PLAYER.selectedcolor == PLAYER.color2) selectc3();
-  else selectc1();
-}
-
 c1.addEventListener("click", function() {
   selectc1();
-  DrawCell(PLAYER.position, PLAYER.selectedcolor);
+  drawcell(PLAYER.position, PLAYER.selectedcolor);
 });
 
 c2.addEventListener("click", function() {
   selectc2();
-  DrawCell(PLAYER.position, PLAYER.selectedcolor);
+  drawcell(PLAYER.position, PLAYER.selectedcolor);
 });
 
 c3.addEventListener("click", function() {
   selectc3();
-  DrawCell(PLAYER.position, PLAYER.selectedcolor);
+  drawcell(PLAYER.position, PLAYER.selectedcolor);
 });
 
-// TODO: scroll with mouse  // TODO: log scale for scrolling
 zoomin.addEventListener("click", function() {
   if (flag) MAP.zoomin();
 });
@@ -85,7 +62,6 @@ zoomout.addEventListener("click", function() {
   if (flag) MAP.zoomout();
 });
 
-//resize grid and cell on window sizing
 window.addEventListener('resize', function() {
   GAME.draw();
 }, true);
@@ -123,5 +99,5 @@ window.addEventListener('resize', function() {
     };
 }());
 
-window.FILL = window.FILL || {};
-window.DRAW = window.DRAW || {};
+window.Fill = window.Fill || {};
+window.Translate = window.Translate || {};

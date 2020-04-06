@@ -32,38 +32,44 @@ app.set("views", path.resolve(__dirname, "views"));
 
 ////////////////////////////// INITIALIZE //////////////////////////////////////
 
-// Create an array to store the color value of each cell in the grid
-var ColorList = new Array(rows * cols).fill(null)
+// class mniogame {
+//   constructor(){
+//     this.Colorlist = new Array(rows * cols).fill(null);
+//     this.PositionList = [];
+//     this.Players = {}
+//   }
+// }
+// var MNIO = new mniogame();
 
-// Create an array to store the position of each active player on the grid
-var PositionList = [];
-
-// Create an object to store active players data
-var PLAYERS = {};
-
+const MNIO = {
+  ColorList: new Array(rows * cols).fill(null),
+  PositionList: [],
+  PLAYERS: {}
+}
+Database.ConnectDB();
 //////////////////////////// ON PLAYER CONNECTION //////////////////////////////
 
 io.on('connection', function(socket) {
 
-  // socket.on("login", function(data) {
-  //   Database.LogPlayer(data.user, data.pass, socket, ColorList, PositionList, PLAYERS);
-  // });
+  socket.on("login", function(data) {
+    Database.LogPlayer(data.user, data.pass, socket, MNIO);
+  });
 
-  GAME.InitPlayer("test", 150, null, [], [], socket, ColorList, PositionList, PLAYERS);
+  // GAME.InitPlayer("test", 150, null, [], [], socket, MNIO);
 
   socket.on('MovePlayer', function(direction) {
-    GAME.MovePlayer(direction, socket, ColorList, PositionList, PLAYERS);
+    GAME.MovePlayer(direction, socket, MNIO);
   });
 
   socket.on('DrawCell', function(cell) {
-    GAME.DrawCell(cell, socket, ColorList, PLAYERS);
-    // Database.SaveFill(cell[0], PLAYERS[socket.id].dbid, cell[1].split('#')[1]);
+    GAME.DrawCell(cell, socket, MNIO);
+    Database.SaveFill(cell[0], MNIO.PLAYERS[socket.id].dbid, cell[1].split('#')[1]);
   });
 
   socket.on('disconnect', function() {
-    if (!PLAYERS[socket.id]) return;
-    GAME.DisconnectPlayer(socket, PositionList, PLAYERS);
-    // Database.SavePlayer(PLAYERS[socket.id].dbid, PLAYERS[socket.id].colors);
+    if (!MNIO.PLAYERS[socket.id]) return;
+    GAME.DisconnectPlayer(socket, MNIO);
+    Database.SavePlayer(MNIO.PLAYERS[socket.id].dbid, MNIO.PLAYERS[socket.id].colors);
   });
 
   socket.on("admin", function() {

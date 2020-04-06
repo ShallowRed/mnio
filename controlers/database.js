@@ -31,6 +31,7 @@ const IsUserinPlayers = "SELECT * FROM game_?__players WHERE playerid=?";
 const AddCelltoGrid = "INSERT INTO game_?__grid (`cellid`, `playerid`, `color`)  VALUES(?, ?, ?)";
 const SaveUserPalette = "INSERT INTO game_?__players (`playerid`, `color1`, `color2`, `color3`) VALUES(?, ?, ?, ?)";
 
+function ConnectDB() {
 db.connect(function(error) {
   if (!!error)
     throw error;
@@ -64,6 +65,7 @@ db.connect(function(error) {
     });
   });
 });
+}
 
 function SaveFill(cellid, playerid, color) {
   db.query(GetGameid, [GAMEDATE], function(err, res1) {
@@ -92,7 +94,7 @@ function SavePlayer(playerid, col) {
   });
 };
 
-function LogPlayer(user, pass, socket, ColorList, PositionList, PLAYERS) {
+function LogPlayer(user, pass, socket, MNIO) {
 
   db.query(IsUserinUsers, [user], function(err, res1, fields) {
     let userinusers = res1;
@@ -104,7 +106,7 @@ function LogPlayer(user, pass, socket, ColorList, PositionList, PLAYERS) {
 
       db.query(AddUsertoUsers, [user, pass], function(err, result) {
         if (!!err) throw err;
-        GAME.InitPlayer(result.insertId, user, position, colors, owncells, socket, ColorList, PositionList, PLAYERS); // req.session.userID = result.insertId; req.session.save();
+        GAME.InitPlayer(result.insertId, user, position, colors, owncells, socket, MNIO); // req.session.userID = result.insertId; req.session.save();
       });
 
     } else if (pass == userinusers[0].Password) { // If user is in database
@@ -133,10 +135,10 @@ function LogPlayer(user, pass, socket, ColorList, PositionList, PLAYERS) {
                 useringrid.forEach(function(cell) {
                   owncells.push(cell.cellid);
                 });
-                GAME.InitPlayer(playerid, user, owncells[0], colors, owncells, socket, ColorList, PositionList, PLAYERS);
+                GAME.InitPlayer(playerid, user, owncells[0], colors, owncells, socket, MNIO);
               };
             });
-          } else GAME.InitPlayer(playerid, user, position, colors, owncells, socket, ColorList, PositionList, PLAYERS); // If player never draw
+          } else GAME.InitPlayer(playerid, user, position, colors, owncells, socket, MNIO); // If player never draw
         });
       });
     } else GAME.InitPlayer(null, null, null, null, null, socket, null, null, null); // If wrong password
@@ -156,6 +158,7 @@ function getcanvas() {
 }
 
 module.exports = {
+  ConnectDB,
   LogPlayer,
   SaveFill,
   SavePlayer,
