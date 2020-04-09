@@ -46,16 +46,20 @@ const MNIO = {
   PositionList: [],
   PLAYERS: {}
 }
-// Database.ConnectDB();
+Database.connect();
+Database.init(MNIO.ColorList);
+// Database.getgames();
+
 //////////////////////////// ON PLAYER CONNECTION //////////////////////////////
 
 io.on('connection', function(socket) {
 
-  // socket.on("login", function(data) {
-  //   Database.LogPlayer(data.user, data.pass, socket, MNIO);
-  // });
+  socket.on("login", function(data) {
+    Database.LogPlayer(data.user, data.pass, socket, MNIO);
+    console.log(MNIO.ColorList);
+  });
 
-  GAME.InitPlayer("test", 150, null, [], [], socket, MNIO);
+  // GAME.InitPlayer("test", 150, null, [], [], socket, MNIO);
 
   socket.on('MovePlayer', function(direction) {
     GAME.MovePlayer(direction, socket, MNIO);
@@ -63,25 +67,31 @@ io.on('connection', function(socket) {
 
   socket.on('DrawCell', function(cell) {
     GAME.DrawCell(cell, socket, MNIO);
-    // Database.SaveFill(cell[0], MNIO.PLAYERS[socket.id].dbid, cell[1].split('#')[1]);
+    Database.SaveFill(cell[0], MNIO.PLAYERS[socket.id].dbid, cell[1].split('#')[1]);
   });
 
   socket.on('disconnect', function() {
     if (!MNIO.PLAYERS[socket.id]) return;
     GAME.DisconnectPlayer(socket, MNIO);
-    // Database.SavePlayer(MNIO.PLAYERS[socket.id].dbid, MNIO.PLAYERS[socket.id].colors);
+    Database.SavePlayer(MNIO.PLAYERS[socket.id].dbid, MNIO.PLAYERS[socket.id].colors);
   });
 
   socket.on("admin", function() {
     socket.emit("initadmin", {
-      ColorList: ColorList,
+      ColorList: MNIO.ColorList,
       rows: rows,
       cols: cols
     });
   })
 
-  socket.on("askfordb", function() {
-    //Database.getcanvas();
+  socket.on("getgames", function() {
+    Database.getgames(socket);
   })
+
+  socket.on("gettable", function(data) {
+    console.log(data);
+    Database.gettable(socket, data);
+  })
+
 
 });

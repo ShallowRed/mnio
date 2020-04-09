@@ -60,7 +60,7 @@ socket.on('AllowedCells', function(cells) {
 //Fill active player cell when he says so
 function drawcell(position, color) {
   GAME.colors[position] = color;
-  Cell.draw(position, color);
+  Cell.render(position, color);
   socket.emit("DrawCell", [position, color]);
 }
 

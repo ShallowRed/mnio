@@ -4,68 +4,113 @@ const rows = Config.rows;
 const cols = Config.cols;
 const GAME = require('./index');
 const config = Config.conf;
-
 var db = mysql.createConnection({
   host: config.host,
   user: config.user,
   password: config.password,
   database: config.base
 });
-
 var GAMEDATE = Math.floor(Date.now() / 1000);
 
+function connect() {
+  db.connect(function(error) {
+    if (!!error)
+      throw error;
+    console.log('mysql connected to ' + config.host + ", user " + config.user + ", database " + config.base);
+  });
+}
+
+const Testdb = "SELECT * FROM games"
+// const Testdb = "SHOW FULL TABLES FROM mniosql LIKE '%grid'"
+
+function getgames(socket) {
+  db.query(Testdb, function(err, res) {
+    if (!!err) throw err;
+    console.log(res);
+    let games = [];
+    res.forEach(function(game) {
+      games.push([game.gameid, game.usedrows, game.usedcols, game.flag]);
+    });
+    GAME.sendgames(socket, games);
+  });
+}
+
+function gettable(socket, gameid) {
+  db.query(SelectGrid, [parseInt(gameid)], function(err, res) {
+    if (!!err) throw err;
+    let cells = [];
+    res.forEach(function(cell) {
+      cells.push([cell.cellid, '#'+ cell.color]);
+    });
+    GAME.sendtable(socket, cells);
+  });
+}
+
+const GetLastGame = "SELECT * FROM games ORDER BY gameid DESC LIMIT 1"
+const UpdateTime = "UPDATE games SET gridid = ? WHERE gameid = ?"
+
+function init(ColorList) {
+  CreateMainDB();
+  db.query(GetLastGame, function(err, res1) {
+    if (!!err) throw err;
+    if (!res1.length) CreateGameDB();
+    else if (!res1[0].flag) {
+      ColorlistfromDB(ColorList, [res1[0].gameid]);
+      db.query(UpdateTime, [GAMEDATE, res1[0].gameid], function(err, res2) {
+        if (!!err) throw err;
+      });
+    } else CreateGameDB();
+  });
+}
+
+const SelectGrid = "SELECT * FROM game_?__grid"
+
+function ColorlistfromDB(ColorList, gameid) {
+  db.query(SelectGrid, [gameid], function(err, res2) {
+    if (!!err) throw err;
+    res2.forEach(function(cell) {
+      ColorList[cell.cellid] = '#' + cell.color;
+    });
+  });
+}
+
 const CreateUsersTable = "CREATE TABLE IF NOT EXISTS users (playerid MEDIUMINT PRIMARY KEY NOT NULL AUTO_INCREMENT, Username VARCHAR(15) NOT NULL, Password VARCHAR(20) NOT NULL)"
-const CreateGamesTable = "CREATE TABLE IF NOT EXISTS games (gameid INT PRIMARY KEY NOT NULL AUTO_INCREMENT, usedrows SMALLINT NOT NULL, usedcols SMALLINT NOT NULL, gridid INT NOT NULL)"
+const CreateGamesTable = "CREATE TABLE IF NOT EXISTS games (gameid INT PRIMARY KEY NOT NULL AUTO_INCREMENT, usedrows SMALLINT NOT NULL, usedcols SMALLINT NOT NULL, gridid INT NOT NULL, flag BOOLEAN)"
 
-const CreateGridTable = "CREATE TABLE game_?__grid (orderid INT PRIMARY KEY NOT NULL AUTO_INCREMENT, cellid MEDIUMINT NOT NULL, playerid SMALLINT NOT NULL, color VARCHAR(6) NOT NULL)";
-const CreatePlayersTable = "CREATE TABLE game_?__players (playerid SMALLINT PRIMARY KEY NOT NULL, color1 VARCHAR(6) NOT NULL, color2 VARCHAR(6) NOT NULL, color3 VARCHAR(6) NOT NULL)";
-const SaveGame = "INSERT INTO games (`usedrows`, `usedcols`, `gridid`) VALUES(?, ?, ?)";
-const GetGameid = "SELECT gameid FROM games WHERE gridid=?";
-
-const IsUserinUsers = "SELECT * FROM users WHERE Username=?";
-const AddUsertoUsers = "INSERT INTO users (`Username`, `Password`) VALUES(?, ?)";
-
-const IsUserinGrid = "SELECT * FROM game_?__grid WHERE playerid=?";
-const IsUserinPlayers = "SELECT * FROM game_?__players WHERE playerid=?";
-
-const AddCelltoGrid = "INSERT INTO game_?__grid (`cellid`, `playerid`, `color`)  VALUES(?, ?, ?)";
-const SaveUserPalette = "INSERT INTO game_?__players (`playerid`, `color1`, `color2`, `color3`) VALUES(?, ?, ?, ?)";
-
-function ConnectDB() {
-db.connect(function(error) {
-  if (!!error)
-    throw error;
-  console.log('mysql connected to ' + config.host + ", user " + config.user + ", database " + config.base);
-
+function CreateMainDB() {
   db.query(CreateUsersTable, function(err, result) {
     if (err) throw err;
   });
-
   db.query(CreateGamesTable, function(err, result) {
     if (err) throw err;
   });
+};
 
-  db.query(SaveGame, [rows, cols, GAMEDATE], function(err, result) {
+const CreateGridTable = "CREATE TABLE game_?__grid (orderid INT PRIMARY KEY NOT NULL AUTO_INCREMENT, cellid MEDIUMINT NOT NULL, playerid SMALLINT NOT NULL, color VARCHAR(6) NOT NULL)";
+const CreatePlayersTable = "CREATE TABLE game_?__players (playerid SMALLINT PRIMARY KEY NOT NULL, color1 VARCHAR(6) NOT NULL, color2 VARCHAR(6) NOT NULL, color3 VARCHAR(6) NOT NULL)";
+const NewGame = "INSERT INTO games (`usedrows`, `usedcols`, `gridid` ,`flag`) VALUES(?, ?, ?, 0)";
+const GetGameid = "SELECT gameid FROM games WHERE gridid=?";
+
+function CreateGameDB() {
+  db.query(NewGame, [rows, cols, GAMEDATE], function(err, result) {
     if (err) throw err;
-
     db.query(GetGameid, [GAMEDATE], function(err, rows) {
       if (err) throw err;
       let gameid = rows[0].gameid
       console.log("Game n° " + gameid + " created");
-
       db.query(CreateGridTable, gameid, function(err, result) {
         if (err) throw err;
         console.log("Grid table created with name game_" + gameid + "__grid");
       });
-
       db.query(CreatePlayersTable, gameid, function(err, result) {
         if (err) throw err;
         console.log("Players table created with name game_" + gameid + "__players");
       });
     });
   });
-});
-}
+};
+
+const AddCelltoGrid = "INSERT INTO game_?__grid (`cellid`, `playerid`, `color`)  VALUES(?, ?, ?)";
 
 function SaveFill(cellid, playerid, color) {
   db.query(GetGameid, [GAMEDATE], function(err, res1) {
@@ -77,6 +122,9 @@ function SaveFill(cellid, playerid, color) {
     });
   });
 };
+
+const IsUserinUsers = "SELECT * FROM users WHERE Username=?";
+const SaveUserPalette = "INSERT INTO game_?__players (`playerid`, `color1`, `color2`, `color3`) VALUES(?, ?, ?, ?)";
 
 function SavePlayer(playerid, col) {
   db.query(GetGameid, [GAMEDATE], function(err, res1) {
@@ -93,6 +141,10 @@ function SavePlayer(playerid, col) {
     });
   });
 };
+
+const AddUsertoUsers = "INSERT INTO users (`Username`, `Password`) VALUES(?, ?)";
+const IsUserinGrid = "SELECT * FROM game_?__grid WHERE playerid=?";
+const IsUserinPlayers = "SELECT * FROM game_?__players WHERE playerid=?";
 
 function LogPlayer(user, pass, socket, MNIO) {
 
@@ -145,22 +197,12 @@ function LogPlayer(user, pass, socket, MNIO) {
   });
 };
 
-const Testdb = "SHOW FULL TABLES FROM mniosql LIKE '%grid'"
-
-function getcanvas() {
-  db.query(Testdb, function(err, result) {
-    if (!!err) throw err;
-    console.log(result);
-    result.forEach(function(el) {
-      console.log(el);
-    });
-  });
-}
-
 module.exports = {
-  ConnectDB,
+  getgames,
+  gettable,
+  connect,
+  init,
   LogPlayer,
   SaveFill,
-  SavePlayer,
-  getcanvas
+  SavePlayer
 }

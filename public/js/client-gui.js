@@ -20,7 +20,7 @@ function selectc1() {
   c1.style.border = "solid 2px black";
   c2.style.border = "solid 2px white";
   c3.style.border = "solid 2px white";
-  PLAYER.draw();
+  PLAYER.render();
 }
 
 function selectc2() {
@@ -28,7 +28,7 @@ function selectc2() {
   c1.style.border = "solid 2px white";
   c2.style.border = "solid 2px black";
   c3.style.border = "solid 2px white";;
-  PLAYER.draw();
+  PLAYER.render();
 }
 
 function selectc3() {
@@ -36,7 +36,7 @@ function selectc3() {
   c1.style.border = "solid 2px white";
   c2.style.border = "solid 2px white";
   c3.style.border = "solid 2px black";
-  PLAYER.draw();
+  PLAYER.render();
 }
 
 c1.addEventListener("click", function() {
@@ -63,7 +63,7 @@ zoomout.addEventListener("click", function() {
 });
 
 window.addEventListener('resize', function() {
-  GAME.draw();
+  GAME.render();
 }, true);
 
 // TODO: button flip button left/right side

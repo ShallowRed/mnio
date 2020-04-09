@@ -81,7 +81,17 @@ function DisconnectPlayer(socket, MNIO) {
 
 }
 
+function sendgames(socket, data) {
+  socket.emit("games", data);
+}
+
+function sendtable(socket, data) {
+  socket.emit("table", data);
+}
+
 module.exports = {
+  sendtable,
+  sendgames,
   MovePlayer,
   DrawCell,
   InitPlayer,

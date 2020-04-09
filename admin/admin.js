@@ -1,84 +1,115 @@
 var socket = io();
-var CellSize, Grows, Gcols, ColorList;
-var canvas = document.getElementById('admincanvas');
-var displaycanvas = document.getElementById('displaycanvas');
-var askfordb = document.getElementById('askfordb');
-var ctx = canvas.getContext('2d');
-ctx.imageSmoothingEnabled = false;
-
 var displayflag = 0;
+var getgamesflag = false;
+/////////// CANVAS
+
+const MYCANVAS = {
+  init: function() {
+    // this.CellSize, Grows, Gcols, ColorList;
+    this.canvas = document.getElementById('admincanvas');
+    this.ctx = this.canvas.getContext('2d');
+    this.ctx.imageSmoothingEnabled = false;
+  },
+
+  render: function() {
+    let w = window.innerWidth;
+    let h = window.innerHeight;
+    if (w > h) h = w = Math.round(h * 0.85);
+    else w = h = Math.round(w * 0.85);
+    this.canvas.width = w;
+    this.canvas.height = h;
+    this.CellSize = Math.round(w / this.rows);
+    h = w = this.CellSize * this.rows;
+    this.canvas.style.margin = (window.innerHeight - h) / 2 + "px " + (window.innerWidth - w) / 2 + "px";
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    // Draw all colored cells
+    let len = this.ColorList.length;
+    for (i = 0; i < len; i++)
+      if (this.ColorList[i] !== null) this.fillcell(i, this.ColorList[i]);
+  },
+
+  fillcell: function(position, color) {
+    let coordx = (position - (position % this.rows)) / this.cols;
+    let coordy = (position % this.cols);
+    this.ctx.clearRect(this.CellSize * coordy, this.CellSize * coordx, this.CellSize, this.CellSize);
+    this.ctx.fillStyle = color;
+    this.ctx.fillRect(this.CellSize * coordy, this.CellSize * coordx, this.CellSize, this.CellSize)
+  }
+}
+
+var displaycanvas = document.getElementById('displaycanvas');
+var getgames = document.getElementById('getgames');
+
+MYCANVAS.init();
+
+/////////// UI
+
+const gamelist = document.getElementById("games");
+var Games = [];
+var gamedom;
 
 displaycanvas.addEventListener("click", function() {
   if (!displayflag) {
     socket.emit("admin");
-    canvas.hidden = false;
+    MYCANVAS.canvas.hidden = false;
     displayflag = 2;
   } else if (displayflag == 2) {
-    canvas.hidden = true;
+    MYCANVAS.canvas.hidden = true;
     displayflag = 1;
   } else {
-    canvas.hidden = false;
+    MYCANVAS.canvas.hidden = false;
     displayflag = 2;
   };
 });
 
-askfordb.addEventListener("click", function() {
-  socket.emit("askfordb");
+getgames.addEventListener("click", function() {
+  if (getgamesflag) return;
+  socket.emit("getgames");
+  getgamesflag = true;
 })
+
+socket.on('games', function(data) {
+  data.forEach(function(game) {
+    Games.push(game);
+    let li = document.createElement('li');
+    gamelist.appendChild(li);
+    li.innerHTML += "game n°" + game[0] + ", rows: " + game[1] + ", cols: " + game[2];
+    li.id = "game_" + game[0];
+    li.className = "game";
+    if (!game[3]) li.style.background = 'lightpink';
+    else li.style.background = 'lightgreen';
+  });
+  gamedom = document.querySelectorAll(".game");
+  gamedom.forEach(function(game) {
+    game.addEventListener('click', function(event) {
+      socket.emit('gettable', game.id.split("_")[1]);
+    })
+  });
+});
+
+socket.on('table', function(data) {
+  console.log(data);
+});
 
 // Receive data needed for initialization, start the game
 socket.on('initadmin', function(data) {
-  console.log(data);
-  ColorList = data.ColorList;
-  Grows = data.rows;
-  Gcols = data.cols;
-  DrawCanvas();
+  MYCANVAS.ColorList = data.ColorList;
+  MYCANVAS.rows = data.rows;
+  MYCANVAS.cols = data.cols;
+  MYCANVAS.render();
 });
 
 //Fill other's cells when they do so
 socket.on('NewCell', function(cell) {
   console.log(cell);
-  ColorList[cell.position] = cell.color;
-  fillcell(cell.position, cell.color);
+  MYCANVAS.ColorList[cell.position] = cell.color;
+  MYCANVAS.fillcell(cell.position, cell.color);
 });
 
-function DrawCanvas() {
-  let w = window.innerWidth;
-  let h = window.innerHeight;
-  if (w > h) h = w = Math.round(h * 0.85);
-  else w = h = Math.round(w * 0.85);
-  canvas.width = w;
-  canvas.height = h;
-
-  CellSize = Math.round(w / Grows);
-  console.log(CellSize);
-  h = w = CellSize * Grows;
-  canvas.style.margin = (window.innerHeight - h) / 2 + "px " + (window.innerWidth - w) / 2 + "px";
-
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  // Draw all colored cells
-  let len = ColorList.length;
-  for (i = 0; i < len; i++)
-    if (ColorList[i] !== null) fillcell(i, ColorList[i]);
-};
-
-function fillcell(position, color) {
-  let cell = indextocoord(position);
-  ctx.clearRect(CellSize * cell[1], CellSize * cell[0], CellSize, CellSize);
-  ctx.fillStyle = color;
-  ctx.fillRect(CellSize * cell[1], CellSize * cell[0], CellSize, CellSize)
-}
-
-function indextocoord(index) {
-  let coordx = (index - (index % Grows)) / Gcols;
-  let coordy = (index % Gcols);
-  return [coordx, coordy];
-}
-
-function coordtoindex(coord) {
-  let index = Grows * coord[0] + coord[1];
-  return index;
-}
+//resize grid and cell on window sizing
+window.addEventListener('resize', function() {
+  DrawCanvas();
+}, true);
 
 socket.on("message", function(data) {
   console.log(data);
@@ -91,8 +122,3 @@ socket.on("alert", function(data) {
 socket.on("error", function() {
   alert("Error: Please try again!");
 });
-
-//resize grid and cell on window sizing
-window.addEventListener('resize', function() {
-  DrawCanvas();
-}, true);

@@ -19,17 +19,17 @@ const GAME = {
     c2.style.background = PLAYER.color2;
     c3.style.background = PLAYER.color3;
 
-    this.draw();
+    this.render();
     HideLobby();
     flag = true;
   },
 
-  draw: function() {
+  render: function() {
     MAP.update();
     PLAYER.update(false);
-    PLAYER.draw();
-    MAP.draw();
     MAP.margin(false);
+    PLAYER.render();
+    MAP.render();
   }
 
 };
@@ -78,7 +78,7 @@ const PLAYER = {
     this.shadow.style.left = this.canvas.style.left = this.vy * MAP.CellSize + MAP.shift + 'px';
   },
 
-  draw: function() {
+  render: function() {
     this.canvas.style.background = PLAYER.selectedcolor;
   }
 
@@ -86,7 +86,8 @@ const PLAYER = {
 
 const MAP = {
 
-  maxcells: 51,
+  maxcells: 25,
+
   mincells: 11,
 
   init: function() {
@@ -103,8 +104,10 @@ const MAP = {
   },
 
   update: function() {
-    let w = window.innerWidth,
-      h = window.innerHeight;
+    let w = window.innerWidth;
+    let h = window.innerHeight;
+
+    // Set cell size
     if (!this.rows || this.rows < this.mincells) {
       this.rows = this.mincells;
       this.cols = Math.round(this.rows * h / w);
@@ -126,44 +129,45 @@ const MAP = {
       this.CellSize = Math.round(h / (this.cols - 2));
     }
 
+    // Update map variables
     this.hrows = (this.rows - 1) / 2;
     this.hcols = (this.cols - 1) / 2;
     this.lw = Math.round(this.CellSize / 6);
+    this.width = this.CellSize * (this.rows - 2);
+    this.height = this.CellSize * (this.cols - 2);
+    this.marginX= this.marginY = 0.05*w;
 
-    this.size(this.CellSize * (this.rows - 2), this.CellSize * (this.cols - 2));
+    //Set canvas size
+    this.master.style.width = this.width + 'px';
+    this.master.style.height = this.height + 'px';
+    this.topmask.style.height = this.bottommask.style.height = this.marginX + "px";
+    this.leftmask.style.width = this.rightmask.style.width = this.marginY + "px";
+    for (let i = 0; i < 3; i++) {
+      this.canvas[i].width = this.width + this.CellSize * 2;
+      this.canvas[i].height = this.height + this.CellSize * 2;
+    }
 
+    // Set player size
     this.shift = Math.round(this.CellSize / 8);
     PLAYER.canvas.width = PLAYER.canvas.height = this.CellSize - this.shift * 4;
     PLAYER.shadow.style.width = PLAYER.shadow.style.height = this.CellSize - this.shift * 2 - 2 + 'px';
     PLAYER.shadow.style.borderRadius = PLAYER.canvas.style.borderWidth = PLAYER.canvas.style.borderRadius = this.shift + 'px';
   },
 
-  size: function(w, h) {
-    this.master.style.width = w + 'px';
-    this.master.style.height = h + 'px';
-    this.topmask.style.height = this.bottommask.style.height = "50px"
-    this.leftmask.style.width = this.rightmask.style.width = "50px"
-    for (let i = 0; i < 3; i++) {
-      this.canvas[i].width = w + this.CellSize * 2;
-      this.canvas[i].height = h + this.CellSize * 2;
-    }
-  },
-
   margin: function(animated) {
     if (!animated) this.master.style.transitionDuration = '0s';
     else this.master.style.transitionDuration = GAME.duration + 's';
-    let amountxx = 50;
-    let amountyy = 50;
-    if (PLAYER.x < this.hcols) this.master.style.marginTop = amountxx + "px";
-    else if (PLAYER.x > GAME.cols - this.hcols) this.master.style.marginTop = window.innerHeight - this.CellSize * (this.cols - 2) - amountxx + "px";
-    else this.master.style.marginTop = Math.round((window.innerHeight - this.CellSize * (this.cols - 2)) / 2) + 'px ';
-    if (PLAYER.y < this.hrows) this.master.style.marginLeft = amountyy + "px";
-    else if (PLAYER.y > GAME.rows - this.hrows) this.master.style.marginLeft = window.innerWidth - this.CellSize * (this.rows - 2) - amountyy + "px";
-    else this.master.style.marginLeft = Math.round((window.innerWidth - this.CellSize * (this.rows - 2)) / 2) + 'px ';
 
-  }, //todo set amount as this.variable and make relative to screensize
+    if (PLAYER.x < this.hcols) this.master.style.marginTop = this.marginX + "px";
+    else if (PLAYER.x > GAME.cols - this.hcols) this.master.style.marginTop = window.innerHeight - this.height - this.marginX + "px";
+    else this.master.style.marginTop = Math.round((window.innerHeight - this.height) / 2) + 'px ';
+    if (PLAYER.y < this.hrows) this.master.style.marginLeft = this.marginY + "px";
+    else if (PLAYER.y > GAME.rows - this.hrows) this.master.style.marginLeft = window.innerWidth - this.width - this.marginY + "px";
+    else this.master.style.marginLeft = Math.round((window.innerWidth - this.width) / 2) + 'px ';
 
-  draw: function() {
+  },
+
+  render: function() {
     //Clear all canvas
     this.ctx1.clearRect(0, 0, this.canvas[1].width, this.canvas[1].height);
     this.ctx2.clearRect(0, 0, this.canvas[1].width, this.canvas[1].height);
@@ -202,7 +206,6 @@ const MAP = {
 
   move: function(dir) {
     if (!dir) return;
-    this.margin(true);
     let axis;
     if (dir == 'up' && PLAYER.x >= this.hcols - 1 && PLAYER.x < GAME.cols - this.hcols) axis = 'Y(';
     else if (dir == 'down' && PLAYER.x >= this.hcols && PLAYER.x <= GAME.cols - this.hcols) axis = 'Y(-';
@@ -218,13 +221,13 @@ const MAP = {
   zoomin: function() {
     this.rows -= 2;
     this.cols -= 2;
-    GAME.draw();
+    GAME.render();
   },
 
   zoomout: function() {
     this.rows += 2;
     this.cols += 2;
-    GAME.draw();
+    GAME.render();
   }
 
 };
@@ -287,7 +290,7 @@ const Cell = {
     return [coordx, coordy];
   },
 
-  draw: function(position, color) {
+  render: function(position, color) {
     let cell = this.check(position, this.position);
     if (!cell) return;
     flag = false;
@@ -342,6 +345,7 @@ Translate = {
   init: function() {
     PLAYER.update(true);
     MAP.move(lastdir);
+    MAP.margin(true);
     this.start = Date.now();
     this.frame();
   },
@@ -349,7 +353,7 @@ Translate = {
   frame: function() {
     Translate.delta = (Date.now() - Translate.start) / 1000;
     if (Translate.delta >= GAME.duration) {
-      MAP.draw();
+      MAP.render();
       flag = true;
       return;
     }
