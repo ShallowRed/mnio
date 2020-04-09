@@ -29,7 +29,6 @@ const GAME = {
     PLAYER.update(false);
     PLAYER.draw();
     MAP.draw();
-    MAP.margin(false);
   }
 
 };
@@ -56,7 +55,7 @@ const PLAYER = {
     this.vy = this.y = coord[1];
     this.isup = this.isdown = this.isleft = this.isright = false;
 
-    if (this.x > GAME.cols - MAP.hcols) {
+    if (this.x >= GAME.rows - MAP.hcols) {
       this.vx = this.x + MAP.cols - GAME.cols - 2;
       this.isdown = true;
     } else if (this.x >= MAP.hcols) {
@@ -64,12 +63,12 @@ const PLAYER = {
       this.isup = true;
     }
 
-    if (this.y > GAME.rows - MAP.hrows) {
+    if (this.y >= GAME.cols - MAP.hrows) {
       this.vy = this.y + MAP.rows - GAME.rows - 2
       this.isright = true;
     } else if (this.y >= MAP.hrows) {
       this.isleft = true;
-      this.vy = MAP.hrows - 1;
+      this.vy = MAP.hrows - 1
     }
 
     if (!animated) this.shadow.style.transitionDuration = this.canvas.style.transitionDuration = '0s';
@@ -86,10 +85,11 @@ const PLAYER = {
 
 const MAP = {
 
-  maxcells: 51,
-  mincells: 11,
+  maxcells: 10,
+  mincells: 15,
 
   init: function() {
+
     this.master = document.getElementById('master');
     this.canvas = document.querySelectorAll('.mapcanvas');
     this.ctx1 = this.canvas[0].getContext('2d');
@@ -103,85 +103,73 @@ const MAP = {
   },
 
   update: function() {
-    let w = window.innerWidth,
-      h = window.innerHeight;
-    if (!this.rows || this.rows < this.mincells) {
-      this.rows = this.mincells;
-      this.cols = Math.round(this.rows * h / w);
-    }
-    if (!this.cols || this.cols < this.mincells) {
-      this.cols = this.mincells;
-      this.rows = Math.round(this.cols * w / h);
-    }
-    if (this.rows > this.maxcells) this.rows = this.maxcells;
-    if (this.cols > this.maxcells) this.cols = this.maxcells;
+    let w = window.innerWidth;
+    let h = window.innerHeight;
+    if (w > 650) w -= 100;
+    else h -= 100;
+    this.setCellSize(w, h);
+    this.setrowcol(w, h);
+    this.lw = Math.round(this.CellSize / 6);
+    this.setmaster(this.CellSize * this.rows, this.CellSize * this.cols);
+    this.setcanvas();
+    this.setplayer();
+  },
 
-    if (w > h) {
-      this.cols = Math.round(this.rows * h / w);
-      if (this.cols % 2 == 0) this.cols++;
-      this.CellSize = Math.round(w / (this.rows - 2));
-    } else {
-      this.rows = Math.round(this.cols * w / h);
-      if (this.rows % 2 == 0) this.rows++;
-      this.CellSize = Math.round(h / (this.cols - 2));
-    }
+  setCellSize: function(w, h) {
+    if(!this.rows) this.rows = this.mincells;
+    if(!this.cols) this.cols = this.mincells;
+    if (w > h) this.CellSize = Math.round(w / this.rows);
+    else this.CellSize = Math.round(h / this.cols);
+    if (this.rows >= this.maxcells) this.CellSize = Math.round(w / this.maxcells);
+    if (this.cols >= this.maxcells) this.CellSize = Math.round(h / this.maxcells);
+    if (this.rows <= this.mincells) this.CellSize = Math.round(w / this.mincells);
+    if (this.cols <= this.mincells) this.CellSize = Math.round(h / this.mincells);
+  },
 
+  setrowcol: function(w, h) {
+    this.cols = Math.round(h / this.CellSize);
+    this.rows = Math.round(w / this.CellSize);
+    if (this.rows % 2 == 0) this.rows--;
+    if (this.cols % 2 == 0) this.cols--;
     this.hrows = (this.rows - 1) / 2;
     this.hcols = (this.cols - 1) / 2;
     this.lw = Math.round(this.CellSize / 6);
-
-    this.size(this.CellSize * (this.rows - 2), this.CellSize * (this.cols - 2));
-
-    this.shift = Math.round(this.CellSize / 8);
-    PLAYER.canvas.width = PLAYER.canvas.height = this.CellSize - this.shift * 4;
-    PLAYER.shadow.style.width = PLAYER.shadow.style.height = this.CellSize - this.shift * 2 - 2 + 'px';
-    PLAYER.shadow.style.borderRadius = PLAYER.canvas.style.borderWidth = PLAYER.canvas.style.borderRadius = this.shift + 'px';
   },
 
-  size: function(w, h) {
-    this.master.style.width = w + 'px';
-    this.master.style.height = h + 'px';
-    this.topmask.style.height = this.bottommask.style.height = "50px"
-    this.leftmask.style.width = this.rightmask.style.width = "50px"
+  setmaster: function(w, h) {
+    this.master.style.width = this.CellSize * (this.rows - 2) + 'px';
+    this.master.style.height = this.CellSize * (this.cols - 2) + 'px';
+    this.master.style.margin = this.CellSize + 'px ' + this.CellSize + 'px';
+
+    this.topmask.style.height = this.CellSize + 'px ';
+    this.bottommask.style.height = this.CellSize + 'px ';
+    this.leftmask.style.width = this.CellSize + 'px ';
+    this.rightmask.style.width = this.CellSize + 'px ';
+    if (w > 650) this.rightmask.style.width = 100 + (w - this.CellSize * (this.rows - 2)) / 2 + 'px ';
+    else this.bottommask.style.height = 100 + (h - this.CellSize * (this.cols - 2)) / 2 + 'px ';
+  },
+
+  setcanvas: function() {
     for (let i = 0; i < 3; i++) {
-      this.canvas[i].width = w + this.CellSize * 2;
-      this.canvas[i].height = h + this.CellSize * 2;
+      this.canvas[i].width = this.CellSize * this.rows;
+      this.canvas[i].height = this.CellSize * this.cols;
     }
   },
 
-  margin: function(animated) {
-    if (!animated) this.master.style.transitionDuration = '0s';
-    else this.master.style.transitionDuration = GAME.duration + 's';
-    let amountxx = 50;
-    let amountyy = 50;
-    if (PLAYER.x < this.hcols) this.master.style.marginTop = amountxx + "px";
-    else if (PLAYER.x > GAME.cols - this.hcols) this.master.style.marginTop = window.innerHeight - this.CellSize * (this.cols - 2) - amountxx + "px";
-    else this.master.style.marginTop = Math.round((window.innerHeight - this.CellSize * (this.cols - 2)) / 2) + 'px ';
-    if (PLAYER.y < this.hrows) this.master.style.marginLeft = amountyy + "px";
-    else if (PLAYER.y > GAME.rows - this.hrows) this.master.style.marginLeft = window.innerWidth - this.CellSize * (this.rows - 2) - amountyy + "px";
-    else this.master.style.marginLeft = Math.round((window.innerWidth - this.CellSize * (this.rows - 2)) / 2) + 'px ';
-
-  }, //todo set amount as this.variable and make relative to screensize
+  setplayer: function() {
+    this.shift = Math.round(this.CellSize / 8);
+    PLAYER.canvas.width = this.CellSize - this.shift * 4;
+    PLAYER.canvas.height = this.CellSize - this.shift * 4;
+    PLAYER.shadow.style.width = this.CellSize - this.shift * 2 - 2 + 'px';
+    PLAYER.shadow.style.height = this.CellSize - this.shift * 2 - 2 + 'px';
+    PLAYER.shadow.style.borderRadius = this.shift + 'px';
+    PLAYER.canvas.style.borderWidth = this.shift + 'px';
+    PLAYER.canvas.style.borderRadius = this.shift + 'px';
+  },
 
   draw: function() {
-    //Clear all canvas
-    this.ctx1.clearRect(0, 0, this.canvas[1].width, this.canvas[1].height);
-    this.ctx2.clearRect(0, 0, this.canvas[1].width, this.canvas[1].height);
-    this.ctx3.clearRect(0, 0, this.canvas[1].width, this.canvas[1].height);
-
-    // Move canvas back to origin
-    let coefx = 0,
-      coefy = 0;
-    if (PLAYER.isdown) coefx = 2;
-    else if (PLAYER.isup) coefx = 1;
-    if (PLAYER.isright) coefy = 2;
-    else if (PLAYER.isleft) coefy = 1;
-    for (let i = 0; i < 3; i++) {
-      this.canvas[i].style.transitionDuration = '0s';
-      this.canvas[i].style.transform = 'translate(0, 0)';
-      this.canvas[i].style.top = '-' + this.CellSize * coefx + 'px';
-      this.canvas[i].style.left = '-' + this.CellSize * coefy + 'px';
-    }
+    this.clear();
+    this.origin();
 
     // Draw all allowed cells
     GAME.allowed.forEach(function(position) {
@@ -202,17 +190,40 @@ const MAP = {
 
   move: function(dir) {
     if (!dir) return;
-    this.margin(true);
     let axis;
-    if (dir == 'up' && PLAYER.x >= this.hcols - 1 && PLAYER.x < GAME.cols - this.hcols) axis = 'Y(';
-    else if (dir == 'down' && PLAYER.x >= this.hcols && PLAYER.x <= GAME.cols - this.hcols) axis = 'Y(-';
-    else if (dir == 'left' && PLAYER.y >= this.hrows - 1 && PLAYER.y < GAME.rows - this.hrows) axis = 'X(';
-    else if (dir == 'right' && PLAYER.y >= this.hrows && PLAYER.y <= GAME.rows - this.hrows) axis = 'X(-';
+    if (dir == 'up' && PLAYER.x >= this.hcols - 1 && PLAYER.x <= GAME.rows - this.hcols - 1) axis = 'Y(';
+    else if (dir == 'down' && PLAYER.x >= this.hcols && PLAYER.x <= GAME.rows - this.hcols) axis = 'Y(-';
+    else if (dir == 'right' && PLAYER.y >= this.hrows && PLAYER.y <= GAME.cols - this.hrows) axis = 'X(-';
+    else if (dir == 'left' && PLAYER.y >= this.hrows - 1 && PLAYER.y <= GAME.cols - this.hrows - 1) axis = 'X(';
     if (!axis) return;
     for (let i = 0; i < 3; i++) {
       this.canvas[i].style.transitionDuration = GAME.duration + 's';
       this.canvas[i].style.transform = 'translate' + axis + this.CellSize + 'px)';
     };
+  },
+
+  origin: function() {
+    let coefx = 0;
+    let coefy = 0;
+
+    if (PLAYER.isdown) coefx = 2;
+    else if (PLAYER.isup) coefx = 1;
+    if (PLAYER.isright) coefy = 2;
+    else if (PLAYER.isleft) coefy = 1;
+
+    for (let i = 0; i < 3; i++) {
+      this.canvas[i].style.transitionDuration = '0s';
+      this.canvas[i].style.transform = 'translate(0, 0)';
+      this.canvas[i].style.position = 'absolute';
+      this.canvas[i].style.top = '-' + this.CellSize * coefx + 'px';
+      this.canvas[i].style.left = '-' + this.CellSize * coefy + 'px';
+    }
+  },
+
+  clear: function() {
+    this.ctx1.clearRect(0, 0, this.canvas[1].width, this.canvas[1].height);
+    this.ctx2.clearRect(0, 0, this.canvas[1].width, this.canvas[1].height);
+    this.ctx3.clearRect(0, 0, this.canvas[1].width, this.canvas[1].height);
   },
 
   zoomin: function() {
@@ -228,7 +239,6 @@ const MAP = {
   }
 
 };
-
 
 const Cell = {
 

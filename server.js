@@ -46,16 +46,16 @@ const MNIO = {
   PositionList: [],
   PLAYERS: {}
 }
-Database.ConnectDB();
+// Database.ConnectDB();
 //////////////////////////// ON PLAYER CONNECTION //////////////////////////////
 
 io.on('connection', function(socket) {
 
-  socket.on("login", function(data) {
-    Database.LogPlayer(data.user, data.pass, socket, MNIO);
-  });
+  // socket.on("login", function(data) {
+  //   Database.LogPlayer(data.user, data.pass, socket, MNIO);
+  // });
 
-  // GAME.InitPlayer("test", 150, null, [], [], socket, MNIO);
+  GAME.InitPlayer("test", 150, null, [], [], socket, MNIO);
 
   socket.on('MovePlayer', function(direction) {
     GAME.MovePlayer(direction, socket, MNIO);
@@ -63,13 +63,13 @@ io.on('connection', function(socket) {
 
   socket.on('DrawCell', function(cell) {
     GAME.DrawCell(cell, socket, MNIO);
-    Database.SaveFill(cell[0], MNIO.PLAYERS[socket.id].dbid, cell[1].split('#')[1]);
+    // Database.SaveFill(cell[0], MNIO.PLAYERS[socket.id].dbid, cell[1].split('#')[1]);
   });
 
   socket.on('disconnect', function() {
     if (!MNIO.PLAYERS[socket.id]) return;
     GAME.DisconnectPlayer(socket, MNIO);
-    Database.SavePlayer(MNIO.PLAYERS[socket.id].dbid, MNIO.PLAYERS[socket.id].colors);
+    // Database.SavePlayer(MNIO.PLAYERS[socket.id].dbid, MNIO.PLAYERS[socket.id].colors);
   });
 
   socket.on("admin", function() {
