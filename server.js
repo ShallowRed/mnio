@@ -56,7 +56,6 @@ io.on('connection', function(socket) {
 
   socket.on("login", function(data) {
     Database.LogPlayer(data.user, data.pass, socket, MNIO);
-    console.log(MNIO.ColorList);
   });
 
   // GAME.InitPlayer("test", 150, null, [], [], socket, MNIO);
@@ -76,8 +75,8 @@ io.on('connection', function(socket) {
     Database.SavePlayer(MNIO.PLAYERS[socket.id].dbid, MNIO.PLAYERS[socket.id].colors);
   });
 
-  socket.on("admin", function() {
-    socket.emit("initadmin", {
+  socket.on("getcurrent", function() {
+    socket.emit("current", {
       ColorList: MNIO.ColorList,
       rows: rows,
       cols: cols
@@ -89,8 +88,11 @@ io.on('connection', function(socket) {
   })
 
   socket.on("gettable", function(data) {
-    console.log(data);
     Database.gettable(socket, data);
+  })
+
+  socket.on("setflag", function(data) {
+    Database.setflag(data);
   })
 
 

@@ -10,18 +10,22 @@
 </head>
 
 <body>
-	<!-- <div class="admin"><h1>Mnio Admin page</h1></div> -->
-	<div id="buttons">
-		<button id="displaycanvas"><a>Display Canvas</a></button>
-		<button id="getgames"><a>Get games</a></button>
-	</div id="gameswindow">
 
 	<div id="gameswindow">
 		<ul id="games">
+			<li id="activegames"><a>Active games</a></li>
+			<li id="current">Current game</li>
+			<li id="setflag">New game</li>
+			<li id="previous"><a>Previous games</a></li>
 		</ul>
 	</div>
-
-	<canvas hidden id="admincanvas"></canvas>
+	<div hidden id="canvaswindow">
+		<div id="buttons">
+			<button  id="close"><a>X</a></button>
+		</div>
+		<input id="slider" type="range" value="50">
+		<canvas id="canvas"></canvas>
+	</div>
 
 	<script src="admin/admin.js"></script>
 </body>

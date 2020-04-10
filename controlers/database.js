@@ -21,12 +21,10 @@ function connect() {
 }
 
 const Testdb = "SELECT * FROM games"
-// const Testdb = "SHOW FULL TABLES FROM mniosql LIKE '%grid'"
 
 function getgames(socket) {
   db.query(Testdb, function(err, res) {
     if (!!err) throw err;
-    console.log(res);
     let games = [];
     res.forEach(function(game) {
       games.push([game.gameid, game.usedrows, game.usedcols, game.flag]);
@@ -35,31 +33,42 @@ function getgames(socket) {
   });
 }
 
+const GetLastGame = "SELECT * FROM games ORDER BY gameid DESC LIMIT 1"
+const UpdateFlag = "UPDATE games SET flag = ? WHERE gameid = ?"
+
+function setflag(flag) {
+  db.query(GetLastGame, function(err, res) {
+    if (!!err) throw err;
+    db.query(UpdateFlag, [flag, [res[0].gameid]], function(err) {
+      if (!!err) throw err;
+    });
+  });
+}
+
 function gettable(socket, gameid) {
   db.query(SelectGrid, [parseInt(gameid)], function(err, res) {
     if (!!err) throw err;
     let cells = [];
     res.forEach(function(cell) {
-      cells.push([cell.cellid, '#'+ cell.color]);
+      cells.push([cell.cellid, '#' + cell.color]);
     });
     GAME.sendtable(socket, cells);
   });
 }
 
-const GetLastGame = "SELECT * FROM games ORDER BY gameid DESC LIMIT 1"
 const UpdateTime = "UPDATE games SET gridid = ? WHERE gameid = ?"
 
 function init(ColorList) {
   CreateMainDB();
   db.query(GetLastGame, function(err, res1) {
     if (!!err) throw err;
-    if (!res1.length) CreateGameDB();
-    else if (!res1[0].flag) {
+    if (!res1.length || res1[0].flag) CreateGameDB();
+    else {
       ColorlistfromDB(ColorList, [res1[0].gameid]);
       db.query(UpdateTime, [GAMEDATE, res1[0].gameid], function(err, res2) {
         if (!!err) throw err;
       });
-    } else CreateGameDB();
+    }
   });
 }
 
@@ -198,6 +207,7 @@ function LogPlayer(user, pass, socket, MNIO) {
 };
 
 module.exports = {
+  setflag,
   getgames,
   gettable,
   connect,

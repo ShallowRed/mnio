@@ -1,6 +1,6 @@
 {
   "name": "mnio",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "description": "jeu de tapisserie en ligne",
   "dependencies": {
     "ejs-lint": "^1.0.1",
