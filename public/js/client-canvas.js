@@ -27,7 +27,7 @@ const GAME = {
   render: function() {
     MAP.update();
     PLAYER.update(false);
-    MAP.margin(false);
+    // MAP.margin(false);
     PLAYER.render();
     MAP.render();
   }
@@ -51,29 +51,40 @@ const PLAYER = {
 
   update: function(animated) {
 
-    let coord = Cell.indextocoord(this.position);
-    this.vx = this.x = coord[0];
-    this.vy = this.y = coord[1];
-    this.isup = this.isdown = this.isleft = this.isright = false;
+    if (!animated) this.shadow.style.transitionDuration = this.canvas.style.transitionDuration = MAP.master.style.transitionDuration = '0s';
+    else this.shadow.style.transitionDuration = this.canvas.style.transitionDuration = MAP.master.style.transitionDuration = GAME.duration + 's';
 
-    if (this.x > GAME.cols - MAP.hcols) {
+    this.x = Cell.indextocoord(this.position)[0];
+    this.y = Cell.indextocoord(this.position)[1];
+
+    if (this.x < MAP.hcols) {
+      this.vx = this.x;
+      MAP.master.style.marginTop = MAP.marginX + "px";
+      MAP.coefx = 0;
+    } else if (this.x > GAME.cols - MAP.hcols) {
       this.vx = this.x + MAP.cols - GAME.cols - 2;
-      this.isdown = true;
-    } else if (this.x >= MAP.hcols) {
+      MAP.master.style.marginTop = window.innerHeight - MAP.height - MAP.marginX + "px";
+      MAP.coefx = 2;
+    } else {
       this.vx = MAP.hcols - 1;
-      this.isup = true;
+      MAP.master.style.marginTop = Math.round((window.innerHeight - MAP.height) / 2) + 'px ';
+      MAP.coefx = 1;
     }
 
-    if (this.y > GAME.rows - MAP.hrows) {
-      this.vy = this.y + MAP.rows - GAME.rows - 2
-      this.isright = true;
-    } else if (this.y >= MAP.hrows) {
-      this.isleft = true;
+    if (this.y < MAP.hrows) {
+      this.vy = this.y;
+      MAP.master.style.marginLeft = MAP.marginY + "px";
+      MAP.coefy = 0;
+    } else if (this.y > GAME.rows - MAP.hrows) {
+      this.vy = this.y + MAP.rows - GAME.rows - 2;
+      MAP.master.style.marginLeft = window.innerWidth - MAP.width - MAP.marginY + "px";
+      MAP.coefy = 2;
+    } else {
       this.vy = MAP.hrows - 1;
+      MAP.master.style.marginLeft = Math.round((window.innerWidth - MAP.width) / 2) + 'px ';
+      MAP.coefy = 1;
     }
 
-    if (!animated) this.shadow.style.transitionDuration = this.canvas.style.transitionDuration = '0s';
-    else this.shadow.style.transitionDuration = this.canvas.style.transitionDuration = GAME.duration + 's';
     this.shadow.style.top = this.canvas.style.top = this.vx * MAP.CellSize + MAP.shift + 'px';
     this.shadow.style.left = this.canvas.style.left = this.vy * MAP.CellSize + MAP.shift + 'px';
   },
@@ -86,8 +97,8 @@ const PLAYER = {
 
 const MAP = {
 
-  maxcells: 25,
-
+  maxcells: 50,
+  startcells: 21,
   mincells: 11,
 
   init: function() {
@@ -108,26 +119,41 @@ const MAP = {
     let h = window.innerHeight;
 
     // Set cell size
-    if (!this.rows || this.rows < this.mincells) {
+    if (!this.rows) {
+      this.rows = this.startcells;
+      this.cols = Math.round(this.rows * h / w);
+    }
+    if (!this.cols) {
+      this.cols = this.startcells;
+      this.rows = Math.round(this.cols * w / h);
+    }
+    if (this.rows < this.mincells) {
       this.rows = this.mincells;
       this.cols = Math.round(this.rows * h / w);
     }
-    if (!this.cols || this.cols < this.mincells) {
+    if (this.cols < this.mincells) {
       this.cols = this.mincells;
       this.rows = Math.round(this.cols * w / h);
     }
-    if (this.rows > this.maxcells) this.rows = this.maxcells;
-    if (this.cols > this.maxcells) this.cols = this.maxcells;
+    if (this.rows > this.maxcells) {
+      this.rows = this.maxcells;
+      this.cols = Math.round(this.rows * h / w);
+    }
+    if (this.cols > this.maxcells) {
+      this.cols = this.maxcells;
+      this.rows = Math.round(this.cols * w / h);
+    }
 
     if (w > h) {
       this.cols = Math.round(this.rows * h / w);
-      if (this.cols % 2 == 0) this.cols++;
       this.CellSize = Math.round(w / (this.rows - 2));
     } else {
       this.rows = Math.round(this.cols * w / h);
-      if (this.rows % 2 == 0) this.rows++;
       this.CellSize = Math.round(h / (this.cols - 2));
     }
+
+    if (this.cols % 2 == 0) this.cols++;
+    if (this.rows % 2 == 0) this.rows++;
 
     // Update map variables
     this.hrows = (this.rows - 1) / 2;
@@ -135,7 +161,7 @@ const MAP = {
     this.lw = Math.round(this.CellSize / 6);
     this.width = this.CellSize * (this.rows - 2);
     this.height = this.CellSize * (this.cols - 2);
-    this.marginX= this.marginY = 0.05*w;
+    this.marginX = this.marginY = Math.round(0.05 * w);
 
     //Set canvas size
     this.master.style.width = this.width + 'px';
@@ -154,37 +180,19 @@ const MAP = {
     PLAYER.shadow.style.borderRadius = PLAYER.canvas.style.borderWidth = PLAYER.canvas.style.borderRadius = this.shift + 'px';
   },
 
-  margin: function(animated) {
-    if (!animated) this.master.style.transitionDuration = '0s';
-    else this.master.style.transitionDuration = GAME.duration + 's';
-
-    if (PLAYER.x < this.hcols) this.master.style.marginTop = this.marginX + "px";
-    else if (PLAYER.x > GAME.cols - this.hcols) this.master.style.marginTop = window.innerHeight - this.height - this.marginX + "px";
-    else this.master.style.marginTop = Math.round((window.innerHeight - this.height) / 2) + 'px ';
-    if (PLAYER.y < this.hrows) this.master.style.marginLeft = this.marginY + "px";
-    else if (PLAYER.y > GAME.rows - this.hrows) this.master.style.marginLeft = window.innerWidth - this.width - this.marginY + "px";
-    else this.master.style.marginLeft = Math.round((window.innerWidth - this.width) / 2) + 'px ';
-
-  },
-
   render: function() {
+
     //Clear all canvas
     this.ctx1.clearRect(0, 0, this.canvas[1].width, this.canvas[1].height);
     this.ctx2.clearRect(0, 0, this.canvas[1].width, this.canvas[1].height);
     this.ctx3.clearRect(0, 0, this.canvas[1].width, this.canvas[1].height);
 
     // Move canvas back to origin
-    let coefx = 0,
-      coefy = 0;
-    if (PLAYER.isdown) coefx = 2;
-    else if (PLAYER.isup) coefx = 1;
-    if (PLAYER.isright) coefy = 2;
-    else if (PLAYER.isleft) coefy = 1;
     for (let i = 0; i < 3; i++) {
       this.canvas[i].style.transitionDuration = '0s';
       this.canvas[i].style.transform = 'translate(0, 0)';
-      this.canvas[i].style.top = '-' + this.CellSize * coefx + 'px';
-      this.canvas[i].style.left = '-' + this.CellSize * coefy + 'px';
+      this.canvas[i].style.top = '-' + this.CellSize * this.coefx + 'px';
+      this.canvas[i].style.left = '-' + this.CellSize * this.coefy + 'px';
     }
 
     // Draw all allowed cells
@@ -207,9 +215,9 @@ const MAP = {
   move: function(dir) {
     if (!dir) return;
     let axis;
-    if (dir == 'up' && PLAYER.x >= this.hcols - 1 && PLAYER.x < GAME.cols - this.hcols) axis = 'Y(';
+    if (dir == 'up' && PLAYER.x + 1 >= this.hcols && PLAYER.x + 1 <= GAME.cols - this.hcols) axis = 'Y(';
     else if (dir == 'down' && PLAYER.x >= this.hcols && PLAYER.x <= GAME.cols - this.hcols) axis = 'Y(-';
-    else if (dir == 'left' && PLAYER.y >= this.hrows - 1 && PLAYER.y < GAME.rows - this.hrows) axis = 'X(';
+    else if (dir == 'left' && PLAYER.y + 1 >= this.hrows && PLAYER.y + 1 <= GAME.rows - this.hrows) axis = 'X(';
     else if (dir == 'right' && PLAYER.y >= this.hrows && PLAYER.y <= GAME.rows - this.hrows) axis = 'X(-';
     if (!axis) return;
     for (let i = 0; i < 3; i++) {
@@ -237,27 +245,23 @@ const Cell = {
 
   check: function(position) {
     let cell = this.indextocoord(position);
-
-    if (PLAYER.isdown) cell[0] -= GAME.cols - MAP.cols;
-    else if (PLAYER.isup) cell[0] -= PLAYER.x - MAP.hcols;
-    if (PLAYER.isright) cell[1] -= GAME.rows - MAP.rows;
-    else if (PLAYER.isleft) cell[1] -= PLAYER.y - MAP.hrows;
-
-    if (cell[0] < 0 || cell[0] > MAP.cols || cell[1] < 0 || cell[1] > MAP.rows) return;
-    else return [cell[0], cell[1]];
+    if (MAP.coefx == 2) cell[0] -= GAME.cols - MAP.cols;
+    else if (MAP.coefx == 1) cell[0] -= PLAYER.x - MAP.hcols;
+    if (MAP.coefy == 2) cell[1] -= GAME.rows - MAP.rows;
+    else if (MAP.coefy == 1) cell[1] -= PLAYER.y - MAP.hrows;
+    if (cell[0] >= 0 && cell[0] <= MAP.cols && cell[1] >= 0 && cell[1] <= MAP.rows) return [cell[0], cell[1]];
   },
 
   fill: function(position, color) {
     let cell = this.check(position, this.position);
     if (!cell) return;
-
     MAP.ctx2.clearRect(MAP.CellSize * cell[1], MAP.CellSize * cell[0], MAP.CellSize, MAP.CellSize);
     MAP.ctx2.fillStyle = color;
     MAP.ctx2.fillRect(MAP.CellSize * cell[1], MAP.CellSize * cell[0], MAP.CellSize, MAP.CellSize);
   },
 
   position: function(position, color) {
-    let cell = Cell.check(position, PLAYER.position);
+    let cell = this.check(position, PLAYER.position);
     if (!cell) return;
     MAP.ctx3.lineWidth = 2;
     MAP.ctx3.strokeStyle = color;
@@ -271,7 +275,7 @@ const Cell = {
   },
 
   clear: function(position) {
-    let cell = Cell.check(position, PLAYER.position);
+    let cell = this.check(position, PLAYER.position);
     if (!cell) return;
     MAP.ctx3.clearRect(MAP.CellSize * cell[1], MAP.CellSize * cell[0], MAP.CellSize, MAP.CellSize);
   },
@@ -345,7 +349,7 @@ Translate = {
   init: function() {
     PLAYER.update(true);
     MAP.move(lastdir);
-    MAP.margin(true);
+    // MAP.margin(true);
     this.start = Date.now();
     this.frame();
   },
