@@ -63,7 +63,12 @@ zoomout.addEventListener("click", function() {
 
 window.addEventListener('resize', function() {
   GAME.render();
-}, true);
+});
+
+window.addEventListener("orientationchange", function() {
+  GAME.render();
+});
+
 
 // TODO: button flip button left/right side
 
