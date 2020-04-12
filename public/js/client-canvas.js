@@ -21,15 +21,26 @@ const GAME = {
 
     this.render();
     HideLobby();
-    flag = true;
+    this.flag = true;
   },
 
   render: function() {
     MAP.update();
-    PLAYER.update(false);
-    // MAP.margin(false);
+    PLAYER.update();
     PLAYER.render();
     MAP.render();
+  },
+
+  zoomin: function() {
+    MAP.rows -= 2;
+    MAP.cols -= 2;
+    this.render();
+  },
+
+  zoomout: function() {
+    MAP.rows += 2;
+    MAP.cols += 2;
+    this.render();
   }
 
 };
@@ -51,12 +62,13 @@ const PLAYER = {
 
   update: function(animated) {
 
+    // Instant changes if no argument, animated if one
     if (!animated) this.shadow.style.transitionDuration = this.canvas.style.transitionDuration = MAP.master.style.transitionDuration = '0s';
     else this.shadow.style.transitionDuration = this.canvas.style.transitionDuration = MAP.master.style.transitionDuration = GAME.duration + 's';
-
     this.x = Cell.indextocoord(this.position)[0];
     this.y = Cell.indextocoord(this.position)[1];
 
+    // Check where player is, eventually update map's margin
     if (this.x < MAP.hcols) {
       this.vx = this.x;
       MAP.master.style.marginTop = MAP.marginX + "px";
@@ -85,8 +97,23 @@ const PLAYER = {
       MAP.coefy = 1;
     }
 
+    // Eventually update player position in view
     this.shadow.style.top = this.canvas.style.top = this.vx * MAP.CellSize + MAP.shift + 'px';
     this.shadow.style.left = this.canvas.style.left = this.vy * MAP.CellSize + MAP.shift + 'px';
+
+    // Eventually translate the map
+    if (!animated) return;
+    let axis;
+    if (PLAYER.lastdir == 'up' && PLAYER.x + 1 >= MAP.hcols && PLAYER.x + 1 <= GAME.cols - MAP.hcols) axis = 'Y(';
+    else if (PLAYER.lastdir == 'down' && PLAYER.x >= MAP.hcols && PLAYER.x <= GAME.cols - MAP.hcols) axis = 'Y(-';
+    else if (PLAYER.lastdir == 'left' && PLAYER.y + 1 >= MAP.hrows && PLAYER.y + 1 <= GAME.rows - MAP.hrows) axis = 'X(';
+    else if (PLAYER.lastdir == 'right' && PLAYER.y >= MAP.hrows && PLAYER.y <= GAME.rows - MAP.hrows) axis = 'X(-';
+    if (!axis) return;
+    for (let i = 0; i < 3; i++) {
+      MAP.canvas[i].style.transitionDuration = GAME.duration + 's';
+      MAP.canvas[i].style.transform = 'translate' + axis + MAP.CellSize + 'px)';
+    };
+
   },
 
   render: function() {
@@ -97,11 +124,10 @@ const PLAYER = {
 
 const MAP = {
 
-  maxcells: 50,
-  startcells: 21,
-  mincells: 11,
-
   init: function() {
+    this.maxcells = 50;
+    this.startcells = 23;
+    this.mincells = 11;
     this.master = document.getElementById('master');
     this.canvas = document.querySelectorAll('.mapcanvas');
     this.ctx1 = this.canvas[0].getContext('2d');
@@ -118,7 +144,7 @@ const MAP = {
     let w = window.innerWidth;
     let h = window.innerHeight;
 
-    // Set cell size
+    // Set cell size and amount in view
     if (!this.rows) {
       this.rows = this.startcells;
       this.cols = Math.round(this.rows * h / w);
@@ -203,7 +229,7 @@ const MAP = {
     // Draw all colored cells
     let len = GAME.colors.length;
     for (let i = 0; i < len; i++)
-      if (GAME.colors[i] !== null) Cell.fill(i, GAME.colors[i]);
+      if (GAME.colors[i] !== null) Cell.render(i, GAME.colors[i]);
 
     // Draw all positions
     GAME.positions.forEach(function(position) {
@@ -211,32 +237,6 @@ const MAP = {
     });
 
   },
-
-  move: function(dir) {
-    if (!dir) return;
-    let axis;
-    if (dir == 'up' && PLAYER.x + 1 >= this.hcols && PLAYER.x + 1 <= GAME.cols - this.hcols) axis = 'Y(';
-    else if (dir == 'down' && PLAYER.x >= this.hcols && PLAYER.x <= GAME.cols - this.hcols) axis = 'Y(-';
-    else if (dir == 'left' && PLAYER.y + 1 >= this.hrows && PLAYER.y + 1 <= GAME.rows - this.hrows) axis = 'X(';
-    else if (dir == 'right' && PLAYER.y >= this.hrows && PLAYER.y <= GAME.rows - this.hrows) axis = 'X(-';
-    if (!axis) return;
-    for (let i = 0; i < 3; i++) {
-      this.canvas[i].style.transitionDuration = GAME.duration + 's';
-      this.canvas[i].style.transform = 'translate' + axis + this.CellSize + 'px)';
-    };
-  },
-
-  zoomin: function() {
-    this.rows -= 2;
-    this.cols -= 2;
-    GAME.render();
-  },
-
-  zoomout: function() {
-    this.rows += 2;
-    this.cols += 2;
-    GAME.render();
-  }
 
 };
 
@@ -252,8 +252,8 @@ const Cell = {
     if (cell[0] >= 0 && cell[0] <= MAP.cols && cell[1] >= 0 && cell[1] <= MAP.rows) return [cell[0], cell[1]];
   },
 
-  fill: function(position, color) {
-    let cell = this.check(position, this.position);
+  render: function(position, color) {
+    let cell = this.check(position);
     if (!cell) return;
     MAP.ctx2.clearRect(MAP.CellSize * cell[1], MAP.CellSize * cell[0], MAP.CellSize, MAP.CellSize);
     MAP.ctx2.fillStyle = color;
@@ -261,7 +261,7 @@ const Cell = {
   },
 
   position: function(position, color) {
-    let cell = this.check(position, PLAYER.position);
+    let cell = this.check(position);
     if (!cell) return;
     MAP.ctx3.lineWidth = 2;
     MAP.ctx3.strokeStyle = color;
@@ -275,13 +275,13 @@ const Cell = {
   },
 
   clear: function(position) {
-    let cell = this.check(position, PLAYER.position);
+    let cell = this.check(position);
     if (!cell) return;
     MAP.ctx3.clearRect(MAP.CellSize * cell[1], MAP.CellSize * cell[0], MAP.CellSize, MAP.CellSize);
   },
 
   allow: function(position) {
-    let cell = this.check(position, PLAYER.position);
+    let cell = this.check(position);
     if (!cell) return;
     MAP.ctx1.clearRect(MAP.CellSize * cell[1], MAP.CellSize * cell[0], MAP.CellSize, MAP.CellSize);
     MAP.ctx1.fillStyle = '#e9e9e9';
@@ -294,18 +294,12 @@ const Cell = {
     return [coordx, coordy];
   },
 
-  render: function(position, color) {
-    let cell = this.check(position, this.position);
-    if (!cell) return;
-    flag = false;
-    window.Fill.init(cell, color);
-  }
-
 };
 
 Fill = {
 
   init: function(cell, color) {
+    GAME.flag = false;
     this.divx = 0;
     this.divy = 0;
     this.posx = MAP.CellSize * cell[1];
@@ -336,7 +330,7 @@ Fill = {
     MAP.ctx2.lineTo(Fill.posx + Fill.divx, Fill.posy - Fill.divy - Fill.lw / 2);
     MAP.ctx2.stroke();
     if (Fill.divy > MAP.CellSize * 4.5 / 6 && Fill.divx == MAP.CellSize) {
-      flag = true;
+      GAME.flag = true;
       return;
     };
     Fill.animationFrame = window.requestAnimationFrame(Fill.frame);
@@ -347,9 +341,8 @@ Fill = {
 Translate = {
 
   init: function() {
+    GAME.flag = false;
     PLAYER.update(true);
-    MAP.move(lastdir);
-    // MAP.margin(true);
     this.start = Date.now();
     this.frame();
   },
@@ -358,7 +351,7 @@ Translate = {
     Translate.delta = (Date.now() - Translate.start) / 1000;
     if (Translate.delta >= GAME.duration) {
       MAP.render();
-      flag = true;
+      GAME.flag = true;
       return;
     }
     Translate.animationFrame = window.requestAnimationFrame(Translate.frame);

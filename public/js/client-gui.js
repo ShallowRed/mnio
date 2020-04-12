@@ -4,7 +4,6 @@ const c2 = document.getElementById('c2');
 const c3 = document.getElementById('c3');
 const zoomin = document.getElementById('zoomin');
 const zoomout = document.getElementById('zoomout');
-var flag = false;
 
 //////////////// UI UTILS ////////////////////
 
@@ -55,11 +54,11 @@ c3.addEventListener("click", function() {
 });
 
 zoomin.addEventListener("click", function() {
-  if (flag) MAP.zoomin();
+  if (GAME.flag) GAME.zoomin();
 });
 
 zoomout.addEventListener("click", function() {
-  if (flag) MAP.zoomout();
+  if (GAME.flag) GAME.zoomout();
 });
 
 window.addEventListener('resize', function() {

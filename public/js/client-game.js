@@ -1,5 +1,4 @@
 var socket = io();
-var lastdir;
 
 ////////////////////////////////////////// LOBBY
 
@@ -22,7 +21,6 @@ socket.on('InitData', function(data) {
 
 //Move player if new position has ben allowed on server side
 socket.on("NewPlayerPos", function(position) {
-  flag = false;
   PLAYER.position = position;
   window.Translate.init();
 });
@@ -42,7 +40,7 @@ socket.on("ClearPosition", function(position) {
 //Fill other's cells when they do so
 socket.on('NewCell', function(cell) {
   GAME.colors[cell.position] = cell.color;
-  Cell.fill(cell.position, cell.color);
+  Cell.render(cell.position, cell.color);
 });
 
 // Draw the cells where the player is allowed to move
@@ -60,13 +58,13 @@ socket.on('AllowedCells', function(cells) {
 //Fill active player cell when he says so
 function drawcell(position, color) {
   GAME.colors[position] = color;
-  Cell.render(position, color);
+  window.Fill.init(Cell.check(position), color);
   socket.emit("DrawCell", [position, color]);
 }
 
 // Ask server for autorization when trying to move
 function askformove(direction) {
-  lastdir = direction;
+  PLAYER.lastdir = direction;
   socket.emit('MovePlayer', direction);
 }
 

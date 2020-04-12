@@ -1,17 +1,17 @@
   document.addEventListener('keydown', function(event) {
-    if (flag) switch (event.keyCode) {
+    if (GAME.flag) switch (event.keyCode) {
 
       case 32: // Spacebar
         drawcell(PLAYER.position, PLAYER.selectedcolor);
         break;
 
       case 37: // left arrow
-        MAP.zoomin();
+        GAME.zoomin();
         // getsizes();
         break;
 
       case 39: // right arrow
-        MAP.zoomout();
+        GAME.zoomout();
         break;
 
       case 38: // top arrow
