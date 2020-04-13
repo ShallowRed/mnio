@@ -2,7 +2,7 @@ const convert = require('./converters');
 const Config = require('../controlers/config');
 var limit = 200;
 
-function move(player, direction, ColorList, PositionList) {
+function move(player, direction, MNIO) {
   let coord = convert.indextocoord(player.position);
   if (direction == "up" && coord[0] !== 0) coord[0]--;
   else if (direction == "down" && coord[0] !== Config.cols - 1) coord[0]++;
@@ -13,8 +13,8 @@ function move(player, direction, ColorList, PositionList) {
   let nextpos = convert.coordtoindex(coord);
   if (player.owncells.includes(nextpos) ||
       (player.allowedcells.includes(nextpos) &&
-      !PositionList.includes(nextpos) &&
-      !ColorList[nextpos])) return nextpos;
+      !MNIO.PositionList.includes(nextpos) &&
+      !MNIO.ColorList[nextpos])) return nextpos;
 };
 
 function cells(owncells) {

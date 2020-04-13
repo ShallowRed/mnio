@@ -125,9 +125,9 @@ const PLAYER = {
 const MAP = {
 
   init: function() {
-    this.maxcells = 51;
-    this.startcells = 21;
-    this.mincells = 11;
+    this.maxcells = 21;
+    this.startcells = 15;
+    this.mincells = 5;
     this.master = document.getElementById('master');
     this.canvas = document.querySelectorAll('.mapcanvas');
     this.ctx1 = this.canvas[0].getContext('2d');
@@ -274,10 +274,10 @@ const Cell = {
     MAP.ctx3.strokeRect(MAP.CellSize * cell[1] + 18, MAP.CellSize * cell[0] + 18, MAP.CellSize - 36, MAP.CellSize - 36);
   },
 
-  clear: function(position) {
+  clear: function(position, ctx) {
     let cell = this.check(position);
     if (!cell) return;
-    MAP.ctx3.clearRect(MAP.CellSize * cell[1], MAP.CellSize * cell[0], MAP.CellSize, MAP.CellSize);
+    ctx.clearRect(MAP.CellSize * cell[1], MAP.CellSize * cell[0], MAP.CellSize, MAP.CellSize);
   },
 
   allow: function(position) {

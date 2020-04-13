@@ -2,16 +2,16 @@ const express = require('express');
 const socketIO = require('socket.io');
 
 const Config = require('./config');
-const Player = require('../models/player');
+const User = require('../models/player');
 const Check = require('../models/check');
 
-function InitPlayer(playerids, MNIO, colors, owncells) {
+function init(playerids, MNIO, colors, owncells) {
 
   // Create a new player in the session
   let userid = playerids[0];
   let username = playerids[1];
   let socket = playerids[2];
-  let player = MNIO.PLAYERS[socket.id] = new Player(userid, username, colors, owncells, MNIO.ColorList);
+  let player = MNIO.PLAYERS[socket.id] = new User(userid, username, colors, owncells, MNIO.ColorList);
 
   // Send info to the player
   socket.emit('InitData', {
@@ -30,11 +30,11 @@ function InitPlayer(playerids, MNIO, colors, owncells) {
 
 };
 
-function MovePlayer(direction, socket, MNIO) {
+function update(direction, socket, MNIO) {
 
   // Check if move is ok
   let player = MNIO.PLAYERS[socket.id];
-  let nextposition = Check.move(player, direction, MNIO.ColorList, MNIO.PositionList);
+  let nextposition = Check.move(player, direction, MNIO);
   if (!nextposition) return;
 
   // Clear last position
@@ -49,7 +49,7 @@ function MovePlayer(direction, socket, MNIO) {
 
 }
 
-function DrawCell(cell, socket, MNIO) {
+function render(cell, socket, MNIO) {
   let position = cell[0];
   let color = cell[1];
 
@@ -70,7 +70,7 @@ function DrawCell(cell, socket, MNIO) {
 
 };
 
-function DisconnectPlayer(socket, MNIO) {
+function disconnect(socket, MNIO) {
   let player = MNIO.PLAYERS[socket.id];
 
   // Save player's palette, clear its last position
@@ -78,26 +78,33 @@ function DisconnectPlayer(socket, MNIO) {
   MNIO.PositionList.splice(MNIO.PositionList.indexOf(player.position), 1);
   socket.broadcast.emit("ClearPosition", player.position);
 
-}
+  // if (player.owncells.length < 10) {
+  //   player.owncells.forEach(function(cell) {
+  //     MNIO.ColorList.splice(MNIO.ColorList.indexOf(cell), 1);
+  //     socket.broadcast.emit("ClearCells", player.owncells);
+  //   });
+  // }
+
+};
 
 function WrongPass(socket) {
   socket.emit("alert", "Wrong password");
-}
+};
 
 function sendgames(socket, data) {
   socket.emit("games", data);
-}
+};
 
 function sendtable(socket, data) {
   socket.emit("table", data);
-}
+};
 
 module.exports = {
-  WrongPass,
+  init,
+  render,
+  update,
+  disconnect,
   sendtable,
   sendgames,
-  MovePlayer,
-  DrawCell,
-  InitPlayer,
-  DisconnectPlayer
+  WrongPass
 };

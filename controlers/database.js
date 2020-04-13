@@ -2,7 +2,7 @@ const mysql = require('mysql');
 const Conf = require('./config');
 const rows = Conf.rows;
 const cols = Conf.cols;
-const GAME = require('./index');
+const Player = require('./index');
 const config = Conf.conf;
 
 var db = mysql.createConnection({
@@ -31,7 +31,7 @@ function getgames(socket) {
     res.forEach(function(game) {
       games.push([game.gameid, game.usedrows, game.usedcols, game.flag]);
     });
-    GAME.sendgames(socket, games);
+    Player.sendgames(socket, games);
   });
 }
 
@@ -54,7 +54,7 @@ function gettable(socket, gameid) {
     res.forEach(function(cell) {
       cells.push([cell.cellid, '#' + cell.color]);
     });
-    GAME.sendtable(socket, cells);
+    Player.sendtable(socket, cells);
   });
 }
 
@@ -154,20 +154,20 @@ const AddUsertoUsers = "INSERT INTO users (`Username`, `Password`) VALUES(?, ?)"
 const IsUserinGrid = "SELECT * FROM game_?__grid WHERE playerid=?";
 const IsUserinPlayers = "SELECT * FROM game_?__players WHERE playerid=?";
 
-function LogPlayer(user, pass, socket, MNIO) {
+function log(user, pass, socket, MNIO) {
 
   db.query(IsUserinUsers, [user], function(err, res1, fields) {
 
     if (!res1.length) { // If user is not in database
       db.query(AddUsertoUsers, [user, pass], function(err, result) {
         if (!!err) throw err;
-        GAME.InitPlayer([result.insertId, user, socket], MNIO); // req.session.userID = result.insertId; req.session.save();
+        Player.init([result.insertId, user, socket], MNIO); // req.session.userID = result.insertId; req.session.save();
       });
       return;
     }
 
     if (pass !== res1[0].Password) { // If wrong password
-      GAME.WrongPass(socket);
+      Player.WrongPass(socket);
       return;
     }
 
@@ -180,7 +180,7 @@ function LogPlayer(user, pass, socket, MNIO) {
         if (err) throw err;
         if (!res4.length) { // If user never draw
           console.log("New user n°" + playerids[0] + " on game n°" + gameid);
-          GAME.InitPlayer(playerids, MNIO);
+          Player.init(playerids, MNIO);
           return
         }
 
@@ -191,7 +191,7 @@ function LogPlayer(user, pass, socket, MNIO) {
           res3.forEach(function(cell) {
             owncells.push(cell.cellid);
           });
-          GAME.InitPlayer(playerids, MNIO, colors, owncells);
+          Player.init(playerids, MNIO, colors, owncells);
           console.log("user n°" + playerids[0] + " is returning to game n°" + gameid);
         });
 
@@ -206,7 +206,7 @@ module.exports = {
   gettable,
   connect,
   init,
-  LogPlayer,
+  log,
   SaveFill,
   SavePlayer
 }

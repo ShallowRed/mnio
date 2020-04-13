@@ -10,7 +10,7 @@ const server = http.Server(app);
 const router = express.Router();
 const io = socketIO(server);
 
-const GAME = require(path.resolve(__dirname, 'controlers'));
+const Player = require(path.resolve(__dirname, 'controlers'));
 const Database = require(path.resolve(__dirname, 'controlers/database'));
 const Config = require(path.resolve(__dirname, 'controlers/config'));
 
@@ -23,19 +23,8 @@ app.use('/', require(path.resolve(__dirname, "controlers/routes")));
 app.set('view engine', 'ejs');
 app.set("views", path.resolve(__dirname, "views"));
 
-// TODO: allow several games at the same
-// TODO: improve admin page
 
 ////////////////////////////// INITIALIZE //////////////////////////////////////
-
-// class mniogame {
-//   constructor(){
-//     this.Colorlist = new Array(rows * cols).fill(null);
-//     this.PositionList = [];
-//     this.Players = {}
-//   }
-// }
-// var MNIO = new mniogame();
 
 const MNIO = {
   ColorList: new Array(Config.rows * Config.cols).fill(null),
@@ -51,23 +40,23 @@ Database.init(MNIO.ColorList);
 io.on('connection', function(socket) {
 
   socket.on("login", function(data) {
-    Database.LogPlayer(data.user, data.pass, socket, MNIO);
+    Database.log(data.user, data.pass, socket, MNIO);
   });
 
   // GAME.InitPlayer("test", 150, null, [], [], socket, MNIO);
 
   socket.on('MovePlayer', function(direction) {
-    GAME.MovePlayer(direction, socket, MNIO);
+    Player.update(direction, socket, MNIO);
   });
 
   socket.on('DrawCell', function(cell) {
-    GAME.DrawCell(cell, socket, MNIO);
+    Player.render(cell, socket, MNIO);
     Database.SaveFill(cell[0], MNIO.PLAYERS[socket.id].dbid, cell[1].split('#')[1]);
   });
 
   socket.on('disconnect', function() {
     if (!MNIO.PLAYERS[socket.id]) return;
-    GAME.DisconnectPlayer(socket, MNIO);
+    Player.disconnect(socket, MNIO);
     Database.SavePlayer(MNIO.PLAYERS[socket.id].dbid, MNIO.PLAYERS[socket.id].colors);
     // TODO:  erase contribution less than n cells
   });
@@ -94,3 +83,18 @@ io.on('connection', function(socket) {
 
 // TODO:  erase position from admin
 });
+
+// TODO: allow several games at the same
+// class mniogame {
+//   constructor(){
+//     this.Colorlist = new Array(Config.rows * Config.cols).fill(null);
+//     this.PositionList = [];
+//     this.PLAYERS = {}
+//   }
+// }
+// setters:
+//   push new player in Players
+//   push position in PositionList
+//   remove position from PositionList
+//   push color in Colorlist
+// var MNIO = new mniogame();

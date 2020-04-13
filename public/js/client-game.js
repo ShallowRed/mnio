@@ -34,8 +34,16 @@ socket.on("NewPosition", function(position) {
 //Clear other's last position when they moves
 socket.on("ClearPosition", function(position) {
   GAME.positions.splice(GAME.positions.indexOf(position), 1);
-  Cell.clear(position);
+  Cell.clear(position, MAP.ctx3);
 });
+
+//Clear other's last position when they moves
+// socket.on("ClearCells", function(ColorList) {
+//   ColorList.forEach(function(position) {
+//     GAME.colors.splice(GAME.colors.indexOf(position), 1);
+//     Cell.clear(position, MAP.ctx2);
+//   });
+// });
 
 //Fill other's cells when they do so
 socket.on('NewCell', function(cell) {
