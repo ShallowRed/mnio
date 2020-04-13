@@ -2,17 +2,16 @@ const express = require('express');
 const socketIO = require('socket.io');
 
 const Config = require('./config');
-const Player = require('../models/newplayer');
-const isallowed = require('../models/allowedmoves');
-const setallowedcells = require('../models/allowedcells');
+const Player = require('../models/player');
+const Check = require('../models/check');
 
-function InitPlayer(userid, username, position, colors, owncells, socket, MNIO) {
-  if (!userid) {
-    socket.emit("alert", "Wrong password");
-    return;
-  }
+function InitPlayer(playerids, MNIO, colors, owncells) {
+
   // Create a new player in the session
-  let player = MNIO.PLAYERS[socket.id] = new Player(userid, username, position, colors, owncells, MNIO.ColorList);
+  let userid = playerids[0];
+  let username = playerids[1];
+  let socket = playerids[2];
+  let player = MNIO.PLAYERS[socket.id] = new Player(userid, username, colors, owncells, MNIO.ColorList);
 
   // Send info to the player
   socket.emit('InitData', {
@@ -35,7 +34,7 @@ function MovePlayer(direction, socket, MNIO) {
 
   // Check if move is ok
   let player = MNIO.PLAYERS[socket.id];
-  let nextposition = isallowed(player, direction, MNIO.ColorList, MNIO.PositionList);
+  let nextposition = Check.move(player, direction, MNIO.ColorList, MNIO.PositionList);
   if (!nextposition) return;
 
   // Clear last position
@@ -43,7 +42,7 @@ function MovePlayer(direction, socket, MNIO) {
   MNIO.PositionList.splice(MNIO.PositionList.indexOf(player.position), 1);
 
   // Set new position
-  player.position = nextposition;
+  player.position = nextposition; // TODO:  use setter getter to affect players value
   MNIO.PositionList.push(nextposition);
   socket.broadcast.emit("NewPosition", nextposition);
   socket.emit("NewPlayerPos", nextposition);
@@ -65,7 +64,7 @@ function DrawCell(cell, socket, MNIO) {
   let player = MNIO.PLAYERS[socket.id];
   if (player.owncells.includes(position)) return;
   player.owncells.push(position);
-  let allowedcells = setallowedcells(player.owncells);
+  let allowedcells = Check.cells(player.owncells);
   player.allowedcells = allowedcells;
   socket.emit('AllowedCells', allowedcells);
 
@@ -81,6 +80,10 @@ function DisconnectPlayer(socket, MNIO) {
 
 }
 
+function WrongPass(socket) {
+  socket.emit("alert", "Wrong password");
+}
+
 function sendgames(socket, data) {
   socket.emit("games", data);
 }
@@ -90,6 +93,7 @@ function sendtable(socket, data) {
 }
 
 module.exports = {
+  WrongPass,
   sendtable,
   sendgames,
   MovePlayer,

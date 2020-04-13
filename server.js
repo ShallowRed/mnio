@@ -13,14 +13,10 @@ const io = socketIO(server);
 const GAME = require(path.resolve(__dirname, 'controlers'));
 const Database = require(path.resolve(__dirname, 'controlers/database'));
 const Config = require(path.resolve(__dirname, 'controlers/config'));
-const maxplayers = Config.maxplayers;
-const port = Config.port;
-const rows = Config.rows;
-const cols = Config.cols;
 
-app.set('port', port);
-server.listen(port, function() {
-  console.log('Starting server on port ' + port);
+app.set('port', Config.port);
+server.listen(Config.port, function() {
+  console.log('Starting server on port ' + Config.port);
 });
 
 app.use('/', require(path.resolve(__dirname, "controlers/routes")));
@@ -42,7 +38,7 @@ app.set("views", path.resolve(__dirname, "views"));
 // var MNIO = new mniogame();
 
 const MNIO = {
-  ColorList: new Array(rows * cols).fill(null),
+  ColorList: new Array(Config.rows * Config.cols).fill(null),
   PositionList: [],
   PLAYERS: {}
 }
@@ -73,13 +69,14 @@ io.on('connection', function(socket) {
     if (!MNIO.PLAYERS[socket.id]) return;
     GAME.DisconnectPlayer(socket, MNIO);
     Database.SavePlayer(MNIO.PLAYERS[socket.id].dbid, MNIO.PLAYERS[socket.id].colors);
+    // TODO:  erase contribution less than n cells
   });
 
   socket.on("getcurrent", function() {
     socket.emit("current", {
       ColorList: MNIO.ColorList,
-      rows: rows,
-      cols: cols
+      rows: Config.rows,
+      cols: Config.cols
     });
   })
 
@@ -95,5 +92,5 @@ io.on('connection', function(socket) {
     Database.setflag(data);
   })
 
-
+// TODO:  erase position from admin
 });

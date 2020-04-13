@@ -125,8 +125,8 @@ const PLAYER = {
 const MAP = {
 
   init: function() {
-    this.maxcells = 50;
-    this.startcells = 23;
+    this.maxcells = 51;
+    this.startcells = 21;
     this.mincells = 11;
     this.master = document.getElementById('master');
     this.canvas = document.querySelectorAll('.mapcanvas');

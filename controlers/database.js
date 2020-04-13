@@ -1,15 +1,17 @@
 const mysql = require('mysql');
-const Config = require('./config');
-const rows = Config.rows;
-const cols = Config.cols;
+const Conf = require('./config');
+const rows = Conf.rows;
+const cols = Conf.cols;
 const GAME = require('./index');
-const config = Config.conf;
+const config = Conf.conf;
+
 var db = mysql.createConnection({
   host: config.host,
   user: config.user,
   password: config.password,
   database: config.base
 });
+
 var GAMEDATE = Math.floor(Date.now() / 1000);
 
 function connect() {
@@ -60,12 +62,12 @@ const UpdateTime = "UPDATE games SET gridid = ? WHERE gameid = ?"
 
 function init(ColorList) {
   CreateMainDB();
-  db.query(GetLastGame, function(err, res1) {
+  db.query(GetLastGame, function(err, res) {
     if (!!err) throw err;
-    if (!res1.length || res1[0].flag) CreateGameDB();
+    if (!res.length || res[0].flag) CreateGameDB();
     else {
-      ColorlistfromDB(ColorList, [res1[0].gameid]);
-      db.query(UpdateTime, [GAMEDATE, res1[0].gameid], function(err, res2) {
+      ColorlistfromDB(ColorList, [res[0].gameid]);
+      db.query(UpdateTime, [GAMEDATE, res[0].gameid], function(err) {
         if (!!err) throw err;
       });
     }
@@ -75,9 +77,9 @@ function init(ColorList) {
 const SelectGrid = "SELECT * FROM game_?__grid"
 
 function ColorlistfromDB(ColorList, gameid) {
-  db.query(SelectGrid, [gameid], function(err, res2) {
+  db.query(SelectGrid, [gameid], function(err, res) {
     if (!!err) throw err;
-    res2.forEach(function(cell) {
+    res.forEach(function(cell) {
       ColorList[cell.cellid] = '#' + cell.color;
     });
   });
@@ -103,17 +105,16 @@ const GetGameid = "SELECT gameid FROM games WHERE gridid=?";
 function CreateGameDB() {
   db.query(NewGame, [rows, cols, GAMEDATE], function(err, result) {
     if (err) throw err;
-    db.query(GetGameid, [GAMEDATE], function(err, rows) {
+    db.query(GetGameid, [GAMEDATE], function(err, res) {
       if (err) throw err;
-      let gameid = rows[0].gameid
-      console.log("Game n° " + gameid + " created");
-      db.query(CreateGridTable, gameid, function(err, result) {
+      console.log("Game n° " + res[0].gameid + " created");
+      db.query(CreateGridTable, res[0].gameid, function(err, result) {
         if (err) throw err;
-        console.log("Grid table created with name game_" + gameid + "__grid");
+        console.log("Grid table created with name game_" + res[0].gameid + "__grid");
       });
-      db.query(CreatePlayersTable, gameid, function(err, result) {
+      db.query(CreatePlayersTable, res[0].gameid, function(err, result) {
         if (err) throw err;
-        console.log("Players table created with name game_" + gameid + "__players");
+        console.log("Players table created with name game_" + res[0].gameid + "__players");
       });
     });
   });
@@ -122,12 +123,11 @@ function CreateGameDB() {
 const AddCelltoGrid = "INSERT INTO game_?__grid (`cellid`, `playerid`, `color`)  VALUES(?, ?, ?)";
 
 function SaveFill(cellid, playerid, color) {
-  db.query(GetGameid, [GAMEDATE], function(err, res1) {
+  db.query(GetGameid, [GAMEDATE], function(err, res) {
     if (err) throw err;
-    let gameid = res1[0].gameid;
-    db.query(AddCelltoGrid, [gameid, cellid, playerid, color], function(err) {
+    db.query(AddCelltoGrid, [res[0].gameid, cellid, playerid, color], function(err) {
       if (err) throw err;
-      console.log("Player n°" + playerid + " filled cell n°" + cellid + " with color #" + color + " in game n°" + gameid);
+      console.log("Player n°" + playerid + " filled cell n°" + cellid + " with color #" + color + " in game n°" + res[0].gameid);
     });
   });
 };
@@ -138,13 +138,12 @@ const SaveUserPalette = "INSERT INTO game_?__players (`playerid`, `color1`, `col
 function SavePlayer(playerid, col) {
   db.query(GetGameid, [GAMEDATE], function(err, res1) {
     if (err) throw err;
-    let gameid = res1[0].gameid;
-    db.query(IsUserinPlayers, [gameid, playerid], function(err, res2, fields) {
-      let userinplayers = res2;
-      if (!userinplayers.length) {
-        db.query(SaveUserPalette, [gameid, playerid, col[0].split('#')[1], col[1].split('#')[1], col[2].split('#')[1]], function(err, result) {
+    db.query(IsUserinPlayers, [res1[0].gameid, playerid], function(err, res2, fields) {
+      if (err) throw err;
+      if (!res2.length) {
+        db.query(SaveUserPalette, [res1[0].gameid, playerid, col[0].split('#')[1], col[1].split('#')[1], col[2].split('#')[1]], function(err, result) {
           if (err) throw err;
-          console.log("Palette of player n° " + playerid + " saved in game_" + gameid + "__players");
+          console.log("Palette of player n° " + playerid + " saved in game_" + res1[0].gameid + "__players");
         });
       };
     });
@@ -158,51 +157,46 @@ const IsUserinPlayers = "SELECT * FROM game_?__players WHERE playerid=?";
 function LogPlayer(user, pass, socket, MNIO) {
 
   db.query(IsUserinUsers, [user], function(err, res1, fields) {
-    let userinusers = res1;
-    let position = null;
-    let colors = [];
-    let owncells = [];
 
-    if (!userinusers.length) { // If user is not in database
-
+    if (!res1.length) { // If user is not in database
       db.query(AddUsertoUsers, [user, pass], function(err, result) {
         if (!!err) throw err;
-        GAME.InitPlayer(result.insertId, user, position, colors, owncells, socket, MNIO); // req.session.userID = result.insertId; req.session.save();
+        GAME.InitPlayer([result.insertId, user, socket], MNIO); // req.session.userID = result.insertId; req.session.save();
       });
+      return;
+    }
 
-    } else if (pass == userinusers[0].Password) { // If user is in database
+    if (pass !== res1[0].Password) { // If wrong password
+      GAME.WrongPass(socket);
+      return;
+    }
 
-      let playerid = userinusers[0].playerid;
+    let playerids = [res1[0].playerid, user, socket];  // If user is in database and right pass
+    db.query(GetGameid, [GAMEDATE], function(err, res2) {
+      if (err) throw err;
+      let gameid = res2[0].gameid;
 
-      db.query(GetGameid, [GAMEDATE], function(err, res2) {
+      db.query(IsUserinPlayers, [gameid, playerids[0]], function(err, res4, fields) {
         if (err) throw err;
-        let gameid = res2[0].gameid;
+        if (!res4.length) { // If user never draw
+          console.log("New user n°" + playerids[0] + " on game n°" + gameid);
+          GAME.InitPlayer(playerids, MNIO);
+          return
+        }
 
-        db.query(IsUserinPlayers, [gameid, playerid], function(err, res4, fields) {
-          let userinplayers = res4;
-
-          if (userinplayers.length) { // If user already draw
-            console.log("user n°" + playerid + " has already drawn in grid n°" + gameid);
-            userinplayers.forEach(function(cell) {
-              colors.push("#" + cell.color1);
-              colors.push("#" + cell.color2);
-              colors.push("#" + cell.color3);
-            });
-
-            db.query(IsUserinGrid, [gameid, playerid], function(err, res3, fields) {
-              let useringrid = res3;
-              if (useringrid.length) {
-                console.log("user n°" + playerid + " has already drawn in grid n°" + gameid);
-                useringrid.forEach(function(cell) {
-                  owncells.push(cell.cellid);
-                });
-                GAME.InitPlayer(playerid, user, owncells[0], colors, owncells, socket, MNIO);
-              };
-            });
-          } else GAME.InitPlayer(playerid, user, position, colors, owncells, socket, MNIO); // If player never draw
+        let owncells = [];
+        let colors = ["#" + res4[0].color1,"#" + res4[0].color2, "#" + res4[0].color3];
+        db.query(IsUserinGrid, [gameid, playerids[0]], function(err, res3, fields) {
+          if (err) throw err;
+          res3.forEach(function(cell) {
+            owncells.push(cell.cellid);
+          });
+          GAME.InitPlayer(playerids, MNIO, colors, owncells);
+          console.log("user n°" + playerids[0] + " is returning to game n°" + gameid);
         });
+
       });
-    } else GAME.InitPlayer(null, null, null, null, null, socket, null, null, null); // If wrong password
+    });
   });
 };
 
