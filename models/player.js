@@ -15,7 +15,7 @@ class Player {
     this.dbid = userindb;
     if (!colors) this.colors = [rdmcolor(), rdmcolor(), rdmcolor()];
     else this.colors = colors;
-    if (!owncells) {
+    if (!owncells || !owncells.length) {
       this.owncells = [];
       this.allowedcells = [];
       this.position = randompos(ColorList);
@@ -23,7 +23,7 @@ class Player {
     }
     this.owncells = owncells;
     this.allowedcells = require('./check').cells(owncells);
-    this.position = owncells[0]
+    this.position = owncells[0];
   }
 }
 

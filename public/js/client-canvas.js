@@ -125,9 +125,9 @@ const PLAYER = {
 const MAP = {
 
   init: function() {
-    this.maxcells = 21;
-    this.startcells = 15;
-    this.mincells = 5;
+    this.maxcells = 71;
+    this.startcells = 31;
+    this.mincells = 11;
     this.master = document.getElementById('master');
     this.canvas = document.querySelectorAll('.mapcanvas');
     this.ctx1 = this.canvas[0].getContext('2d');
@@ -140,7 +140,7 @@ const MAP = {
     this.rightmask = document.getElementById('rightmask');
   },
 
-  update: function() {
+  update: function() { // TODO: margin for ui right, left or bottom
     let w = window.innerWidth;
     let h = window.innerHeight;
 
@@ -187,13 +187,19 @@ const MAP = {
     this.lw = Math.round(this.CellSize / 6);
     this.width = this.CellSize * (this.rows - 2);
     this.height = this.CellSize * (this.cols - 2);
-    this.marginX = this.marginY = Math.round(0.05 * w);
+    this.marginX = this.marginY = 30;
+    // this.marginX = this.marginY = Math.round(0.05 * w);
 
     //Set canvas size
     this.master.style.width = this.width + 'px';
     this.master.style.height = this.height + 'px';
-    this.topmask.style.height = this.bottommask.style.height = this.marginX + "px";
-    this.leftmask.style.width = this.rightmask.style.width = this.marginY + "px";
+
+    this.topmask.style.height = this.marginX + "px";
+    this.bottommask.style.height = this.marginX + "px";
+
+    this.leftmask.style.width = this.marginY + "px";
+    this.rightmask.style.width = this.marginY + "px";
+
     for (let i = 0; i < 3; i++) {
       this.canvas[i].width = this.width + this.CellSize * 2;
       this.canvas[i].height = this.height + this.CellSize * 2;
@@ -241,7 +247,8 @@ const MAP = {
 };
 
 
-const Cell = {
+const Cell = { // TODO: erase color ?
+  // TODO: darken /lighten selected color
 
   check: function(position) {
     let cell = this.indextocoord(position);
@@ -263,15 +270,17 @@ const Cell = {
   position: function(position, color) {
     let cell = this.check(position);
     if (!cell) return;
-    MAP.ctx3.lineWidth = 2;
-    MAP.ctx3.strokeStyle = color;
-    MAP.ctx3.strokeRect(MAP.CellSize * cell[1] + 9, MAP.CellSize * cell[0] + 9, MAP.CellSize - 18, MAP.CellSize - 18);
-    MAP.ctx3.lineWidth = 8;
-    MAP.ctx3.strokeStyle = 'white';
-    MAP.ctx3.strokeRect(MAP.CellSize * cell[1] + 14, MAP.CellSize * cell[0] + 14, MAP.CellSize - 28, MAP.CellSize - 28);
-    MAP.ctx3.lineWidth = 2;
-    MAP.ctx3.strokeStyle = color;
-    MAP.ctx3.strokeRect(MAP.CellSize * cell[1] + 18, MAP.CellSize * cell[0] + 18, MAP.CellSize - 36, MAP.CellSize - 36);
+    // MAP.ctx3.lineWidth = 2;
+    // MAP.ctx3.strokeStyle = color;
+    // MAP.ctx3.strokeRect(MAP.CellSize * cell[1] + 9, MAP.CellSize * cell[0] + 9, MAP.CellSize - 18, MAP.CellSize - 18);
+    // MAP.ctx3.lineWidth = 8;
+    // MAP.ctx3.strokeStyle = 'white';
+    // MAP.ctx3.strokeRect(MAP.CellSize * cell[1] + 14, MAP.CellSize * cell[0] + 14, MAP.CellSize - 28, MAP.CellSize - 28);
+    // MAP.ctx3.lineWidth = 2;
+    // MAP.ctx3.strokeStyle = color;
+    // MAP.ctx3.strokeRect(MAP.CellSize * cell[1] + 18, MAP.CellSize * cell[0] + 18, MAP.CellSize - 36, MAP.CellSize - 36);
+    roundRect(MAP.ctx3, MAP.CellSize * cell[1] + MAP.shift*1.5, MAP.CellSize * cell[0] + MAP.shift*1.5, MAP.CellSize - MAP.shift * 3, MAP.CellSize - MAP.shift * 3, MAP.shift);
+
   },
 
   clear: function(position, ctx) {
@@ -295,6 +304,24 @@ const Cell = {
   },
 
 };
+
+// TODO: clean roundrect and eventually anmated other's move
+function roundRect(ctx, x, y, width, height, radius) {
+  ctx.strokeStyle = "black";
+  ctx.lineWidth = MAP.shift;
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + width - radius, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+  ctx.lineTo(x + width, y + height - radius);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+  ctx.lineTo(x + radius, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+  ctx.lineTo(x, y + radius);
+  ctx.quadraticCurveTo(x, y, x + radius, y);
+  ctx.closePath();
+  ctx.stroke();
+}
 
 Fill = {
 

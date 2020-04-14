@@ -12,7 +12,6 @@ function init(playerids, MNIO, colors, owncells) {
   let username = playerids[1];
   let socket = playerids[2];
   let player = MNIO.PLAYERS[socket.id] = new User(userid, username, colors, owncells, MNIO.ColorList);
-
   // Send info to the player
   socket.emit('InitData', {
     position: player.position,
