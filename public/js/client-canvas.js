@@ -2,7 +2,7 @@
 // TODO: fix can't access cell 0,0
 
 const GAME = {
-
+// TODO: add tutorial
   init: function(data) {
     PLAYER.init(data);
     MAP.init();
@@ -125,9 +125,9 @@ const PLAYER = {
 const MAP = {
 
   init: function() {
-    this.maxcells = 71;
-    this.startcells = 31;
-    this.mincells = 11;
+    this.maxcells = 19;
+    this.startcells = 11;
+    this.mincells = 3;
     this.master = document.getElementById('master');
     this.canvas = document.querySelectorAll('.mapcanvas');
     this.ctx1 = this.canvas[0].getContext('2d');
@@ -239,23 +239,28 @@ const MAP = {
 
     // Draw all positions
     GAME.positions.forEach(function(position) {
-      Cell.position(position, 'grey');
+      Cell.position(position);
     });
 
   },
 
 };
-
+// TODO: fix margins
 
 const Cell = { // TODO: erase color ?
   // TODO: darken /lighten selected color
-
-  check: function(position) {
+// TODO: use prepared palettes
+  posinview: function(position) {
     let cell = this.indextocoord(position);
     if (MAP.coefx == 2) cell[0] -= GAME.cols - MAP.cols;
     else if (MAP.coefx == 1) cell[0] -= PLAYER.x - MAP.hcols;
     if (MAP.coefy == 2) cell[1] -= GAME.rows - MAP.rows;
     else if (MAP.coefy == 1) cell[1] -= PLAYER.y - MAP.hrows;
+    return [cell[0], cell[1]];
+  },
+
+  check: function(position) {
+    let cell = this.posinview(position);
     if (cell[0] >= 0 && cell[0] <= MAP.cols && cell[1] >= 0 && cell[1] <= MAP.rows) return [cell[0], cell[1]];
   },
 
@@ -267,26 +272,32 @@ const Cell = { // TODO: erase color ?
     MAP.ctx2.fillRect(MAP.CellSize * cell[1], MAP.CellSize * cell[0], MAP.CellSize, MAP.CellSize);
   },
 
-  position: function(position, color) {
+  position: function(position) {
     let cell = this.check(position);
-    if (!cell) return;
-    // MAP.ctx3.lineWidth = 2;
-    // MAP.ctx3.strokeStyle = color;
-    // MAP.ctx3.strokeRect(MAP.CellSize * cell[1] + 9, MAP.CellSize * cell[0] + 9, MAP.CellSize - 18, MAP.CellSize - 18);
-    // MAP.ctx3.lineWidth = 8;
-    // MAP.ctx3.strokeStyle = 'white';
-    // MAP.ctx3.strokeRect(MAP.CellSize * cell[1] + 14, MAP.CellSize * cell[0] + 14, MAP.CellSize - 28, MAP.CellSize - 28);
-    // MAP.ctx3.lineWidth = 2;
-    // MAP.ctx3.strokeStyle = color;
-    // MAP.ctx3.strokeRect(MAP.CellSize * cell[1] + 18, MAP.CellSize * cell[0] + 18, MAP.CellSize - 36, MAP.CellSize - 36);
-    roundRect(MAP.ctx3, MAP.CellSize * cell[1] + MAP.shift*1.5, MAP.CellSize * cell[0] + MAP.shift*1.5, MAP.CellSize - MAP.shift * 3, MAP.CellSize - MAP.shift * 3, MAP.shift);
+    if (cell) this.roundRect(MAP.ctx3, MAP.CellSize * cell[1] + MAP.shift*1.5, MAP.CellSize * cell[0] + MAP.shift*1.5, MAP.CellSize - MAP.shift * 3, MAP.CellSize - MAP.shift * 3, MAP.shift);
 
+  },
+
+  roundRect: function(ctx, x, y, width, height, radius) {
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = MAP.shift;
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+    ctx.stroke();
   },
 
   clear: function(position, ctx) {
     let cell = this.check(position);
-    if (!cell) return;
-    ctx.clearRect(MAP.CellSize * cell[1], MAP.CellSize * cell[0], MAP.CellSize, MAP.CellSize);
+    if (cell) ctx.clearRect(MAP.CellSize * cell[1], MAP.CellSize * cell[0], MAP.CellSize, MAP.CellSize);
   },
 
   allow: function(position) {
@@ -305,23 +316,7 @@ const Cell = { // TODO: erase color ?
 
 };
 
-// TODO: clean roundrect and eventually anmated other's move
-function roundRect(ctx, x, y, width, height, radius) {
-  ctx.strokeStyle = "black";
-  ctx.lineWidth = MAP.shift;
-  ctx.beginPath();
-  ctx.moveTo(x + radius, y);
-  ctx.lineTo(x + width - radius, y);
-  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-  ctx.lineTo(x + width, y + height - radius);
-  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-  ctx.lineTo(x + radius, y + height);
-  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-  ctx.lineTo(x, y + radius);
-  ctx.quadraticCurveTo(x, y, x + radius, y);
-  ctx.closePath();
-  ctx.stroke();
-}
+// TODO: eventually animate other's move
 
 Fill = {
 

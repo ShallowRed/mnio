@@ -12,6 +12,7 @@ function init(playerids, MNIO, colors, owncells) {
   let username = playerids[1];
   let socket = playerids[2];
   let player = MNIO.PLAYERS[socket.id] = new User(userid, username, colors, owncells, MNIO.ColorList);
+  
   // Send info to the player
   socket.emit('InitData', {
     position: player.position,
@@ -24,7 +25,7 @@ function init(playerids, MNIO, colors, owncells) {
 
   // Send info to others and save position
   MNIO.PositionList.push(player.position);
-  socket.broadcast.emit("NewPosition", player.position);
+  socket.broadcast.emit("NewPosition", [null, player.position]);
   console.log("Player n° " + userid + " (" + username + ") is connected");
 
 };
@@ -37,15 +38,12 @@ function update(direction, socket, MNIO) {
   if (!nextposition) return;
 
   // Clear last position
-  socket.broadcast.emit("ClearPosition", player.position);
-  MNIO.PositionList.splice(MNIO.PositionList.indexOf(player.position), 1);
-
-  // Set new position
-  player.position = nextposition; // TODO:  use setter getter to affect players value
-  MNIO.PositionList.push(nextposition);
-  socket.broadcast.emit("NewPosition", nextposition);
   socket.emit("NewPlayerPos", nextposition);
-
+  socket.broadcast.emit("NewPosition", [player.position, nextposition]);
+  // socket.broadcast.emit("NewPosition", nextposition);
+  MNIO.PositionList.splice(MNIO.PositionList.indexOf(player.position), 1);
+  MNIO.PositionList.push(nextposition);
+  player.position = nextposition; // TODO:  use setter getter to affect players value
 }
 
 function render(cell, socket, MNIO) {

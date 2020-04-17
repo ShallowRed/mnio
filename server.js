@@ -80,6 +80,7 @@ io.on('connection', function(socket) {
   socket.on("setflag", function(data) {
     Database.setflag(data);
   })
+// TODO: spectator mode based on admin mode
 
 // TODO:  erase position from admin
 });
