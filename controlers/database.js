@@ -1,4 +1,4 @@
-const mysql = require('mysql');
+ const mysql = require('mysql');
 const Conf = require('./config');
 const rows = Conf.rows;
 const cols = Conf.cols;

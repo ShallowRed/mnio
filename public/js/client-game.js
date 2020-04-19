@@ -55,6 +55,7 @@ function drawcell(position, color) {
 
 // Ask server for autorization when trying to move
 function askformove(direction) {
+  if (!GAME.flag) return
   PLAYER.lastdir = direction;
   socket.emit('MovePlayer', direction);
 }

@@ -14,19 +14,28 @@
   transition: all 0.2s ease;
 }
 
+#logwindow h1{
+  letter-spacing: 0.2em;
+  color: #494949;
+  font-size: 4em;
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+}
+
 #logwindow {
   display: block;
+  max-width: 400px;
   width: 40%;
-  margin: 25vh 30%;
-  position: absolute;
+  margin: 25vh auto;
   top: 0;
   left: 0;
   z-index: 900;
 }
 
 #login a {
-  font-size: 1.2em;
-  font-weight: 800;
+  font-size: 1.5em;
+  font-weight: 600;
   letter-spacing: 0.1em;
 }
 
@@ -42,20 +51,27 @@
 }
 
 #login {
-	border-radius: 15px;
+	border-radius: 5px;
   width: 100%;
   margin-top: 5vh;
   color: #494949;
-  background: #ffffff;
+  background: #99999;
   padding: 3vh 10%;
-  border: 4px solid #494949;
+  border: 2px solid #494949;
   display: inline-block;
-  transition: all 0.4s ease 0s;
+  -moz-transition: all 0.2s ease;
+  -o-transition: all 0.2s ease;
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease 0s;
 }
 
 #login:hover {
   cursor: pointer;
-  color: #ffffff;
   background: #494949;
-  transition: all 0.4s ease 0s;
+  color: white;
+
+  -moz-transition: all 0.2s ease;
+  -o-transition: all 0.2s ease;
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease 0s;
 }

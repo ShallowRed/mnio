@@ -1,4 +1,5 @@
 const GAME = {
+  duration: 0.2,
 
   init: function(data) {
     PLAYER.init(data);
@@ -9,14 +10,14 @@ const GAME = {
     this.allowed = data.allowedlist;
     this.rows = data.uiparams[0];
     this.cols = data.uiparams[1];
-    this.duration = 0.2;
 
     c1.style.background = PLAYER.color1;
-    c1.style.border = 'solid 2px black';
     c2.style.background = PLAYER.color2;
     c3.style.background = PLAYER.color3;
+    selectc1();
 
     this.render();
+    fullscreen();
     HideLobby();
     this.flag = true;
   },
@@ -30,7 +31,6 @@ const GAME = {
   render: function() {
     MAP.setup();
     GAME.update();
-    PLAYER.render();
     MAP.render();
   },
 
@@ -105,19 +105,15 @@ const PLAYER = {
     PLAYER.shadow.style.borderRadius = PLAYER.canvas.style.borderWidth = PLAYER.canvas.style.borderRadius = MAP.shift + 'px';
   },
 
-  render: function() {
-    PLAYER.canvas.style.background = PLAYER.selectedcolor;
-  }
-
 };
 
 const MAP = {
 
-  maxcells: 23,
+  maxcells: 51,
 
   startcells: 15,
 
-  mincells: 7,
+  mincells: 11,
 
   Smargin: 30,
 
@@ -149,8 +145,12 @@ const MAP = {
     if (MAP.rows >= MAP.maxcells) MAP.rows = MAP.maxcells;
     if (MAP.cols >= MAP.maxcells) MAP.cols = MAP.maxcells;
 
+
+
     // Ajust variables depending on width/height ratio
     if (w > h) {
+      MAP.Smargin = Math.round(0.01 * w);
+      MAP.Lmargin = Math.round(0.05 * w);
       w -= MAP.Lmargin;
       MAP.cols = Math.round(MAP.rows * h / w);
       MAP.CellSize = Math.round(w / (MAP.rows - 2));
@@ -159,6 +159,8 @@ const MAP = {
       MAP.marginTop = MAP.Smargin;
       MAP.marginBottom = MAP.Smargin;
     } else {
+      MAP.Smargin = Math.round(0.01 * h);
+      MAP.Lmargin = Math.round(0.075 * h);
       h -= MAP.Lmargin;
       MAP.rows = Math.round(MAP.cols * w / h);
       MAP.CellSize = Math.round(h / (MAP.cols - 2));

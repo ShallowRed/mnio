@@ -14,28 +14,39 @@ function HideLobby() {
   }, 500);
 }
 
+// TODO: polyfill css -webkit- etc...
+
 function selectc1() {
   PLAYER.selectedcolor = PLAYER.color1;
-  c1.style.border = "solid 2px black";
-  c2.style.border = "solid 2px white";
-  c3.style.border = "solid 2px white";
-  PLAYER.render();
+  c1.style.transform = "scale(1)";
+  c2.style.transform = "scale(0.8)";
+  c3.style.transform = "scale(0.8)";
+  c1.style.borderWidth = "2px";
+  c2.style.borderWidth = "1px";
+  c3.style.borderWidth = "1px";
+  PLAYER.canvas.style.background = PLAYER.selectedcolor;
 }
 
 function selectc2() {
   PLAYER.selectedcolor = PLAYER.color2;
-  c1.style.border = "solid 2px white";
-  c2.style.border = "solid 2px black";
-  c3.style.border = "solid 2px white";;
-  PLAYER.render();
+  c1.style.transform = "scale(0.8)";
+  c2.style.transform = "scale(1)";
+  c3.style.transform = "scale(0.8)";
+  c1.style.borderWidth = "1px";
+  c2.style.borderWidth = "2px";
+  c3.style.borderWidth = "1px";
+  PLAYER.canvas.style.background = PLAYER.selectedcolor;
 }
 
 function selectc3() {
   PLAYER.selectedcolor = PLAYER.color3;
-  c1.style.border = "solid 2px white";
-  c2.style.border = "solid 2px white";
-  c3.style.border = "solid 2px black";
-  PLAYER.render();
+  c1.style.transform = "scale(0.8)";
+  c2.style.transform = "scale(0.8)";
+  c3.style.transform = "scale(1)";
+  c1.style.borderWidth = "1px";
+  c2.style.borderWidth = "1px";
+  c3.style.borderWidth = "2px";
+  PLAYER.canvas.style.background = PLAYER.selectedcolor;
 }
 
 c1.addEventListener("click", function() {
@@ -68,6 +79,59 @@ window.addEventListener('resize', function() {
 window.addEventListener("orientationchange", function() {
   GAME.render();
 });
+
+/* Get the documentElement (<html>) to display the page in fullscreen */
+var elem = document.documentElement;
+var full = {
+  button: document.getElementById('full'),
+  flag: false
+}
+
+full.button.addEventListener("click", function() {
+  fullscreen();
+})
+
+function fullscreen() {
+  if (!full.flag) {
+    openFullscreen();
+    full.flag = true;
+  } else {
+    closeFullscreen();
+    full.flag = false;
+  }
+};
+
+/* View in fullscreen */
+function openFullscreen() {
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.mozRequestFullScreen) {
+    /* Firefox */
+    elem.mozRequestFullScreen();
+  } else if (elem.webkitRequestFullscreen) {
+    /* Chrome, Safari and Opera */
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) {
+    /* IE/Edge */
+    elem.msRequestFullscreen();
+  }
+}
+
+/* Close fullscreen */
+function closeFullscreen() {
+  if (document.exitFullscreen) {
+    document.exitFullscreen();
+  } else if (document.mozCancelFullScreen) {
+    /* Firefox */
+    document.mozCancelFullScreen();
+  } else if (document.webkitExitFullscreen) {
+    /* Chrome, Safari and Opera */
+    document.webkitExitFullscreen();
+  } else if (document.msExitFullscreen) {
+    /* IE/Edge */
+    document.msExitFullscreen();
+  }
+}
 
 
 // TODO: button flip button left/right side
