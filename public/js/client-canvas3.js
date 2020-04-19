@@ -124,6 +124,7 @@ const PLAYER = {
 
 const MAP = {
 
+  init: function() {
     this.maxcells = 19;
     this.startcells = 11;
     this.mincells = 3;
@@ -140,7 +141,7 @@ const MAP = {
   },
 
   update: function() { // TODO: margin for ui right, left or bottom
-    let w = window.innerWidth - 200;
+    let w = window.innerWidth;
     let h = window.innerHeight;
 
     // Set cell size and amount in view
@@ -244,11 +245,9 @@ const MAP = {
   },
 
 };
-// TODO: fix margins
 
-const Cell = { // TODO: erase color ?
-  // TODO: darken /lighten selected color
-// TODO: use prepared palettes
+const Cell = {
+
   posinview: function(position) {
     let cell = this.indextocoord(position);
     if (MAP.coefx == 2) cell[0] -= GAME.cols - MAP.cols;
@@ -315,6 +314,10 @@ const Cell = { // TODO: erase color ?
 
 };
 
+// TODO: fix margins
+// TODO: erase color ?
+// TODO: darken /lighten selected color
+// TODO: use prepared palettes
 // TODO: eventually animate other's move
 
 Fill = {
