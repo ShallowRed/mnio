@@ -21,7 +21,7 @@ server.listen(Config.port, function() {
 
 app.use('/', require(path.resolve(__dirname, "lib/routes")));
 app.set('view engine', 'ejs');
-app.set("views", path.resolve(__dirname, "views"));
+app.set("views", path.resolve(__dirname, "assets"));
 
 ////////////////////////////// INITIALIZE //////////////////////////////////////
 

@@ -10,7 +10,7 @@ module.exports = {
   // mode: 'development',
   watch: true,
   output: {
-    path: path.resolve('./public/js'),
+    path: path.resolve('./public'),
     filename: 'bundle-front.js'
   }
 }

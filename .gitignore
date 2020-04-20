@@ -4,3 +4,5 @@ mnio.md
 controlers/config.js
 admin/
 public/js/bundle-front.js
+bundle-back.js
+lib/config.js

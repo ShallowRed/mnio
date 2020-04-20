@@ -151,7 +151,4 @@ MAP.render = function(PLAYER, GAME) { // Renders the grid based on device and pl
 
 };
 
-
-
-
 module.exports = MAP

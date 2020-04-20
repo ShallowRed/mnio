@@ -1,12 +1,12 @@
 const socket = io();
 
-const GAME = require('./client/game');
-const PLAYER = require('./client/player');
-const MAP = require('./client/map');
-const UI = require('./client/ui');
-const Anim = require('./client/animation');
-const Cell = require('./client/cell');
-const Events = require('./client/events-browser');
+const GAME = require('./js/game');
+const PLAYER = require('./js/player');
+const MAP = require('./js/map');
+const UI = require('./js/ui');
+const Anim = require('./js/animation');
+const Cell = require('./js/cell');
+const Events = require('./js/events-browser');
 Events(PLAYER, GAME, UI, MAP, socket);
 
 

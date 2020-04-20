@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<link rel="stylesheet" type="text/css" href="public/game-lobby.css">
+	<link rel="stylesheet" type="text/css" href="public/game-canvas.css">
+	<link rel="stylesheet" type="text/css" href="public/game-buttons.css">
+	<link href="https://fonts.googleapis.com/css?family=Inconsolata&display=swap" rel="stylesheet">
+	<title>A Multiplayer Game</title>
+	<script src="socket.io/socket.io.js"></script>
+	<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+</head>
+
+<body>
+  <%- include('./ejs/logwindow'); -%>
+  <%- include('./ejs/masks'); -%>
+  <%- include('./ejs/canvas'); -%>
+  <%- include('./ejs/buttons'); -%>
+
+  <script src="public/jquery-3.4.1.min.js"></script>
+  <script src="public/jquery.touchwipe.1.1.1.js"></script>
+  <script src="public/bundle-front.js"></script>
+</body>
+
+</html>

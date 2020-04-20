@@ -10,6 +10,7 @@ const UI = {
       button: document.getElementById('full'),
       flag: false
     };
+
     this.cs = [
       document.getElementById('c1'),
       document.getElementById('c2'),
