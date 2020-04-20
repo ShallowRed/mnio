@@ -10,16 +10,16 @@ const server = http.Server(app);
 const router = express.Router();
 const io = socketIO(server);
 
-const Player = require(path.resolve(__dirname, 'controlers/networking'));
-const Database = require(path.resolve(__dirname, 'controlers/database'));
-const Config = require(path.resolve(__dirname, 'controlers/config'));
+const Player = require(path.resolve(__dirname, 'lib/networking'));
+const Database = require(path.resolve(__dirname, 'lib/database'));
+const Config = require(path.resolve(__dirname, 'lib/config'));
 
 app.set('port', Config.port);
 server.listen(Config.port, function() {
   console.log('Starting server on port ' + Config.port);
 });
 
-app.use('/', require(path.resolve(__dirname, "controlers/routes")));
+app.use('/', require(path.resolve(__dirname, "lib/routes")));
 app.set('view engine', 'ejs');
 app.set("views", path.resolve(__dirname, "views"));
 

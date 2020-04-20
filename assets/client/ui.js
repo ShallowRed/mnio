@@ -1,6 +1,6 @@
 const UI = {
 
-  init: function() {
+  init: function(GAME, PLAYER, MAP, socket) {
 
     this.volet = document.getElementById('volet');
     this.zin = document.getElementById('zoomin');
@@ -19,38 +19,38 @@ const UI = {
     this.cs.forEach(function(c) {
       c.style.background = PLAYER.colors[UI.cs.indexOf(c)];
       c.addEventListener("click", function() {
-        UI.select(c);
-        drawcell(PLAYER.position, PLAYER.selectedcolor);
+        UI.select(c, PLAYER);
+        require('./actions').drawcell(PLAYER.position, PLAYER.selectedcolor, GAME, PLAYER, MAP, socket);
       });
     });
 
     this.zin.addEventListener("click", function() {
-      if (GAME.flag) UI.zoomin();
+      if (GAME.flag) UI.zoomin(GAME, MAP, PLAYER);
     });
 
     this.zout.addEventListener("click", function() {
-      if (GAME.flag) UI.zoomout();
+      if (GAME.flag) UI.zoomout(GAME, MAP, PLAYER);
     });
 
     window.addEventListener('resize', function() {
-      GAME.render();
+      GAME.render(MAP, PLAYER);
     });
 
     window.addEventListener("orientationchange", function() {
-      GAME.render();
+      GAME.render(MAP, PLAYER);
     });
 
     this.full.button.addEventListener("click", function() {
       UI.fullscreen();
     })
 
-    this.select(c1);
+    this.select(c1, PLAYER);
     // this.fullscreen();
     this.hidelobby();
 
   },
 
-  select: function(c) {
+  select: function(c, PLAYER) {
     c.style.transform = "scale(1)";
     c.style.borderWidth = "2px";
     PLAYER.selectedcolor = PLAYER.colors[this.cs.indexOf(c)];
@@ -90,19 +90,21 @@ const UI = {
     }, 500);
   },
 
-  zoomin: function() {
+  zoomin: function(GAME, MAP, PLAYER) {
     MAP.rows -= 2;
     MAP.cols -= 2;
-    GAME.render();
+    GAME.render(MAP, PLAYER);
   },
 
-  zoomout: function() {
+  zoomout: function(GAME, MAP, PLAYER) {
     MAP.rows += 2;
     MAP.cols += 2;
-    GAME.render();
+    GAME.render(MAP, PLAYER);
   }
 
 };
+
+module.exports = UI
 
 // TODO: polyfill css -webkit- etc...
 // TODO: button flip button left/right side

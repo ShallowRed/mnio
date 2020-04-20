@@ -1,6 +1,6 @@
 Fill = {
 
-  init: function(cell, color) {
+  init: function(cell, color, GAME, MAP) {
     GAME.flag = false;
     this.divx = 0;
     this.divy = 0;
@@ -9,10 +9,10 @@ Fill = {
     this.lw = MAP.lw;
     MAP.ctx2.strokeStyle = color;
     MAP.ctx2.lineWidth = MAP.lw;
-    this.frame();
+    this.frame(GAME, MAP);
   },
 
-  frame: function() {
+  frame: function(GAME, MAP) {
     if (Fill.divx == MAP.CellSize) {
       Fill.divy += Fill.lw;
       Fill.divx = 0;
@@ -35,28 +35,32 @@ Fill = {
       GAME.flag = true;
       return;
     };
-    Fill.animationFrame = window.requestAnimationFrame(Fill.frame);
+    Fill.animationFrame = window.requestAnimationFrame(function() {
+      Fill.frame(GAME, MAP);
+    });
   }
 
 };
 
 Translate = {
 
-  init: function() {
+  init: function(GAME, MAP, PLAYER) {
     GAME.flag = false;
-    GAME.update(true);
+    GAME.update(true, MAP, PLAYER);
     this.start = Date.now();
-    this.frame();
+    this.frame(GAME, MAP, PLAYER);
   },
 
-  frame: function() {
+  frame: function(GAME, MAP, PLAYER) {
     Translate.delta = (Date.now() - Translate.start) / 1000;
     if (Translate.delta >= GAME.duration) {
-      MAP.render();
+      MAP.render(PLAYER, GAME);
       GAME.flag = true;
       return;
     }
-    Translate.animationFrame = window.requestAnimationFrame(Translate.frame);
+    Translate.animationFrame = window.requestAnimationFrame(function() {
+      Translate.frame(GAME, MAP, PLAYER);
+    });
   }
 
 };

@@ -10,9 +10,12 @@
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
-    "webpack": "^4.42.1"
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
   },
   "scripts": {
+    "dev": "webpack --config ./webpack-front.config.js",
+    "back": "webpack --config ./webpack-back.config.js",
     "test": "pm2 start process.json && pm2 logs",
     "start": "pm2 start process.json && pm2 logs"
   },

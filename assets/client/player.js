@@ -10,11 +10,12 @@ const PLAYER = {
     this.ctx.imageSmoothingEnabled = false;
   },
 
-  update: function(animated) {
+  update: function(animated, GAME, MAP) {
 
     // Get player's absolute position
-    PLAYER.x = Cell.indextocoord(PLAYER.position)[0];
-    PLAYER.y = Cell.indextocoord(PLAYER.position)[1];
+    let position = require('./cell').indextocoord(PLAYER.position, GAME);
+    PLAYER.x = position[0];
+    PLAYER.y = position[1];
 
     // Calculate player X position in view
     if (PLAYER.x < MAP.hcols) {
@@ -54,3 +55,5 @@ const PLAYER = {
   },
 
 };
+
+module.exports = PLAYER

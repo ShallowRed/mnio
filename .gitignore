@@ -3,3 +3,4 @@ node_modules/
 mnio.md
 controlers/config.js
 admin/
+public/js/bundle-front.js

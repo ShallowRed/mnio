@@ -1,3 +1,5 @@
+const Render = require('./cell').render;
+
 const MAP = {
 
   maxcells: 51,
@@ -85,7 +87,7 @@ MAP.setup = function() { // Set params based on device width and height
   MAP.rightmask.style.width = MAP.marginRight + "px";
 };
 
-MAP.update = function(animated) { // Set params based on player position
+MAP.update = function(animated, PLAYER, GAME) { // Set params based on player position
 
   // Set instant or animation mode
   if (!animated) MAP.master.style.transitionDuration = '0s';
@@ -117,7 +119,7 @@ MAP.update = function(animated) { // Set params based on player position
   };
 };
 
-MAP.render = function() { // Renders the grid based on device and player position
+MAP.render = function(PLAYER, GAME) { // Renders the grid based on device and player position
 
   // Clear all canvas
   MAP.ctx1.clearRect(0, 0, MAP.canvas[1].width, MAP.canvas[1].height);
@@ -134,17 +136,22 @@ MAP.render = function() { // Renders the grid based on device and player positio
 
   // Draw all allowed cells
   GAME.allowed.forEach(function(position) {
-    Cell.render.allowed(position);
+    Render.allowed(position, PLAYER, GAME, MAP);
   });
 
   // Draw all colored cells
   let len = GAME.colors.length;
   for (let i = 0; i < len; i++)
-    if (GAME.colors[i] !== null) Cell.render.color(i, GAME.colors[i]);
+    if (GAME.colors[i] !== null) Render.color(i, GAME.colors[i], PLAYER, GAME, MAP);
 
   // Draw all positions
   GAME.positions.forEach(function(position) {
-    Cell.render.position(position);
+    Render.position(position, PLAYER, GAME, MAP);
   });
 
 };
+
+
+
+
+module.exports = MAP

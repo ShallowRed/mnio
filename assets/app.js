@@ -1,4 +1,14 @@
-var socket = io();
+const socket = io();
+
+const GAME = require('./client/game');
+const PLAYER = require('./client/player');
+const MAP = require('./client/map');
+const UI = require('./client/ui');
+const Anim = require('./client/animation');
+const Cell = require('./client/cell');
+const Events = require('./client/events-browser');
+Events(PLAYER, GAME, UI, MAP, socket);
+
 
 // Send a username and a password to server
 document.getElementById('login').addEventListener('click', function() {
@@ -10,28 +20,29 @@ document.getElementById('login').addEventListener('click', function() {
 
 // Receive data needed for initialization, start the game
 socket.on('InitData', function(data) {
-  GAME.init(data);
+  GAME.init(data, PLAYER, UI, MAP, socket);
 });
+
 
 //Move player if new position has ben allowed on server side
 socket.on("NewPlayerPos", function(position) {
   PLAYER.position = position;
-  window.Translate.init();
+  window.Translate.init(GAME, MAP, PLAYER);
 });
 
 // Set other's new position and clear last when they move
 socket.on("NewPosition", function(position) {
   GAME.positions.push(position[1]);
-  Cell.render.position(position[1]);
+  Cell.render.position(position[1], PLAYER, GAME, MAP);
   if (!position[0]) return;
   GAME.positions.splice(GAME.positions.indexOf(position[0]), 1);
-  Cell.clear(position[0], MAP.ctx3);
+  Cell.clear(position[0], MAP.ctx3, PLAYER, GAME, MAP);
 });
 
 //Fill other's cells when they do so
 socket.on('NewCell', function(cell) {
   GAME.colors[cell.position] = cell.color;
-  Cell.render.color(cell.position, cell.color);
+  Cell.render.color(cell.position, cell.color, PLAYER, GAME, MAP);
 });
 
 // Draw the cells where the player is allowed to move
@@ -39,25 +50,10 @@ socket.on('AllowedCells', function(cells) {
   cells.forEach(function(position) {
     if (!GAME.allowed.includes(position)) {
       GAME.allowed.push(position);
-      Cell.render.allowed(position);
+      Cell.render.allowed(position, PLAYER, GAME, MAP);
     };
   });
 });
-
-//Fill active player cell when he says so
-function drawcell(position, color) {
-  GAME.colors[position] = color;
-  window.Fill.init(Cell.check(position), color);
-  socket.emit("DrawCell", [position, color]);
-}
-// TODO: decide type of animation and duration
-
-// Ask server for autorization when trying to move
-function askformove(direction) {
-  if (!GAME.flag) return
-  PLAYER.lastdir = direction;
-  socket.emit('MovePlayer', direction);
-}
 
 socket.on("message", function(data) {
   console.log(data);
