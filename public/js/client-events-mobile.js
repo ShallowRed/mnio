@@ -1,4 +1,3 @@
-//Handle touchscreen events
 $(document).touchwipe({
   wipeLeft: function() {
     if (GAME.flag) askformove("left");

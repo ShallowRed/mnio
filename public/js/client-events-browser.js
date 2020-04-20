@@ -1,4 +1,4 @@
-  document.addEventListener('keydown', function(event) {
+document.addEventListener('keydown', function(event) {
     if (GAME.flag) switch (event.keyCode) {
 
       case 32: // Spacebar
@@ -6,24 +6,24 @@
         break;
 
       case 37: // left arrow
-        GAME.zoomin();
+        UI.zoomin();
         // getsizes();
         break;
 
       case 39: // right arrow
-        GAME.zoomout();
+        UI.zoomout();
         break;
 
       case 38: // top arrow
-        if (PLAYER.selectedcolor == PLAYER.color1) selectc3();
-        else if (PLAYER.selectedcolor == PLAYER.color2) selectc1();
-        else selectc2();
+        if (PLAYER.selectedcolor == PLAYER.colors[0]) UI.select(c3);
+        else if (PLAYER.selectedcolor == PLAYER.colors[1]) UI.select(c1);
+        else UI.select(c2);
         break;
 
       case 40: // bottom arrow
-        if (PLAYER.selectedcolor == PLAYER.color1) selectc2();
-        else if (PLAYER.selectedcolor == PLAYER.color2) selectc3();
-        else selectc1();
+        if (PLAYER.selectedcolor == PLAYER.colors[0]) UI.select(c2);
+        else if (PLAYER.selectedcolor == PLAYER.colors[1]) UI.select(c3);
+        else UI.select(c1);
         break;
 
       case 81: // Q
