@@ -3,7 +3,7 @@ const socketIO = require('socket.io');
 
 const Config = require('./config');
 const User = require('../models/player');
-const Check = require('../models/check');
+const Check = require('../models/checker');
 
 function init(playerids, MNIO, colors, owncells) {
 

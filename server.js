@@ -10,7 +10,7 @@ const server = http.Server(app);
 const router = express.Router();
 const io = socketIO(server);
 
-const Player = require(path.resolve(__dirname, 'controlers'));
+const Player = require(path.resolve(__dirname, 'controlers/networking'));
 const Database = require(path.resolve(__dirname, 'controlers/database'));
 const Config = require(path.resolve(__dirname, 'controlers/config'));
 
@@ -22,7 +22,6 @@ server.listen(Config.port, function() {
 app.use('/', require(path.resolve(__dirname, "controlers/routes")));
 app.set('view engine', 'ejs');
 app.set("views", path.resolve(__dirname, "views"));
-
 
 ////////////////////////////// INITIALIZE //////////////////////////////////////
 
@@ -80,11 +79,11 @@ io.on('connection', function(socket) {
   socket.on("setflag", function(data) {
     Database.setflag(data);
   })
-// TODO: spectator mode based on admin mode
 
-// TODO:  erase position from admin
 });
 
+// TODO: spectator mode based on admin mode
+// TODO:  erase position from admin
 // TODO: allow several games at the same
 // class mniogame {
 //   constructor(){

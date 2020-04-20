@@ -1,15 +1,12 @@
- const mysql = require('mysql');
-const Conf = require('./config');
-const rows = Conf.rows;
-const cols = Conf.cols;
-const Player = require('./index');
-const config = Conf.conf;
+const Mysql = require('mysql');
+const Config = require('./config').conf;
+const Player = require('./networking');
 
-var db = mysql.createConnection({
-  host: config.host,
-  user: config.user,
-  password: config.password,
-  database: config.base
+var db = Mysql.createConnection({
+  host: Config.host,
+  user: Config.user,
+  password: Config.password,
+  database: Config.base
 });
 
 var GAMEDATE = Math.floor(Date.now() / 1000);
@@ -18,7 +15,7 @@ function connect() {
   db.connect(function(error) {
     if (!!error)
       throw error;
-    console.log('mysql connected to ' + config.host + ", user " + config.user + ", database " + config.base);
+    console.log('mysql connected to ' + Config.host + ", user " + Config.user + ", database " + Config.base);
   });
 }
 
@@ -103,7 +100,7 @@ const NewGame = "INSERT INTO games (`usedrows`, `usedcols`, `gridid` ,`flag`) VA
 const GetGameid = "SELECT gameid FROM games WHERE gridid=?";
 
 function CreateGameDB() {
-  db.query(NewGame, [rows, cols, GAMEDATE], function(err, result) {
+  db.query(NewGame, [Conf.rows, Conf.cols, GAMEDATE], function(err, result) {
     if (err) throw err;
     db.query(GetGameid, [GAMEDATE], function(err, res) {
       if (err) throw err;

@@ -22,7 +22,7 @@ class Player {
       return;
     }
     this.owncells = owncells;
-    this.allowedcells = require('./check').cells(owncells);
+    this.allowedcells = require('./checker').cells(owncells);
     this.position = owncells[0];
   }
 }

@@ -167,8 +167,6 @@ const CELL = {
 
 }
 
-ADMIN.init();
-
 socket.on('games', function(data) {
   ADMIN.getgames(data)
 });
@@ -202,3 +200,5 @@ socket.on("alert", function(data) {
 socket.on("error", function() {
   alert("Error: Please try again!");
 });
+
+ADMIN.init();
