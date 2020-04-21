@@ -1,8 +1,5 @@
 node_modules/
-.remote-sync.json
-mnio.md
-controlers/config.js
+dist/
 admin/
-public/js/bundle-front.js
-bundle-back.js
 lib/config.js
+.remote-sync.json

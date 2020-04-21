@@ -1,7 +1,18 @@
 {
-  "script": "server.js",
+  "script": "lib/index.js",
   "watch": true,
-  "ignore_watch" : ["node_modules", "public"],
+  "ignore_watch" : [
+    "node_modules",
+    "src",
+    "dist",
+    "admin",
+    ".gitignore",
+    ".gitattributes",
+    ".git",
+    "remote-sync.json",
+    "README.md",
+    "webpack.config.js",
+  ],
   "watch_options": {
       "followSymlinks": false
   },

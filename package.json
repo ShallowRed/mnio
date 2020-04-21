@@ -10,14 +10,20 @@
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
+    "css-loader": "^3.5.2",
+    "ejs-loader": "^0.3.6",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
+    "html-webpack-plugin": "^4.2.0",
+    "style-loader": "^1.1.4",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11"
   },
   "scripts": {
-    "dev": "webpack --config ./webpack-front.config.js",
+    "dev": "webpack --config ./webpack.config.js --watch",
+    "build": "webpack --config ./webpack.config.js",
     "back": "webpack --config ./webpack-back.config.js",
-    "test": "pm2 start process.json && pm2 logs",
-    "start": "pm2 start process.json && pm2 logs"
+    "start": "pm2 start process.json && pm2 logs",
+    "test": "node lib/index.js"
   },
   "repository": {
     "type": "git",

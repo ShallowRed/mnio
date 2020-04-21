@@ -1,14 +1,14 @@
-const socket = io();
-
+const socket = require('socket.io-client')();
 const GAME = require('./js/game');
 const PLAYER = require('./js/player');
 const MAP = require('./js/map');
 const UI = require('./js/ui');
 const Anim = require('./js/animation');
 const Cell = require('./js/cell');
-const Events = require('./js/events-browser');
-Events(PLAYER, GAME, UI, MAP, socket);
-
+require('./js/events')(PLAYER, GAME, UI, MAP, socket);
+import css1 from './css/lobby.css';
+import css2 from './css/canvas.css';
+import css3 from './css/buttons.css';
 
 // Send a username and a password to server
 document.getElementById('login').addEventListener('click', function() {
@@ -22,7 +22,6 @@ document.getElementById('login').addEventListener('click', function() {
 socket.on('InitData', function(data) {
   GAME.init(data, PLAYER, UI, MAP, socket);
 });
-
 
 //Move player if new position has ben allowed on server side
 socket.on("NewPlayerPos", function(position) {
