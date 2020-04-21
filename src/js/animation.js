@@ -65,33 +65,50 @@ Translate = {
 
 };
 
-window.Fill = window.Fill || {};
+(function( window ) {
 
-window.Translate = window.Translate || {};
+  'use strict';
 
-(function() {
   var lastTime = 0;
-  var vendors = ['ms', 'moz', 'webkit', 'o'];
-  for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
-    window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
-    window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] ||
-      window[vendors[x] + 'CancelRequestAnimationFrame'];
+  var prefixes = 'webkit moz ms o'.split(' ');
+  // get unprefixed rAF and cAF, if present
+  var requestAnimationFrame = window.requestAnimationFrame;
+  var cancelAnimationFrame = window.cancelAnimationFrame;
+  // loop through vendor prefixes and get prefixed rAF and cAF
+  var prefix;
+  for( var i = 0; i < prefixes.length; i++ ) {
+    if ( requestAnimationFrame && cancelAnimationFrame ) {
+      break;
+    }
+    prefix = prefixes[i];
+    requestAnimationFrame = requestAnimationFrame || window[ prefix + 'RequestAnimationFrame' ];
+    cancelAnimationFrame  = cancelAnimationFrame  || window[ prefix + 'CancelAnimationFrame' ] ||
+                              window[ prefix + 'CancelRequestAnimationFrame' ];
   }
 
-  if (!window.requestAnimationFrame)
-    window.requestAnimationFrame = function(callback, element) {
+  // fallback to setTimeout and clearTimeout if either request/cancel is not supported
+  if ( !requestAnimationFrame || !cancelAnimationFrame ) {
+    requestAnimationFrame = function( callback, element ) {
       var currTime = new Date().getTime();
-      var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-      var id = window.setTimeout(function() {
-          callback(currTime + timeToCall);
-        },
-        timeToCall);
+      var timeToCall = Math.max( 0, 16 - ( currTime - lastTime ) );
+      var id = window.setTimeout( function() {
+        callback( currTime + timeToCall );
+      }, timeToCall );
       lastTime = currTime + timeToCall;
       return id;
     };
 
-  if (!window.cancelAnimationFrame)
-    window.cancelAnimationFrame = function(id) {
-      clearTimeout(id);
+    cancelAnimationFrame = function( id ) {
+      window.clearTimeout( id );
     };
-}());
+  }
+
+  // put in global namespace
+  window.requestAnimationFrame = requestAnimationFrame;
+  window.cancelAnimationFrame = cancelAnimationFrame;
+
+})(window);
+
+window.Fill = window.Fill || {};
+
+window.Translate = window.Translate || {};

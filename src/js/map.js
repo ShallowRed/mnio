@@ -107,15 +107,17 @@ MAP.update = function(animated, PLAYER, GAME) { // Set params based on player po
 
   // Eventually translate canvas with animation
   if (!animated) return;
-  let axis;
-  if (PLAYER.lastdir == 'up' && PLAYER.x + 1 >= MAP.hcols && PLAYER.x + 1 <= GAME.cols - MAP.hcols) axis = 'Y(';
-  else if (PLAYER.lastdir == 'down' && PLAYER.x >= MAP.hcols && PLAYER.x <= GAME.cols - MAP.hcols) axis = 'Y(-';
-  else if (PLAYER.lastdir == 'left' && PLAYER.y + 1 >= MAP.hrows && PLAYER.y + 1 <= GAME.rows - MAP.hrows) axis = 'X(';
-  else if (PLAYER.lastdir == 'right' && PLAYER.y >= MAP.hrows && PLAYER.y <= GAME.rows - MAP.hrows) axis = 'X(-';
-  if (!axis) return;
+  let amount = [null, null];
+
+  if (PLAYER.lastdir == 'up' && PLAYER.x + 1 >= MAP.hcols && PLAYER.x + 1 <= GAME.cols - MAP.hcols) amount[0] = 0;
+  else if (PLAYER.lastdir == 'down' && PLAYER.x >= MAP.hcols && PLAYER.x <= GAME.cols - MAP.hcols) amount[0] = -2 * MAP.CellSize;
+  else if (PLAYER.lastdir == 'left' && PLAYER.y + 1 >= MAP.hrows && PLAYER.y + 1 <= GAME.rows - MAP.hrows) amount[1] = 0;
+  else if (PLAYER.lastdir == 'right' && PLAYER.y >= MAP.hrows && PLAYER.y <= GAME.rows - MAP.hrows) amount[1] = -2 * MAP.CellSize;
+
   for (let i = 0; i < 3; i++) {
     MAP.canvas[i].style.transitionDuration = GAME.duration + 's';
-    MAP.canvas[i].style.transform = 'translate' + axis + MAP.CellSize + 'px)';
+    if (amount[0] !== null) MAP.canvas[i].style.top = amount[0] + 'px';
+    if (amount[1] !== null) MAP.canvas[i].style.left = amount[1] + 'px';
   };
 };
 
@@ -129,7 +131,6 @@ MAP.render = function(PLAYER, GAME) { // Renders the grid based on device and pl
   // Get canvas back to origin
   for (let i = 0; i < 3; i++) {
     MAP.canvas[i].style.transitionDuration = '0s';
-    MAP.canvas[i].style.transform = 'translate(0, 0)';
     MAP.canvas[i].style.top = '-' + MAP.CellSize * PLAYER.coefx + 'px';
     MAP.canvas[i].style.left = '-' + MAP.CellSize * PLAYER.coefy + 'px';
   }

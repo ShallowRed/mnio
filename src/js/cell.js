@@ -4,7 +4,7 @@
     else if (PLAYER.coefx == 1) cell[0] -= PLAYER.x - MAP.hcols;
     if (PLAYER.coefy == 2) cell[1] -= GAME.rows - MAP.rows;
     else if (PLAYER.coefy == 1) cell[1] -= PLAYER.y - MAP.hrows;
-    return [cell[0], cell[1]];
+    return [cell[0], cell[1]]
   };
 
   function check(position, PLAYER, GAME, MAP) {

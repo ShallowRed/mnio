@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "jeu de tapisserie en ligne",
   "dependencies": {
+    "@babel/polyfill": "^7.8.7",
     "ejs-lint": "^1.0.1",
     "express": "^4.17.1",
     "mysql": "^2.18.1",
@@ -10,6 +11,10 @@
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.5",
+    "babel-loader": "^8.1.0",
     "css-loader": "^3.5.2",
     "ejs-loader": "^0.3.6",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
@@ -18,8 +23,9 @@
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11"
   },
+  "browserslist": "> 0.25%, not dead",
   "scripts": {
-    "dev": "webpack --config ./webpack.config.js --watch",
+    "dev": "webpack --config ./webpack.config.js --watch --optimize --minimize",
     "build": "webpack --config ./webpack.config.js",
     "back": "webpack --config ./webpack-back.config.js",
     "start": "pm2 start process.json && pm2 logs",
