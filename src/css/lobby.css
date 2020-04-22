@@ -15,9 +15,10 @@
 }
 
 #logwindow h1 {
+  margin: 0;
   letter-spacing: 0.2em;
   color: #494949;
-  font-size: 4em;
+  font-size: 3em;
   display: inline-block;
   width: 100%;
   text-align: center;
