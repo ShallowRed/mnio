@@ -4,12 +4,12 @@ const PLAYER = require('./js/player');
 const MAP = require('./js/map');
 const UI = require('./js/ui');
 const Cell = require('./js/cell');
+require('./js/events')(PLAYER, GAME, UI, MAP, socket);
 // import * as Anim from './js/animation';
 const Anim = require('./js/animation');
-require('./js/events')(PLAYER, GAME, UI, MAP, socket);
-import css1 from './css/lobby.css';
-import css2 from './css/canvas.css';
-import css3 from './css/buttons.css';
+import './css/lobby.css';
+import './css/canvas.css';
+import './css/buttons.css';
 
 // Send a username and a password to server
 document.getElementById('login').addEventListener('click', function() {

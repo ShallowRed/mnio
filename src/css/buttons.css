@@ -9,7 +9,9 @@
   box-shadow: #aaa 5px 5px;
 }
 
-#buttons button:focus { outline: none; }
+#buttons button:focus {
+  outline: none;
+}
 
 #color button {
   transition: all 0.1s ease;
@@ -25,7 +27,7 @@
   transition: all 0.1s ease;
 }
 
-@media screen and (min-width: 650px) {
+@media (width > 650px) {
   #buttons {
     display: flex;
     flex-flow: column;
@@ -61,11 +63,12 @@
     min-height: 170px;
   }
 
-  #full {margin-bottom: 50px;}
-
+  #full {
+    margin-bottom: 50px;
+  }
 }
 
-@media screen and (max-width: 650px) {
+@media (width < 650px) {
   #buttons {
     display: flex;
     flex-flow: row;
@@ -100,8 +103,9 @@
     min-width: 170px;
   }
 
-  #full {margin-right: 20px;}
-
+  #full {
+    margin-right: 20px;
+  }
 }
 
 button:hover {

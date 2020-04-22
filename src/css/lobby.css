@@ -14,7 +14,7 @@
   transition: all 0.2s ease;
 }
 
-#logwindow h1{
+#logwindow h1 {
   letter-spacing: 0.2em;
   color: #494949;
   font-size: 4em;
@@ -51,7 +51,7 @@
 }
 
 #login {
-	border-radius: 5px;
+  border-radius: 5px;
   width: 100%;
   margin-top: 5vh;
   color: #494949;
@@ -69,7 +69,6 @@
   cursor: pointer;
   background: #494949;
   color: white;
-
   -moz-transition: all 0.2s ease;
   -o-transition: all 0.2s ease;
   -webkit-transition: all 0.2s ease;

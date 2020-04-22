@@ -12,6 +12,7 @@
     "remote-sync.json",
     "README.md",
     "webpack.config.js",
+
   ],
   "watch_options": {
       "followSymlinks": false
