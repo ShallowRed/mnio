@@ -1,4 +1,6 @@
-import {render as Render} from './cell'
+import {
+  render as Render
+} from './cell'
 
 const MAP = {
 
@@ -25,8 +27,8 @@ MAP.init = function() {
 
 MAP.setup = function() { // Set params based on device width and height
 
-  let w = window.innerWidth;
-  let h = window.innerHeight;
+  let w = MAP.windowWidth = Math.max(window.innerWidth, document.documentElement.clientWidth);
+  let h = MAP.windowHeight = Math.max(window.innerHeight, document.documentElement.clientHeight);
 
   // Set number of visible rows/cols
   if (!MAP.rows) MAP.rows = MAP.startcells;
@@ -42,7 +44,7 @@ MAP.setup = function() { // Set params based on device width and height
     MAP.Lmargin = Math.round(0.05 * w);
     w -= MAP.Lmargin;
     MAP.cols = Math.round(MAP.rows * h / w);
-    MAP.CellSize = Math.round(w / (MAP.rows - 2));
+    MAP.CellSize = Math.round(w / (MAP.rows - 2)); 
     MAP.marginLeft = MAP.Smargin;
     MAP.marginRight = MAP.Smargin + MAP.Lmargin;
     MAP.marginTop = MAP.Smargin;
@@ -95,14 +97,14 @@ MAP.update = function(animated, PLAYER, GAME) { // Set params based on player po
 
   // Set master's top margin
   if (PLAYER.coefx == 0) MAP.master.style.marginTop = MAP.marginTop + "px";
-  else if (PLAYER.coefx == 2) MAP.master.style.marginTop = window.innerHeight - MAP.height - MAP.marginBottom + "px";
-  else if (window.innerHeight < window.innerWidth) MAP.master.style.marginTop = Math.round((window.innerHeight - MAP.height) / 2) + 'px ';
+  else if (PLAYER.coefx == 2) MAP.master.style.marginTop = MAP.windowHeight - MAP.height - MAP.marginBottom + "px";
+  else if (MAP.windowHeight < MAP.windowWidth) MAP.master.style.marginTop = Math.round((MAP.windowHeight - MAP.height) / 2) + 'px ';
   else MAP.master.style.marginTop = 0 + 'px ';
 
   // Set master's left margin
   if (PLAYER.coefy == 0) MAP.master.style.marginLeft = MAP.marginLeft + "px";
-  else if (PLAYER.coefy == 2) MAP.master.style.marginLeft = window.innerWidth - MAP.width - MAP.marginRight + "px";
-  else if (window.innerHeight > window.innerWidth) MAP.master.style.marginLeft = Math.round((window.innerWidth - MAP.width) / 2) + 'px ';
+  else if (PLAYER.coefy == 2) MAP.master.style.marginLeft = MAP.windowWidth - MAP.width - MAP.marginRight + "px";
+  else if (MAP.windowHeight > MAP.windowWidth) MAP.master.style.marginLeft = Math.round((MAP.windowWidth - MAP.width) / 2) + 'px ';
   else MAP.master.style.marginLeft = 0 + 'px ';
 
   // Eventually translate canvas with animation
