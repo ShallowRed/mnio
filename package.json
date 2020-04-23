@@ -3,18 +3,82 @@
   "version": "0.1.0",
   "description": "jeu de tapisserie en ligne",
   "dependencies": {
-    "ejs-lint": "^1.0.1",
+    "core-js": "^3.6.5",
     "express": "^4.17.1",
     "mysql": "^2.18.1",
     "pm2": "^4.2.3",
+    "regenerator": "^0.14.4",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
-    "webpack": "^4.42.1"
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.5",
+    "autoprefixer": "^9.7.6",
+    "babel-loader": "^8.1.0",
+    "css-loader": "^3.5.2",
+    "ejs-loader": "^0.3.6",
+    "eslint": "^6.8.0",
+    "eslint-loader": "^4.0.0",
+    "html-webpack-plugin": "^4.2.0",
+    "mini-css-extract-plugin": "^0.9.0",
+    "optimize-css-assets-webpack-plugin": "^5.0.3",
+    "postcss-loader": "^3.0.0",
+    "postcss-normalize": "^9.0.0",
+    "postcss-preset-env": "^6.7.0",
+    "terser-webpack-plugin": "^2.3.5",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
+  },
+  "browserslist": [
+    "last 3 version, > 0.1%, not dead"
+  ],
+  "postcss": {
+    "plugins": {
+      "postcss-normalize": {},
+      "postcss-preset-env": {},
+      "autoprefixer": {}
+    }
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "debug": true,
+          "useBuiltIns": "usage",
+          "corejs": 3
+        }
+      ]
+    ]
+  },
+  "eslintConfig": {
+    "extends": "eslint:recommended",
+    "env": {
+      "browser": true,
+      "commonjs": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 6,
+      "sourceType": "module"
+    }
+  },
+  "stylelint": {
+    "plugins": [
+      "stylelint-no-unsupported-browser-features"
+    ],
+    "rules": {
+      "plugin/no-unsupported-browser-features": true
+    },
+    "defaultSeverity": "warning"
   },
   "scripts": {
-    "test": "pm2 start process.json && pm2 logs",
-    "start": "pm2 start process.json && pm2 logs"
+    "prod": "webpack --config ./webpack.config.js",
+    "dev": "SET NODE_ENV=dev && webpack --config ./webpack.config.js",
+    "start": "pm2 start process.json && pm2 logs",
+    "test": "node lib/index.js",
+    "reload": "pm2 reload lib/index.js",
+    "stop": "pm2 stop lib/index.js"
   },
   "repository": {
     "type": "git",

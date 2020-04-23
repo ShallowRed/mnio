@@ -1,5 +1,5 @@
 node_modules/
-.remote-sync.json
-mnio.md
-controlers/config.js
+dist/
 admin/
+lib/config.js
+.remote-sync.json

@@ -1,0 +1,121 @@
+#buttons {
+  z-index: 50;
+}
+
+#buttons button {
+  border: solid 1px black;
+  border-radius: 5px;
+  box-sizing: border-box;
+  box-shadow: #aaa 5px 5px;
+}
+
+#buttons button:focus {
+  outline: none;
+}
+
+#color button {
+  transition: all 0.1s ease;
+}
+
+#zoom button {
+  transform: scale(0.9);
+  transition: all 0.2s ease;
+}
+
+#zoom button:active {
+  transform: scale(1);
+  transition: all 0.1s ease;
+}
+
+@media (width > 650px) {
+  #buttons {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    margin-left: 94%;
+    width: 6%;
+    height: 100%;
+  }
+
+  #buttons button {
+    width: 50%;
+    min-width: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    height: 50px;
+  }
+
+  #zoom, #color {
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+  }
+
+  #zoom {
+    min-height: 110px;
+    margin-bottom: 5vh;
+  }
+
+  #color {
+    margin-top: 5vh;
+    min-height: 170px;
+  }
+
+  #full {
+    margin-bottom: 50px;
+  }
+}
+
+@media (width < 650px) {
+  #buttons {
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 7.5vh;
+  }
+
+  #buttons button {
+    margin-bottom: 10px;
+    width: 50px;
+    height: 100%;
+    min-height: 30px;
+    max-height: 50px;
+  }
+
+  #zoom, #color {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+  }
+
+  #zoom {
+    min-width: 110px;
+    margin-right: 5%;
+  }
+
+  #color {
+    margin-left: 5%;
+    min-width: 170px;
+  }
+
+  #full {
+    margin-right: 20px;
+  }
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+button:active {
+  opacity: 0.8;
+}
+
+.zoom a {
+  font-size: 2em;
+}
