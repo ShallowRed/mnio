@@ -31,7 +31,7 @@
     "webpack-cli": "^3.3.11"
   },
   "browserslist": [
-    "last 3 version, > 0.5%, not dead"
+    "last 3 version, > 0.1%, not dead"
   ],
   "postcss": {
     "plugins": {

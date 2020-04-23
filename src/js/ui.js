@@ -109,7 +109,6 @@ const UI = {
 
 export default UI
 
-// TODO: polyfill css -webkit- etc...
 // TODO: button flip button left/right side
 // TODO: settings button
 // TODO: exit button
