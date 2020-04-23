@@ -7,22 +7,16 @@ const TerserPlugin = require('terser-webpack-plugin');
 const dev = process.env.NODE_ENV ? true : false;
 
 let config = {
-
   target: "web",
-
   mode: dev ? 'development' : 'production',
-
   watch: dev,
-
   optimization: {
     minimize: !dev,
     minimizer: [new TerserPlugin(), new OptimizeCSSAssetsPlugin({})],
   },
-
   entry: {
     main: ["./src/index.js"]
   },
-
   output: {
     filename: '[name].js',
     // filename: dev ? '[name].js' : '[name].[hash].js',
@@ -30,7 +24,6 @@ let config = {
     path: path.resolve('./dist'),
     publicPath: '/dist/'
   },
-
   module: {
     rules: [{
         test: /\.js$/,
@@ -40,26 +33,18 @@ let config = {
           loader: 'eslint-loader',
           options: {
             emitWarning: true,
-            cache: true,
-            outputReport: {
-              filePath: 'checkstyle.txt',
-              formatter: 'table',
-            },
           }
         },
       },
-
       {
         test: /\.js$/,
         exclude: /(node_modules)/,
         use: 'babel-loader'
       },
-
       {
         test: /\.ejs$/,
         use: ['ejs-loader']
       },
-
       {
         test: /\.css$/,
         use: [{
@@ -80,10 +65,8 @@ let config = {
           }
         ],
       }
-
     ]
   },
-
   plugins: [
     new MiniCssExtractPlugin({
       filename: '[name].css',
@@ -95,7 +78,6 @@ let config = {
       template: "src/index.ejs"
     })
   ]
-
 }
 
 module.exports = config

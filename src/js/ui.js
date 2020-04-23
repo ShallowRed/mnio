@@ -1,8 +1,10 @@
+import {drawcell} from './actions'
+
 const UI = {
 
   init: function(GAME, PLAYER, MAP, socket) {
 
-    this.volet = document.getElementById('volet');
+    this.lobby = document.getElementById('lobby');
     this.zin = document.getElementById('zoomin');
     this.zout = document.getElementById('zoomout');
     this.elem = document.documentElement;
@@ -21,7 +23,7 @@ const UI = {
       c.style.background = PLAYER.colors[UI.cs.indexOf(c)];
       c.addEventListener("click", function() {
         UI.select(c, PLAYER);
-        require('./actions').drawcell(PLAYER.position, PLAYER.selectedcolor, GAME, PLAYER, MAP, socket);
+        drawcell(PLAYER.position, PLAYER.selectedcolor, GAME, PLAYER, MAP, socket);
       });
     });
 
@@ -43,9 +45,9 @@ const UI = {
 
     this.full.button.addEventListener("click", function() {
       UI.fullscreen();
-    })
+    });
 
-    this.select(c1, PLAYER);
+    this.select(this.cs[0], PLAYER);
     // this.fullscreen();
     this.hidelobby();
 
@@ -85,9 +87,9 @@ const UI = {
   },
 
   hidelobby: function() {
-    volet.style.opacity = "0";
+    this.lobby.style.opacity = "0";
     setTimeout(function() {
-      volet.style.display = "none";
+      this.lobby.style.display = "none";
     }, 500);
   },
 
@@ -105,7 +107,7 @@ const UI = {
 
 };
 
-module.exports = UI
+export default UI
 
 // TODO: polyfill css -webkit- etc...
 // TODO: button flip button left/right side

@@ -1,3 +1,5 @@
+import {indextocoord} from './cell'
+
 const PLAYER = {
 
   init: function(data) {
@@ -13,7 +15,7 @@ const PLAYER = {
   update: function(animated, GAME, MAP) {
 
     // Get player's absolute position
-    let position = require('./cell').indextocoord(PLAYER.position, GAME);
+    let position = indextocoord(PLAYER.position, GAME);
     PLAYER.x = position[0];
     PLAYER.y = position[1];
 
@@ -56,4 +58,4 @@ const PLAYER = {
 
 };
 
-module.exports = PLAYER
+export default PLAYER

@@ -4,24 +4,24 @@
     else if (PLAYER.coefx == 1) cell[0] -= PLAYER.x - MAP.hcols;
     if (PLAYER.coefy == 2) cell[1] -= GAME.rows - MAP.rows;
     else if (PLAYER.coefy == 1) cell[1] -= PLAYER.y - MAP.hrows;
-    return [cell[0], cell[1]]
-  };
+    return [cell[0], cell[1]];
+  }
 
   function check(position, PLAYER, GAME, MAP) {
     let cell = posinview(position, PLAYER, GAME, MAP);
     if (cell[0] >= 0 && cell[0] <= MAP.cols && cell[1] >= 0 && cell[1] <= MAP.rows) return [cell[0], cell[1]];
-  };
+  }
 
   function indextocoord(index, GAME) {
     let coordx = (index - (index % GAME.rows)) / GAME.cols;
     let coordy = (index % GAME.cols);
     return [coordx, coordy];
-  };
+  }
 
   function clear(position, ctx, PLAYER, GAME, MAP) {
     let cell = check(position, PLAYER, GAME, MAP);
     if (cell) ctx.clearRect(MAP.CellSize * cell[1], MAP.CellSize * cell[0], MAP.CellSize, MAP.CellSize);
-  };
+  }
 
   const render = {
 
@@ -63,12 +63,11 @@
       ctx.stroke();
     },
 
-  }
+  };
 
-  module.exports = {
-    posinview,
+  export {
     check,
-    indextocoord,
     clear,
+    indextocoord,
     render
   }

@@ -3,12 +3,11 @@
   "version": "0.1.0",
   "description": "jeu de tapisserie en ligne",
   "dependencies": {
-    "@babel/polyfill": "^7.8.7",
     "core-js": "^3.6.5",
-    "ejs-lint": "^1.0.1",
     "express": "^4.17.1",
     "mysql": "^2.18.1",
     "pm2": "^4.2.3",
+    "regenerator": "^0.14.4",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
@@ -21,7 +20,6 @@
     "ejs-loader": "^0.3.6",
     "eslint": "^6.8.0",
     "eslint-loader": "^4.0.0",
-    "eslint-plugin-compat": "^3.5.1",
     "html-webpack-plugin": "^4.2.0",
     "mini-css-extract-plugin": "^0.9.0",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
@@ -33,9 +31,7 @@
     "webpack-cli": "^3.3.11"
   },
   "browserslist": [
-    "last 3 version",
-    "> 0.5%",
-    "not dead"
+    "last 3 version, > 0.5%, not dead"
   ],
   "postcss": {
     "plugins": {
@@ -49,22 +45,22 @@
       [
         "@babel/preset-env",
         {
-          "useBuiltIns": "entry",
-          "corejs": "3"
+          "debug": true,
+          "useBuiltIns": "usage",
+          "corejs": 3
         }
       ]
     ]
   },
   "eslintConfig": {
     "extends": "eslint:recommended",
-    "parserOptions": {
-      "ecmaVersion": 6
+    "env": {
+      "browser": true,
+      "commonjs": true
     },
-    "plugins": [
-      "compat"
-    ],
-    "rules": {
-      "compat/compat": "warn"
+    "parserOptions": {
+      "ecmaVersion": 6,
+      "sourceType": "module"
     }
   },
   "stylelint": {
@@ -80,7 +76,9 @@
     "prod": "webpack --config ./webpack.config.js",
     "dev": "SET NODE_ENV=dev && webpack --config ./webpack.config.js",
     "start": "pm2 start process.json && pm2 logs",
-    "test": "node lib/index.js"
+    "test": "node lib/index.js",
+    "reload": "pm2 reload lib/index.js",
+    "stop": "pm2 stop lib/index.js"
   },
   "repository": {
     "type": "git",

@@ -1,21 +1,24 @@
-const Touch = require('./mobile');
+import {start, move} from './mobile'
+import {listen} from './keyboard';
 
-module.exports = function(PLAYER, GAME, UI, MAP, socket) {
+function events(PLAYER, GAME, UI, MAP, socket) {
 
   document.addEventListener('keydown', function(event) {
-    require('./keyboard')(PLAYER, GAME, UI, MAP, socket);
+    listen(event, PLAYER, GAME, UI, MAP, socket);
   });
 
-  document.addEventListener('touchstart', Touch.start, false);
+  document.addEventListener('touchstart', start, false);
 
   document.addEventListener('touchmove', function(evt) {
-    Touch.move(evt, PLAYER, GAME, socket)
+    move(evt, PLAYER, GAME, socket);
   }, false);
 
-  document.addEventListener('click', function(e) {
+  document.addEventListener('click', function() {
     if (document.activeElement.toString() == '[object HTMLButtonElement]') {
       document.activeElement.blur();
     }
   });
 
 }
+
+export {events}

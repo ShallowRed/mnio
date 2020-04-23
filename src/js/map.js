@@ -1,4 +1,4 @@
-const Render = require('./cell').render;
+import {render as Render} from './cell'
 
 const MAP = {
 
@@ -118,7 +118,7 @@ MAP.update = function(animated, PLAYER, GAME) { // Set params based on player po
     MAP.canvas[i].style.transitionDuration = GAME.duration + 's';
     if (amount[0] !== null) MAP.canvas[i].style.top = amount[0] + 'px';
     if (amount[1] !== null) MAP.canvas[i].style.left = amount[1] + 'px';
-  };
+  }
 };
 
 MAP.render = function(PLAYER, GAME) { // Renders the grid based on device and player position
@@ -152,4 +152,4 @@ MAP.render = function(PLAYER, GAME) { // Renders the grid based on device and pl
 
 };
 
-module.exports = MAP
+export default MAP

@@ -28,4 +28,4 @@ const GAME = {
 
 };
 
-module.exports = GAME
+export default GAME

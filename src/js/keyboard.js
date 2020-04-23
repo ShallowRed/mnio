@@ -1,10 +1,10 @@
-const Action = require('./actions');
+import {askformove, drawcell} from './actions';
 
-module.exports = function(PLAYER, GAME, UI, MAP, socket) {
+function listen(event, PLAYER, GAME, UI, MAP, socket) {
   if (GAME.flag) switch (event.keyCode) {
 
     case 32: // Spacebar
-      Action.drawcell(PLAYER.position, PLAYER.selectedcolor, GAME, PLAYER, MAP, socket);
+      drawcell(PLAYER.position, PLAYER.selectedcolor, GAME, PLAYER, MAP, socket);
       break;
 
     case 37: // left arrow
@@ -16,31 +16,33 @@ module.exports = function(PLAYER, GAME, UI, MAP, socket) {
       break;
 
     case 38: // top arrow
-      if (PLAYER.selectedcolor == PLAYER.colors[0]) UI.select(c3, PLAYER);
-      else if (PLAYER.selectedcolor == PLAYER.colors[1]) UI.select(c1, PLAYER);
-      else UI.select(c2, PLAYER);
+      if (PLAYER.selectedcolor == PLAYER.colors[0]) UI.select(UI.cs[2], PLAYER);
+      else if (PLAYER.selectedcolor == PLAYER.colors[1]) UI.select(UI.cs[0], PLAYER);
+      else UI.select(UI.cs[1], PLAYER);
       break;
 
     case 40: // bottom arrow
-      if (PLAYER.selectedcolor == PLAYER.colors[0]) UI.select(c2, PLAYER);
-      else if (PLAYER.selectedcolor == PLAYER.colors[1]) UI.select(c3, PLAYER);
-      else UI.select(c1, PLAYER);
+      if (PLAYER.selectedcolor == PLAYER.colors[0]) UI.select(UI.cs[1], PLAYER);
+      else if (PLAYER.selectedcolor == PLAYER.colors[1]) UI.select(UI.cs[2], PLAYER);
+      else UI.select(UI.cs[0], PLAYER);
       break;
 
     case 81: // Q
-      Action.askformove("left", GAME, PLAYER, socket);
+      askformove("left", GAME, PLAYER, socket);
       break;
 
     case 90: // Z
-      Action.askformove("up", GAME, PLAYER, socket);
+      askformove("up", GAME, PLAYER, socket);
       break;
 
     case 68: // D
-      Action.askformove("right", GAME, PLAYER, socket);
+      askformove("right", GAME, PLAYER, socket);
       break;
 
     case 83: // S
-      Action.askformove("down", GAME, PLAYER, socket);
+      askformove("down", GAME, PLAYER, socket);
       break;
   }
-};
+}
+
+export {listen}

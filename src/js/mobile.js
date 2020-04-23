@@ -1,4 +1,4 @@
-const Action = require('./actions');
+import {askformove} from './actions';
 
 let xDown = null;
 let yDown = null;
@@ -6,7 +6,7 @@ let yDown = null;
 function start(evt) {
   xDown = evt.touches[0].clientX;
   yDown = evt.touches[0].clientY;
-};
+}
 
 function move(evt, PLAYER, GAME, socket) {
   if (!xDown || !yDown) return;
@@ -15,19 +15,14 @@ function move(evt, PLAYER, GAME, socket) {
   let xDiff = xDown - xUp;
   let yDiff = yDown - yUp;
   if (Math.abs(xDiff) > Math.abs(yDiff)) {
-    if (xDiff > 0) Action.askformove("left", GAME, PLAYER, socket);
-    else Action.askformove("right", GAME, PLAYER, socket);
+    if (xDiff > 0) askformove("left", GAME, PLAYER, socket);
+    else askformove("right", GAME, PLAYER, socket);
   } else {
-    if (yDiff > 0) Action.askformove("up", GAME, PLAYER, socket);
-    else Action.askformove("down", GAME, PLAYER, socket);
+    if (yDiff > 0) askformove("up", GAME, PLAYER, socket);
+    else askformove("down", GAME, PLAYER, socket);
   }
   xDown = null;
   yDown = null;
-};
-
-module.exports = {
-  start,
-  move
 }
 
-//
+export {start, move}
