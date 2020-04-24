@@ -12,6 +12,7 @@
     "remote-sync.json",
     "README.md",
     "webpack.config.js",
+    "shared",
 
   ],
   "watch_options": {

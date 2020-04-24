@@ -1,10 +1,8 @@
-import {
-  render as Render
-} from './cell'
+import Render from '../controlers/render'
 
 const MAP = {
 
-  maxcells: 51,
+  maxcells: 19,
 
   startcells: 15,
 
@@ -111,15 +109,23 @@ MAP.update = function(animated, PLAYER, GAME) { // Set params based on player po
   if (!animated) return;
   let amount = [null, null];
 
-  if (PLAYER.lastdir == 'up' && PLAYER.x + 1 >= MAP.hcols && PLAYER.x + 1 <= GAME.cols - MAP.hcols) amount[0] = 0;
-  else if (PLAYER.lastdir == 'down' && PLAYER.x >= MAP.hcols && PLAYER.x <= GAME.cols - MAP.hcols) amount[0] = -2 * MAP.CellSize;
-  else if (PLAYER.lastdir == 'left' && PLAYER.y + 1 >= MAP.hrows && PLAYER.y + 1 <= GAME.rows - MAP.hrows) amount[1] = 0;
-  else if (PLAYER.lastdir == 'right' && PLAYER.y >= MAP.hrows && PLAYER.y <= GAME.rows - MAP.hrows) amount[1] = -2 * MAP.CellSize;
+  // else if (PLAYER.lastdir == 'down' && PLAYER.x >= MAP.hcols  && PLAYER.x <= GAME.cols - MAP.hcols) amount[0] = -2 * MAP.CellSize;
+
+  if (PLAYER.lastdir == 'up' && PLAYER.x + 1 >= MAP.hcols && PLAYER.x < GAME.cols - MAP.hcols) amount[0] = 0;
+  else if (PLAYER.lastdir == 'left' && PLAYER.y + 1 >= MAP.hrows && PLAYER.y < GAME.rows - MAP.hrows) amount[1] = 0;
+  else if (PLAYER.lastdir == 'down') {
+    if (PLAYER.x == MAP.hcols) amount[0] = -1;
+    else if (PLAYER.x > MAP.hcols && PLAYER.x <= GAME.cols - MAP.hcols) amount[0] = -2;
+  }
+  else if (PLAYER.lastdir == 'right') {
+    if (PLAYER.y == MAP.hrows) amount[1] = -1;
+    else if (PLAYER.y > MAP.hrows && PLAYER.y <= GAME.rows - MAP.hrows) amount[1] = -2;
+  }
 
   for (let i = 0; i < 3; i++) {
     MAP.canvas[i].style.transitionDuration = GAME.duration + 's';
-    if (amount[0] !== null) MAP.canvas[i].style.top = amount[0] + 'px';
-    if (amount[1] !== null) MAP.canvas[i].style.left = amount[1] + 'px';
+    if (amount[0] !== null) MAP.canvas[i].style.top = amount[0] * MAP.CellSize + 'px';
+    if (amount[1] !== null) MAP.canvas[i].style.left = amount[1] * MAP.CellSize + 'px';
   }
 };
 

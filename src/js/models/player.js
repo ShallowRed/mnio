@@ -1,18 +1,18 @@
-import {indextocoord} from './cell'
+import {indextocoord} from '../utils'
 
 const PLAYER = {
 
-  init: function(data) {
-    this.position = data.position;
-    this.colors = data.colors;
-    this.selectedcolor = data.colors[0];
-    this.canvas = document.getElementById('playercanvas');
-    this.shadow = document.getElementById('shadow');
-    this.ctx = this.canvas.getContext('2d');
-    this.ctx.imageSmoothingEnabled = false;
+  init: data => {
+    PLAYER.position = data.position;
+    PLAYER.colors = data.colors;
+    PLAYER.selectedcolor = data.colors[0];
+    PLAYER.canvas = document.getElementById('playercanvas');
+    PLAYER.shadow = document.getElementById('shadow');
+    PLAYER.ctx = PLAYER.canvas.getContext('2d');
+    PLAYER.ctx.imageSmoothingEnabled = false;
   },
 
-  update: function(animated, GAME, MAP) {
+  update: (animated, GAME, MAP) => {
 
     // Get player's absolute position
     let position = indextocoord(PLAYER.position, GAME);
