@@ -1,5 +1,4 @@
 import io from 'socket.io-client';
-
 import GAME from './js/models/game';
 
 import './css/lobby.css';
@@ -30,3 +29,15 @@ socket.on('NewCell', cell => GAME.NewCell(cell));
 socket.on('AllowedCells', cells => GAME.AllowCells(cells));
 
 socket.on("error", () => alert("Error: Please try again!"));
+
+// TODO: button flip button left/right side
+// TODO: settings button
+// TODO: exit button
+// TODO: set limit to player expansion progressively
+// TODO: fix xy inversion
+// TODO: fix can't access cell 0,0
+// TODO: startcell according to device
+// TODO: erase color ?
+// TODO: darken /lighten selected color
+// TODO: add tutorial
+// TODO: eventually animate other's move

@@ -10,14 +10,17 @@ import '../animation/translate';
 const GAME = {
   duration: 0.2,
   flag: true,
+  flag2: true,
+  flag3: true,
 
   init: (data, socket) => {
     GAME.colors = data.ColorList;
     GAME.positions = data.PositionList;
-    GAME.allowed = data.allowedlist;
+    GAME.allowed = data.AllowedList;
+    GAME.owned = data.OwnList;
     GAME.rows = data.uiparams[0];
     GAME.cols = data.uiparams[1];
-
+    console.log(data);
     PLAYER.init(data);
     MAP.init();
     GAME.render();
@@ -36,9 +39,11 @@ const GAME = {
   },
 
   NewPlayerPos: position => {
-    console.log(position);
-    PLAYER.position = position;
-    window.Translate.init(GAME, MAP, PLAYER);
+    if (position !== PLAYER.position) {
+      PLAYER.position = position;
+      window.Translate.init(GAME, MAP, PLAYER);
+    }
+    GAME.flag2 = true;
   },
 
   NewPosition: position => {

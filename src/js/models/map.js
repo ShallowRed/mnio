@@ -2,28 +2,28 @@ import Render from '../controlers/render'
 
 const MAP = {
 
-  maxcells: 19,
+  maxcells: 71,
 
-  startcells: 15,
+  startcells: 21,
 
   mincells: 11,
 
 };
 
-MAP.init = function() {
-  this.master = document.getElementById('master');
-  this.canvas = document.querySelectorAll('.mapcanvas');
-  this.ctx1 = this.canvas[0].getContext('2d');
-  this.ctx2 = this.canvas[1].getContext('2d');
-  this.ctx3 = this.canvas[2].getContext('2d');
-  this.ctx1.imageSmoothingEnabled = this.ctx2.imageSmoothingEnabled = this.ctx3.imageSmoothingEnabled = false;
-  this.topmask = document.getElementById('topmask');
-  this.bottommask = document.getElementById('bottommask');
-  this.leftmask = document.getElementById('leftmask');
-  this.rightmask = document.getElementById('rightmask');
+MAP.init = () => {
+  MAP.master = document.getElementById('master');
+  MAP.canvas = document.querySelectorAll('.mapcanvas');
+  MAP.ctx1 = MAP.canvas[0].getContext('2d');
+  MAP.ctx2 = MAP.canvas[1].getContext('2d');
+  MAP.ctx3 = MAP.canvas[2].getContext('2d');
+  MAP.ctx1.imageSmoothingEnabled = MAP.ctx2.imageSmoothingEnabled = MAP.ctx3.imageSmoothingEnabled = false;
+  MAP.topmask = document.getElementById('topmask');
+  MAP.bottommask = document.getElementById('bottommask');
+  MAP.leftmask = document.getElementById('leftmask');
+  MAP.rightmask = document.getElementById('rightmask');
 };
 
-MAP.setup = function() { // Set params based on device width and height
+MAP.setup = () => { // Set params based on device width and height
 
   let w = MAP.windowWidth = Math.max(window.innerWidth, document.documentElement.clientWidth);
   let h = MAP.windowHeight = Math.max(window.innerHeight, document.documentElement.clientHeight);
@@ -87,7 +87,7 @@ MAP.setup = function() { // Set params based on device width and height
   MAP.rightmask.style.width = MAP.marginRight + "px";
 };
 
-MAP.update = function(animated, PLAYER, GAME) { // Set params based on player position
+MAP.update = (animated, PLAYER, GAME) => { // Set params based on player position
 
   // Set instant or animation mode
   if (!animated) MAP.master.style.transitionDuration = '0s';
@@ -129,7 +129,7 @@ MAP.update = function(animated, PLAYER, GAME) { // Set params based on player po
   }
 };
 
-MAP.render = function(PLAYER, GAME) { // Renders the grid based on device and player position
+MAP.render = (PLAYER, GAME) => { // Renders the grid based on device and player position
 
   // Clear all canvas
   MAP.ctx1.clearRect(0, 0, MAP.canvas[1].width, MAP.canvas[1].height);

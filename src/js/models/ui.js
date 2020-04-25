@@ -37,28 +37,32 @@ const UI = {
     UI.cs.forEach( c => {
       c.style.background = PLAYER.colors[UI.cs.indexOf(c)];
       c.addEventListener("click", () => {
+        if (!FlagOk(GAME)) return;
         select(c, PLAYER, UI);
         Render.fill(PLAYER.position, PLAYER.selectedcolor, GAME, PLAYER, MAP, socket);
       });
     });
 
     UI.zin.addEventListener("click", () => {
-      if (GAME.flag) zoomin(GAME, MAP, PLAYER);
+      if (FlagOk(GAME)) zoomin(GAME, MAP, PLAYER);
     });
 
     UI.zout.addEventListener("click", () => {
-      if (GAME.flag) zoomout(GAME, MAP, PLAYER);
+      if (FlagOk(GAME)) zoomout(GAME, MAP, PLAYER);
     });
 
     document.addEventListener('keydown', event => {
-      if (!GAME.flag) return;
-      KeyboardInput(event, PLAYER, GAME, UI, MAP, socket);
+      if (FlagOk(GAME)) KeyboardInput(event, PLAYER, GAME, UI, MAP, socket);
+    });
+
+    document.addEventListener('keyup', () => {
+      GAME.flag3 = true;
     });
 
     document.addEventListener('touchstart', touchStart, false);
 
     document.addEventListener('touchmove', event => {
-      touchMove(event, PLAYER, GAME, MAP, socket);
+      if (FlagOk(GAME)) touchMove(event, PLAYER, GAME, MAP, socket);
     }, false);
 
     document.addEventListener('click', () => {
@@ -76,6 +80,10 @@ const UI = {
     hidelobby();
 
   }
+}
+
+function FlagOk(GAME) {
+  if (GAME.flag && GAME.flag2 && GAME.flag3) return true;
 }
 
 function fullscreen() {
@@ -98,25 +106,7 @@ function fullscreen() {
 
 function hidelobby() {
   UI.lobby.style.opacity = "0";
-  setTimeout(function() {
-    UI.lobby.style.display = "none";
-  }, 500);
+  setTimeout(() => UI.lobby.style.display = "none", 500);
 }
 
 export default UI
-
-// TODO: button flip button left/right side
-// TODO: settings button
-// TODO: exit button
-// TODO: set limit to player expansion progressively
-// TODO: fix xy inversion
-// TODO: fix can't access cell 0,0
-// TODO: startcell according to device
-// TODO: button position according to w h ratio
-// TODO: margin for ui right, left or bottom
-// TODO: fix margins
-// TODO: erase color ?
-// TODO: darken /lighten selected color
-// TODO: use prepared palettes
-// TODO: add tutorial
-// TODO: eventually animate other's move
