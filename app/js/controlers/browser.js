@@ -1,8 +1,9 @@
-import {zoomin, zoomout, select} from '../utils';
+import {zoom, select, flagOk} from '../utils';
 import Move from '../controlers/move';
-import Render from '../controlers/render';
+import Render from '../views/render';
 
 function KeyboardInput(event, PLAYER, GAME, UI, MAP, socket) {
+  if (!flagOk(GAME)) return;
   switch (event.keyCode) {
 
     case 32: // Spacebar
@@ -10,11 +11,11 @@ function KeyboardInput(event, PLAYER, GAME, UI, MAP, socket) {
       break;
 
     case 37: // left arrow
-      zoomin(GAME, MAP, PLAYER);
+      zoom("in", GAME, MAP, PLAYER);
       break;
 
     case 39: // right arrow
-      zoomout(GAME, MAP, PLAYER);
+      zoom("out", GAME, MAP, PLAYER);
       break;
 
     case 38: // top arrow

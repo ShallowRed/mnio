@@ -40,35 +40,36 @@ function roundRect(ctx, x, y, width, height, radius, MAP) {
   ctx.stroke();
 }
 
-function zoomin(GAME, MAP) {
-  MAP.rows -= 2;
-  MAP.cols -= 2;
+function zoom(dir, GAME, MAP) {
+  if (!flagOk(GAME)) return;
+  if (dir == "in") {
+    MAP.rows -= 2;
+    MAP.cols -= 2;
+  } else {
+      MAP.rows += 2;
+      MAP.cols += 2;
+  }
   GAME.render();
 }
 
-function zoomout(GAME, MAP) {
-  MAP.rows += 2;
-  MAP.cols += 2;
-  GAME.render();
-}
-
-function select(c, PLAYER, UI) {
-  c.style.transform = "scale(1)";
-  c.style.borderWidth = "2px";
-  PLAYER.selectedcolor = PLAYER.colors[UI.cs.indexOf(c)];
+function select(selectedColor, PLAYER, UI) {
+  selectedColor.style.setProperty('border-width', "2px");
+  selectedColor.style.setProperty('transform', "scale(1)");
+  PLAYER.selectedcolor = PLAYER.colors[UI.cs.indexOf(selectedColor)];
   PLAYER.canvas.style.background = PLAYER.selectedcolor;
-
-  UI.cs.filter(function(cn) {
-    return cn !== c;
-  }).forEach(function(cl) {
-    cl.style.borderWidth = "1px";
-    cl.style.transform = "scale(0.8)";
+  UI.cs.filter(color => color !== selectedColor).forEach(color => {
+    color.style.setProperty('border-width', "1px");
+    color.style.setProperty('transform', "scale(0.8)");
   });
 }
 
+function flagOk(GAME) {
+  if (GAME.flag && GAME.flag2 && GAME.flag3) return true;
+}
+
 export {
-  zoomin,
-  zoomout,
+  zoom,
+  flagOk,
   select,
   check,
   indextocoord,

@@ -55,16 +55,16 @@
 
   #zoom {
     min-height: 110px;
-    margin-bottom: 5vh;
+    /* margin-bottom: 5vh; */
   }
 
   #color {
-    margin-top: 5vh;
+    /* margin-top: 5vh; */
     min-height: 170px;
   }
 
   #full {
-    margin-bottom: 50px;
+    /* margin-bottom: 50px; */
   }
 }
 
@@ -95,16 +95,16 @@
 
   #zoom {
     min-width: 110px;
-    margin-right: 5%;
+    /* margin-right: 5%; */
   }
 
   #color {
-    margin-left: 5%;
+    /* margin-left: 5%; */
     min-width: 170px;
   }
 
   #full {
-    margin-right: 20px;
+    /* margin-right: 20px; */
   }
 }
 
