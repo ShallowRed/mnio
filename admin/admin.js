@@ -124,7 +124,7 @@ const ADMIN = {
     let len = this.ColorList.length;
     for (let i = 0; i < len; i++) {
       CELL.fill(this.ColorList[i][0], this.ColorList[i][1]);
-      console.log("filling cell with index : " + i);
+      // console.log("filling cell with index : " + i);
     }
 
     // if (end > start) {

@@ -2,15 +2,15 @@ import {
   zoom,
   select,
   flagOk,
-} from '../utils'
+} from '../utils';
 
-import Render from '../views/render'
+import Render from '../views/render';
 
 import {
   touchStart,
   touchEnd,
   touchMove
-} from '../controlers/mobile'
+} from '../controlers/mobile';
 
 import {
   KeyboardInput
@@ -71,10 +71,10 @@ const Listen = {
     document.addEventListener('touchend', touchEnd, false);
   },
 
-  window: (GAME) => {
-    window.addEventListener('resize', GAME.render());
-    window.addEventListener("orientationchange", () => setTimeout(() => GAME.render(), 200));
-  },
+  window: GAME => {
+    window.addEventListener('resize', () => GAME.render());
+    window.addEventListener("orientationchange", () => setTimeout(() => GAME.render(), 500));
+  }
 
 }
 
