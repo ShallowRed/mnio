@@ -10,11 +10,7 @@ const MAP = {
 MAP.init = () => {
   MAP.master = document.getElementById('master');
   MAP.canvas = document.querySelectorAll('.mapcanvas');
-  MAP.ctx = [
-    MAP.canvas[0].getContext('2d'),
-    MAP.canvas[1].getContext('2d'),
-    MAP.canvas[2].getContext('2d'),
-  ];
+  MAP.ctx = Array.from(MAP.canvas).map(canvas => canvas.getContext('2d'));
   MAP.ctx.forEach(ctx => ctx.imageSmoothingEnabled = false);
   MAP.masks = {
     top: document.getElementById('topmask'),
@@ -22,130 +18,111 @@ MAP.init = () => {
     right: document.getElementById('rightmask'),
     left: document.getElementById('leftmask')
   };
-  MAP.sup = 0;
+  MAP.half = new Array(2);
 };
 
-MAP.update = () => { // Set params based on device width and height
-
+MAP.update = () => {
   let w = MAP.windowWidth = Math.max(window.innerWidth, document.documentElement.clientWidth);
   let h = MAP.windowHeight = Math.max(window.innerHeight, document.documentElement.clientHeight);
-
-  // Set number of visible rows/cols
-  if (!MAP.rows) MAP.rows = MAP.startcells;
-  if (!MAP.cols) MAP.cols = MAP.startcells;
-  if (MAP.rows <= MAP.mincells) MAP.rows = MAP.mincells;
-  if (MAP.cols <= MAP.mincells) MAP.cols = MAP.mincells;
-  if (MAP.rows >= MAP.maxcells) MAP.rows = MAP.maxcells;
-  if (MAP.cols >= MAP.maxcells) MAP.cols = MAP.maxcells;
-
-  // Ajust variables depending on width/height ratio
-  MAP.wh = (w > h);
-  MAP.Smargin = MAP.wh ? Math.round(0.01 * w) : Math.round(0.01 * h);
-  MAP.Lmargin = MAP.wh ? Math.round(0.05 * w) : Math.round(0.075 * h);
-  w = MAP.wh ? w - MAP.Lmargin : w;
-  h = MAP.wh ? h : h - MAP.Lmargin;
-  MAP.cols = MAP.wh ? Math.round(MAP.rows * h / w) + MAP.sup : MAP.cols;
-  MAP.rows = MAP.wh ? MAP.rows : Math.round(MAP.cols * w / h) + MAP.sup;
-  MAP.CellSize = MAP.wh ? Math.round(w / (MAP.rows - 2)) : Math.round(h / (MAP.cols - 2));
-  MAP.margin.right = MAP.wh ? MAP.Smargin + MAP.Lmargin : MAP.Smargin ;
-  MAP.margin.bottom = MAP.wh ? MAP.Smargin : MAP.Smargin + MAP.Lmargin;
-  MAP.margin.left = MAP.margin.top = MAP.Smargin;
-
-  if (MAP.cols % 2 == 0) MAP.cols++;
-  if (MAP.rows % 2 == 0) MAP.rows++;
-
-  // Set variables used later
-  MAP.hrows = (MAP.rows - 1) / 2;
-  MAP.hcols = (MAP.cols - 1) / 2;
-  MAP.lw = Math.round(MAP.CellSize / 6);
-  MAP.width = MAP.CellSize * (MAP.rows - 2);
-  MAP.height = MAP.CellSize * (MAP.cols - 2);
-  MAP.shift = Math.round(MAP.CellSize / 8);
-  MAP.sup = 0;
-
-  //Set master dimensions
-  MAP.master.style.width = MAP.width + 'px';
-  MAP.master.style.height = MAP.height + 'px';
-
-  //Set all canvas dimensions
-  MAP.canvas.forEach(canvas => {
-    canvas.width = MAP.width + MAP.CellSize * 2;
-    canvas.height = MAP.height + MAP.CellSize * 2;
-  });
-
-  //Set masks dimensions
-  MAP.masks.top.style.height = MAP.margin.top + "px";
-  MAP.masks.bottom.style.height = MAP.margin.bottom + "px";
-  MAP.masks.left.style.width = MAP.margin.left + "px";
-  MAP.masks.right.style.width = MAP.margin.right + "px";
+  Update.init();
+  Update.ratio(w, h);
+  Update.utils();
+  Update.dimensions();
 };
 
-MAP.render = (animated, PLAYER, GAME) => { // Set params based on player position
-
-  // Set instant or animation mode
+MAP.render = (animated, PLAYER, GAME) => {
   MAP.master.style.transitionDuration = (animated) ? GAME.duration + 's' : '0s';
-
-  // Set master's top margin
-  if (PLAYER.coefx == 0) MAP.master.style.marginTop = MAP.margin.top + "px";
-  else if (PLAYER.coefx == 2) MAP.master.style.marginTop = MAP.windowHeight - MAP.height - MAP.margin.bottom + "px";
-  else if (MAP.wh) MAP.master.style.marginTop = Math.round((MAP.windowHeight - MAP.height) / 2) + 'px ';
-  else MAP.master.style.marginTop = 0 + 'px ';
-
-  // Set master's left margin
-  if (PLAYER.coefy == 0) MAP.master.style.marginLeft = MAP.margin.left + "px";
-  else if (PLAYER.coefy == 2) MAP.master.style.marginLeft = MAP.windowWidth - MAP.width - MAP.margin.right + "px";
-  else if (MAP.wh) MAP.master.style.marginLeft = Math.round((MAP.windowWidth - MAP.width) / 2) + 'px ';
-  else MAP.master.style.marginLeft = 0 + 'px ';
-
-  let checkmargin = MAP.wh ? parseInt(MAP.master.style.marginTop, 10) : parseInt(MAP.master.style.marginleft, 10);
-  if (checkmargin > MAP.Smargin) {
-    MAP.sup = 2;
-    PLAYER.sup = MAP.wh ? [1, 0] : [0, 1];
-    MAP.update();
-    MAP.render(animated, PLAYER, GAME);
-    return;
-  }
-
-  // Eventually translate canvas with animation
-  if (!animated) return;
-  let amount = new Array(2);
-  if (PLAYER.lastdir == 'up' && PLAYER.x + 1 >= MAP.hcols && PLAYER.x < GAME.cols - MAP.hcols) amount[0] = 0;
-  else if (PLAYER.lastdir == 'left' && PLAYER.y + 1 >= MAP.hrows && PLAYER.y < GAME.rows - MAP.hrows) amount[1] = 0;
-  else if (PLAYER.lastdir == 'down') {
-    if (PLAYER.x == MAP.hcols) amount[0] = -1;
-    else if (PLAYER.x > MAP.hcols && PLAYER.x <= GAME.cols - MAP.hcols) amount[0] = -2;
-  } else if (PLAYER.lastdir == 'right') {
-    if (PLAYER.y == MAP.hrows) amount[1] = -1;
-    else if (PLAYER.y > MAP.hrows && PLAYER.y <= GAME.rows - MAP.hrows) amount[1] = -2;
-  }
-
-  MAP.canvas.forEach(canvas => {
-    canvas.style.transitionDuration = GAME.duration + 's';
-    if (amount[0] !== undefined) canvas.style.top = amount[0] * MAP.CellSize + 'px';
-    if (amount[1] !== undefined) canvas.style.left = amount[1] * MAP.CellSize + 'px';
-  });
+  SetMargin.master(PLAYER);
+  if (animated) SetMargin.canvas(PLAYER.lastdir, PLAYER.coord, GAME.rc, GAME.duration);
 };
 
-MAP.draw = (PLAYER, GAME) => { // Renders the grid based on device and player position
-
-  // Clear all canvas
+MAP.draw = (PLAYER, GAME) => {
   MAP.ctx.forEach(ctx => ctx.clearRect(0, 0, MAP.canvas[1].width, MAP.canvas[1].height));
-
-  // Get canvas back to origin
   MAP.canvas.forEach(canvas => {
     canvas.style.transitionDuration = '0s';
-    canvas.style.top = '-' + MAP.CellSize * PLAYER.coefx + 'px';
-    canvas.style.left = '-' + MAP.CellSize * PLAYER.coefy + 'px';
+    canvas.style.top = '-' + MAP.cellSize * (PLAYER.is.up ? 0 : PLAYER.is.down ? 2 : 1) + 'px';
+    canvas.style.left = '-' + MAP.cellSize * (PLAYER.is.left ? 0 : PLAYER.is.right ? 2 : 1) + 'px';
   });
-
-  // Draw all allowed cells
   GAME.allowed.forEach(position => Render.allowed(position, PLAYER, GAME, MAP));
-
-  // Draw all positions
   GAME.positions.forEach(position => Render.position(position, PLAYER, GAME, MAP));
-
-  // Draw all colored cells
   GAME.colors.map((color, i) => color ? i : null).filter(color => color).forEach((position) => Render.color(position, PLAYER, GAME, MAP))
 };
+
+const Update = {
+
+  init: () => {
+    if (!MAP.rc) MAP.rc = [MAP.startcells, MAP.startcells];
+    if (MAP.rc[1] <= MAP.mincells) MAP.rc[1] = MAP.mincells;
+    if (MAP.rc[0] <= MAP.mincells) MAP.rc[0] = MAP.mincells;
+    if (MAP.rc[1] >= MAP.maxcells) MAP.rc[1] = MAP.maxcells;
+    if (MAP.rc[0] >= MAP.maxcells) MAP.rc[0] = MAP.maxcells;
+  },
+
+  ratio: (w, h) => {
+    MAP.ratio = (w > h);
+    MAP.Smargin = MAP.ratio ? Math.round(0.01 * w) : Math.round(0.01 * h);
+    MAP.Lmargin = MAP.ratio ? Math.round(0.05 * w) : Math.round(0.075 * h);
+    if (MAP.ratio) w -= MAP.Lmargin;
+    else h -= MAP.Lmargin;
+    MAP.rc = MAP.ratio ? [Math.round(MAP.rc[1] * h / w) + 2, MAP.rc[0]] : [MAP.rc[1], Math.round(MAP.rc[0] * w / h) + 2];
+    MAP.cellSize = MAP.ratio ? Math.round(w / (MAP.rc[1] - 2)) : Math.round(h / (MAP.rc[0] - 2));
+    MAP.margin.right = MAP.ratio ? MAP.Smargin + MAP.Lmargin : MAP.Smargin;
+    MAP.margin.bottom = MAP.ratio ? MAP.Smargin : MAP.Smargin + MAP.Lmargin;
+    MAP.margin.left = MAP.margin.top = MAP.Smargin;
+  },
+
+  utils: () => {
+    if (MAP.rc[0] % 2 == 0) MAP.rc[0]++;
+    if (MAP.rc[1] % 2 == 0) MAP.rc[1]++;
+    MAP.half = [(MAP.rc[0] - 1) / 2, (MAP.rc[1] - 1) / 2];
+    MAP.lw = Math.round(MAP.cellSize / 6);
+    MAP.width = MAP.cellSize * (MAP.rc[1] - 2);
+    MAP.height = MAP.cellSize * (MAP.rc[0] - 2);
+    MAP.shift = Math.round(MAP.cellSize / 8);
+    MAP.sup = 0;
+  },
+
+  dimensions: () => {
+    MAP.master.style.width = MAP.width + 'px';
+    MAP.master.style.height = MAP.height + 'px';
+    MAP.canvas.forEach(canvas => {
+      canvas.width = MAP.width + MAP.cellSize * 2;
+      canvas.height = MAP.height + MAP.cellSize * 2;
+    });
+    MAP.masks.top.style.height = MAP.margin.top + "px";
+    MAP.masks.bottom.style.height = MAP.margin.bottom + "px";
+    MAP.masks.left.style.width = MAP.margin.left + "px";
+    MAP.masks.right.style.width = MAP.margin.right + "px";
+  }
+
+};
+
+const SetMargin = {
+
+  master: PLAYER => {
+    MAP.master.style.marginTop =
+      PLAYER.is.up ? MAP.margin.top + "px" :
+      PLAYER.is.down ? MAP.windowHeight - MAP.height - MAP.margin.bottom + "px" :
+      MAP.ratio ? Math.round((MAP.windowHeight - MAP.height) / 2) + 'px ' : '0px ';
+    MAP.master.style.marginLeft =
+      PLAYER.is.left ? MAP.margin.left + "px" :
+      PLAYER.is.right ? MAP.windowWidth - MAP.width - MAP.margin.right + "px" :
+      MAP.ratio ? Math.round((MAP.windowWidth - MAP.width) / 2) + 'px ' : '0px ';
+  },
+
+  canvas: (lastdir, coord, rowcol, duration) => {
+    let amount = [
+      (lastdir == 'up' && coord[0] + 1 >= MAP.half[0] && coord[0] < rowcol[0] - MAP.half[0]) ? 0 :
+      (lastdir == 'down') ? (coord[0] == MAP.half[0]) ? -1 : (coord[0] > MAP.half[0] && coord[0] <= rowcol[0] - MAP.half[0]) ? -2 : null : null,
+      (lastdir == 'left' && coord[1] + 1 >= MAP.half[1] && coord[1] < rowcol[1] - MAP.half[1]) ? 0 :
+      (lastdir == 'right') ? (coord[1] == MAP.half[1]) ? -1 : (coord[1] > MAP.half[1] && coord[1] <= rowcol[1] - MAP.half[1]) ? -2 : null : null
+    ];
+    MAP.canvas.forEach(canvas => {
+      canvas.style.transitionDuration = duration + 's';
+      if (amount[0] !== null) canvas.style.top = amount[0] * MAP.cellSize + 'px';
+      if (amount[1] !== null) canvas.style.left = amount[1] * MAP.cellSize + 'px';
+    });
+  }
+}
 
 export default MAP

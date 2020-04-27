@@ -8,61 +8,37 @@ PLAYER.init = data => {
   PLAYER.position = data.position;
   PLAYER.colors = data.colors;
   PLAYER.selectedcolor = data.colors[0];
-  PLAYER.canvas = document.getElementById('playercanvas');
-  PLAYER.shadow = document.getElementById('shadow');
-  PLAYER.ctx = PLAYER.canvas.getContext('2d');
-  PLAYER.ctx.imageSmoothingEnabled = false;
-  PLAYER.sup = [0, 0];
+  PLAYER.canvas = [document.getElementById('playercanvas'), document.getElementById('shadow')];
+  PLAYER.canvas[0].getContext('2d').imageSmoothingEnabled = false;
 };
 
 PLAYER.update = (GAME, MAP) => {
-
-  // Get player's absolute position
-  let position = indextocoord(PLAYER.position, GAME);
-  PLAYER.x = position[0];
-  PLAYER.y = position[1];
-
-  // Calculate player X position in view
-  if (PLAYER.x < MAP.hcols) {
-    PLAYER.coefx = 0;
-    PLAYER.vx = PLAYER.x;
-  } else if (PLAYER.x > GAME.cols - MAP.hcols) {
-    PLAYER.coefx = 2;
-    PLAYER.vx = PLAYER.x + MAP.cols - GAME.cols - 2;
-  } else {
-    PLAYER.coefx = 1;
-    PLAYER.vx = MAP.hcols - 1;
-  }
-
-  // Calculate player Y position in view
-  if (PLAYER.y < MAP.hrows) {
-    PLAYER.coefy = 0;
-    PLAYER.vy = PLAYER.y;
-  } else if (PLAYER.y > GAME.rows - MAP.hrows) {
-    PLAYER.coefy = 2;
-    PLAYER.vy = PLAYER.y + MAP.rows - GAME.rows - 2;
-  } else {
-    PLAYER.coefy = 1;
-    PLAYER.vy = MAP.hrows - 1;
+  PLAYER.coord = indextocoord(PLAYER.position, GAME);
+  PLAYER.is = {
+    up: PLAYER.coord[0] < MAP.half[0],
+    down: PLAYER.coord[0] > GAME.rc[0] - MAP.half[0],
+    left: PLAYER.coord[1] < MAP.half[1],
+    right: PLAYER.coord[1] > GAME.rc[1] - MAP.half[1]
   }
 };
 
 PLAYER.render = (animated, MAP, GAME) => {
-
-  // Set player position in view, eventually with animation
-  if (!animated) PLAYER.shadow.style.transitionDuration = PLAYER.canvas.style.transitionDuration = '0s';
-  else PLAYER.shadow.style.transitionDuration = PLAYER.canvas.style.transitionDuration = GAME.duration + 's';
-  PLAYER.shadow.style.top = PLAYER.canvas.style.top = PLAYER.vx * MAP.CellSize + MAP.shift + 'px';
-  PLAYER.shadow.style.left = PLAYER.canvas.style.left = PLAYER.vy * MAP.CellSize + MAP.shift + 'px';
-  PLAYER.shadow.style.top = PLAYER.canvas.style.top = (PLAYER.vx + PLAYER.sup[0]) * MAP.CellSize + MAP.shift + 'px';
-  PLAYER.shadow.style.left = PLAYER.canvas.style.left = (PLAYER.vy + PLAYER.sup[1]) * MAP.CellSize + MAP.shift + 'px';
-  PLAYER.sup = [0, 0];
-
-  // Eventually set player size
-  if (animated) return;
-  PLAYER.canvas.width = PLAYER.canvas.height = MAP.CellSize - MAP.shift * 4;
-  PLAYER.shadow.style.width = PLAYER.shadow.style.height = MAP.CellSize - MAP.shift * 2 - 2 + 'px';
-  PLAYER.shadow.style.borderRadius = PLAYER.canvas.style.borderWidth = PLAYER.canvas.style.borderRadius = MAP.shift + 'px';
+  PLAYER.canvas.forEach(canvas => canvas.style.transitionDuration = animated ? GAME.duration + 's' : '0s');
+  SetPlayer.position(MAP, GAME.rc);
+  if (!animated) SetPlayer.size(MAP);
 }
+
+const SetPlayer = {
+  position: (MAP, rowcol) => PLAYER.canvas.forEach(canvas => {
+    canvas.style.top = (PLAYER.is.up ? PLAYER.coord[0] : PLAYER.is.down ? PLAYER.coord[0] + MAP.rc[0] - rowcol[0] - 2 : MAP.half[0] - 1) * MAP.cellSize + MAP.shift + 'px';
+    canvas.style.left = (PLAYER.is.left ? PLAYER.coord[1] : PLAYER.is.right ? PLAYER.coord[1] + MAP.rc[1] - rowcol[1] - 2 : MAP.half[1] - 1) * MAP.cellSize + MAP.shift + 'px';
+  }),
+  size: MAP => {
+    PLAYER.canvas[0].width = PLAYER.canvas[0].height = MAP.cellSize - MAP.shift * 4;
+    PLAYER.canvas[1].style.width = PLAYER.canvas[1].style.height = MAP.cellSize - MAP.shift * 2 - 2 + 'px';
+    PLAYER.canvas.forEach(canvas => canvas.style.borderRadius = MAP.shift + 'px');
+    PLAYER.canvas[0].style.borderWidth = MAP.shift + 'px';
+  }
+};
 
 export default PLAYER

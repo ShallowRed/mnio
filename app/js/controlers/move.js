@@ -11,9 +11,9 @@ function Move(direction, GAME, PLAYER, MAP, socket) {
 
   let coord = indextocoord(PLAYER.position, GAME);
   if (direction == "up" && coord[0] !== 0) coord[0]--;
-  else if (direction == "down" && coord[0] !== GAME.cols - 1) coord[0]++;
+  else if (direction == "down" && coord[0] !== GAME.rc[0] - 1) coord[0]++;
   else if (direction == "left" && coord[1] !== 0) coord[1]--;
-  else if (direction == "right" && coord[1] !== GAME.rows - 1) coord[1]++;
+  else if (direction == "right" && coord[1] !== GAME.rc[1] - 1) coord[1]++;
   else {
     GAME.flag = GAME.flag2 = true;
     return;
