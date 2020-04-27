@@ -15,7 +15,7 @@ let config = {
     minimizer: [new TerserPlugin(), new OptimizeCSSAssetsPlugin({})],
   },
   entry: {
-    main: ["./src/index.js"]
+    main: ["./app/index.js"]
   },
   output: {
     filename: '[name].js',
@@ -75,7 +75,7 @@ let config = {
     }),
     new HtmlWebpackPlugin({
       inject: true,
-      template: "src/index.ejs"
+      template: "app/index.ejs"
     })
   ]
 }

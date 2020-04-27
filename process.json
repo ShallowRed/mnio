@@ -3,7 +3,7 @@
   "watch": true,
   "ignore_watch" : [
     "node_modules",
-    "src",
+    "app",
     "dist",
     "admin",
     ".gitignore",
@@ -12,6 +12,7 @@
     "remote-sync.json",
     "README.md",
     "webpack.config.js",
+    "shared",
 
   ],
   "watch_options": {
