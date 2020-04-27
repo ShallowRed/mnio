@@ -1,4 +1,5 @@
 import Render from '../views/render'
+import UI from './ui'
 
 const MAP = {
   maxcells: 61,
@@ -33,7 +34,7 @@ MAP.update = () => {
 
   MAP.ratio = (w > h);
   MAP.Smargin = MAP.ratio ? Math.round(0.01 * w) : Math.round(0.01 * h);
-  MAP.Lmargin = MAP.ratio ? Math.round(0.05 * w) : Math.round(0.075 * h);
+  MAP.Lmargin = MAP.ratio ? Math.round(0.075 * w) : Math.round(0.11 * h);
   if (MAP.ratio) w -= MAP.Lmargin;
   else h -= MAP.Lmargin;
 
@@ -52,7 +53,6 @@ MAP.update = () => {
 
   if (MAP.RowCol[0] % 2 == 0) MAP.RowCol[0]++;
   if (MAP.RowCol[1] % 2 == 0) MAP.RowCol[1]++;
-  console.log(MAP.RowCol);
   MAP.half = [(MAP.RowCol[0] - 1) / 2, (MAP.RowCol[1] - 1) / 2];
   MAP.lw = Math.round(MAP.cellSize / 6);
   MAP.width = MAP.cellSize * (MAP.RowCol[1] - 2);
@@ -70,12 +70,42 @@ MAP.update = () => {
   MAP.masks.bottom.style.height = MAP.margin.bottom + "px";
   MAP.masks.left.style.width = MAP.margin.left + "px";
   MAP.masks.right.style.width = MAP.margin.right + "px";
+
+  UI.setButtons(MAP.Lmargin, MAP.ratio);
+
 };
 
 MAP.render = (animated, PLAYER, GAME) => {
+
   MAP.master.style.transitionDuration = (animated) ? GAME.duration + 's' : '0s';
-  SetMargin.master(PLAYER);
-  if (animated) SetMargin.canvas(PLAYER.lastdir, PLAYER.coord, GAME.rc, GAME.duration);
+
+  MAP.master.style.marginTop =
+    PLAYER.is.up ? MAP.margin.top + "px" :
+    PLAYER.is.down ? MAP.windowHeight - MAP.height - MAP.margin.bottom + "px" :
+    MAP.ratio ? Math.round((MAP.windowHeight - MAP.height) / 2) + 'px ' : '0px ';
+
+  MAP.master.style.marginLeft =
+    PLAYER.is.left ? MAP.margin.left + "px" :
+    PLAYER.is.right ? MAP.windowWidth - MAP.width - MAP.margin.right + "px" :
+    MAP.ratio ? '0px ' : Math.round((MAP.windowWidth - MAP.width) / 2) + 'px ';
+
+  if (!animated) return;
+
+  let amount = [
+    (PLAYER.lastdir == 'up' && PLAYER.coord[0] + 1 >= MAP.half[0] && PLAYER.coord[0] < GAME.RowCol[0] - MAP.half[0]) ? 0 :
+    (PLAYER.lastdir == 'down') ? (PLAYER.coord[0] == MAP.half[0]) ? -1 :
+    (PLAYER.coord[0] > MAP.half[0] && PLAYER.coord[0] <= GAME.RowCol[0] - MAP.half[0]) ? -2 : null : null,
+    (PLAYER.lastdir == 'left' && PLAYER.coord[1] + 1 >= MAP.half[1] && PLAYER.coord[1] < GAME.RowCol[1] - MAP.half[1]) ? 0 :
+    (PLAYER.lastdir == 'right') ? (PLAYER.coord[1] == MAP.half[1]) ? -1 :
+    (PLAYER.coord[1] > MAP.half[1] && PLAYER.coord[1] <= GAME.RowCol[1] - MAP.half[1]) ? -2 : null : null
+  ];
+
+  MAP.canvas.forEach(canvas => {
+    canvas.style.transitionDuration = GAME.duration + 's';
+    if (amount[0] !== null) canvas.style.top = amount[0] * MAP.cellSize + 'px';
+    if (amount[1] !== null) canvas.style.left = amount[1] * MAP.cellSize + 'px';
+  });
+
 };
 
 MAP.draw = (PLAYER, GAME) => {
@@ -89,34 +119,5 @@ MAP.draw = (PLAYER, GAME) => {
   GAME.positions.forEach(position => Render.position(position, PLAYER, GAME, MAP));
   GAME.colors.map((color, i) => color ? i : null).filter(color => color).forEach((position) => Render.color(position, PLAYER, GAME, MAP))
 };
-
-const SetMargin = {
-
-  master: PLAYER => {
-    MAP.master.style.marginTop =
-      PLAYER.is.up ? MAP.margin.top + "px" :
-      PLAYER.is.down ? MAP.windowHeight - MAP.height - MAP.margin.bottom + "px" :
-      MAP.ratio ? Math.round((MAP.windowHeight - MAP.height) / 2) + 'px ' : '0px ';
-    MAP.master.style.marginLeft =
-      PLAYER.is.left ? MAP.margin.left + "px" :
-      PLAYER.is.right ? MAP.windowWidth - MAP.width - MAP.margin.right + "px" :
-      MAP.ratio ? '0px ' : Math.round((MAP.windowWidth - MAP.width) / 2) + 'px ';
-  },
-
-  canvas: (lastdir, coord, rowcol, duration) => {
-    let amount = [
-      (lastdir == 'up' && coord[0] + 1 >= MAP.half[0] && coord[0] < rowcol[0] - MAP.half[0]) ? 0 :
-      (lastdir == 'down') ? (coord[0] == MAP.half[0]) ? -1 : (coord[0] > MAP.half[0] && coord[0] <= rowcol[0] - MAP.half[0]) ? -2 : null : null,
-      (lastdir == 'left' && coord[1] + 1 >= MAP.half[1] && coord[1] < rowcol[1] - MAP.half[1]) ? 0 :
-      (lastdir == 'right') ? (coord[1] == MAP.half[1]) ? -1 : (coord[1] > MAP.half[1] && coord[1] <= rowcol[1] - MAP.half[1]) ? -2 : null : null
-    ];
-    MAP.canvas.forEach(canvas => {
-      canvas.style.transitionDuration = duration + 's';
-      if (amount[0] !== null) canvas.style.top = amount[0] * MAP.cellSize + 'px';
-      if (amount[1] !== null) canvas.style.left = amount[1] * MAP.cellSize + 'px';
-    });
-  }
-}
-
 
 export default MAP

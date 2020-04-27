@@ -1,9 +1,9 @@
 function posinview(position, PLAYER, GAME, MAP) {
 
   let cell = indextocoord(position, GAME);
-  if (PLAYER.is.down) cell[0] -= GAME.rc[0] - MAP.RowCol[0];
+  if (PLAYER.is.down) cell[0] -= GAME.RowCol[0] - MAP.RowCol[0];
   else if (!PLAYER.is.up) cell[0] -= PLAYER.coord[0] - MAP.half[0];
-  if (PLAYER.is.right) cell[1] -= GAME.rc[1] - MAP.RowCol[1];
+  if (PLAYER.is.right) cell[1] -= GAME.RowCol[1] - MAP.RowCol[1];
   else if (!PLAYER.is.left) cell[1] -= PLAYER.coord[1] - MAP.half[1];
   return [cell[0], cell[1]];
 }
@@ -14,13 +14,13 @@ function check(position, PLAYER, GAME, MAP) {
 }
 
 function indextocoord(index, GAME) {
-  let coordx = (index - (index % GAME.rc[1])) / GAME.rc[0];
-  let coordy = (index % GAME.rc[0]);
+  let coordx = (index - (index % GAME.RowCol[1])) / GAME.RowCol[0];
+  let coordy = (index % GAME.RowCol[0]);
   return [coordx, coordy];
 }
 
 function coordtoindex(coord, GAME) {
-  let index = GAME.rc[1] * coord[0] + coord[1];
+  let index = GAME.RowCol[1] * coord[0] + coord[1];
   return index;
 }
 

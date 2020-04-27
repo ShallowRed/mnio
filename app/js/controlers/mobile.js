@@ -1,46 +1,50 @@
 import Move from '../controlers/move';
-import {flagOk} from '../utils'
-let xDown = null;
-let yDown = null;
+import {
+  flagOk
+} from '../utils'
+
+// let xDown = null;
+// let yDown = null;
+let start = [null, null];
+let flug = true;
 
 function touchStart(evt) {
-  xDown = evt.touches[0].clientX;
-  yDown = evt.touches[0].clientY;
+  start = [evt.touches[0].clientX, evt.touches[0].clientY]
+  // xDown = evt.touches[0].clientX;
+  // yDown = evt.touches[0].clientY;
   flug = true;
 }
 
-function touchEnd(evt) {
-  xDown = evt.touches[0].clientX;
-  yDown = evt.touches[0].clientY;
+function touchEnd(evt, GAME) {
+  // xDown = evt.touches[0].clientX;
+  // yDown = evt.touches[0].clientY;
+  GAME.flag3 = true;
   flug = false;
+  start = [null, null];
+  // xDown = null;
+  // yDown = null;
 }
 
-let flug = true;
-
 function touchMove(evt, PLAYER, GAME, MAP, socket) {
-  if (!flagOk(GAME)) return;
-  if (!xDown || !yDown) return;
-  let xUp = evt.touches[0].clientX;
-  let yUp = evt.touches[0].clientY;
-  let xDiff = xDown - xUp;
-  let yDiff = yDown - yUp;
-  if (Math.abs(xDiff) > Math.abs(yDiff)) {
-    if (xDiff > 0) Move("left", GAME, PLAYER, MAP, socket);
-    else Move("right", GAME, PLAYER, MAP, socket);
-  } else {
-    if (yDiff > 0) Move("up", GAME, PLAYER, MAP, socket);
-    else Move("down", GAME, PLAYER, MAP, socket);
-  }
+
+  if (!flagOk(GAME) || !xDown || !yDown) return;
+
+  let Diff = [start[0] - evt.touches[0].clientX, start[1] - evt.touches[0].clientY];
+
+  let dir = (Math.abs(Diff[0]) > Math.abs(Diff[1])) ?
+    (Diff[0] > 0) ? "left" : "right" :
+    (Diff[1] > 0) ? "up" : "down";
+
+  Move(dir, GAME, PLAYER, MAP, socket)
+
+  start = [null, null];
+
   while (flug) {
-    if (GAME.flag && GAME.flag2 && GAME.flag3) {
-      xDown = xUp;
-      yDown = yUp;
-      touchMove(evt, PLAYER, GAME, MAP, socket);
-    }
+    xDown = evt.touches[0].clientX;
+    yDown = evt.touches[0].clientY;
+    touchMove(evt, PLAYER, GAME, MAP, socket);
     return;
   }
-  xDown = null;
-  yDown = null;
 }
 
 export {

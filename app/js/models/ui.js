@@ -29,7 +29,8 @@ UI.init = (GAME, PLAYER, MAP, socket) => {
 function getElements() {
 
   UI.lobby = document.getElementById('lobby');
-
+  UI.btn = document.querySelectorAll('button');
+  UI.btns = document.getElementById('buttons');
   UI.zoom = {
     in: document.getElementById('zoomin'),
     out: document.getElementById('zoomout')
@@ -37,10 +38,10 @@ function getElements() {
 
   UI.elem = document.documentElement;
 
-  UI.full = {
-    button: document.getElementById('full'),
-    flag: false
-  };
+  // UI.full = {
+  //   button: document.getElementById('full'),
+  //   flag: false
+  // };
 
   UI.cs = [document.getElementById('c1'), document.getElementById('c2'), document.getElementById('c3')];
 
@@ -49,7 +50,7 @@ function getElements() {
 const Listen = {
 
   click: (GAME, PLAYER, MAP, socket) => {
-    UI.full.button.addEventListener("click", () => fullscreen());
+    // UI.full.button.addEventListener("click", () => fullscreen());
     UI.cs.forEach(cbtn => {
       cbtn.style.background = PLAYER.colors[UI.cs.indexOf(cbtn)];
       cbtn.addEventListener("click", () => selectNfill(cbtn, GAME, PLAYER, MAP, UI, socket));
@@ -68,7 +69,7 @@ const Listen = {
   mobile: (GAME, PLAYER, MAP, socket) => {
     document.addEventListener('touchstart', touchStart, false);
     document.addEventListener('touchmove', event => touchMove(event, PLAYER, GAME, MAP, socket), false);
-    document.addEventListener('touchend', touchEnd, false);
+    document.addEventListener('touchend', event => touchEnd(event, GAME), false);
   },
 
   window: GAME => {
@@ -84,27 +85,51 @@ function selectNfill(color, GAME, PLAYER, MAP, UI, socket) {
   Render.fill(PLAYER.position, PLAYER.selectedcolor, GAME, PLAYER, MAP, socket);
 }
 
-function fullscreen() {
-
-  if (!UI.full.flag) {
-    UI.full.flag = true;
-    if (UI.elem.requestFullscreen) UI.elem.requestFullscreen();
-    else if (UI.elem.mozRequestFullScreen) UI.elem.mozRequestFullScreen();
-    else if (UI.elem.webkitRequestFullscreen) UI.elem.webkitRequestFullscreen();
-    else if (UI.elem.msRequestFullscreen) UI.elem.msRequestFullscreen();
-
-  } else {
-    UI.full.flag = false;
-    if (document.exitFullscreen) document.exitFullscreen();
-    else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
-    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
-    else if (document.msExitFullscreen) document.msExitFullscreen();
-  }
-}
-
 function hideLobby() {
   UI.lobby.style.opacity = 0;
   setTimeout(() => UI.lobby.style.display = "none", 300);
 }
+
+UI.setButtons = (margin, ratio) => {
+  UI.btn.forEach(btn => {
+    btn.style.height = margin + "px";
+    btn.style.width = margin + "px";
+    btn.style.margin = "0";
+  });
+
+  if (ratio) {
+    UI.btn[2].style.marginTop = UI.btn[4].style.marginTop =UI.btn[4].style.marginBottom ="1vh";
+    UI.btn[2].style.marginBottom = "3vh";
+  } else {
+    UI.btn[2].style.marginRight = "5%";
+    UI.btn[2].style.marginLeft = UI.btn[4].style.marginLeft = UI.btn[4].style.marginRight = "2%";
+  }
+
+  UI.btns.style.flexFlow = ratio ? "column" : "row";
+  UI.btns.style.width = ratio ? "8%" : "100%";
+  UI.btns.style.height = ratio ? "100%" : "10%";
+
+  UI.btns.style.top = ratio ? "0" : "auto";
+  UI.btns.style.marginLeft = ratio ? "92%" : "0";
+  UI.btns.style.bottom = ratio ? "none" : "5px";
+}
+
+// function fullscreen() {
+//
+//   if (!UI.full.flag) {
+//     UI.full.flag = true;
+//     if (UI.elem.requestFullscreen) UI.elem.requestFullscreen();
+//     else if (UI.elem.mozRequestFullScreen) UI.elem.mozRequestFullScreen();
+//     else if (UI.elem.webkitRequestFullscreen) UI.elem.webkitRequestFullscreen();
+//     else if (UI.elem.msRequestFullscreen) UI.elem.msRequestFullscreen();
+//
+//   } else {
+//     UI.full.flag = false;
+//     if (document.exitFullscreen) document.exitFullscreen()Lucastom2!;
+//     else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
+//     else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+//     else if (document.msExitFullscreen) document.msExitFullscreen();
+//   }
+// }
 
 export default UI
