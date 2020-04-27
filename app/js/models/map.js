@@ -1,9 +1,9 @@
 import Render from '../views/render'
 
 const MAP = {
-  maxcells: 31,
-  startcells: 21,
-  mincells: 11,
+  maxcells: 61,
+  startcells: 25,
+  mincells: 17,
   margin: {},
 };
 
@@ -24,10 +24,52 @@ MAP.init = () => {
 MAP.update = () => {
   let w = MAP.windowWidth = Math.max(window.innerWidth, document.documentElement.clientWidth);
   let h = MAP.windowHeight = Math.max(window.innerHeight, document.documentElement.clientHeight);
-  Update.init();
-  Update.ratio(w, h);
-  Update.utils();
-  Update.dimensions();
+
+  if (!MAP.RowCol) MAP.RowCol = [MAP.startcells, MAP.startcells];
+  if (MAP.RowCol[1] <= MAP.mincells) MAP.RowCol[1] = MAP.mincells;
+  if (MAP.RowCol[0] <= MAP.mincells) MAP.RowCol[0] = MAP.mincells;
+  if (MAP.RowCol[1] >= MAP.maxcells) MAP.RowCol[1] = MAP.maxcells;
+  if (MAP.RowCol[0] >= MAP.maxcells) MAP.RowCol[0] = MAP.maxcells;
+
+  MAP.ratio = (w > h);
+  MAP.Smargin = MAP.ratio ? Math.round(0.01 * w) : Math.round(0.01 * h);
+  MAP.Lmargin = MAP.ratio ? Math.round(0.05 * w) : Math.round(0.075 * h);
+  if (MAP.ratio) w -= MAP.Lmargin;
+  else h -= MAP.Lmargin;
+
+  MAP.RowCol = MAP.ratio ? [
+    Math.round(MAP.RowCol[1] * h / w) + 2,
+    MAP.RowCol[1]
+  ] : [
+    MAP.RowCol[0],
+    Math.round(MAP.RowCol[0] * w / h) + 2
+  ];
+
+  MAP.cellSize = MAP.ratio ? Math.round(w / (MAP.RowCol[1] - 2)) : Math.round(h / (MAP.RowCol[0] - 2));
+  MAP.margin.right = MAP.ratio ? MAP.Smargin + MAP.Lmargin : MAP.Smargin;
+  MAP.margin.bottom = MAP.ratio ? MAP.Smargin : MAP.Smargin + MAP.Lmargin;
+  MAP.margin.left = MAP.margin.top = MAP.Smargin;
+
+  if (MAP.RowCol[0] % 2 == 0) MAP.RowCol[0]++;
+  if (MAP.RowCol[1] % 2 == 0) MAP.RowCol[1]++;
+  console.log(MAP.RowCol);
+  MAP.half = [(MAP.RowCol[0] - 1) / 2, (MAP.RowCol[1] - 1) / 2];
+  MAP.lw = Math.round(MAP.cellSize / 6);
+  MAP.width = MAP.cellSize * (MAP.RowCol[1] - 2);
+  MAP.height = MAP.cellSize * (MAP.RowCol[0] - 2);
+  MAP.shift = Math.round(MAP.cellSize / 8);
+  MAP.master.style.width = MAP.width + 'px';
+  MAP.master.style.height = MAP.height + 'px';
+
+  MAP.canvas.forEach(canvas => {
+    canvas.width = MAP.width + MAP.cellSize * 2;
+    canvas.height = MAP.height + MAP.cellSize * 2;
+  });
+
+  MAP.masks.top.style.height = MAP.margin.top + "px";
+  MAP.masks.bottom.style.height = MAP.margin.bottom + "px";
+  MAP.masks.left.style.width = MAP.margin.left + "px";
+  MAP.masks.right.style.width = MAP.margin.right + "px";
 };
 
 MAP.render = (animated, PLAYER, GAME) => {
@@ -48,55 +90,6 @@ MAP.draw = (PLAYER, GAME) => {
   GAME.colors.map((color, i) => color ? i : null).filter(color => color).forEach((position) => Render.color(position, PLAYER, GAME, MAP))
 };
 
-const Update = {
-
-  init: () => {
-    if (!MAP.rc) MAP.rc = [MAP.startcells, MAP.startcells];
-    if (MAP.rc[1] <= MAP.mincells) MAP.rc[1] = MAP.mincells;
-    if (MAP.rc[0] <= MAP.mincells) MAP.rc[0] = MAP.mincells;
-    if (MAP.rc[1] >= MAP.maxcells) MAP.rc[1] = MAP.maxcells;
-    if (MAP.rc[0] >= MAP.maxcells) MAP.rc[0] = MAP.maxcells;
-  },
-
-  ratio: (w, h) => {
-    MAP.ratio = (w > h);
-    MAP.Smargin = MAP.ratio ? Math.round(0.01 * w) : Math.round(0.01 * h);
-    MAP.Lmargin = MAP.ratio ? Math.round(0.05 * w) : Math.round(0.075 * h);
-    if (MAP.ratio) w -= MAP.Lmargin;
-    else h -= MAP.Lmargin;
-    MAP.rc = MAP.ratio ? [Math.round(MAP.rc[1] * h / w) + 2, MAP.rc[0]] : [MAP.rc[1], Math.round(MAP.rc[0] * w / h) + 2];
-    MAP.cellSize = MAP.ratio ? Math.round(w / (MAP.rc[1] - 2)) : Math.round(h / (MAP.rc[0] - 2));
-    MAP.margin.right = MAP.ratio ? MAP.Smargin + MAP.Lmargin : MAP.Smargin;
-    MAP.margin.bottom = MAP.ratio ? MAP.Smargin : MAP.Smargin + MAP.Lmargin;
-    MAP.margin.left = MAP.margin.top = MAP.Smargin;
-  },
-
-  utils: () => {
-    if (MAP.rc[0] % 2 == 0) MAP.rc[0]++;
-    if (MAP.rc[1] % 2 == 0) MAP.rc[1]++;
-    MAP.half = [(MAP.rc[0] - 1) / 2, (MAP.rc[1] - 1) / 2];
-    MAP.lw = Math.round(MAP.cellSize / 6);
-    MAP.width = MAP.cellSize * (MAP.rc[1] - 2);
-    MAP.height = MAP.cellSize * (MAP.rc[0] - 2);
-    MAP.shift = Math.round(MAP.cellSize / 8);
-    MAP.sup = 0;
-  },
-
-  dimensions: () => {
-    MAP.master.style.width = MAP.width + 'px';
-    MAP.master.style.height = MAP.height + 'px';
-    MAP.canvas.forEach(canvas => {
-      canvas.width = MAP.width + MAP.cellSize * 2;
-      canvas.height = MAP.height + MAP.cellSize * 2;
-    });
-    MAP.masks.top.style.height = MAP.margin.top + "px";
-    MAP.masks.bottom.style.height = MAP.margin.bottom + "px";
-    MAP.masks.left.style.width = MAP.margin.left + "px";
-    MAP.masks.right.style.width = MAP.margin.right + "px";
-  }
-
-};
-
 const SetMargin = {
 
   master: PLAYER => {
@@ -107,7 +100,7 @@ const SetMargin = {
     MAP.master.style.marginLeft =
       PLAYER.is.left ? MAP.margin.left + "px" :
       PLAYER.is.right ? MAP.windowWidth - MAP.width - MAP.margin.right + "px" :
-      MAP.ratio ? Math.round((MAP.windowWidth - MAP.width) / 2) + 'px ' : '0px ';
+      MAP.ratio ? '0px ' : Math.round((MAP.windowWidth - MAP.width) / 2) + 'px ';
   },
 
   canvas: (lastdir, coord, rowcol, duration) => {
@@ -124,5 +117,6 @@ const SetMargin = {
     });
   }
 }
+
 
 export default MAP

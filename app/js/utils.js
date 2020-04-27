@@ -1,16 +1,16 @@
 function posinview(position, PLAYER, GAME, MAP) {
 
   let cell = indextocoord(position, GAME);
-  if (PLAYER.is.down) cell[0] -= GAME.rc[0] - MAP.rc[0];
+  if (PLAYER.is.down) cell[0] -= GAME.rc[0] - MAP.RowCol[0];
   else if (!PLAYER.is.up) cell[0] -= PLAYER.coord[0] - MAP.half[0];
-  if (PLAYER.is.right) cell[1] -= GAME.rc[1] - MAP.rc[1];
+  if (PLAYER.is.right) cell[1] -= GAME.rc[1] - MAP.RowCol[1];
   else if (!PLAYER.is.left) cell[1] -= PLAYER.coord[1] - MAP.half[1];
   return [cell[0], cell[1]];
 }
 
 function check(position, PLAYER, GAME, MAP) {
   let cell = posinview(position, PLAYER, GAME, MAP);
-  if (cell[0] >= 0 && cell[0] <= MAP.rc[0] && cell[1] >= 0 && cell[1] <= MAP.rc[1]) return [cell[0], cell[1]];
+  if (cell[0] >= 0 && cell[0] <= MAP.RowCol[0] && cell[1] >= 0 && cell[1] <= MAP.RowCol[1]) return [cell[0], cell[1]];
 }
 
 function indextocoord(index, GAME) {
@@ -27,11 +27,11 @@ function coordtoindex(coord, GAME) {
 function zoom(dir, GAME, MAP) {
   if (!flagOk(GAME)) return;
   if (dir == "in") {
-    MAP.rc[1] -= 2;
-    MAP.rc[0] -= 2;
+    MAP.RowCol[1] -= 2;
+    MAP.RowCol[0] -= 2;
   } else {
-      MAP.rc[1] += 2;
-      MAP.rc[0] += 2;
+      MAP.RowCol[1] += 2;
+      MAP.RowCol[0] += 2;
   }
   GAME.render();
 }

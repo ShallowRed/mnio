@@ -24,14 +24,14 @@ PLAYER.update = (GAME, MAP) => {
 
 PLAYER.render = (animated, MAP, GAME) => {
   PLAYER.canvas.forEach(canvas => canvas.style.transitionDuration = animated ? GAME.duration + 's' : '0s');
-  SetPlayer.position(MAP, GAME.rc);
+  SetPlayer.position(MAP, GAME);
   if (!animated) SetPlayer.size(MAP);
 }
 
 const SetPlayer = {
-  position: (MAP, rowcol) => PLAYER.canvas.forEach(canvas => {
-    canvas.style.top = (PLAYER.is.up ? PLAYER.coord[0] : PLAYER.is.down ? PLAYER.coord[0] + MAP.rc[0] - rowcol[0] - 2 : MAP.half[0] - 1) * MAP.cellSize + MAP.shift + 'px';
-    canvas.style.left = (PLAYER.is.left ? PLAYER.coord[1] : PLAYER.is.right ? PLAYER.coord[1] + MAP.rc[1] - rowcol[1] - 2 : MAP.half[1] - 1) * MAP.cellSize + MAP.shift + 'px';
+  position: (MAP, GAME) => PLAYER.canvas.forEach(canvas => {
+    canvas.style.top = (PLAYER.is.up ? PLAYER.coord[0] : PLAYER.is.down ? PLAYER.coord[0] + MAP.RowCol[0] - GAME.rc[0] - 2 : MAP.half[0] - 1) * MAP.cellSize + MAP.shift + 'px';
+    canvas.style.left = (PLAYER.is.left ? PLAYER.coord[1] : PLAYER.is.right ? PLAYER.coord[1] + MAP.RowCol[1] - GAME.rc[1] - 2 : MAP.half[1] - 1) * MAP.cellSize + MAP.shift + 'px';
   }),
   size: MAP => {
     PLAYER.canvas[0].width = PLAYER.canvas[0].height = MAP.cellSize - MAP.shift * 4;
