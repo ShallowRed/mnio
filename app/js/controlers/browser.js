@@ -6,7 +6,7 @@ import Move from '../controlers/move';
 import Render from '../views/render';
 
 function KeyboardInput(event, PLAYER, GAME, UI, MAP, socket) {
-  if (!GAME.flag.ok()) return;
+  if (GAME.flag.translate || GAME.flag.server || GAME.flag.input) return;
   switch (event.keyCode) {
 
     case 32: // Spacebar

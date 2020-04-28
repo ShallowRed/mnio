@@ -31,6 +31,7 @@ const Render = {
   },
 
   fill: (position, color, GAME, PLAYER, MAP, socket) => {
+    if (GAME.flag.fill) return;
     if (!GAME.owned.includes(position)) GAME.owned.push(position);
     GAME.colors[position] = color;
     window.Fill.init(check(position, PLAYER, GAME, MAP), color, GAME, MAP);
