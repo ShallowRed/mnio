@@ -1,51 +1,46 @@
 import Move from '../controlers/move';
-import {
-  flagOk
-} from '../utils'
 
-// let xDown = null;
-// let yDown = null;
-let start = [null, null];
-let flug = true;
+const Touch = {
+  start: [null, null],
+  direction: null,
+}
 
-function touchStart(evt) {
-  start = [evt.touches[0].clientX, evt.touches[0].clientY]
-  // xDown = evt.touches[0].clientX;
-  // yDown = evt.touches[0].clientY;
-  flug = true;
+function touchStart(evt, GAME) {
+  if (!GAME.flag.ok()) return;
+  Touch.start = [evt.touches[0].clientX, evt.touches[0].clientY]
+  GAME.flag.input = true;
 }
 
 function touchEnd(evt, GAME) {
-  // xDown = evt.touches[0].clientX;
-  // yDown = evt.touches[0].clientY;
-  GAME.flag3 = true;
-  flug = false;
-  start = [null, null];
-  // xDown = null;
-  // yDown = null;
+  GAME.flag.input = false;
+  Touch.start = [null, null];
+  Touch.direction = null;
+  Touch.lastdir = null;
 }
 
 function touchMove(evt, PLAYER, GAME, MAP, socket) {
+  if (!Touch.start[0] || !Touch.start[1]) return;
+  let Delta = [Touch.start[0] - evt.touches[0].clientX, Touch.start[1] - evt.touches[0].clientY];
+  Touch.direction = Math.abs(Delta[0]) > Math.abs(Delta[1]) ? Delta[0] > 0 ? "left" : "right" : Delta[1] > 0 ? "up" : "down";
+  // if (!Touch.lastdir) Touch.lastdir = Touch.direction;
+  // if (Touch.lastdir !== Touch.direction) {
+  //   if (Math.abs(Delta[0]) > 30 || Math.abs(Delta[1]) > 30) {
+  //     GAME.flag.input = false;
+  //     return;
+  //   } else Touch.direction = Touch.lastdir;
+  // }
+  if (GAME.flag.server || GAME.flag.anim || (Math.abs(Delta[0]) < 30 && Math.abs(Delta[1]) < 30)) return
+  Move(Touch.direction, GAME, PLAYER, MAP, socket);
+  Touch.start = [evt.touches[0].clientX, evt.touches[0].clientY];
+  Touch.lastdir = Touch.direction;
+  keepMoving(GAME, PLAYER, MAP, socket);
 
-  if (!flagOk(GAME) || !xDown || !yDown) return;
-
-  let Diff = [start[0] - evt.touches[0].clientX, start[1] - evt.touches[0].clientY];
-
-  let dir = (Math.abs(Diff[0]) > Math.abs(Diff[1])) ?
-    (Diff[0] > 0) ? "left" : "right" :
-    (Diff[1] > 0) ? "up" : "down";
-
-  Move(dir, GAME, PLAYER, MAP, socket)
-
-  start = [null, null];
-
-  while (flug) {
-    xDown = evt.touches[0].clientX;
-    yDown = evt.touches[0].clientY;
-    touchMove(evt, PLAYER, GAME, MAP, socket);
-    return;
-  }
 }
+
+const keepMoving = (GAME, PLAYER, MAP, socket) => setInterval(() => {
+  if (!GAME.flag.server && !GAME.flag.anim && GAME.flag.input && Touch.direction) Move(Touch.direction, GAME, PLAYER, MAP, socket);
+  if (!GAME.flag.input) clearInterval(keepMoving);
+}, 50);
 
 export {
   touchStart,

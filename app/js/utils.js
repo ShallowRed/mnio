@@ -25,7 +25,7 @@ function coordtoindex(coord, GAME) {
 }
 
 function zoom(dir, GAME, MAP) {
-  if (!flagOk(GAME)) return;
+  if (!GAME.flag.ok()) return;
   if (dir == "in") {
     MAP.RowCol[1] -= 2;
     MAP.RowCol[0] -= 2;
@@ -39,21 +39,17 @@ function zoom(dir, GAME, MAP) {
 function select(selectedColor, PLAYER, UI) {
   selectedColor.style.setProperty('border-width', "2px");
   selectedColor.style.setProperty('transform', "scale(1)");
-  PLAYER.selectedcolor = PLAYER.colors[UI.cs.indexOf(selectedColor)];
-  PLAYER.canvas[0].style.background = PLAYER.selectedcolor;
+  PLAYER.Scolor = PLAYER.colors[UI.cs.indexOf(selectedColor)];
+  PLAYER.canvas[0].style.background = PLAYER.Scolor;
   UI.cs.filter(color => color !== selectedColor).forEach(color => {
     color.style.setProperty('border-width', "1px");
     color.style.setProperty('transform', "scale(0.8)");
   });
 }
 
-function flagOk(GAME) {
-  if (GAME.flag && GAME.flag2 && GAME.flag3) return true;
-}
 
 export {
   zoom,
-  flagOk,
   select,
   check,
   indextocoord,

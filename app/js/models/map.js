@@ -1,5 +1,4 @@
 import Render from '../views/render'
-import UI from './ui'
 
 const MAP = {
   maxcells: 61,
@@ -70,9 +69,6 @@ MAP.update = () => {
   MAP.masks.bottom.style.height = MAP.margin.bottom + "px";
   MAP.masks.left.style.width = MAP.margin.left + "px";
   MAP.masks.right.style.width = MAP.margin.right + "px";
-
-  UI.setButtons(MAP.Lmargin, MAP.ratio);
-
 };
 
 MAP.render = (animated, PLAYER, GAME) => {
@@ -92,18 +88,18 @@ MAP.render = (animated, PLAYER, GAME) => {
   if (!animated) return;
 
   let amount = [
-    (PLAYER.lastdir == 'up' && PLAYER.coord[0] + 1 >= MAP.half[0] && PLAYER.coord[0] < GAME.RowCol[0] - MAP.half[0]) ? 0 :
-    (PLAYER.lastdir == 'down') ? (PLAYER.coord[0] == MAP.half[0]) ? -1 :
-    (PLAYER.coord[0] > MAP.half[0] && PLAYER.coord[0] <= GAME.RowCol[0] - MAP.half[0]) ? -2 : null : null,
-    (PLAYER.lastdir == 'left' && PLAYER.coord[1] + 1 >= MAP.half[1] && PLAYER.coord[1] < GAME.RowCol[1] - MAP.half[1]) ? 0 :
-    (PLAYER.lastdir == 'right') ? (PLAYER.coord[1] == MAP.half[1]) ? -1 :
-    (PLAYER.coord[1] > MAP.half[1] && PLAYER.coord[1] <= GAME.RowCol[1] - MAP.half[1]) ? -2 : null : null
+    (PLAYER.lastdir == 'up' && PLAYER.coord[0] + 1 >= MAP.half[0] && PLAYER.coord[0] < GAME.RowCol[0] - MAP.half[0]) ? '0px' :
+    (PLAYER.lastdir == 'down') ? (PLAYER.coord[0] == MAP.half[0]) ? - MAP.cellSize + 'px' :
+    (PLAYER.coord[0] > MAP.half[0] && PLAYER.coord[0] <= GAME.RowCol[0] - MAP.half[0]) ? -2 * MAP.cellSize + 'px' : null : null,
+    (PLAYER.lastdir == 'left' && PLAYER.coord[1] + 1 >= MAP.half[1] && PLAYER.coord[1] < GAME.RowCol[1] - MAP.half[1]) ? '0px' :
+    (PLAYER.lastdir == 'right') ? (PLAYER.coord[1] == MAP.half[1]) ? - MAP.cellSize + 'px' :
+    (PLAYER.coord[1] > MAP.half[1] && PLAYER.coord[1] <= GAME.RowCol[1] - MAP.half[1]) ? - 2* MAP.cellSize + 'px' : null : null
   ];
 
   MAP.canvas.forEach(canvas => {
     canvas.style.transitionDuration = GAME.duration + 's';
-    if (amount[0] !== null) canvas.style.top = amount[0] * MAP.cellSize + 'px';
-    if (amount[1] !== null) canvas.style.left = amount[1] * MAP.cellSize + 'px';
+    if (amount[0]) canvas.style.top = amount[0];
+    if (amount[1]) canvas.style.left = amount[1];
   });
 
 };

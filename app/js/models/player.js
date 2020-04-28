@@ -7,7 +7,7 @@ const PLAYER = {};
 PLAYER.init = data => {
   PLAYER.position = data.position;
   PLAYER.colors = data.colors;
-  PLAYER.selectedcolor = data.colors[0];
+  PLAYER.Scolor = data.colors[0];
   PLAYER.canvas = [document.getElementById('playercanvas'), document.getElementById('shadow')];
   PLAYER.canvas[0].getContext('2d').imageSmoothingEnabled = false;
 };

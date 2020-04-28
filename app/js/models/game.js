@@ -8,9 +8,12 @@ import '../views/translate';
 
 const GAME = {
   duration: 0.2,
-  flag: true,
-  flag2: true,
-  flag3: true,
+  flag: {
+    anim: false,
+    server: false,
+    input: false,
+    ok: () => (!GAME.flag.anim && !GAME.flag.server && !GAME.flag.input)
+  }
 };
 
 GAME.init = (data, socket) => {
@@ -24,13 +27,14 @@ GAME.init = (data, socket) => {
 GAME.render = (animated) => {
   MAP.update();
   PLAYER.update(GAME, MAP);
+  if (!animated) UI.update(MAP);
   MAP.render(animated, PLAYER, GAME);
   PLAYER.render(animated, MAP, GAME);
   MAP.draw(PLAYER, GAME);
 }
 
 GAME.NewPlayerPos = position => {
-  GAME.flag2 = true;
+  GAME.flag.server = false;
   if (position == PLAYER.position) return;
   PLAYER.position = position;
   window.Translate.init(GAME, MAP, PLAYER);

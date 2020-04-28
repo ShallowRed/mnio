@@ -1,7 +1,6 @@
 import {
   zoom,
   select,
-  flagOk,
 } from '../utils';
 
 import Render from '../views/render';
@@ -63,11 +62,11 @@ const Listen = {
 
   browser: (GAME, PLAYER, MAP, socket) => {
     document.addEventListener('keydown', event => KeyboardInput(event, PLAYER, GAME, UI, MAP, socket));
-    document.addEventListener('keyup', () => GAME.flag3 = true);
+    document.addEventListener('keyup', () => GAME.flag.input = false);
   },
 
   mobile: (GAME, PLAYER, MAP, socket) => {
-    document.addEventListener('touchstart', touchStart, false);
+    document.addEventListener('touchstart',  event => touchStart(event, GAME), false);
     document.addEventListener('touchmove', event => touchMove(event, PLAYER, GAME, MAP, socket), false);
     document.addEventListener('touchend', event => touchEnd(event, GAME), false);
   },
@@ -80,9 +79,9 @@ const Listen = {
 }
 
 function selectNfill(color, GAME, PLAYER, MAP, UI, socket) {
-  if (!flagOk(GAME)) return;
+  if (!GAME.flag.ok()) return;
   select(color, PLAYER, UI);
-  Render.fill(PLAYER.position, PLAYER.selectedcolor, GAME, PLAYER, MAP, socket);
+  Render.fill(PLAYER.position, PLAYER.Scolor, GAME, PLAYER, MAP, socket);
 }
 
 function hideLobby() {
@@ -90,28 +89,29 @@ function hideLobby() {
   setTimeout(() => UI.lobby.style.display = "none", 300);
 }
 
-UI.setButtons = (margin, ratio) => {
+UI.update = (MAP) => {
+
   UI.btn.forEach(btn => {
-    btn.style.height = margin + "px";
-    btn.style.width = margin + "px";
+    btn.style.height = MAP.Lmargin + "px";
+    btn.style.width = MAP.Lmargin + "px";
     btn.style.margin = "0";
   });
 
-  if (ratio) {
-    UI.btn[2].style.marginTop = UI.btn[4].style.marginTop =UI.btn[4].style.marginBottom ="1vh";
+  if (MAP.ratio) {
+    UI.btn[2].style.marginTop = UI.btn[4].style.marginTop = UI.btn[4].style.marginBottom = "1vh";
     UI.btn[2].style.marginBottom = "3vh";
   } else {
     UI.btn[2].style.marginRight = "5%";
     UI.btn[2].style.marginLeft = UI.btn[4].style.marginLeft = UI.btn[4].style.marginRight = "2%";
   }
 
-  UI.btns.style.flexFlow = ratio ? "column" : "row";
-  UI.btns.style.width = ratio ? "8%" : "100%";
-  UI.btns.style.height = ratio ? "100%" : "10%";
+  UI.btns.style.flexFlow = MAP.ratio ? "column" : "row";
+  UI.btns.style.width = MAP.ratio ? "8%" : "100%";
+  UI.btns.style.height = MAP.ratio ? "100%" : "10%";
 
-  UI.btns.style.top = ratio ? "0" : "auto";
-  UI.btns.style.marginLeft = ratio ? "92%" : "0";
-  UI.btns.style.bottom = ratio ? "none" : "5px";
+  UI.btns.style.top = MAP.ratio ? "0" : "auto";
+  UI.btns.style.marginLeft = MAP.ratio ? "92%" : "0";
+  UI.btns.style.bottom = MAP.ratio ? "none" : "5px";
 }
 
 // function fullscreen() {
