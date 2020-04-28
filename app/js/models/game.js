@@ -9,10 +9,11 @@ import '../views/translate';
 const GAME = {
   duration: 0.2,
   flag: {
-    anim: false,
+    fill: false,
+    translate: false,
     server: false,
     input: false,
-    ok: () => (!GAME.flag.anim && !GAME.flag.server && !GAME.flag.input)
+    ok: () => (!GAME.flag.translate && !GAME.flag.fill && !GAME.flag.server && !GAME.flag.input)
   }
 };
 
