@@ -28,7 +28,7 @@ UI.init = (GAME, PLAYER, MAP, socket) => {
 function getElements() {
 
   UI.lobby = document.getElementById('lobby');
-  UI.btn = document.querySelectorAll('button');
+  UI.btn = document.querySelectorAll('#buttons button');
   UI.btns = document.getElementById('buttons');
   UI.zoom = {
     in: document.getElementById('zoomin'),
@@ -98,11 +98,11 @@ UI.update = (MAP) => {
   });
 
   if (MAP.ratio) {
-    UI.btn[2].style.marginTop = UI.btn[4].style.marginTop = UI.btn[4].style.marginBottom = "1vh";
-    UI.btn[2].style.marginBottom = "3vh";
+    UI.btn[1].style.marginTop = UI.btn[3].style.marginTop = UI.btn[3].style.marginBottom = "1vh";
+    UI.btn[1].style.marginBottom = "3vh";
   } else {
-    UI.btn[2].style.marginRight = "5%";
-    UI.btn[2].style.marginLeft = UI.btn[4].style.marginLeft = UI.btn[4].style.marginRight = "2%";
+    UI.btn[1].style.marginRight = "5%";
+    UI.btn[1].style.marginLeft = UI.btn[3].style.marginLeft = UI.btn[3].style.marginRight = "2%";
   }
 
   UI.btns.style.flexFlow = MAP.ratio ? "column" : "row";

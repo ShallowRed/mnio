@@ -4,7 +4,9 @@ import {
 } from '../utils';
 
 function Move(direction, GAME, PLAYER, MAP, socket) {
+  if (!GAME.flag.moveCallback) return;
   socket.emit('MovePlayer', direction);
+  GAME.flag.moveCallback = false;
   GAME.flag.server = true;
   let nextpos = checkMove(direction, GAME, PLAYER);
   if (!nextpos) GAME.flag.server = false;

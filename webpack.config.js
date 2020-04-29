@@ -1,8 +1,14 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+// const WorkboxPlugin = require('workbox-webpack-plugin');
+
+const {
+  CleanWebpackPlugin
+} = require('clean-webpack-plugin');
 
 const dev = process.env.NODE_ENV ? true : false;
 
@@ -68,6 +74,7 @@ let config = {
     ]
   },
   plugins: [
+    new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
       filename: '[name].css',
       // filename: dev ? '[name].css' : '[name].[hash].css',
@@ -76,7 +83,27 @@ let config = {
     new HtmlWebpackPlugin({
       inject: true,
       template: "app/index.ejs"
+    }),
+    new FaviconsWebpackPlugin({
+      logo: './app/logo.png',
+      favicons: {
+        icons: {
+          android: true,
+          appleIcon: true,
+          appleStartup: true,
+          coast: true,
+          favicons: true,
+          firefox: true,
+          windows: true,
+          yandex: true
+        }
+      }
     })
+    // ,
+    // new WorkboxPlugin.GenerateSW({
+    //   clientsClaim: true,
+    //   skipWaiting: true,
+    // })
   ]
 }
 

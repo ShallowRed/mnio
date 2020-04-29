@@ -18,7 +18,6 @@ MAP.init = () => {
     right: document.getElementById('rightmask'),
     left: document.getElementById('leftmask')
   };
-  MAP.half = new Array(2);
 };
 
 MAP.update = () => {

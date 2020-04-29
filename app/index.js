@@ -1,6 +1,8 @@
+import './js/install';
 import io from 'socket.io-client';
 import GAME from './js/models/game';
 
+import './css/install.css';
 import './css/lobby.css';
 import './css/canvas.css';
 import './css/buttons.css';
@@ -14,21 +16,39 @@ document.getElementById('login').addEventListener('click', () => socket.emit("lo
 }));
 
 // Receive data needed for initialization, start the game
-socket.on('InitData', data => GAME.init(data, socket));
+socket.on('InitData', data => {
+  GAME.init(data, socket);
+  initSocket(socket);
+});
 
-//Move player if new position has ben allowed on server side
-socket.on("NewPlayerPos", position => GAME.NewPlayerPos(position));
+function initSocket(socket) {
 
-// Set other's new position and clear last when they move
-socket.on("NewPosition", position => GAME.NewPosition(position));
+  //Move player if new position has ben allowed on server side
+  socket.on("NewPlayerPos", position => GAME.NewPlayerPos(position));
 
-//Fill other's cells when they do so
-socket.on('NewCell', cell => GAME.NewCell(cell));
+  // Set other's new position and clear last when they move
+  socket.on("NewPosition", position => GAME.NewPosition(position));
 
-// Draw the cells where the player is allowed to move
-socket.on('AllowedCells', cells => GAME.AllowCells(cells));
+  //Fill other's cells when they do so
+  socket.on('NewCell', cell => GAME.NewCell(cell));
 
-socket.on("error", () => alert("Error: Please try again!"));
+  // Draw the cells where the player is allowed to move
+  socket.on('AllowedCells', cells => GAME.AllowCells(cells));
+
+  // socket.on("error", () => {
+  //   console.log("error");
+  //   setTimeout(() => {
+  //     console.log("asking again");
+  //     window.location.reload(true);
+  //   }, 5000)
+  // });
+
+  socket.on("error", () => window.location.reload(true));
+  socket.on("reconnect_attempt", () => window.location.reload(true));
+  socket.on("moveCallback", () => GAME.flag.moveCallback = true);
+  socket.on("fillCallback", () => GAME.flag.fillCallback = true);
+
+}
 
 // TODO: button flip button left/right side
 // TODO: settings button
