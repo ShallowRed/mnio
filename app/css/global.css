@@ -1,0 +1,47 @@
+html {
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Inconsolata', monospace;
+  overflow: hidden;
+  touch-action: none;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  background: #f2f2f2;
+}
+
+#lobby, #https, #tuto, #installedMessage{
+  position: fixed;
+  overflow: hidden;
+  opacity: 1;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #f9f9f9;
+  z-index: 800;
+  transition: opacity 0.2s ease;
+}
+
+button {
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button:active {
+  opacity: 0.8;
+}
+
+button:focus {
+  outline: none;
+}

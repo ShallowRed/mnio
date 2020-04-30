@@ -13,11 +13,6 @@
   max-height: 50px;
   max-width: 50px;
   box-sizing: border-box;
-  transition: all 0.1s ease;
-}
-
-#buttons button:focus {
-  outline: none;
 }
 
 #zoomin, #zoomout {
@@ -28,14 +23,32 @@
   transform: scale(1);
 }
 
-button:hover {
-  cursor: pointer;
-}
-
-button:active {
-  opacity: 0.8;
-}
-
-.zoom a {
+#buttons a, #utils a, #closeTuto a {
   font-size: 2em;
+}
+
+#utils button, #closeTuto {
+  opacity: 0.5;
+  background: none;
+  border: none;
+  color: black;
+  position: fixed;
+  right: 10px;
+  height: 30px;
+  width: 30px;
+}
+
+#utils button:hover,  #closeTuto:hover {
+  opacity: 1;
+  color: blue;
+}
+
+#refresh {
+  z-index: 960;
+  top: 10px;
+}
+
+#openTuto, #closeTuto {
+  z-index: 700;
+  top: 50px;
 }

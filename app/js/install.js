@@ -1,44 +1,96 @@
-const divInstall = document.getElementById('installContainer');
-const butInstall = document.getElementById('butInstall');
+const title = document.querySelector('h1');
+const container = document.getElementById('container');
+const iosMessage = document.getElementById('iosMessage');
+const installMessage = document.getElementById('installMessage');
+const installedMessage = document.getElementById('installedMessage');
+const installBtn = document.getElementById('installBtn');
+const stayInBrowser = document.getElementById('stayBtn');
+const logWindow = document.getElementById('logWindow');
+const logBtn = document.getElementById('logBtn');
+const https = document.getElementById('https');
+const refresh = document.getElementById('refresh');
+const forgot = document.getElementById('forgot');
 
-window.addEventListener('beforeinstallprompt', (event) => {
-  console.log('beforeinstallprompt ok');
-  window.deferredPrompt = event;
-  divInstall.style.display = "block";
+let show = (elem) => elem.style.display = 'block';
+let hide = (elem) => elem.style.display = 'none';
+
+const isonPwa = () => (window.matchMedia('(display-mode: standalone)').matches) || (window.navigator.standalone) || document.referrer.includes('android-app://');
+
+window.addEventListener("load", () => {
+  title.style.opacity = "1";
+  container.style.opacity = "1";
 });
 
-butInstall.addEventListener('click', () => {
-  console.log('butInstall-clicked');
+forgot.addEventListener("click", () => {
+  alert("Nous ne pouvons pas encore automatiser la gestion des mots de passe. Cependant vous pouvez écrire un mail à lucaspoulain2@gmail.com pour obtenir votre mot de passe")
+});
+
+window.addEventListener('beforeinstallprompt', () => {
+  window.deferredPrompt = event;
+  hide(logWindow);
+  hide(logBtn);
+  show(installMessage);
+  show(installBtn);
+  show(stayInBrowser);
+});
+
+if (['iPhone', 'iPad', 'iPod'].includes(navigator.platform) &&
+  !navigator.standalone) {
+  show(installMessage);
+  show(iosMessage);
+  show(stayInBrowser);
+  hide(logWindow);
+  hide(logBtn);
+}
+
+installBtn.addEventListener('click', () => {
+  hide(installMessage);
+  hide(installBtn);
   const promptEvent = window.deferredPrompt;
   if (!promptEvent) return;
   promptEvent.prompt();
-
   promptEvent.userChoice.then((result) => {
     console.log('userChoice', result);
     window.deferredPrompt = null;
-    divInstall.style.display = "none";
   });
 });
 
-window.addEventListener('appinstalled', (event) => {
-  divInstall.style.display = "none";
+stayInBrowser.addEventListener('click', () => {
+  hide(installMessage);
+  hide(installBtn);
+  hide(stayInBrowser);
+  hide(iosMessage);
+  show(logWindow);
+  show(logBtn);
+});
+
+refresh.addEventListener("click", () => window.location.reload(true));
+
+window.addEventListener('appinstalled', () => {
+  show(installedMessage);
+  let count = 0;
+  setInterval(() => {
+    if (isonPwa()) window.location.reload(true);
+    else count++;
+    if (count == 40) window.location.reload(true);
+  }, 200)
 });
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/dist/service-worker.js', { scope: '/' })
-    // navigator.serviceWorker.register('/dist/service-worker.js', { scope: '/dist/' })
-    .then(registration => {
-      console.log('SW registered: ', registration);
-    }).catch(registrationError => {
-      console.log('SW registration failed: ', registrationError);
-    });
+    navigator.serviceWorker.register('/dist/service-worker.js', {
+        scope: '/'
+      })
+      .then(registration => {
+        console.log('SW registered: ', registration);
+      }).catch(registrationError => {
+        console.log('SW registration failed: ', registrationError);
+      });
   });
 }
 
-if (window.location.protocol === 'http:') {
-  const requireHTTPS = document.getElementById('requireHTTPS');
-  const link = requireHTTPS.querySelector('a');
-  link.href = window.location.href.replace('http://', 'https://');
-  requireHTTPS.style.display = 'block';
+if (window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1" &&
+  window.location.protocol === 'http:') {
+  https.querySelector('a').href = window.location.href.replace('http://', 'https://');
+  show(https);
 }

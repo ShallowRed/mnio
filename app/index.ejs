@@ -3,16 +3,17 @@
 
 <head>
 	<link href="https://fonts.googleapis.com/css?family=Inconsolata&display=swap" rel="stylesheet">
-	<title>A multiplayer coloring game</title>
+	<title>MN.io : Un jeu multijouer du Mobilier National</title>
 	<link rel="license" href="/dist/main.js.LICENSE.txt">
 	<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 </head>
 
 <body>
-	<%= require('./ejs/install.ejs')() %>
-	<%= require('./ejs/logwindow.ejs')() %>
+	<%= require('./ejs/requireHTTPS.ejs')() %>
+	<%= require('./ejs/lobby.ejs')() %>
 	<%= require('./ejs/masks.ejs')() %>
 	<%= require('./ejs/canvas.ejs')() %>
+	<%= require('./ejs/tuto.ejs')() %>
 	<%= require('./ejs/buttons.ejs')() %>
 </body>
 

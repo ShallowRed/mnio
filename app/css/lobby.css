@@ -1,74 +1,141 @@
-#lobby {
-  position: fixed;
-  overflow: hidden;
-  opacity: 1;
-  top: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-  background: #e9e9e9;
-  z-index: 800;
-  transition: all 0.2s ease;
+@media screen and (max-width: 1000px) {
+  #lobby h1 {
+    margin-top: 15vh;
+  }
 }
 
-#logwindow h1 {
-  margin: 0;
-  letter-spacing: 0.2em;
-  color: #494949;
-  font-size: 3em;
-  display: inline-block;
+@media screen and (min-width: 1000px) {
+  #lobby h1 {
+    margin-top: 25vh;
+  }
+}
+
+#lobby h1 {
   width: 100%;
+  top: 0;
+  color: blue;
   text-align: center;
+  font-size: 3.5em;
+  letter-spacing: 0.2em;
 }
 
-#logwindow {
-  display: block;
+#container {
+  width: 60%;
+  min-width: 200px;
   max-width: 400px;
-  width: 40%;
-  margin: 25vh auto;
-  top: 0;
-  left: 0;
-  z-index: 900;
+  margin: 0 auto;
 }
 
-#login a {
-  font-size: 1.5em;
-  font-weight: 600;
-  letter-spacing: 0.1em;
+#lobby h1, #container {
+  opacity: 0;
+  transition-delay: 0.5s;
+  transition: opacity 0.5s ease;
 }
 
-#userName, #Password {
+#logWindow {
+  width: 100%;
+}
+
+#logWindow h4 {
+  margin-bottom: 0;
+}
+
+#logWindow input {
   box-sizing: border-box;
+  border: none;
+  border-bottom: solid 1px #888;
   width: 100%;
-  margin-top: 3vh;
-  color: #494949;
-  background: #ffffff;
-  padding: 3vh 10%;
-  border: 2px solid #a0a0a0;
+  background: #f9f9f9;
+  padding: 2vh 10%;
   display: inline-block;
+  border-radius: 0;
 }
 
-.input {
-  border-radius: 5px;
-  width: 100%;
-  margin-top: 5vh;
-  color: #494949;
-  background: #99999;
-  padding: 3vh 10%;
-  border: 2px solid #494949;
-  display: inline-block;
-  -moz-transition: all 0.2s ease;
-  -o-transition: all 0.2s ease;
-  -webkit-transition: all 0.2s ease;
-  transition: all 0.2s ease 0s;
+#logWindow input:focus {
+  outline: none;
+  border-bottom: solid 1px blue;
 }
 
-.input:hover {
+#forgot {
+  margin-top: 0;
+  color: #666;
+  margin-top: 1vh;
+  float: right;
+  margin-left: auto;
+}
+
+#forgot:hover {
   cursor: pointer;
-  background: #494949;
+  color: blue;
+}
+
+.btn {
+  width: 100%;
+  font-size: 1.2em;
+  letter-spacing: 0.1em;
+  padding: 2vh 10%;
+  border-radius: 5px;
   color: white;
-  -moz-transition: all 0.2s ease;
-  -o-transition: all 0.2s ease;
-  -webkit-transition: all 0.2s ease;
-  transition: all 0.2s ease 0s;
+  display: inline-block;
+}
+
+.high {
+  margin-top: 7vh;
+  background: blue;
+  border: 1px solid blue;
+}
+
+.high:hover {
+  background: white;
+  color: blue;
+}
+
+.low {
+  margin-top: 2vh;
+  color: #666;
+  background: #f9f9f9;
+  border: none;
+}
+
+.low:hover {
+  color: blue;
+}
+
+#installMessage p, #installedMessage p {
+  font-size: 1.2em;
+}
+
+#iosMessage h4 {
+  margin: 0;
+  padding-left: 20%;
+  line-height: 50px;
+  font-size: 18px;
+}
+
+#iosMessage img {
+  height: 50px;
+  width: 50px;
+}
+
+#share {
+  transform: translateY(15px);
+}
+
+#save {
+  transform: translateY(20px);
+}
+
+#https, #installedMessage {
+  z-index: 980;
+  box-sizing: border-box;
+  padding: 20%;
+}
+
+#https p {
+  font-size: 1.5em;
+  line-height: 2em;
+}
+
+#installMessage, #installedMessage, #installBtn, #iosMessage, #stayBtn, #https {
+  display: none;
 }

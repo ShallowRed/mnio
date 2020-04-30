@@ -74,7 +74,7 @@ let config = {
     ]
   },
   plugins: [
-    new CleanWebpackPlugin(),
+    // new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
       filename: '[name].css',
       // filename: dev ? '[name].css' : '[name].[hash].css',
@@ -91,6 +91,7 @@ let config = {
           android: true,
           appleIcon: true,
           appleStartup: true,
+          appleStatusBarStyle: "black",
           coast: true,
           favicons: true,
           firefox: true,

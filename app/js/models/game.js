@@ -20,6 +20,7 @@ const GAME = {
   }
 };
 
+
 GAME.init = (data, socket) => {
   Object.keys(data.GAME).forEach(prop => GAME[prop] = data.GAME[prop]);
   PLAYER.init(data);
