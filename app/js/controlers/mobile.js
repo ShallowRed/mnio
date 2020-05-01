@@ -7,7 +7,6 @@ const Touch = {
 }
 
 function touchStart(evt, GAME) {
-  // if (!GAME.flag.ok()) return;
   Touch.start = [evt.touches[0].clientX, evt.touches[0].clientY]
   GAME.flag.input = true;
 }

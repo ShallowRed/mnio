@@ -21,8 +21,8 @@ UI.init = (GAME, PLAYER, MAP, socket) => {
   GetDomElements();
   Object.keys(Listeners).forEach(event => Listeners[event](GAME, PLAYER, MAP, socket));
   selectColor(0, PLAYER, UI);
-  UI.lobby.style.opacity = 0;
-  setTimeout(() => UI.lobby.style.display = "none", 300);
+  hide(UI.lobby);
+  document.getElementById('logo').style.display = "block";
 };
 
 UI.update = (MAP) => {
@@ -56,10 +56,13 @@ UI.update = (MAP) => {
 
   UI.tuto.window.style.width = MAP.windowWidth - MAP.margin.right + 2 + "px";
   UI.tuto.window.style.height = MAP.windowHeight - MAP.margin.bottom + 2 + "px";
+  UI.tuto.openBtn.style.right = UI.tuto.closeBtn.style.right =
+    UI.refresh.style.right = (MAP.ratio && MAP.windowHeight < 600) ? "9%" : "10px";
 };
 
 const GetDomElements = () => {
   UI.lobby = document.getElementById('lobby');
+  UI.refresh = document.getElementById('refresh');
   UI.tuto = {
     openBtn: document.getElementById('openTuto'),
     closeBtn: document.getElementById('closeTuto'),
@@ -71,7 +74,7 @@ const GetDomElements = () => {
   UI.colorBtns = document.querySelectorAll('.color');
   UI.zoom = {
     in: document.getElementById('zoomin'),
-    out: document.getElementById('zoomout')
+    out: document.getElementById('zoomout'),
   }
 };
 
@@ -80,13 +83,13 @@ const Listeners = {
   click: (GAME, PLAYER, MAP, socket) => {
 
     UI.tuto.openBtn.addEventListener("click", () => {
-      UI.tuto.window.style.display = "block";
+      show(UI.tuto.window);
       UI.tuto.openBtn.style.display = "none";
       GAME.flag.tuto = true;
     });
 
     UI.tuto.closeBtn.addEventListener("click", () => {
-      UI.tuto.window.style.display = "none";
+      hide(UI.tuto.window);
       UI.tuto.openBtn.style.display = "block";
       GAME.flag.tuto = false;
     });
@@ -98,9 +101,15 @@ const Listeners = {
         selectColor(i, PLAYER, UI);
         Render.fill(PLAYER.position, PLAYER.Scolor, GAME, PLAYER, MAP, socket);
       });
+      colorBtn.addEventListener("touchstart", (event) => {
+        event.preventDefault();
+        if (!GAME.flag.ok()) return;
+        selectColor(i, PLAYER, UI);
+        Render.fill(PLAYER.position, PLAYER.Scolor, GAME, PLAYER, MAP, socket);
+      });
     });
 
-    Object.keys(UI.zoom).forEach(el => UI.zoom[el].addEventListener("click", () => zoom(el, GAME, MAP)));
+    Object.keys(UI.zoom).forEach(el => UI.zoom[el].addEventListener("click", () => zoom(el, GAME, MAP, UI)));
 
     document.addEventListener('click', () => {
       if (document.activeElement.toString() == '[object HTMLButtonElement]') document.activeElement.blur();
@@ -114,9 +123,9 @@ const Listeners = {
   },
 
   mobile: (GAME, PLAYER, MAP, socket) => {
-    document.addEventListener('touchstart', event => touchStart(event, GAME), false);
-    document.addEventListener('touchmove', event => touchMove(event, PLAYER, GAME, MAP, socket), false);
-    document.addEventListener('touchend', event => touchEnd(event, GAME), false);
+    MAP.master.addEventListener('touchstart', event => touchStart(event, GAME), false);
+    MAP.master.addEventListener('touchmove', event => touchMove(event, PLAYER, GAME, MAP, socket), false);
+    MAP.master.addEventListener('touchend', event => touchEnd(event, GAME), false);
   },
 
   window: GAME => {
@@ -124,5 +133,15 @@ const Listeners = {
     window.addEventListener("orientationchange", () => setTimeout(() => GAME.render(), 500));
   }
 };
+
+const hide = (elem) => {
+  elem.style.opacity = "0";
+  setTimeout(() => elem.style.display = "none", 300);
+}
+
+const show = (elem) => {
+  elem.style.display = "block";
+  setTimeout(() => elem.style.opacity = "1", 50);
+}
 
 export default UI

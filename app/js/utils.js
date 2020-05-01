@@ -23,14 +23,26 @@ const coordtoindex = (coord, GAME) => {
   return index;
 }
 
-const zoom = (dir, GAME, MAP) => {
-  if (!GAME.flag.ok()) return;
+const zoom = (dir, GAME, MAP, UI) => {
+  if (!GAME.flag.ok() || GAME.flag.zoom) return;
+
+  UI.zoom[dir].style.color = "blue"
+  UI.zoom[dir].style.borderColor = "blue"
+  UI.zoom[dir].style.transform = "scale(1)"
+  GAME.flag.zoom = true;
+  setTimeout(() => {
+    UI.zoom[dir].style.color = "black";
+    UI.zoom[dir].style.borderColor = "black";
+    UI.zoom[dir].style.transform = "scale(0.8)"
+    GAME.flag.zoom = false;
+  }, 200)
+
   if (dir == "in") {
-    MAP.RowCol[1] -= 2;
-    MAP.RowCol[0] -= 2;
+    MAP.RowCol[1] -= 4;
+    MAP.RowCol[0] -= 4;
   } else {
-    MAP.RowCol[1] += 2;
-    MAP.RowCol[0] += 2;
+    MAP.RowCol[1] += 4;
+    MAP.RowCol[0] += 4;
   }
   GAME.render();
 }
@@ -46,7 +58,6 @@ const selectColor = (i, PLAYER, UI) => {
     btn.style.setProperty('transform', "scale(0.8)");
   });
 }
-
 
 export {
   zoom,

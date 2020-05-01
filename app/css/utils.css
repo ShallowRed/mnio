@@ -1,0 +1,33 @@
+#refresh, #openTuto, #closeTuto {
+  opacity: 0.5;
+  background: none;
+  border: none;
+  color: black;
+  position: fixed;
+  height: 30px;
+  width: 30px;
+}
+
+#refresh:hover, #openTuto:hover,  #closeTuto:hover {
+  opacity: 1;
+  color: blue;
+}
+
+#refresh, #openTuto, #closeTuto {
+  right: 10px;
+  filter: grayscale(100%);
+}
+
+#refresh{
+  z-index: 960;
+  top: 10px;
+}
+
+#refresh:hover, #openTuto:hover, #closeTuto:hover {
+  filter: grayscale(0%);
+}
+
+ #closeTuto, #openTuto{
+  z-index: 700;
+  top: 60px;
+}

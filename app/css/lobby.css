@@ -11,13 +11,20 @@
 }
 
 #lobby h1 {
+  font-family: 'moby', monospace;
   width: 100%;
   top: 0;
   color: blue;
   text-align: center;
-  font-size: 3.5em;
-  letter-spacing: 0.2em;
+  font-size: 3em;
+  /* letter-spacing: 0.2em; */
 }
+
+#logofull {
+  width: 70%;
+  margin: 15vh 15% 0;
+}
+
 
 #container {
   width: 60%;

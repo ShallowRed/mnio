@@ -1,4 +1,4 @@
-const title = document.querySelector('h1');
+const title = document.getElementById('logofull');
 const container = document.getElementById('container');
 const iosMessage = document.getElementById('iosMessage');
 const installMessage = document.getElementById('installMessage');
@@ -8,9 +8,9 @@ const stayInBrowser = document.getElementById('stayBtn');
 const logWindow = document.getElementById('logWindow');
 const logBtn = document.getElementById('logBtn');
 const https = document.getElementById('https');
-const refresh = document.getElementById('refresh');
 const forgot = document.getElementById('forgot');
-
+const pcTuto = document.getElementById('pcTuto')
+const mobileTuto = document.getElementById('mobileTuto')
 let show = (elem) => elem.style.display = 'block';
 let hide = (elem) => elem.style.display = 'none';
 
@@ -67,7 +67,7 @@ stayInBrowser.addEventListener('click', () => {
   show(logBtn);
 });
 
-refresh.addEventListener("click", () => window.location.reload(true));
+document.getElementById('refresh').addEventListener("click", () => window.location.reload(true));
 
 window.addEventListener('appinstalled', () => {
   show(installedMessage);
@@ -98,3 +98,7 @@ if (window.location.hostname !== "localhost" &&
   https.querySelector('a').href = window.location.href.replace('http://', 'https://');
   show(https);
 }
+
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+if (isMobile) mobileTuto.style.display = "block";
+else pcTuto.style.display = "block";

@@ -12,11 +12,12 @@ const GAME = {
     fill: false,
     translate: false,
     input: false,
+    zoom: false,
     ok: () => (
       !GAME.flag.translate &&
       !GAME.flag.fill &&
-      GAME.flag.moveCallback &&
       !GAME.flag.input &&
+      !GAME.flag.zoom &&
       !GAME.flag.tuto
     ),
     fillCallback: true,
