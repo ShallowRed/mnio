@@ -3,6 +3,7 @@
   display: flex;
   justify-content: center;
   position: absolute;
+  box-sizing: border-box;
 }
 
 #buttons button {

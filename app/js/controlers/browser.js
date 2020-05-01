@@ -1,12 +1,12 @@
 import {
   zoom,
-  select,
+  selectColor,
 } from '../utils';
 import Move from '../controlers/move';
 import Render from '../views/render';
 
 function KeyboardInput(event, PLAYER, GAME, UI, MAP, socket) {
-  if (GAME.flag.translate || GAME.flag.server || GAME.flag.input) return;
+  if (GAME.flag.translate || !GAME.flag.moveCallback || GAME.flag.input) return;
   switch (event.keyCode) {
 
     case 32: // Spacebar
@@ -14,19 +14,20 @@ function KeyboardInput(event, PLAYER, GAME, UI, MAP, socket) {
       break;
 
     case 37: // left arrow
-      zoom("in", GAME, MAP, PLAYER);
+      zoom("in", GAME, MAP);
       break;
 
     case 39: // right arrow
-      zoom("out", GAME, MAP, PLAYER);
+      zoom("out", GAME, MAP);
       break;
 
     case 38: // top arrow
-      select(UI.cs[PLAYER.Scolor == PLAYER.colors[0] ? 2 : PLAYER.Scolor == PLAYER.colors[1] ? 0 : 1], PLAYER, UI);
+      selectColor(PLAYER.Scolor == PLAYER.colors[0] ? 2 : PLAYER.Scolor == PLAYER.colors[1] ? 0 : 1, PLAYER, UI);
+      // selectColor(UI.colorBtns[PLAYER.Scolor == PLAYER.colors[0] ? 2 : PLAYER.Scolor == PLAYER.colors[1] ? 0 : 1], PLAYER, UI);
       break;
 
     case 40: // bottom arrow
-      select(UI.cs[PLAYER.Scolor == PLAYER.colors[0] ? 1 : PLAYER.Scolor == PLAYER.colors[1] ? 2 : 0], PLAYER, UI);
+      selectColor(PLAYER.Scolor == PLAYER.colors[0] ? 1 : PLAYER.Scolor == PLAYER.colors[1] ? 2 : 0, PLAYER, UI);
       break;
 
     case 81: // Q

@@ -1,9 +1,7 @@
 import {
   zoom,
-  select
+  selectColor,
 } from '../utils';
-
-import Render from '../views/render';
 
 import {
   touchStart,
@@ -11,81 +9,103 @@ import {
   touchMove
 } from '../controlers/mobile';
 
+import Render from '../views/render'
+
 import {
   KeyboardInput
 } from '../controlers/browser';
 
-const UI = {},
-  Init = {}
+const UI = {};
 
 UI.init = (GAME, PLAYER, MAP, socket) => {
-  Init.Dom();
-  Object.keys(Init.Listeners).forEach(event => Init.Listeners[event](GAME, PLAYER, MAP, socket));
-  select(UI.cs[0], PLAYER, UI);
-  hideLobby();
-  // fullscreen();
+  GetDomElements();
+  Object.keys(Listeners).forEach(event => Listeners[event](GAME, PLAYER, MAP, socket));
+  selectColor(0, PLAYER, UI);
+  UI.lobby.style.opacity = 0;
+  setTimeout(() => UI.lobby.style.display = "none", 300);
 };
 
 UI.update = (MAP) => {
 
-  UI.btn.forEach(btn => {
+  UI.btns.forEach(btn => {
     btn.style.height = MAP.Lmargin + "px";
     btn.style.width = MAP.Lmargin + "px";
     btn.style.margin = "0";
   });
 
   if (MAP.ratio) {
-    UI.btn[1].style.marginTop = UI.btn[3].style.marginTop = UI.btn[3].style.marginBottom = "1vh";
-    UI.btn[1].style.marginBottom = "3vh";
+    UI.btns[1].style.marginTop =
+      UI.btns[3].style.marginTop =
+      UI.btns[3].style.marginBottom = "1vh";
+    UI.btns[1].style.marginBottom = "3vh";
   } else {
-    UI.btn[1].style.marginRight = "5%";
-    UI.btn[1].style.marginLeft = UI.btn[3].style.marginLeft = UI.btn[3].style.marginRight = "2%";
+    UI.btns[1].style.marginRight = "5%";
+    UI.btns[1].style.marginLeft =
+      UI.btns[3].style.marginLeft =
+      UI.btns[3].style.marginRight = "2%";
   }
 
-  UI.btns.style.flexFlow = MAP.ratio ? "column" : "row";
-  UI.btns.style.width = MAP.ratio ? "8%" : "100%";
-  UI.btns.style.height = MAP.ratio ? "100%" : "10%";
+  UI.btnsBar.style.flexFlow = MAP.ratio ? "column" : "row";
+  UI.btnsBar.style.width = MAP.ratio ? "10%" : "100%";
+  UI.btnsBar.style.height = MAP.ratio ? "100%" : "10%";
+  UI.btnsBar.style.top = MAP.ratio ? "0" : "auto";
+  UI.btnsBar.style.right = MAP.ratio ? "0" : "auto";
+  UI.btnsBar.style.bottom = MAP.ratio ? "auto" : "0";
+  UI.btnsBar.style.paddingLeft = MAP.ratio ? "2%" : "0px";
+  UI.btnsBar.style.paddingTop = MAP.ratio ? "0px" : "1%";
 
-  UI.btns.style.top = MAP.ratio ? "0" : "auto";
-  UI.btns.style.marginLeft = MAP.ratio ? "92%" : "0";
-  UI.btns.style.bottom = MAP.ratio ? "none" : "5px";
-
-  UI.tuto.style.width = MAP.width;
-  UI.tuto.style.height = MAP.height;
-  // UI.tuto.style.height = MAP.ratio ?  :  ;
+  UI.tuto.window.style.width = MAP.windowWidth - MAP.margin.right + 2 + "px";
+  UI.tuto.window.style.height = MAP.windowHeight - MAP.margin.bottom + 2 + "px";
 };
 
-Init.Dom = () => {
-  UI.tuto = document.getElementById('tuto');
+const GetDomElements = () => {
+  UI.lobby = document.getElementById('lobby');
   UI.tuto = {
     openBtn: document.getElementById('openTuto'),
     closeBtn: document.getElementById('closeTuto'),
     window: document.getElementById('tuto')
   }
   UI.elem = document.documentElement;
-  UI.cs = [document.getElementById('c1'), document.getElementById('c2'), document.getElementById('c3')];
-  UI.lobby = document.getElementById('lobby');
-  UI.btn = document.querySelectorAll('#buttons button');
-  UI.btns = document.getElementById('buttons');
+  UI.btns = document.querySelectorAll('#buttons button');
+  UI.btnsBar = document.getElementById('buttons');
+  UI.colorBtns = document.querySelectorAll('.color');
   UI.zoom = {
     in: document.getElementById('zoomin'),
     out: document.getElementById('zoomout')
   }
 };
 
-Init.Listeners = {
+const Listeners = {
 
   click: (GAME, PLAYER, MAP, socket) => {
-    UI.tuto.openBtn.addEventListener("click", () => UI.tuto.window.style.display = "block");
-    UI.tuto.closeBtn.addEventListener("click", () => UI.tuto.window.style.display = "none");
-    UI.cs.forEach(cbtn => {
-      cbtn.style.background = PLAYER.colors[UI.cs.indexOf(cbtn)];
-      cbtn.addEventListener("click", () => selectNfill(cbtn, GAME, PLAYER, MAP, UI, socket));
+
+    UI.tuto.openBtn.addEventListener("click", () => {
+      UI.tuto.window.style.display = "block";
+      UI.tuto.openBtn.style.display = "none";
+      GAME.flag.tuto = true;
     });
-    Object.keys(UI.zoom).forEach(el => UI.zoom[el].addEventListener("click", () => zoom(el, GAME, MAP, PLAYER)));
+
+    UI.tuto.closeBtn.addEventListener("click", () => {
+      UI.tuto.window.style.display = "none";
+      UI.tuto.openBtn.style.display = "block";
+      GAME.flag.tuto = false;
+    });
+
+    UI.colorBtns.forEach((colorBtn, i) => {
+      colorBtn.style.background = PLAYER.colors[i];
+      colorBtn.addEventListener("click", () => {
+        if (!GAME.flag.ok()) return;
+        selectColor(i, PLAYER, UI);
+        Render.fill(PLAYER.position, PLAYER.Scolor, GAME, PLAYER, MAP, socket);
+      });
+    });
+
+    Object.keys(UI.zoom).forEach(el => UI.zoom[el].addEventListener("click", () => zoom(el, GAME, MAP)));
+
     document.addEventListener('click', () => {
       if (document.activeElement.toString() == '[object HTMLButtonElement]') document.activeElement.blur();
     });
+
   },
 
   browser: (GAME, PLAYER, MAP, socket) => {
@@ -104,16 +124,5 @@ Init.Listeners = {
     window.addEventListener("orientationchange", () => setTimeout(() => GAME.render(), 500));
   }
 };
-
-function selectNfill(color, GAME, PLAYER, MAP, UI, socket) {
-  if (!GAME.flag.ok()) return;
-  select(color, PLAYER, UI);
-  Render.fill(PLAYER.position, PLAYER.Scolor, GAME, PLAYER, MAP, socket);
-}
-
-function hideLobby() {
-  UI.lobby.style.opacity = 0;
-  setTimeout(() => UI.lobby.style.display = "none", 300);
-}
 
 export default UI

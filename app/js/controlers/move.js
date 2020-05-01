@@ -7,14 +7,11 @@ function Move(direction, GAME, PLAYER, MAP, socket) {
   if (!GAME.flag.moveCallback) return;
   socket.emit('MovePlayer', direction);
   GAME.flag.moveCallback = false;
-  GAME.flag.server = true;
   let nextpos = checkMove(direction, GAME, PLAYER);
-  if (!nextpos) GAME.flag.server = false;
-  else {
-    PLAYER.lastdir = direction;
-    PLAYER.position = nextpos;
-    window.Translate.init(GAME, MAP, PLAYER);
-  }
+  if (!nextpos) return;
+  PLAYER.lastdir = direction;
+  PLAYER.position = nextpos;
+  window.Translate.init(GAME, MAP, PLAYER);
 }
 
 function checkMove(direction, GAME, PLAYER) {

@@ -5,7 +5,7 @@
   box-sizing: border-box;
 }
 
-.mapcanvas, #playercanvas {
+.mapcanvas, #playercanvas, #shadow {
   overflow: hidden;
   position: absolute;
   transition-timing-function: ease;
@@ -21,7 +21,6 @@
 }
 
 #shadow {
-  position: absolute;
   border: solid 1px #777;
   box-shadow: 3px 3px 6px 0px #777;
   mix-blend-mode: multiply;
@@ -30,8 +29,7 @@
 .mask {
   z-index: 30;
   position: absolute;
-  background: #f2f2f2;
-  /* opacity: 0.4; */
+  background: var(--grey);
 }
 
 #topmask, #leftmask, #rightmask {

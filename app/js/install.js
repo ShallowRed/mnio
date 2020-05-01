@@ -14,7 +14,10 @@ const forgot = document.getElementById('forgot');
 let show = (elem) => elem.style.display = 'block';
 let hide = (elem) => elem.style.display = 'none';
 
-const isonPwa = () => (window.matchMedia('(display-mode: standalone)').matches) || (window.navigator.standalone) || document.referrer.includes('android-app://');
+const isonPwa = () =>
+  (window.matchMedia('(display-mode: standalone)').matches) ||
+  (window.navigator.standalone) ||
+  document.referrer.includes('android-app://');
 
 window.addEventListener("load", () => {
   title.style.opacity = "1";
@@ -89,7 +92,8 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-if (window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1" &&
+if (window.location.hostname !== "localhost" &&
+  window.location.hostname !== "127.0.0.1" &&
   window.location.protocol === 'http:') {
   https.querySelector('a').href = window.location.href.replace('http://', 'https://');
   show(https);

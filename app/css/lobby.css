@@ -45,7 +45,7 @@
   border: none;
   border-bottom: solid 1px #888;
   width: 100%;
-  background: #f9f9f9;
+  background: var(--grey);
   padding: 2vh 10%;
   display: inline-block;
   border-radius: 0;
@@ -93,7 +93,7 @@
 .low {
   margin-top: 2vh;
   color: #666;
-  background: #f9f9f9;
+  background: var(--grey);
   border: none;
 }
 
