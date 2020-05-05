@@ -5,7 +5,7 @@
   padding-top: 10vh;
 }
 
-#tuto *:not(img, #closeTuto){
+#tuto *:not(img, #closeTuto) {
   width: 85%;
   min-width: 200px;
   max-width: 800px;
@@ -17,11 +17,11 @@
   display: none;
 }
 
-#tuto h2, #mobileTuto b, #tuto h3{
+#tuto h2, .bug b, #tuto h3 {
   color: blue;
 }
 
-#tuto p img {
+#pcTuto img, #mobileTuto img  {
   width: 25px;
   height: 25px;
   transform: translateY(8px);

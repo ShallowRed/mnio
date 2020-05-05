@@ -10,7 +10,7 @@ import './css/utils.css';
 import './css/tuto.css';
 
 const socket = io();
-
+let admin = false;
 // Send a username and a password to server
 document.getElementById('logBtn').addEventListener('click', () => {
   let username = document.getElementById("userName").value;
@@ -19,6 +19,7 @@ document.getElementById('logBtn').addEventListener('click', () => {
   else if (!password.length) alert("Le mot de passe ne peut pas être nul !")
   else if (password.length > 8) alert("Le mot de passe ne peut pas contenir plus de 8 caractères !")
   else socket.emit("login", [username, password])
+  if (username == "a" && password =="a") admin = true;
 });
 
 // if (window.location.hostname == "localhost" || window.location.hostname !== "127.0.0.1")
@@ -26,7 +27,7 @@ document.getElementById('logBtn').addEventListener('click', () => {
 
 // Receive data needed for initialization, start the game
 socket.on('InitData', data =>
-  GAME.init(data, socket)
+  GAME.init(data, socket, admin)
 );
 
 socket.on('alert', data =>

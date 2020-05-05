@@ -3,3 +3,5 @@ dist/
 admin/
 lib/config.js
 .remote-sync.json
+games/
+app/gallery/game1.js

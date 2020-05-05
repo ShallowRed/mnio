@@ -19,8 +19,8 @@
 }
 
 .zoom {
-  border: solid 1px black;
   transform: scale(0.8);
+  border: solid 1px black;
 }
 
 .zoom:hover {

@@ -12,8 +12,8 @@
     "remote-sync.json",
     "README.md",
     "webpack.config.js",
-    "shared",
-
+    "gallery",
+    "cleaner.js"
   ],
   "watch_options": {
       "followSymlinks": false

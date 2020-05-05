@@ -11,8 +11,17 @@ const https = document.getElementById('https');
 const forgot = document.getElementById('forgot');
 const pcTuto = document.getElementById('pcTuto')
 const mobileTuto = document.getElementById('mobileTuto')
-let show = (elem) => elem.style.display = 'block';
-let hide = (elem) => elem.style.display = 'none';
+const lejeu = document.getElementById('jeu');
+const lagalerie = document.getElementById('galerie');
+
+const show = (elem) => elem.style.display = 'block';
+const hide = (elem) => elem.style.display = 'none';
+
+lejeu.addEventListener("click", () => {
+  hide(lejeu);
+  hide(lagalerie);
+  show(container);
+});
 
 const isonPwa = () =>
   (window.matchMedia('(display-mode: standalone)').matches) ||

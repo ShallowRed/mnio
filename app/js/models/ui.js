@@ -23,6 +23,7 @@ UI.init = (GAME, PLAYER, MAP, socket) => {
   selectColor(0, PLAYER, UI);
   hide(UI.lobby);
   document.getElementById('logo').style.display = "block";
+  UI.tuto.openBtn.style.display = "block";
 };
 
 UI.update = (MAP) => {
@@ -85,12 +86,14 @@ const Listeners = {
     UI.tuto.openBtn.addEventListener("click", () => {
       show(UI.tuto.window);
       UI.tuto.openBtn.style.display = "none";
+      UI.tuto.closeBtn.style.display = "block";
       GAME.flag.tuto = true;
     });
 
     UI.tuto.closeBtn.addEventListener("click", () => {
       hide(UI.tuto.window);
       UI.tuto.openBtn.style.display = "block";
+      UI.tuto.closeBtn.style.display = "none";
       GAME.flag.tuto = false;
     });
 

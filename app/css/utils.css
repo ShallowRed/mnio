@@ -28,6 +28,7 @@
 }
 
  #closeTuto, #openTuto{
-  z-index: 700;
+   display: none;
+  z-index: 970;
   top: 60px;
 }
