@@ -21,32 +21,36 @@ let config = {
     minimizer: [new TerserPlugin(), new OptimizeCSSAssetsPlugin({})],
   },
   entry: {
-    main: ["./app/index.js"]
+    // game: ["../app/game/index.js"]
+    game: path.resolve(__dirname, "../app/game/index.js"),
   },
   output: {
     filename: '[name].js',
     // filename: dev ? '[name].js' : '[name].[hash].js',
     // chunkFilename: dev ? '[id].js' : '[id].[hash].js',
-    path: path.resolve('./dist'),
+    path: path.resolve(__dirname, '../dist'),
     publicPath: '/dist/'
   },
   module: {
-    rules: [{
-        test: /\.js$/,
-        enforce: 'pre',
-        exclude: /node_modules/,
-        use: {
-          loader: 'eslint-loader',
-          options: {
-            emitWarning: true,
-          }
-        },
-      },
-      {
-        test: /\.js$/,
-        exclude: /(node_modules)/,
-        use: 'babel-loader'
-      },
+    rules: [
+
+      // {
+      //   test: /\.js$/,
+      //   enforce: 'pre',
+      //   exclude: /node_modules/,
+      //   use: {
+      //     loader: 'eslint-loader',
+      //     options: {
+      //       emitWarning: true,
+      //     }
+      //   },
+      // },
+
+      // {
+      //   test: /\.js$/,
+      //   exclude: /(node_modules)/,
+      //   use: 'babel-loader'
+      // },
       {
         test: /\.ejs$/,
         use: ['ejs-loader']
@@ -82,10 +86,12 @@ let config = {
     }),
     new HtmlWebpackPlugin({
       inject: true,
-      template: "app/index.ejs"
+      template: path.resolve(__dirname, '../app/game/index.ejs'),
+      // template: "../app/game/index.ejs"
     }),
     new FaviconsWebpackPlugin({
-      logo: './app/logo.png',
+      logo:path.resolve(__dirname, '../app/logo.png'),
+      // logo: 'app/logo.png',
       favicons: {
         icons: {
           android: true,

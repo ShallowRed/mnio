@@ -5,33 +5,26 @@
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
 	<title>Mnio - Galerie</title>
 	<meta name="viewport" content="width=device-width, height=device-height">
-	<link href="/dist/gallery/gallery.css" rel="stylesheet"></head>
+	<link href="/dist/gallery/gallery.css" rel="stylesheet">
+</head>
 </head>
 
 <body>
+
 	<div id="cover"></div>
+
 	<img id="logo" src="/dist/img/logo-full.png" alt="sorry">
-	<div id="buttons">
-		<button id="reset">
-			<img src="/dist/gallery/img/reset.png" alt="sorry">
-		</button>
-		<button id="slow">
-			<img src="/dist/gallery/img/slow.png" alt="sorry">
-		</button>
-		<button id="fast">
-			<img src="/dist/gallery/img/fast.png" alt="sorry">
-		</button>
-		<button id="pause">
-			<img src="/dist/gallery/img/pause.png" alt="sorry">
-		</button>
-		<button id="end">
-			<img src="/dist/gallery/img/end.png" alt="sorry">
-		</button>
-	</div>
+
+	<%= require('./ejs/buttons.ejs')() %>
+
 	<canvas id="canvas"></canvas>
 
-<button id="back" ><a href="/">&#8592; Revenir à l'accueil<a></button>
+	<%= require('./ejs/dataviz.ejs')() %>
+
+	<button id="back"><a href="/">&#8592; Revenir à l'accueil<a></button>
+
 </body>
-<script src="/dist/gallery/gallery.js"></script></body>
+<script src="/dist/gallery/gallery.js"></script>
+</body>
 
 </html>

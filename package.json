@@ -48,7 +48,7 @@
       [
         "@babel/preset-env",
         {
-          "debug": true,
+          "debug": false,
           "useBuiltIns": "usage",
           "corejs": 3
         }
@@ -76,14 +76,15 @@
     "defaultSeverity": "warning"
   },
   "scripts": {
-    "prod": "webpack --config ./webpack.config.js",
-    "dev": "SET NODE_ENV=dev && webpack --config ./webpack.config.js",
-    "start": "pm2 start process.json && pm2 logs",
+    "prod": "webpack --config config/webpack.config.js",
+    "dev": "SET NODE_ENV=dev && webpack --config config/webpack.config.js",
+    "start": "pm2 start config/process.json && pm2 logs",
     "test": "node lib/index.js",
     "reload": "pm2 reload lib/index.js",
     "stop": "pm2 stop lib/index.js",
-    "prodgallery": "webpack --config ./webpack-gallery.config.js",
-    "devgallery": "SET NODE_ENV=dev && webpack --config ./webpack-gallery.config.js"
+    "prodgallery": "webpack --config config/webpack-gallery.config.js",
+    "devgallery": "SET NODE_ENV=dev && webpack --config config/webpack-gallery.config.js",
+    "clean": "node data/cleaner.js"
   },
   "repository": {
     "type": "git",

@@ -15,7 +15,7 @@ let config = {
     minimizer: [new TerserPlugin(), new OptimizeCSSAssetsPlugin({})],
   },
   entry: {
-    gallery: ["./app/gallery/index.js"]
+    gallery: path.resolve(__dirname, "../app/gallery/index.js")
   },
   output: {
     filename: '[name].js',
@@ -25,22 +25,23 @@ let config = {
     publicPath: '/dist/'
   },
   module: {
-    rules: [{
-        test: /\.js$/,
-        enforce: 'pre',
-        exclude: /node_modules/,
-        use: {
-          loader: 'eslint-loader',
-          options: {
-            emitWarning: true,
-          }
-        },
-      },
-      {
-        test: /\.js$/,
-        exclude: /(node_modules)/,
-        use: 'babel-loader'
-      },
+    rules: [
+      // {
+      //   test: /\.js$/,
+      //   enforce: 'pre',
+      //   exclude: /node_modules/,
+      //   use: {
+      //     loader: 'eslint-loader',
+      //     options: {
+      //       emitWarning: true,
+      //     }
+      //   },
+      // },
+      // {
+      //   test: /\.js$/,
+      //   exclude: /(node_modules)/,
+      //   use: 'babel-loader'
+      // },
       {
         test: /\.ejs$/,
         use: ['ejs-loader']
@@ -77,7 +78,7 @@ let config = {
     new HtmlWebpackPlugin({
       filename: "gallery.html",
       inject: false,
-      template: "app/gallery/index.ejs"
+      template: path.resolve(__dirname, "../app/gallery/index.ejs")
     }),
     // ,
     // new WorkboxPlugin.GenerateSW({
