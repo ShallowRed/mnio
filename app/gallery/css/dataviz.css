@@ -1,1 +1,6 @@
-.bar {}
+#dataviz {
+  position: absolute;
+  display: none;
+  z-index: 999;
+  transform-origin: top left;
+}

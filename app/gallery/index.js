@@ -1,14 +1,10 @@
-import './gallery.css';
+import './css/gallery.css';
+import './css/buttons.css';
+import './css/dataviz.css';
 
 import GAME from './games/game1';
 
-import APP from './js/timelapse';
-
-import './js/dataviz';
-
-GAME.count = GAME.palette.map(e => 0);
-
-GAME.colors.forEach(e => GAME.count[e]++);
+import APP from './js/controlers/render';
 
 APP.init(GAME);
 
@@ -19,4 +15,7 @@ window.addEventListener("DOMContentLoaded", () => {
   setTimeout(() => cover.style.display = "none", 300);
 });
 
-document.getElementById("dataviz").style.display = "none";
+// TODO: clean admin page
+// TODO: gallery clean positions and click Events
+// TODO: interactive bars and donut (get result on canvas)
+// TODO: onglets resultat/timelapse/insights
