@@ -7,6 +7,7 @@ import GAME from './games/game1';
 import APP from './js/controlers/render';
 
 APP.init(GAME);
+APP.render.all();
 
 const cover = document.getElementById('cover');
 
@@ -15,7 +16,5 @@ window.addEventListener("DOMContentLoaded", () => {
   setTimeout(() => cover.style.display = "none", 300);
 });
 
-// TODO: clean admin page
-// TODO: gallery clean positions and click Events
-// TODO: interactive bars and donut (get result on canvas)
-// TODO: onglets resultat/timelapse/insights
+// TODO: fix broken play mode
+// TODO: fix broken colors displaying on donut chart

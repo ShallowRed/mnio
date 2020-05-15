@@ -1,9 +1,11 @@
 import './js/install';
+import './js/roulette';
 import io from 'socket.io-client';
 import GAME from './js/game';
 
 import './css/global.css';
 import './css/lobby.css';
+import './css/roulette.css';
 import './css/canvas.css';
 import './css/buttons.css';
 import './css/utils.css';

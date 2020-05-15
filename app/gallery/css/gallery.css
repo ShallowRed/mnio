@@ -30,11 +30,16 @@ body {
   width: 80px;
 }
 
-#canvas {
+#canvas, #canvas2 {
   border: solid 1px darkgrey;
   position: absolute;
   top: 0;
   left: 0;
   z-index: 100;
   background: white;
+}
+
+#canvas, #canvas2 {
+  opacity: 0.9;
+  background: transparent;
 }

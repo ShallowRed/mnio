@@ -1,16 +1,17 @@
 const CELL = {
 
-  fill: (position, color, APP) => {
+  fill: (position, color, APP, ctxx) => {
+    let ctx = (ctxx) ? ctxx : APP.ctx;
     let coordx = (position - (position % APP.rows)) / APP.cols;
     let coordy = (position % APP.cols);
-    APP.ctx.fillStyle = "#" + color;
-    APP.ctx.fillRect(APP.CellSize * coordy, APP.CellSize * coordx, APP.CellSize, APP.CellSize)
+    ctx.fillStyle = "#" + color;
+    ctx.fillRect(APP.CellSize * coordy, APP.CellSize * coordx, APP.CellSize, APP.CellSize)
   },
 
-  clear: (position, APP) => {
+  clear: (position, APP, ctx) => {
     let coordx = (position - (position % APP.rows)) / APP.cols;
     let coordy = (position % APP.cols);
-    APP.ctx.clearRect(APP.CellSize * coordy, APP.CellSize * coordx, APP.CellSize, APP.CellSize);
+    ctx.clearRect(APP.CellSize * coordy, APP.CellSize * coordx, APP.CellSize, APP.CellSize);
   }
 
 }

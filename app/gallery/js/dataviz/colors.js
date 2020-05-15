@@ -30,7 +30,9 @@ const drawDonut = sorted => {
     )
     .attr("stroke", "white")
     .style("stroke-width", "1px")
-    .attr('fill', d => data[d.data.key].color)
+    .attr('fill', d => data[d.data.key].color);
+
 }
+
 
 export default drawDonut;

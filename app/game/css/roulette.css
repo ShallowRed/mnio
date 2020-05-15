@@ -1,0 +1,34 @@
+#roulette {
+  z-index: 999;
+}
+
+#palette, #tap{
+  width: 50%;
+  margin: 5vh auto;
+}
+
+#palette {
+  display: flex;
+  justify-content: space-around;
+}
+
+#tapImg {
+  max-width: 500px;
+  max-height: 500px;
+  margin: 0 auto;
+}
+
+.pal {
+  width: 70px;
+  height: 70px;
+  background: red;
+}
+
+#rdm{
+  width: 30px;
+  height: 30px;
+}
+
+#roulette h3 {
+  margin: 5vh 10% 0;
+}
