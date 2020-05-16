@@ -3,7 +3,7 @@ import {
   coordtoindex
 } from '../utils';
 
-function Move(direction, GAME, PLAYER, MAP, socket) {
+const Move = (direction, GAME, PLAYER, MAP, socket) => {
   if (!GAME.flag.moveCallback) return;
   socket.emit('MovePlayer', direction);
   GAME.flag.moveCallback = false;
@@ -14,7 +14,7 @@ function Move(direction, GAME, PLAYER, MAP, socket) {
   window.Translate.init(GAME, MAP, PLAYER);
 }
 
-function checkMove(direction, GAME, PLAYER) {
+const checkMove = (direction, GAME, PLAYER) => {
   let coord = indextocoord(PLAYER.position, GAME);
   if (direction == "up" && coord[0] !== 0) coord[0]--;
   else if (direction == "down" && coord[0] !== GAME.RowCol[0] - 1) coord[0]++;

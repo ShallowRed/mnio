@@ -1,9 +1,9 @@
 import Render from '../views/render'
 
 const MAP = {
-  maxcells: 61,
-  startcells: 25,
-  mincells: 17,
+  maxcells: 10,
+  startcells: 7,
+  mincells: 3,
   margin: {},
 };
 

@@ -2,8 +2,8 @@
 // TODO: decide maxplayers
 
 const Config = {
-  rows: 150,
-  cols: 150,
+  rows: 15,
+  cols: 15,
   maxplayers: 100,
 };
 

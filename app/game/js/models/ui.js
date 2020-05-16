@@ -13,7 +13,7 @@ import Render from '../views/render'
 
 import {
   KeyboardInput
-} from '../controlers/browser';
+} from '../controlers/keyboard';
 
 const UI = {};
 
@@ -21,7 +21,7 @@ UI.init = (GAME, PLAYER, MAP, socket) => {
   GetDomElements();
   Object.keys(Listeners).forEach(event => Listeners[event](GAME, PLAYER, MAP, socket));
   selectColor(0, PLAYER, UI);
-  hide(UI.lobby);
+
   document.getElementById('logo').style.display = "block";
   UI.tuto.openBtn.style.display = "block";
 };
@@ -34,17 +34,17 @@ UI.update = (MAP) => {
     btn.style.margin = "0";
   });
 
-  if (MAP.ratio) {
-    UI.btns[1].style.marginTop =
-      UI.btns[3].style.marginTop =
-      UI.btns[3].style.marginBottom = "1vh";
-    UI.btns[1].style.marginBottom = "3vh";
-  } else {
-    UI.btns[1].style.marginRight = "5%";
-    UI.btns[1].style.marginLeft =
-      UI.btns[3].style.marginLeft =
-      UI.btns[3].style.marginRight = "2%";
-  }
+  // if (MAP.ratio) {
+  //   UI.btns[1].style.marginTop =
+  //     UI.btns[3].style.marginTop =
+  //     UI.btns[3].style.marginBottom = "1vh";
+  //   UI.btns[1].style.marginBottom = "3vh";
+  // } else {
+  //   UI.btns[1].style.marginRight = "5%";
+  //   UI.btns[1].style.marginLeft =
+  //     UI.btns[3].style.marginLeft =
+  //     UI.btns[3].style.marginRight = "2%";
+  // }
 
   UI.btnsBar.style.flexFlow = MAP.ratio ? "column" : "row";
   UI.btnsBar.style.width = MAP.ratio ? "10%" : "100%";
@@ -62,7 +62,6 @@ UI.update = (MAP) => {
 };
 
 const GetDomElements = () => {
-  UI.lobby = document.getElementById('lobby');
   UI.refresh = document.getElementById('refresh');
   UI.tuto = {
     openBtn: document.getElementById('openTuto'),

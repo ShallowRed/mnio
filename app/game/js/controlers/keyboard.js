@@ -5,7 +5,9 @@ import {
 import Move from '../controlers/move';
 import Render from '../views/render';
 
-const KeyboardInput = (event, PLAYER, GAME, UI, MAP, socket) =>  {
+let next;
+
+const KeyboardInput = (event, PLAYER, GAME, UI, MAP, socket) => {
   if (GAME.flag.translate || !GAME.flag.moveCallback || GAME.flag.input) return;
   switch (event.keyCode) {
 
@@ -22,11 +24,17 @@ const KeyboardInput = (event, PLAYER, GAME, UI, MAP, socket) =>  {
       break;
 
     case 90: // Z
-      selectColor(PLAYER.Scolor == PLAYER.colors[0] ? 2 : PLAYER.Scolor == PLAYER.colors[1] ? 0 : 1, PLAYER, UI);
+      next = (PLAYER.colors.indexOf(PLAYER.Scolor) + 1) % PLAYER.colors.length;
+      console.log(next);
+      selectColor(next, PLAYER, UI);
+      // selectColor(PLAYER.Scolor == PLAYER.colors[0] ? 2 : PLAYER.Scolor == PLAYER.colors[1] ? 0 : 1, PLAYER, UI);
       break;
 
     case 83: // S
-      selectColor(PLAYER.Scolor == PLAYER.colors[0] ? 1 : PLAYER.Scolor == PLAYER.colors[1] ? 2 : 0, PLAYER, UI);
+      next = (PLAYER.colors.indexOf(PLAYER.Scolor) + PLAYER.colors.length - 1) % PLAYER.colors.length;
+      console.log(next);
+      selectColor(next, PLAYER, UI);
+      // selectColor(PLAYER.Scolor == PLAYER.colors[0] ? 1 : PLAYER.Scolor == PLAYER.colors[1] ? 2 : 0, PLAYER, UI);
       break;
 
     case 37: // left arrow
