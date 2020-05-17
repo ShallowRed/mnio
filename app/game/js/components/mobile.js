@@ -1,4 +1,4 @@
-import Move from '../controlers/move';
+import move from '../utils/move';
 
 const Touch = {
   start: [null, null],
@@ -26,14 +26,14 @@ const touchMove = (evt, PLAYER, GAME, MAP, socket) => {
   if (!Touch.lastdir) Touch.lastdir = Touch.direction;
   if (Touch.lastdir !== Touch.direction && Math.abs(Touch.delta[0]) < 50 && Math.abs(Touch.delta[1]) < 50) Touch.direction = Touch.lastdir;
   if (!GAME.flag.moveCallback || GAME.flag.translate || (Math.abs(Touch.delta[0]) < 50 && Math.abs(Touch.delta[1]) < 50)) return
-  Move(Touch.direction, GAME, PLAYER, MAP, socket);
+  move(Touch.direction, GAME, PLAYER, MAP, socket);
   Touch.start = [evt.touches[0].clientX, evt.touches[0].clientY];
   Touch.lastdir = Touch.direction;
   keepMoving(GAME, PLAYER, MAP, socket);
 }
 
 const keepMoving = (GAME, PLAYER, MAP, socket) => setInterval(() => {
-  if (GAME.flag.moveCallback && !GAME.flag.translate && GAME.flag.input) Move(Touch.direction, GAME, PLAYER, MAP, socket);
+  if (GAME.flag.moveCallback && !GAME.flag.translate && GAME.flag.input) move(Touch.direction, GAME, PLAYER, MAP, socket);
   if (!GAME.flag.input) clearInterval(keepMoving);
 }, 50);
 

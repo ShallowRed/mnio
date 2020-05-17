@@ -1,4 +1,4 @@
-import Render from '../views/render'
+import Render from '../utils/render'
 
 const MAP = {
   maxcells: 10,

@@ -20,7 +20,7 @@ a {
   display: block;
 }
 
-body, #lobby, #https, #tuto, #installedMessage, #roulette {
+body, #lobby, #https, #tuto, #installedMessage, #intro {
   position: absolute;
   overflow: hidden;
   height: 100%;

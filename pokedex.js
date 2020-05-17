@@ -90,4 +90,4 @@ const pokedex = [{
   "description": "Renaud captif dans les jardins d’Armide, Maurice Denis, 1932, Art Déco, Manufacture des Gobelins, 3,41 × 0 × 2,75 m (L x l x h)."
 }]
 
-export default pokedex
+module.exports = pokedex;

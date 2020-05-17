@@ -1,53 +1,63 @@
-import GAME from './game';
-import pokedex from './pokedex';
+import GAME from './components/game';
+import pokedex from './components/pokedex';
+import tuto from './tuto';
 
 const lobby = document.getElementById('lobby');
-const roulette = document.getElementById('roulette');
+const intro = document.getElementById('intro');
 const select = document.getElementById('select');
 const palette = document.querySelectorAll(".pal");
 const rdm = document.getElementById('rdm');
-const tapisserie = {
+const tap = {
+  index: null,
   img: document.getElementById("tapImg"),
-  description: document.getElementById("tapDesc")
+  description: document.getElementById("description")
 }
 
-let index;
+let indexList = pokedex.map((e, i) => i)
 
 const changeTap = () => {
-  index = Math.floor(Math.random() * pokedex.length);
-  const tap = pokedex[index]
-  tapisserie.img.src = 'dist/img/pokedex/tap_' + (index + 1) + '.jpg';
-  tapisserie.description.innerHTML = tap.description;
-  palette.forEach((pal, i) => pal.style.backgroundColor = tap.palette[i]);
+  if (!indexList.length) indexList = pokedex.map((e, i) => i);
+  let rdmIndex = Math.floor(Math.random() * indexList.length);
+  tap.index = indexList[rdmIndex];
+  indexList = indexList.filter(e=> e !== tap.index);
+  tap.img.src = 'dist/img/pokedex/tap_' + (tap.index + 1) + '.jpg';
+  tap.description.innerHTML = pokedex[tap.index].description;
+  palette.forEach((c, i) => c.style.backgroundColor = pokedex[tap.index].palette[i]);
 }
 
 rdm.addEventListener("click", () => changeTap())
 changeTap();
 
 const Intro = (data, socket, admin) => {
-  console.log(data);
-  if (data.new) firstVisit(data, socket, admin);
-  else GAME.init(data, socket, admin);
+  if (data.new) newPlayer(data, socket, admin);
+  else returningPlayer(data, socket, admin);
   hide(lobby);
 }
 
-const firstVisit = (data, socket, admin) => {
-  roulette.style.display = "block";
-  select.addEventListener("click", () => selectPalette(data, socket, admin, index))
+const newPlayer = (data, socket, admin) => {
+  intro.style.display = "flex";
+  select.addEventListener("click", () => selectPalette(data, socket, admin, tap.index))
+};
+
+const returningPlayer = (data, socket, admin) => {
+  tuto.static();
+  GAME.init(data, socket, admin);
 };
 
 const selectPalette = (data, socket, admin, index) => {
   data.colors = pokedex[index].palette;
-  GAME.init(data, socket, admin);
-  socket.emit("selectPalette", index);
-  roulette.style.display = "none";
+  socket.emit("setInit", index);
+  socket.on("startPos", position => {
+    data.position = position;
+    tuto.animated();
+    GAME.init(data, socket, admin);
+    hide(intro);
+  })
 }
 
-const hide = (elem) => {
-  elem.style.opacity = "0";
-  setTimeout(() => elem.style.display = "none", 300);
+const hide = e => {
+  e.style.opacity = "0";
+  setTimeout(() => e.style.display = "none", 300);
 }
-
-// TODO: player position defined before tap selection -> wrong !!
 
 export default Intro;

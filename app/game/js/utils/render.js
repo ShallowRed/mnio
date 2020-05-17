@@ -1,6 +1,6 @@
 import {
   check
-} from '../utils';
+} from '../utils/utils';
 
 const Render = {
 

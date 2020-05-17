@@ -1,9 +1,11 @@
 import {
-  zoom,
-  selectColor
-} from '../utils';
-import Move from '../controlers/move';
-import Render from '../views/render';
+  selectColor,
+} from '../utils/utils';
+
+import Render from '../utils/render';
+
+import zoom from '../utils/zoom';
+import move from '../utils/move';
 
 let next;
 
@@ -38,19 +40,19 @@ const KeyboardInput = (event, PLAYER, GAME, UI, MAP, socket) => {
       break;
 
     case 37: // left arrow
-      Move("left", GAME, PLAYER, MAP, socket);
+      move("left", GAME, PLAYER, MAP, socket);
       break;
 
     case 38: // top arrow
-      Move("up", GAME, PLAYER, MAP, socket);
+      move("up", GAME, PLAYER, MAP, socket);
       break;
 
     case 39: // right arrow
-      Move("right", GAME, PLAYER, MAP, socket);
+      move("right", GAME, PLAYER, MAP, socket);
       break;
 
     case 40: // bottom arrow
-      Move("down", GAME, PLAYER, MAP, socket);
+      move("down", GAME, PLAYER, MAP, socket);
       break;
   }
 }

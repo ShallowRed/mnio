@@ -8,8 +8,8 @@
 
 #buttons button {
   box-sizing: border-box;
-  max-height: 50px;
-  max-width: 50px;
+  max-height: 45px;
+  max-width: 45px;
   border-radius: 5px;
   box-shadow: #aaa 5px 5px;
 }
@@ -19,11 +19,7 @@
 }
 
 .zoom {
-  transform: scale(0.8);
+  transition: all 0.1s ease;
+  transform: scale(0.7);
   border: solid 1px black;
-}
-
-.zoom:hover {
-  color: blue;
-  border: solid 1px blue;
 }

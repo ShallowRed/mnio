@@ -1,10 +1,10 @@
-import PLAYER from './models/player';
-import MAP from './models/map';
-import UI from './models/ui';
-import Render from './views/render';
-import './views/polyfill';
-import './views/fill';
-import './views/translate';
+import PLAYER from './player';
+import MAP from './map';
+import UI from './ui';
+import Render from '../utils/render';
+import '../utils/polyfill';
+import '../utils/fill';
+import '../utils/translate';
 
 const GAME = {
   duration: 0.2,
@@ -32,10 +32,10 @@ GAME.init = (data, socket, admin) => {
   PLAYER.init(data);
   MAP.init();
   UI.init(GAME, PLAYER, MAP, socket);
-  if (admin)  {
-    PLAYER.position = (150*75);
-    MAP.maxcells= 150;
-    MAP.startcells =150;
+  if (admin) {
+    PLAYER.position = (150 * 75);
+    MAP.maxcells = 150;
+    MAP.startcells = 150;
   }
   GAME.render();
 };

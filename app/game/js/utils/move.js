@@ -1,9 +1,9 @@
 import {
   indextocoord,
   coordtoindex
-} from '../utils';
+} from './utils';
 
-const Move = (direction, GAME, PLAYER, MAP, socket) => {
+const move = (direction, GAME, PLAYER, MAP, socket) => {
   if (!GAME.flag.moveCallback) return;
   socket.emit('MovePlayer', direction);
   GAME.flag.moveCallback = false;
@@ -25,4 +25,4 @@ const checkMove = (direction, GAME, PLAYER) => {
   if (GAME.owned.includes(nextpos) || (GAME.allowed.includes(nextpos) && !GAME.positions.includes(nextpos) & !GAME.colors[nextpos])) return nextpos;
 }
 
-export default Move
+export default move;

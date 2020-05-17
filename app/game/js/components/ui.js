@@ -1,19 +1,20 @@
 import {
-  zoom,
   selectColor,
-} from '../utils';
+} from '../utils/utils';
+
+import zoom from '../utils/zoom';
 
 import {
   touchStart,
   touchEnd,
   touchMove
-} from '../controlers/mobile';
+} from './mobile';
 
-import Render from '../views/render'
+import Render from '../utils/render';
 
 import {
   KeyboardInput
-} from '../controlers/keyboard';
+} from './keyboard';
 
 const UI = {};
 
@@ -34,17 +35,8 @@ UI.update = (MAP) => {
     btn.style.margin = "0";
   });
 
-  // if (MAP.ratio) {
-  //   UI.btns[1].style.marginTop =
-  //     UI.btns[3].style.marginTop =
-  //     UI.btns[3].style.marginBottom = "1vh";
-  //   UI.btns[1].style.marginBottom = "3vh";
-  // } else {
-  //   UI.btns[1].style.marginRight = "5%";
-  //   UI.btns[1].style.marginLeft =
-  //     UI.btns[3].style.marginLeft =
-  //     UI.btns[3].style.marginRight = "2%";
-  // }
+  if (MAP.ratio) UI.btns[2].style.marginTop = "3vh";
+  else UI.btns[2].style.marginLeft = "5%";
 
   UI.btnsBar.style.flexFlow = MAP.ratio ? "column" : "row";
   UI.btnsBar.style.width = MAP.ratio ? "10%" : "100%";

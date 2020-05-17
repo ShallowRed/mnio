@@ -1,10 +1,11 @@
 import {
   indextocoord
-} from '../utils'
+} from '../utils/utils'
 
 const PLAYER = {};
 
 PLAYER.init = data => {
+  console.log(data);
   PLAYER.position = data.position;
   PLAYER.colors = data.colors;
   PLAYER.Scolor = data.colors[0];
