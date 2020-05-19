@@ -1,8 +1,8 @@
 import GAME from '../../games/game1';
 import sortedByHue from '../models/hue';
 
-let width = 1000;
-let height = 1000;
+let width = 500;
+let height = 500;
 let margin = 40;
 let radius = Math.min(width, height) / 2 - margin;
 let data = sortedByHue(GAME);
@@ -25,7 +25,7 @@ const drawDonut = sorted => {
     .enter()
     .append('path')
     .attr('d', d3.arc()
-      .innerRadius(300)
+      .innerRadius(100)
       .outerRadius(radius)
     )
     .attr("stroke", "white")

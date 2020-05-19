@@ -27,16 +27,12 @@ const KeyboardInput = (event, PLAYER, GAME, UI, MAP, socket) => {
 
     case 90: // Z
       next = (PLAYER.colors.indexOf(PLAYER.Scolor) + 1) % PLAYER.colors.length;
-      console.log(next);
       selectColor(next, PLAYER, UI);
-      // selectColor(PLAYER.Scolor == PLAYER.colors[0] ? 2 : PLAYER.Scolor == PLAYER.colors[1] ? 0 : 1, PLAYER, UI);
       break;
 
     case 83: // S
       next = (PLAYER.colors.indexOf(PLAYER.Scolor) + PLAYER.colors.length - 1) % PLAYER.colors.length;
-      console.log(next);
       selectColor(next, PLAYER, UI);
-      // selectColor(PLAYER.Scolor == PLAYER.colors[0] ? 1 : PLAYER.Scolor == PLAYER.colors[1] ? 2 : 0, PLAYER, UI);
       break;
 
     case 37: // left arrow
@@ -57,6 +53,4 @@ const KeyboardInput = (event, PLAYER, GAME, UI, MAP, socket) => {
   }
 }
 
-export {
-  KeyboardInput
-}
+export default KeyboardInput;

@@ -1,27 +1,29 @@
 import CELL from '../models/cell';
 
-import APP from './init'
+const render = {
 
-APP.render = {
-
-  play: (speed) => {
+  play: (APP, speed) => {
     if (APP.time == APP.colors.length) {
+      APP.render.stop(APP);
+      APP.render.clearMap(APP);
       APP.time = 0;
-      APP.render.clearMap();
     }
-    APP.play = true;
-    APP.speed = (speed == "slow") ? 1 : (speed == "fast") ? 10 : 50;
-    APP.render.cells(APP.time);
-    APP.render.focusBtn(speed);
+    APP.speed = (speed == "slow") ? 1 : (speed == "fast") ? 10 : 100;
+    APP.render.focusBtn(APP, speed);
+    if (!APP.play) {
+      APP.play = true;
+      APP.render.cells(APP, APP.time);
+    }
   },
 
-  stop: () => {
+  stop: APP => {
     APP.play = false;
-    APP.render.focusBtn();
-    APP.render.clearMap();
+    setTimeout(() => APP.time = 0, 50);
+    APP.render.focusBtn(APP);
+    APP.render.clearMap(APP);
   },
 
-  focusBtn: (btn) => {
+  focusBtn: (APP, btn) => {
     ["slow", "fast", "faster", "pause"].forEach(prop => {
       let button = APP.buttons[prop];
       let saturation = (btn == prop) ? 100 : 0;
@@ -29,45 +31,46 @@ APP.render = {
     })
   },
 
-  resize: () => {
-    APP.render.focusBtn();
+  resize: APP => {
+    APP.render.focusBtn(APP);
     APP.update(APP);
     if (APP.time !== APP.colors.length || APP.play) {
-      APP.render.clearMap();
+      APP.render.clearMap(APP);
       APP.time = 0;
       APP.play = false;
-    } else APP.render.all();
+    } else APP.render.all(APP);
   },
 
-  all: (first) => {
+  all: (APP, first) => {
+    APP.time = APP.order.length;
     let end = first ? first : APP.order.length;
     for (let i = 0; i < end; i++) {
       CELL.fill(APP.order[i], APP.palette[APP.colors[i]], APP)
     }
   },
 
-  clearMap: () => {
+  clearMap: APP => {
     APP.ctx.clearRect(0, 0, APP.canvas.width, APP.canvas.height);
   },
 
-  cells: (e) => {
-    if (!e) e = 0;
+  cells: (APP, time) => {
     if (!APP.play) {
-      APP.time = e;
+      APP.time = time;
       return
     }
-    for (let i = e; i <= e + APP.speed; i++) {
+    for (let i = time; i <= time + APP.speed; i++) {
       CELL.fill(APP.order[i], APP.palette[APP.colors[i]], APP);
       if (i == APP.colors.length) {
         APP.time = APP.colors.length;
+        APP.render.focusBtn(APP);
         return
       }
     }
     setTimeout(() => {
-      APP.render.cells(e + APP.speed + 1);
+      APP.render.cells(APP, time + APP.speed + 1);
       return
     }, 20);
   }
 }
 
-export default APP;
+export default render;

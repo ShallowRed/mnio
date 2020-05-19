@@ -1,8 +1,12 @@
 node_modules/
 dist/
 admin/
-lib/config.js
+data/
+app/gallery/games/
 .remote-sync.json
-games/
-app/gallery/game1.js
 config/mnio.config.js
+config/colors.js
+config/colors2.js
+config/colors3.js
+config/pokedex.js
+config/pokedex.min.js

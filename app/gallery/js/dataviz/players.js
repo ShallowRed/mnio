@@ -13,10 +13,11 @@ const margin = {
   left: 65
 };
 
-let width = 1000 - margin.left - margin.right;
-let height = 600 - margin.top - margin.bottom;
+let width = 700 - margin.left - margin.right;
+let height = 500 - margin.top - margin.bottom;
 
-let x = d3.scaleBand().padding(0.2)
+let x = d3.scaleBand()
+// .padding(0.2)
   .range([0, width])
   .domain(data.map((d, i) => i));
 
@@ -42,7 +43,8 @@ g.append("rect")
   .attr("height", (d, i) => height - y(data[i]))
   .attr("x", (d, i) => x(i))
   .attr("y", (d, i) => y(data[i]))
-  .attr("fill", "blue");
+  .attr("fill", "blue")
+  .attr('stroke', 'white');
 
 svg.append("g")
   .style("font-size", "18px")

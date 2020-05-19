@@ -11,9 +11,8 @@
     ".git",
     "remote-sync.json",
     "README.md",
-    "webpack.config.js",
-    "gallery",
-    "cleaner.js"
+    "config/webpack.config.js",
+    "config/webpack-gallery.config.js",
   ],
   "watch_options": {
       "followSymlinks": false

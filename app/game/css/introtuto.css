@@ -1,0 +1,42 @@
+#introTuto {
+  opacity: 0;
+  transition: all 0.4s ease;
+  border-radius: 5px;
+  border: solid 1px darkgrey;
+  width: 50%;
+  min-width: 250px;
+  max-width: 350px;
+  margin: 0 auto;
+  background: var(--grey);
+  box-sizing: border-box;
+  padding: 5%;
+}
+
+#introTuto * {
+  display: none;
+}
+
+.tutoBtn {
+  width: 60%;
+  min-width: 150px;
+  max-width: 200px;
+  margin: 5% auto;
+  padding: 10px 2%;
+}
+
+#follow, #play {
+  margin-top: 15%;
+}
+
+
+#info {
+  width: 100%;
+  margin: 0 auto;
+  min-width: 200px;
+  max-width: 400px;
+}
+
+#moveIcon {
+  width: 100%;
+  object-fit: contain;
+}

@@ -1,6 +1,6 @@
 import GAME from './components/game';
 import pokedex from './components/pokedex';
-import tuto from './tuto';
+import TUTO from './tuto';
 
 const lobby = document.getElementById('lobby');
 const intro = document.getElementById('intro');
@@ -40,7 +40,7 @@ const newPlayer = (data, socket, admin) => {
 };
 
 const returningPlayer = (data, socket, admin) => {
-  tuto.static();
+  TUTO.phase.inGame();
   GAME.init(data, socket, admin);
 };
 
@@ -49,7 +49,7 @@ const selectPalette = (data, socket, admin, index) => {
   socket.emit("setInit", index);
   socket.on("startPos", position => {
     data.position = position;
-    tuto.animated();
+    TUTO.phase.welcome();
     GAME.init(data, socket, admin);
     hide(intro);
   })

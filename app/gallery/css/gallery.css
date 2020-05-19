@@ -30,7 +30,7 @@ body {
   width: 80px;
 }
 
-#canvas, #canvas2 {
+#canvas {
   border: solid 1px darkgrey;
   position: absolute;
   top: 0;
@@ -39,7 +39,7 @@ body {
   background: white;
 }
 
-#canvas, #canvas2 {
+#canvas {
   opacity: 0.9;
   background: transparent;
 }

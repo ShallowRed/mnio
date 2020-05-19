@@ -11,10 +11,7 @@ import {
 } from './mobile';
 
 import Render from '../utils/render';
-
-import {
-  KeyboardInput
-} from './keyboard';
+import KeyboardInput from './keyboard';
 
 const UI = {};
 
