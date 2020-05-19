@@ -1,9 +1,9 @@
 import Render from '../utils/render'
 
 const MAP = {
-  maxcells: 10,
-  startcells: 7,
-  mincells: 3,
+  maxcells: 100,
+  startcells: 31,
+  mincells: 11,
   margin: {},
 };
 

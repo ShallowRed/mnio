@@ -48,8 +48,13 @@ TUTO.init = () => {
   TUTO.btn.follow.addEventListener("click", () => {
     TUTO.phase.fill();
     document.addEventListener('keydown', event => {
-      if (TUTO.isFirstFill(event)) TUTO.phase.move();
-      else if (TUTO.isFirstMove(event)) TUTO.phase.info();
+      if (TUTO.isFirstFill(event)) {
+console.log("firstfill");
+        TUTO.phase.move()}
+      else if (TUTO.isFirstMove(event)) {
+        console.log("firstmove");
+
+        TUTO.phase.info()};
     })
   });
 
@@ -95,7 +100,7 @@ TUTO.phase = {
     hide(TUTO.moveIcon, true);
     TUTO.setMsg("info");
     setTimeout(() => {
-      TUTO.firstFill = false;
+      TUTO.firstMove = false;
       show(TUTO.window);
       show(TUTO.btn.play);
     }, 1000)
