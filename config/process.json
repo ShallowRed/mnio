@@ -13,7 +13,7 @@
     "README.md",
     "config/colors",
     "config/webpack.config.js",
-    "config/webpack-gallery.config.js",
+    "config/webpack-gallery.config.js"
   ],
   "watch_options": {
       "followSymlinks": false
