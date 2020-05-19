@@ -26,16 +26,16 @@ const GAME = {
   }
 };
 
-GAME.init = (data, socket, admin) => {
+GAME.init = (data, socket) => {
   Object.keys(GAME.events).forEach(prop => socket.on('' + prop, data => GAME.events[prop](data)));
   Object.keys(data.GAME).forEach(prop => GAME[prop] = data.GAME[prop]);
   PLAYER.init(data);
   MAP.init();
   UI.init(GAME, PLAYER, MAP, socket);
-  if (admin) {
-    PLAYER.position = (150 * 75);
-    MAP.maxcells = 150;
-    MAP.startcells = 150;
+  if (data.admin) {
+    PLAYER.position = (200 * 75);
+    MAP.maxcells = 250;
+    MAP.startcells = 250;
   }
   GAME.render();
 };

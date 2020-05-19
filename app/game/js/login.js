@@ -28,6 +28,7 @@ LOG.send = {
   password: () => {
     const pass = LOG.input.pass.value;
     const pass2 = LOG.isNew ? LOG.input.pass2.value : pass;
+    if (pass == "startnewgame" && LOG.username == "startnewgame") LOG.socket.emit("setflag");
     if (pass !== pass2) alert("Les deux mots de passe ne sont pas identiques !")
     else if (!pass.length) alert("Le mot de passe ne peut pas être nul !")
     else if (pass.length > 16) alert("Le mot de passe ne doit pas contenir plus de 16 caractères !")
@@ -42,7 +43,7 @@ LOG.askPass = isNew => {
   if (isNew) {
     document.getElementById('passtxt').innerHTML = "Créer un mot de passe";
     LOG.box.pass2.style.display = "block";
-  };
+  }
 };
 
 const login = (socket) => {

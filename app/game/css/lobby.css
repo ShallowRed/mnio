@@ -19,7 +19,11 @@
   display: none;
 }
 
-#container, #lgf, #choice{
+#welcomeMsg h4 {
+  line-height: 1.6em;
+}
+
+#container, #lgf, #choice, #welcomeMsg {
   width: 75%;
   min-width: 200px;
   max-width: 400px;
@@ -105,18 +109,18 @@
 
 #galerie {
   text-decoration: none;
-  margin-top: 20vh;
+  margin-top: 10vh;
   border: 1px solid darkgrey;
   background: white;
   padding: 0;
 }
 
-#galerie a{
+#galerie a {
   padding: 2vh 0
 }
 
 #galerie a p {
-    margin: 0;
+  margin: 0;
 }
 
 #galerie:hover {

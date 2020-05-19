@@ -1,4 +1,5 @@
 #introTuto {
+  position: absolute;
   opacity: 0;
   transition: all 0.4s ease;
   border-radius: 5px;
@@ -6,13 +7,16 @@
   width: 50%;
   min-width: 250px;
   max-width: 350px;
-  margin: 0 auto;
   background: var(--grey);
   box-sizing: border-box;
-  padding: 5%;
+  padding: 1.5em;
 }
 
-#introTuto * {
+#introTuto h4 {
+  margin: 2% 0;
+}
+
+#info, #lastInfo, #moveImg, #introTuto button {
   display: none;
 }
 
@@ -20,14 +24,13 @@
   width: 60%;
   min-width: 150px;
   max-width: 200px;
-  margin: 5% auto;
+  margin: 2% auto;
   padding: 10px 2%;
 }
 
 #follow, #play {
-  margin-top: 15%;
+  margin-top: 10%;
 }
-
 
 #info {
   width: 100%;
@@ -37,6 +40,55 @@
 }
 
 #moveIcon {
+  max-height: 200px;
   width: 100%;
   object-fit: contain;
+}
+
+#lastInfo {
+  opacity: 0;
+}
+
+#help {
+  top: 63px;
+}
+
+#bug {
+  top: 15px;
+}
+
+#lastInfo h4 {
+  color: blue;
+  position: fixed;
+  right: 50px;
+  background: var(--grey);
+  margin: 0;
+}
+
+#lastInfo img {
+  width: 25px;
+  height: 25px;
+  transform: translateY(8px);
+}
+
+@media screen and (min-width: 650px) {
+  #moveImg {
+    margin: 1em auto 0;
+    max-width: 200px;
+  }
+
+  #introTuto {
+    top: 50%;
+    right: 0;
+    margin-right: 20px;
+    transform: translateY(-50%);
+  }
+}
+
+@media screen and (max-width: 650px) {
+  #introTuto {
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 10px;
+  }
 }

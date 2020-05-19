@@ -11,43 +11,42 @@ let next;
 
 const KeyboardInput = (event, PLAYER, GAME, UI, MAP, socket) => {
   if (GAME.flag.translate || !GAME.flag.moveCallback || GAME.flag.input) return;
-  switch (event.keyCode) {
+  switch (event.code) {
 
-    case 32: // Spacebar
+    case "Space":
       Render.fill(PLAYER.position, PLAYER.Scolor, GAME, PLAYER, MAP, socket);
       break;
 
-    case 81: // Q
-      zoom("in", GAME, MAP, UI);
+    case "KeyW":
+      zoom(UI.isAlt ? "out" : "in", GAME, MAP, UI);
       break;
 
-    case 68: // D
-      zoom("out", GAME, MAP, UI);
-      break;
+      //   zoom("out", GAME, MAP, UI);
+      //   break;
 
-    case 90: // Z
+    case "ControlLeft":
       next = (PLAYER.colors.indexOf(PLAYER.Scolor) + 1) % PLAYER.colors.length;
       selectColor(next, PLAYER, UI);
       break;
 
-    case 83: // S
+    case "ShiftLeft":
       next = (PLAYER.colors.indexOf(PLAYER.Scolor) + PLAYER.colors.length - 1) % PLAYER.colors.length;
       selectColor(next, PLAYER, UI);
       break;
 
-    case 37: // left arrow
+    case "ArrowLeft":
       move("left", GAME, PLAYER, MAP, socket);
       break;
 
-    case 38: // top arrow
+    case "ArrowUp":
       move("up", GAME, PLAYER, MAP, socket);
       break;
 
-    case 39: // right arrow
+    case "ArrowRight":
       move("right", GAME, PLAYER, MAP, socket);
       break;
 
-    case 40: // bottom arrow
+    case "ArrowDown":
       move("down", GAME, PLAYER, MAP, socket);
       break;
   }

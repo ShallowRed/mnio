@@ -1,23 +1,26 @@
 import Render from '../utils/render'
 
 const MAP = {
+
   maxcells: 100,
   startcells: 31,
   mincells: 11,
   margin: {},
-};
 
-MAP.init = () => {
-  MAP.master = document.getElementById('master');
-  MAP.canvas = document.querySelectorAll('.mapcanvas');
-  MAP.ctx = Array.from(MAP.canvas).map(canvas => canvas.getContext('2d'));
-  MAP.ctx.forEach(ctx => ctx.imageSmoothingEnabled = false);
-  MAP.masks = {
+  master: document.getElementById('master'),
+  canvas: document.querySelectorAll('.mapcanvas'),
+
+  masks: {
     top: document.getElementById('topmask'),
     bottom: document.getElementById('bottommask'),
     right: document.getElementById('rightmask'),
     left: document.getElementById('leftmask')
-  };
+  }
+};
+
+MAP.init = () => {
+  MAP.ctx = Array.from(MAP.canvas).map(canvas => canvas.getContext('2d'));
+  MAP.ctx.forEach(ctx => ctx.imageSmoothingEnabled = false);
 };
 
 MAP.update = () => {
@@ -71,48 +74,69 @@ MAP.update = () => {
 };
 
 MAP.render = (animated, PLAYER, GAME) => {
-
-  MAP.master.style.transitionDuration = (animated) ? GAME.duration + 's' : '0s';
-
-  MAP.master.style.marginTop =
-    PLAYER.is.up ? MAP.margin.top + "px" :
-    PLAYER.is.down ? MAP.windowHeight - MAP.height - MAP.margin.bottom + "px" :
-    MAP.ratio ? Math.round((MAP.windowHeight - MAP.height) / 2) + 'px ' : '0px ';
-
-  MAP.master.style.marginLeft =
-    PLAYER.is.left ? MAP.margin.left + "px" :
-    PLAYER.is.right ? MAP.windowWidth - MAP.width - MAP.margin.right + "px" :
-    MAP.ratio ? '0px ' : Math.round((MAP.windowWidth - MAP.width) / 2) + 'px ';
-
-  if (!animated) return;
-
-  let amount = [
-    (PLAYER.lastdir == 'up' && PLAYER.coord[0] + 1 >= MAP.half[0] && PLAYER.coord[0] < GAME.RowCol[0] - MAP.half[0]) ? '0px' :
-    (PLAYER.lastdir == 'down') ? (PLAYER.coord[0] == MAP.half[0]) ? - MAP.cellSize + 'px' :
-    (PLAYER.coord[0] > MAP.half[0] && PLAYER.coord[0] <= GAME.RowCol[0] - MAP.half[0]) ? -2 * MAP.cellSize + 'px' : null : null,
-    (PLAYER.lastdir == 'left' && PLAYER.coord[1] + 1 >= MAP.half[1] && PLAYER.coord[1] < GAME.RowCol[1] - MAP.half[1]) ? '0px' :
-    (PLAYER.lastdir == 'right') ? (PLAYER.coord[1] == MAP.half[1]) ? - MAP.cellSize + 'px' :
-    (PLAYER.coord[1] > MAP.half[1] && PLAYER.coord[1] <= GAME.RowCol[1] - MAP.half[1]) ? - 2* MAP.cellSize + 'px' : null : null
-  ];
-
-  MAP.canvas.forEach(canvas => {
-    canvas.style.transitionDuration = GAME.duration + 's';
-    if (amount[0]) canvas.style.top = amount[0];
-    if (amount[1]) canvas.style.left = amount[1];
-  });
-
+  translate.master(PLAYER, GAME.duration, animated);
+  if (animated) translate.canvas(PLAYER, GAME);
 };
 
 MAP.draw = (PLAYER, GAME) => {
   MAP.ctx.forEach(ctx => ctx.clearRect(0, 0, MAP.canvas[1].width, MAP.canvas[1].height));
+  const shift = {
+    top: PLAYER.is.up ? 0 : PLAYER.is.down ? 2 : 1,
+    left: PLAYER.is.left ? 0 : PLAYER.is.right ? 2 : 1
+  };
   MAP.canvas.forEach(canvas => {
     canvas.style.transitionDuration = '0s';
-    canvas.style.top = '-' + MAP.cellSize * (PLAYER.is.up ? 0 : PLAYER.is.down ? 2 : 1) + 'px';
-    canvas.style.left = '-' + MAP.cellSize * (PLAYER.is.left ? 0 : PLAYER.is.right ? 2 : 1) + 'px';
+    canvas.style.top = '-' + MAP.cellSize * shift.top + 'px';
+    canvas.style.left = '-' + MAP.cellSize * shift.left + 'px';
   });
   GAME.allowed.forEach(position => Render.allowed(position, PLAYER, GAME, MAP));
   GAME.positions.forEach(position => Render.position(position, PLAYER, GAME, MAP));
   GAME.colors.map((color, i) => color ? i : null).filter(color => color).forEach((position) => Render.color(position, PLAYER, GAME, MAP))
 };
+
+const translate = {
+
+  master: (PLAYER, duration, animated) => {
+    MAP.master.style.transitionDuration = (animated) ? duration + 's' : '0s';
+
+    MAP.master.style.marginTop =
+      PLAYER.is.up ? MAP.margin.top + "px" :
+      PLAYER.is.down ? MAP.windowHeight - MAP.height - MAP.margin.bottom + "px" :
+      MAP.ratio ? Math.round((MAP.windowHeight - MAP.height) / 2) + 'px ' : '0px ';
+
+    MAP.master.style.marginLeft =
+      PLAYER.is.left ? MAP.margin.left + "px" :
+      PLAYER.is.right ? MAP.windowWidth - MAP.width - MAP.margin.right + "px" :
+      MAP.ratio ? '0px ' : Math.round((MAP.windowWidth - MAP.width) / 2) + 'px ';
+  },
+
+  canvas: (PLAYER, GAME) => {
+    const isGoing = dir => PLAYER.lastdir == dir;
+
+    const isPlayer = (condition, i) => {
+      if (condition == "inCenter") return (PLAYER.coord[i] + 1 >= MAP.half[i] && PLAYER.coord[i] < GAME.RowCol[i] - MAP.half[i]);
+      else if (condition == "onLimit") return PLAYER.coord[i] == MAP.half[i];
+      else if (condition == "strictCenter") return (PLAYER.coord[i] > MAP.half[i] && PLAYER.coord[i] <= GAME.RowCol[i] - MAP.half[i]);
+    }
+
+    const shift = {
+      top: isPlayer("inCenter", 0) && isGoing("up") ?
+        0 : isGoing("down") ? isPlayer("onLimit", 0) ?
+        -1 : isPlayer("strictCenter", 0) ?
+        -2 : null : null,
+      left: isPlayer("inCenter", 1) && isGoing("left") ?
+        0 : isGoing("right") ? isPlayer("onLimit", 1) ?
+        -1 : isPlayer("strictCenter", 1) ?
+        -2 : null : null
+    };
+
+    MAP.canvas.forEach(canvas => {
+      canvas.style.transitionDuration = GAME.duration + 's';
+      if (shift.top !== null) canvas.style.top = shift.top * MAP.cellSize + 'px';
+      if (shift.left !== null) canvas.style.left = shift.left * MAP.cellSize + 'px';
+    });
+  }
+}
+
 
 export default MAP

@@ -19,7 +19,6 @@ const touchEnd = (evt, GAME) => {
 }
 
 const touchMove = (evt, PLAYER, GAME, MAP, socket) => {
-  let start = Touch.start
   if (!Touch.start[0] || !Touch.start[1]) return;
   Touch.delta = [Touch.start[0] - evt.touches[0].clientX, Touch.start[1] - evt.touches[0].clientY];
   Touch.direction = Math.abs(Touch.delta[0]) > Math.abs(Touch.delta[1]) ? Touch.delta[0] > 0 ? "left" : "right" : Touch.delta[1] > 0 ? "up" : "down";

@@ -5,8 +5,5 @@ data/
 app/gallery/games/
 .remote-sync.json
 config/mnio.config.js
-config/colors.js
-config/colors2.js
-config/colors3.js
-config/pokedex.js
+config/colors/
 config/pokedex.min.js

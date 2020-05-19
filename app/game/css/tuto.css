@@ -2,7 +2,7 @@
   opacity: 0;
   display: none;
   box-sizing: border-box;
-  padding-top: 10vh;
+  padding-top: 20vh;
 }
 
 #allTuto, #pcTuto, #mobileTuto {
@@ -17,7 +17,7 @@
   display: none;
 }
 
-#tuto h2, .bug b, #tuto h3 {
+#tuto h2, #tuto h3 {
   color: blue;
 }
 

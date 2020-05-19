@@ -3,7 +3,7 @@ const update = (APP) => {
   let w = window.innerWidth;
   let h = window.innerHeight;
 
-  let length = (w < h) ? Math.round(w * 0.9) : Math.round(h * 0.8);
+  let length = (w < h) ? w * 0.9 : h * 0.8;
 
   APP.CellSize = Math.round(length / APP.rows);
 

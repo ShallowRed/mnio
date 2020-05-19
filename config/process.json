@@ -11,6 +11,7 @@
     ".git",
     "remote-sync.json",
     "README.md",
+    "config/colors",
     "config/webpack.config.js",
     "config/webpack-gallery.config.js",
   ],

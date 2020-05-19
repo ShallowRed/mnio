@@ -6,9 +6,13 @@ const TUTO = {
   pc: document.getElementById('pcTuto'),
   all: document.getElementById('allTuto'),
   info: document.getElementById('info'),
+  lastInfo: document.getElementById('lastInfo'),
   text: document.getElementById('textInfo'),
+  help: document.getElementById('help'),
   moveImg: document.getElementById('moveImg'),
   moveIcon: document.getElementById('moveIcon'),
+  openTuto: document.querySelector("#openTuto img"),
+  refresh: document.querySelector("#refresh img"),
 
   btn: {
     follow: document.getElementById('follow'),
@@ -17,17 +21,17 @@ const TUTO = {
   },
 
   pcMessage: {
-    welcome: "Bienvenue sur MN.io ! Vous venez d'être placé aléatoirement sur une tapisserie. D'autres joueurs y sont présents !",
-    fill: "Vous pouvez colorier une case de la tapisserie en appuyant sur la barre espace.",
-    move: "Bravo ! Vous possédez désormais cette case, personne ne pourra y aller ! Vous pouvez désormais vous déplacer sur les cases que vous contrôlez et sur les cases grises autour uniquement.",
-    info: "Vous pouvez zoomer ici, retrouver les informations ici et raffraîchir ici.",
+    welcome: "Bienvenue ! Vous venez d'être placé.e sur une tapisserie. D'autres joueurs y sont présents !",
+    fill: "Vous pouvez changer de couleurs avec les touches CTRL et MAJ, colorier une case avec la barre espace ou en cliquant sur une couleur.",
+    move: "Bravo, cette case est à vous ! Vous pouvez désormais vous déplacer sur les cases grises.",
+    info: "Félicitations, vous êtes prêt.e à dessiner !",
   },
 
   mobileMessage: {
-    welcome: "Bienvenue sur MN.io ! Vous venez d'être placé aléatoirement sur une tapisserie. D'autres joueurs y sont présents !",
-    fill: "Vous pouvez colorier une case de la tapisserie en cliquant sur une des couleurs que vous possedez.",
-    move: "Bravo ! Vous possédez désormais cette case, personne ne pourra y aller ! Vous pouvez désormais vous déplacer sur les cases que vous contrôlez et sur les cases grises autour uniquement.",
-    info: "Vous pouvez zoomer ici, retrouver les informations ici et raffraîchir ici.",
+    welcome: "Bienvenue ! Vous venez d'être placé.e sur une tapisserie. D'autres joueurs y sont présents !",
+    fill: "Vous pouvez colorier une case en cliquant sur une des couleurs que vous possedez. &#8595;",
+    move: "Déplacez vous !",
+    info: "Félicitations, vous êtes prêt.e à dessiner !",
   },
 
   setMsg: e => TUTO.text.innerHTML = TUTO.message[e],
@@ -43,19 +47,37 @@ TUTO.init = () => {
 
   TUTO.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   TUTO.message = TUTO.isMobile ? TUTO.mobileMessage : TUTO.pcMessage;
-  TUTO.moveIcon.src = 'dist/img/' + (TUTO.isMobile ? 'swipe' : 'pcmove') +'.png';
+  TUTO.moveIcon.src = 'dist/img/' + (TUTO.isMobile ? 'swipe' : 'pcmove') + '.png';
 
   TUTO.btn.follow.addEventListener("click", () => {
     TUTO.phase.fill();
     document.addEventListener('keydown', event => {
-      if (TUTO.isFirstFill(event)) {
-console.log("firstfill");
-        TUTO.phase.move()}
-      else if (TUTO.isFirstMove(event)) {
-        console.log("firstmove");
-
-        TUTO.phase.info()};
+      if (TUTO.isFirstFill(event)) TUTO.phase.move();
+      else if (TUTO.isFirstMove(event)) TUTO.phase.info();
     })
+  });
+
+  document.querySelectorAll('.color').forEach(e => {
+    e.addEventListener("touchstart", event => {
+      event.preventDefault();
+      if (TUTO.firstFill) TUTO.phase.move();
+    });
+    e.addEventListener("click", () => {
+      if (TUTO.firstFill) TUTO.phase.move();
+    })
+  });
+
+  document.addEventListener("touchstart", event => {
+    event.preventDefault();
+    if (TUTO.firstMove) TUTO.touch = [event.touches[0].clientX, event.touches[0].clientY]
+  });
+
+  document.addEventListener("touchmove", event => {
+    event.preventDefault();
+    if (TUTO.firstMove) {
+      TUTO.delta = [TUTO.touch[0] - event.touches[0].clientX, TUTO.touch[1] - event.touches[0].clientY];
+      if (TUTO.delta[0] > 5 || TUTO.delta[1] > 5) TUTO.phase.info()
+    }
   });
 
   TUTO.btn.skip.addEventListener("click", () => TUTO.phase.end());
@@ -90,7 +112,11 @@ TUTO.phase = {
       show(TUTO.window);
       show(TUTO.moveImg);
       show(TUTO.moveIcon);
-      TUTO.firstMove = true;
+      if (TUTO.isMobile) setTimeout(() => {
+        hide(TUTO.window);
+        TUTO.firstMove = true;
+      }, 2000);
+      else TUTO.firstMove = true;
     }, 1000)
   },
 
@@ -99,6 +125,7 @@ TUTO.phase = {
     hide(TUTO.moveImg, true);
     hide(TUTO.moveIcon, true);
     TUTO.setMsg("info");
+    show(TUTO.lastInfo);
     setTimeout(() => {
       TUTO.firstMove = false;
       show(TUTO.window);
@@ -113,6 +140,7 @@ TUTO.phase = {
   },
 
   inGame: () => {
+    hide(TUTO.help);
     if (TUTO.isMobile) TUTO.mobile.style.display = "block";
     else TUTO.pc.style.display = "block";
     TUTO.all.style.display = "block";

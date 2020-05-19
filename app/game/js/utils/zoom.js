@@ -1,7 +1,6 @@
-const focusZoom = (btn, bool, flag) => {
+const focusZoom = (btn, bool) => {
   btn.style.color = btn.style.borderColor = bool ? "blue" : "black";
   btn.style.transform = bool ? "scale(1)" : "scale(0.8)";
-  flag = bool;
 }
 
 const zoom = (dir, GAME, MAP, UI) => {

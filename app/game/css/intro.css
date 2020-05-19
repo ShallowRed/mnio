@@ -41,6 +41,15 @@
 }
 
 @media screen and (min-width: 650px) {
+
+  #introMsg {
+    position: absolute;
+    top: 5vh;
+  }
+  #introMsg p{
+    font-size: 1.2em;
+  }
+
   #left {
     width: 30%;
     max-width: 350px;
@@ -87,7 +96,7 @@
 
   #description {
     padding: 7%;
-    bottom: 28%;
+    bottom: 23%;
   }
 
   #palette {
@@ -101,8 +110,8 @@
   }
 
   #tapImg {
-    max-height: 300px;
-    bottom: 43%;
+    max-height: 250px;
+    bottom: 37%;
     width: 95%;
     margin: 0 2.5%;
   }
@@ -131,7 +140,7 @@
   padding: 0.5em 1em;
 }
 
-#select  {
+#select {
   background: blue;
   border: 1px solid blue;
 }

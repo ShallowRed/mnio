@@ -12,12 +12,14 @@
   const forgot = document.getElementById('forgot');
   const lejeu = document.getElementById('jeu');
   const lagalerie = document.getElementById('galerie');
+  const welcomeMsg = document.getElementById('welcomeMsg');
 
   const show = (elem) => elem.style.display = 'block';
   const hide = (elem) => elem.style.display = 'none';
 
   lejeu.addEventListener("click", () => {
     hide(lejeu);
+    hide(welcomeMsg);
     hide(lagalerie);
     show(container);
   });
@@ -75,6 +77,7 @@
     show(logBtn);
   });
 
+  document.getElementById('logo').addEventListener("click", () => window.location.reload(true));
   document.getElementById('refresh').addEventListener("click", () => window.location.reload(true));
 
   window.addEventListener('appinstalled', () => {

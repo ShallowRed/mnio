@@ -1,6 +1,3 @@
-import GAME from '../../games/game1'
-import CELL from '../models/cell';
-
 const Events = {
   init: APP => {
     Object.keys(Events.click).forEach(prop => {

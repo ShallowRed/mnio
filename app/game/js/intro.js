@@ -28,29 +28,29 @@ const changeTap = () => {
 rdm.addEventListener("click", () => changeTap())
 changeTap();
 
-const Intro = (data, socket, admin) => {
-  if (data.new) newPlayer(data, socket, admin);
-  else returningPlayer(data, socket, admin);
+const Intro = (data, socket) => {
+  if (data.new) newPlayer(data, socket);
+  else returningPlayer(data, socket);
   hide(lobby);
 }
 
-const newPlayer = (data, socket, admin) => {
+const newPlayer = (data, socket) => {
   intro.style.display = "flex";
-  select.addEventListener("click", () => selectPalette(data, socket, admin, tap.index))
+  select.addEventListener("click", () => selectPalette(data, socket, tap.index))
 };
 
-const returningPlayer = (data, socket, admin) => {
+const returningPlayer = (data, socket) => {
   TUTO.phase.inGame();
-  GAME.init(data, socket, admin);
+  GAME.init(data, socket);
 };
 
-const selectPalette = (data, socket, admin, index) => {
+const selectPalette = (data, socket, index) => {
   data.colors = pokedex[index].palette;
   socket.emit("setInit", index);
   socket.on("startPos", position => {
     data.position = position;
     TUTO.phase.welcome();
-    GAME.init(data, socket, admin);
+    GAME.init(data, socket);
     hide(intro);
   })
 }

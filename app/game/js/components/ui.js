@@ -109,6 +109,12 @@ const Listeners = {
   },
 
   browser: (GAME, PLAYER, MAP, socket) => {
+    document.addEventListener('keydown', event => {
+      if (event.code == "AltLeft") UI.isAlt = true;
+    });
+    document.addEventListener('keyup', event => {
+      if (event.code == "AltLeft") UI.isAlt = false;
+    });
     document.addEventListener('keydown', event => KeyboardInput(event, PLAYER, GAME, UI, MAP, socket));
     document.addEventListener('keyup', () => GAME.flag.input = false);
   },

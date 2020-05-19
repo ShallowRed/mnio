@@ -26,22 +26,22 @@ let config = {
   },
   module: {
     rules: [
-      // {
-      //   test: /\.js$/,
-      //   enforce: 'pre',
-      //   exclude: /node_modules/,
-      //   use: {
-      //     loader: 'eslint-loader',
-      //     options: {
-      //       emitWarning: true,
-      //     }
-      //   },
-      // },
-      // {
-      //   test: /\.js$/,
-      //   exclude: /(node_modules)/,
-      //   use: 'babel-loader'
-      // },
+      {
+        test: /\.js$/,
+        enforce: 'pre',
+        exclude: /node_modules/,
+        use: {
+          loader: 'eslint-loader',
+          options: {
+            emitWarning: true,
+          }
+        },
+      },
+      {
+        test: /\.js$/,
+        exclude: /(node_modules)/,
+        use: 'babel-loader'
+      },
       {
         test: /\.ejs$/,
         use: ['ejs-loader']
