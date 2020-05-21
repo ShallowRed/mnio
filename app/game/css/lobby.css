@@ -75,21 +75,21 @@
 
 #iosMessage p {
   margin: 1vh 0;
-  line-height: 1.7em;
-  font-size: 1.2em;
+  line-height: 1.2em;
+  font-size: 1em;
 }
 
 #iosMessage img {
-  height: 50px;
-  width: 50px;
+  height: 30px;
+  width: 30px;
 }
 
 #share {
-  transform: translateY(15px);
+  transform: translateY(5px);
 }
 
 #save {
-  transform: translateY(20px);
+  transform: translateY(9px);
 }
 
 #https, #installedMessage {

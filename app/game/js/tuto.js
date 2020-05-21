@@ -36,7 +36,7 @@ const TUTO = {
 
   setMsg: e => TUTO.text.innerHTML = TUTO.message[e],
 
-  firstFill: true,
+  firstFill: false,
   firstMove: false,
   isFirstFill: event => event.keyCode == 32 && TUTO.firstFill,
   isFirstMove: event => (event.keyCode == 37 || event.keyCode == 38 || event.keyCode == 39 || event.keyCode == 40) && TUTO.firstMove,
@@ -50,6 +50,7 @@ TUTO.init = () => {
   TUTO.moveIcon.src = 'dist/img/' + (TUTO.isMobile ? 'swipe' : 'pcmove') + '.png';
 
   TUTO.btn.follow.addEventListener("click", () => {
+    TUTO.firstFill = true;
     TUTO.phase.fill();
     document.addEventListener('keydown', event => {
       if (TUTO.isFirstFill(event)) TUTO.phase.move();
@@ -74,9 +75,9 @@ TUTO.init = () => {
 
   document.addEventListener("touchmove", event => {
     event.preventDefault();
-    if (TUTO.firstMove) {
-      TUTO.delta = [TUTO.touch[0] - event.touches[0].clientX, TUTO.touch[1] - event.touches[0].clientY];
-      if (TUTO.delta[0] > 5 || TUTO.delta[1] > 5) TUTO.phase.info()
+    if (TUTO.firstMove && TUTO.touch) {
+      TUTO.delta = [Math.abs(TUTO.touch[0] - event.touches[0].clientX), Math.abs(TUTO.touch[1] - event.touches[0].clientY)];
+      if (TUTO.delta[0] > 5 || TUTO.delta[1] > 5) TUTO.phase.info();
     }
   });
 
@@ -115,23 +116,36 @@ TUTO.phase = {
       if (TUTO.isMobile) setTimeout(() => {
         hide(TUTO.window);
         TUTO.firstMove = true;
-      }, 2000);
+      }, 1500);
       else TUTO.firstMove = true;
-    }, 1000)
+    }, 1000);
   },
 
   info: () => {
+    TUTO.firstMove = false;
     hide(TUTO.window, true);
     hide(TUTO.moveImg, true);
     hide(TUTO.moveIcon, true);
     TUTO.setMsg("info");
     show(TUTO.lastInfo);
     setTimeout(() => {
-      TUTO.firstMove = false;
       show(TUTO.window);
-      show(TUTO.btn.play);
-    }, 1000)
+      setTimeout(() => TUTO.phase.end(), 3000)
+    }, 500)
   },
+
+  // info: () => {
+  //   hide(TUTO.window, true);
+  //   hide(TUTO.moveImg, true);
+  //   hide(TUTO.moveIcon, true);
+  //   TUTO.setMsg("info");
+  //   show(TUTO.lastInfo);
+  //   setTimeout(() => {
+  //     TUTO.firstMove = false;
+  //     show(TUTO.window);
+  //     show(TUTO.btn.play);
+  //   }, 1000)
+  // },
 
   end: () => {
     hide(TUTO.introTuto);

@@ -20,9 +20,10 @@ const LOG = {
 
 LOG.send = {
   username: () => {
-    LOG.username = LOG.input.user.value;
-    if (!LOG.username.length) alert("Le nom d'utilisateur ne peut pas être nul !")
-    else LOG.socket.emit("username", LOG.username);
+    const user = LOG.username = LOG.input.user.value;
+    if (!user.length) alert("Le nom d'utilisateur ne peut pas être nul !")
+    else if (user.length > 15) alert("Le nom d'utilisateur ne doit pas contenir plus de 15 caractères !")
+    else LOG.socket.emit("username", user);
   },
 
   password: () => {
@@ -31,7 +32,7 @@ LOG.send = {
     if (pass == "startnewgame" && LOG.username == "startnewgame") LOG.socket.emit("setflag");
     if (pass !== pass2) alert("Les deux mots de passe ne sont pas identiques !")
     else if (!pass.length) alert("Le mot de passe ne peut pas être nul !")
-    else if (pass.length > 16) alert("Le mot de passe ne doit pas contenir plus de 16 caractères !")
+    else if (pass.length > 20) alert("Le mot de passe ne doit pas contenir plus de 20 caractères !")
     else LOG.socket.emit("password", [LOG.username, pass]);
   }
 };
