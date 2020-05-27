@@ -1,0 +1,9 @@
+#description {
+  z-index: 300;
+}
+
+#descbox {
+  position: absolute;
+  left: 7%;
+  transform: translateY(-50%);
+}

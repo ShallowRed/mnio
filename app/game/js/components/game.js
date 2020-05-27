@@ -87,8 +87,14 @@ GAME.events = {
 
   error: () => window.location.reload(true),
 
-  reconnect_attempt: () => window.location.reload(true)
+  reconnect_attempt: () => {
 
+    // setTimeout(() =>
+    // window.location.reload(true),2000)
+
+    window.location.reload(true)
+
+  }
 }
 
 

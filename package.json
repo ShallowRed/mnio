@@ -3,8 +3,11 @@
   "version": "0.1.0",
   "description": "jeu de tapisserie en ligne",
   "dependencies": {
+    "cookie-parser": "^1.4.5",
     "core-js": "^3.6.5",
+    "d3": "^5.16.0",
     "express": "^4.17.1",
+    "express-session": "^1.17.1",
     "hex-to-hsl": "^1.0.2",
     "mysql": "^2.18.1",
     "pm2": "^4.2.3",

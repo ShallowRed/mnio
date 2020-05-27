@@ -1,16 +1,33 @@
-<script src="https://d3js.org/d3.v5.min.js"></script>
-
-<div id="container">
 <div id="dataviz">
-  <div id="dvBtns">
+  <div id="game"></div>
 
-  <button id="hue">
-    O
-  </button>
+  <%= require('./dvswitches.ejs')() %>
 
-  <button id="bars">
-    iii
-  </button>
-</div>
-</div>
+  <div id="togglesort">
+    <div id="ds">teinte</div>
+    <label id="hueSwitch" class="switch">
+      <input id="sortHue" type="checkbox">
+      <span class="slider"></span>
+    </label>
+    <div id="ds">fréquence</div>
+  </div>
+
+  <div id="graphs">
+    <div id="bars"></div>
+  </div>
+  
+  <%= require('./carton.ejs')() %>
+
+  <%= require('./legend.ejs')() %>
+
+  <%= require('./insights.ejs')() %>
+
+  <div id="explore">
+    explorer
+    <label class="switch">
+      <input id="exploreBars" type="checkbox">
+      <span class="slider"></span>
+    </label>
+  </div>
+
 </div>

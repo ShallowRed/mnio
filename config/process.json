@@ -5,6 +5,7 @@
     "node_modules",
     "app",
     "dist",
+    "data",
     "admin",
     ".gitignore",
     ".gitattributes",

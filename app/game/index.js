@@ -15,12 +15,17 @@ import './css/utils.css';
 import './css/tuto.css';
 
 const socket = io();
-
 login(socket);
+// const ids = [];
+// login(socket, ids);
 
 // if (window.location.hostname == "localhost" || window.location.hostname !== "127.0.0.1")
 //   socket.emit("login", ["a", "a"] );
 
-socket.on('InitData', data => Intro(data, socket));
+socket.on('InitData', data => {
+  // data.ids = ids;
+  // console.log(data);
+  Intro(data, socket)
+});
 
 socket.on('alert', data => alert(data));

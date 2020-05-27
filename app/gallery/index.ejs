@@ -2,6 +2,7 @@
 <html>
 
 <head>
+	<link href="https://fonts.googleapis.com/css?family=Inconsolata&display=swap" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
 	<title>Mnio - Galerie</title>
 	<meta name="viewport" content="width=device-width, height=device-height">
@@ -11,17 +12,19 @@
 
 <body>
 
+	<div id="menu">
+		<img id="logo" src="/dist/img/logo-full.png" alt="sorry">
+		<h3 id="galleryMenu">| La galerie</h3>
+	</div>
+	<%= require('./ejs/gamelist.ejs')() %>
+	<div id="gallery">
+		<%= require('./ejs/description.ejs')() %>
+		<%= require('./ejs/canvas.ejs')() %>
+		<%= require('./ejs/dataviz.ejs')() %>
+	</div>
 	<div id="cover"></div>
 
-	<img id="logo" src="/dist/img/logo-full.png" alt="sorry">
-
-	<%= require('./ejs/buttons.ejs')() %>
-
-	<canvas id="canvas"></canvas>
-	<button id="back"><a href="/">&#8592; Revenir à l'accueil<a></button>
-
-</body>
-<script src="/dist/gallery/gallery.js"></script>
+	<script src="/dist/gallery/gallery.js"></script>
 </body>
 
 </html>

@@ -36,12 +36,15 @@ const Render = {
     if (!GAME.owned.includes(position)) GAME.owned.push(position);
     GAME.colors[position] = color;
     window.Fill.init(check(position, PLAYER, GAME, MAP), color, GAME, MAP);
-    socket.emit("DrawCell", [position, color]);
+    socket.emit("fill", {
+      position: position,
+      color: color.split('#')[1]
+    });
     GAME.flag.fillCallback = false;
   }
 };
 
-function roundRect(ctx, x, y, width, height, radius, MAP) {
+const roundRect = (ctx, x, y, width, height, radius, MAP) => {
   ctx.strokeStyle = "black";
   ctx.lineWidth = MAP.shift;
   ctx.beginPath();

@@ -1,0 +1,54 @@
+#carton {
+  position: absolute;
+  height: 84%;
+  width: 44%;
+  top: 50%;
+  transform: translateY(-43%);
+}
+
+#degaulle {
+  height: 45%;
+}
+
+#degaulle img{
+  max-height: 92%;
+}
+
+#wool, #duration {
+  height: 25%;
+}
+
+.carton {
+  display: flex;
+  width: 100%;
+  padding: 3% 10%;
+  box-sizing: border-box;
+}
+
+.carton img {
+  height: 100%;
+  object-fit: contain;
+}
+
+#wool img, #duration img {
+  max-width: 95px;
+}
+
+.tapInfo {
+  padding-left: 11%;
+}
+
+.tapInfo p {
+  margin: 5vh 0;
+  line-height: 1.7em;
+}
+
+.carton span {
+  color: blue;
+  font-size: 1em;
+  font-weight: 600;
+}
+
+#dg, #dgScale {
+  transform-origin: bottom;
+}
