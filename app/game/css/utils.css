@@ -6,29 +6,23 @@
   position: fixed;
   height: 30px;
   width: 30px;
-}
-
-#refresh:hover, #openTuto:hover,  #closeTuto:hover {
-  opacity: 1;
-  color: blue;
-}
-
-#refresh, #openTuto, #closeTuto {
   right: 10px;
   filter: grayscale(100%);
+
+  &:hover {
+    opacity: 1;
+    color: blue;
+    filter: grayscale(0%);
+  }
 }
 
-#refresh{
-  z-index: 960;
-  top: 10px;
-}
-
-#refresh:hover, #openTuto:hover, #closeTuto:hover {
-  filter: grayscale(0%);
-}
-
- #closeTuto, #openTuto{
-   display: none;
+#closeTuto, #openTuto {
+  display: none;
   z-index: 970;
   top: 60px;
+}
+
+#refresh {
+  z-index: 960;
+  top: 10px;
 }

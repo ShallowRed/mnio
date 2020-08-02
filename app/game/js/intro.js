@@ -1,42 +1,46 @@
 import GAME from './components/game';
-import pokedex from './components/pokedex';
 import TUTO from './tuto';
+import Pokedex from './components/pokedex';
 
-const lobby = document.getElementById('lobby');
-const intro = document.getElementById('intro');
-const select = document.getElementById('select');
-const palette = document.querySelectorAll(".pal");
-const rdm = document.getElementById('rdm');
 const tap = {
   index: null,
   img: document.getElementById("tapImg"),
   description: document.getElementById("description")
 }
 
-let indexList = pokedex.map((e, i) => i)
+let indexList = Pokedex.map((e, i) => i)
 
 const changeTap = () => {
-  if (!indexList.length) indexList = pokedex.map((e, i) => i);
+  if (!indexList.length) indexList = Pokedex.map((e, i) => i);
   let rdmIndex = Math.floor(Math.random() * indexList.length);
   tap.index = indexList[rdmIndex];
-  indexList = indexList.filter(e=> e !== tap.index);
+  indexList = indexList.filter(e => e !== tap.index);
   tap.img.src = 'dist/img/pokedex/tap_' + (tap.index + 1) + '.jpg';
-  tap.description.innerHTML = pokedex[tap.index].description;
-  palette.forEach((c, i) => c.style.backgroundColor = pokedex[tap.index].palette[i]);
+  tap.description.innerHTML = Pokedex[tap.index].description;
+  document.querySelectorAll(".pal").forEach((colorButton, i) =>
+    colorButton.style.backgroundColor = Pokedex[tap.index].palette[i]
+  );
 }
 
-rdm.addEventListener("click", () => changeTap())
+document.getElementById('rdm').addEventListener("click", () =>
+  changeTap()
+);
+
 changeTap();
 
 const Intro = (data, socket) => {
-  if (data.new) newPlayer(data, socket);
-  else returningPlayer(data, socket);
-  hide(lobby);
+  if (data.new)
+    newPlayer(data, socket);
+  else
+    returningPlayer(data, socket);
+  hide(document.getElementById('lobby'));
 }
 
 const newPlayer = (data, socket) => {
-  intro.style.display = "flex";
-  select.addEventListener("click", () => selectPalette(data, socket, tap.index))
+  document.getElementById('intro').style.display = "flex";
+  document.getElementById('select').addEventListener("click", () =>
+    selectPalette(data, socket, tap.index)
+  );
 };
 
 const returningPlayer = (data, socket) => {
@@ -45,13 +49,13 @@ const returningPlayer = (data, socket) => {
 };
 
 const selectPalette = (data, socket, index) => {
-  data.colors = pokedex[index].palette;
-  socket.emit("setInit", index);
+  data.colors = Pokedex[index].palette;
+  socket.emit("paletteSelected", index);
   socket.on("startPos", position => {
     data.position = position;
     TUTO.phase.welcome();
     GAME.init(data, socket);
-    hide(intro);
+    hide(document.getElementById('intro'));
   })
 }
 

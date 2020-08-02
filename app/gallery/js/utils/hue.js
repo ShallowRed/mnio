@@ -14,7 +14,8 @@ const sortedByHue = (APP) => {
         amount: e
       }
     })
-    .sort((a, b) => a.hue - b.hue).map(e => {
+    .sort((a, b) => a.hue - b.hue)
+    .map(e => {
       return {
         color: e.color,
         amount: e.amount

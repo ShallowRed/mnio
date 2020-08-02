@@ -10,10 +10,10 @@
   background: var(--grey);
   box-sizing: border-box;
   padding: 1.5em;
-}
 
-#introTuto h4 {
-  margin: 2% 0;
+  & h4 {
+    margin: 2% 0;
+  }
 }
 
 #info, #lastInfo, #moveImg, #introTuto button {

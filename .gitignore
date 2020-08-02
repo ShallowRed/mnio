@@ -4,6 +4,4 @@ admin/
 data/
 app/gallery/games/
 .remote-sync.json
-config/mnio.config.js
-config/colors/
-config/pokedex.min.js
+lib/config.js

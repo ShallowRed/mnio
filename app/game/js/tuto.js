@@ -134,19 +134,6 @@ TUTO.phase = {
     }, 500)
   },
 
-  // info: () => {
-  //   hide(TUTO.window, true);
-  //   hide(TUTO.moveImg, true);
-  //   hide(TUTO.moveIcon, true);
-  //   TUTO.setMsg("info");
-  //   show(TUTO.lastInfo);
-  //   setTimeout(() => {
-  //     TUTO.firstMove = false;
-  //     show(TUTO.window);
-  //     show(TUTO.btn.play);
-  //   }, 1000)
-  // },
-
   end: () => {
     hide(TUTO.introTuto);
     hide(TUTO.window);
@@ -176,6 +163,5 @@ const show = (elem) => {
 }
 
 TUTO.init();
-// TUTO.phase.welcome();
 
 export default TUTO;

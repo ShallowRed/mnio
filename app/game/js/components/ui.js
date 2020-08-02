@@ -35,14 +35,27 @@ UI.update = (MAP) => {
   if (MAP.ratio) UI.btns[2].style.marginTop = "3vh";
   else UI.btns[2].style.marginLeft = "5%";
 
-  UI.btnsBar.style.flexFlow = MAP.ratio ? "column" : "row";
-  UI.btnsBar.style.width = MAP.ratio ? "10%" : "100%";
-  UI.btnsBar.style.height = MAP.ratio ? "100%" : "10%";
-  UI.btnsBar.style.top = MAP.ratio ? "0" : "auto";
-  UI.btnsBar.style.right = MAP.ratio ? "0" : "auto";
-  UI.btnsBar.style.bottom = MAP.ratio ? "auto" : "0";
-  UI.btnsBar.style.paddingLeft = MAP.ratio ? "2%" : "0px";
-  UI.btnsBar.style.paddingTop = MAP.ratio ? "0px" : "1%";
+  [
+    ["flexFlow", ["column", "row"]],
+    ["width", ["10%", "100%"]],
+    ["height", ["100%", "10%"]],
+    ["top", ["0", "auto"]],
+    ["right", ["0", "auto"]],
+    ["bottom", ["auto", "0"]],
+    ["paddingLeft", ["2%", "0px"]],
+    ["paddingTop", ["0px", "1%"]]
+  ].forEach(property => {
+    UI.btnsBar.style[property[0]] = property[1][MAP.ratio ? 0 : 1]
+  });
+
+  // UI.btnsBar.style.flexFlow = MAP.ratio ? "column" : "row";
+  // UI.btnsBar.style.width = MAP.ratio ? "10%" : "100%";
+  // UI.btnsBar.style.height = MAP.ratio ? "100%" : "10%";
+  // UI.btnsBar.style.top = MAP.ratio ? "0" : "auto";
+  // UI.btnsBar.style.right = MAP.ratio ? "0" : "auto";
+  // UI.btnsBar.style.bottom = MAP.ratio ? "auto" : "0";
+  // UI.btnsBar.style.paddingLeft = MAP.ratio ? "2%" : "0px";
+  // UI.btnsBar.style.paddingTop = MAP.ratio ? "0px" : "1%";
 
   UI.tuto.window.style.width = MAP.windowWidth - MAP.margin.right + 2 + "px";
   UI.tuto.window.style.height = MAP.windowHeight - MAP.margin.bottom + 2 + "px";
@@ -86,12 +99,15 @@ const Listeners = {
     });
 
     UI.colorBtns.forEach((colorBtn, i) => {
+
       colorBtn.style.background = PLAYER.colors[i];
+
       colorBtn.addEventListener("click", () => {
         if (!GAME.flag.ok()) return;
         selectColor(i, PLAYER, UI);
         Render.fill(PLAYER.position, PLAYER.Scolor, GAME, PLAYER, MAP, socket);
       });
+
       colorBtn.addEventListener("touchstart", (event) => {
         event.preventDefault();
         if (!GAME.flag.ok()) return;

@@ -6,17 +6,18 @@
   width: 80%;
   min-width: 250px;
   max-width: 500px;
+
+  & h2 {
+    font-size: 1.3rem;
+    max-width: 400px;
+    margin: 1vh auto;
+    line-height: 1.5em;
+  }
 }
 
 #intro {
   color: blue;
   line-height: 1.8em;
-}
-
-#gameList h2 {
-  max-width: 400px;
-  margin: 1vh auto;
-  line-height: 1.5em;
 }
 
 #bigmenu {
@@ -28,26 +29,28 @@
   height: 4.2em;
 }
 
-#gameList ul {
-  padding: 0;
-  list-style: none;
-}
+#gameList {
+  & ul {
+    padding: 0;
+    list-style: none;
+  }
 
-#gameList li {
-  border: 1px solid #a9a9a9;
-  background: #fff;
-  border-radius: 5px;
-  margin: 2em 0;
-  text-align: center;
-  transition: all 0.3s ease;
+  & li {
+    border: 1px solid #a9a9a9;
+    background: #fff;
+    border-radius: 5px;
+    margin: 2em 0;
+    text-align: center;
+    transition: all 0.3s ease;
+
+    &:hover {
+      border-color: blue;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+  }
 }
 
 li h2 {
   font-weight: 400;
-}
-
-#gameList li:hover {
-  border-color: blue;
-  cursor: pointer;
-  transition: all 0.3s ease;
 }

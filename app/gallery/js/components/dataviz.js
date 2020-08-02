@@ -1,6 +1,5 @@
 import drawDonut from '../dataviz/colors'
 import drawBars from '../dataviz/players'
-import * as d3 from 'd3';
 
 const DV = {
   buttons: {},
@@ -47,7 +46,7 @@ DV.init = APP => {
   DV.switch.game.checked = true;
   toggle.game(APP);
 
-  sortHue.addEventListener("click", () => {
+  APP.sortHue.addEventListener("click", () => {
     DV.sortColors = !DV.sortColors;
     drawDonut(APP, DV.sortColors);
   })
@@ -56,8 +55,8 @@ DV.init = APP => {
 const toggle = {
 
   game: (APP) => {
-    if (DV.isOn.game()) mode.game.on(APP);
-    else mode.game.off(APP);
+    if (DV.isOn.game()) mode.game.on();
+    else mode.game.off();
     if (DV.isOn.donut()) mode.donut.off();
     if (DV.isOn.bars()) mode.bars.off(APP);
   },
@@ -66,25 +65,25 @@ const toggle = {
     if (DV.isOn.donut()) mode.donut.on();
     else mode.donut.off();
     if (DV.isOn.bars()) mode.bars.off(APP);
-    if (DV.isOn.game()) mode.game.off(APP);
+    if (DV.isOn.game()) mode.game.off();
   },
 
   bars: (APP) => {
     if (DV.isOn.bars()) mode.bars.on();
     else mode.bars.off(APP);
-    if (DV.isOn.donut()) mode.donut.off();;
-    if (DV.isOn.game()) mode.game.off(APP);
+    if (DV.isOn.donut()) mode.donut.off();
+    if (DV.isOn.game()) mode.game.off();
   }
 };
 
 const mode = {
 
   game: {
-    on: (APP) => {
+    on: () => {
       DV.game.style.display = "block";
       DV.carton.style.display = "block";
     },
-    off: (APP) => {
+    off: () => {
       DV.switch.game.checked = false;
       DV.game.style.display = "none";
       DV.carton.style.display = "none";

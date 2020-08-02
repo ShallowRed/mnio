@@ -20,7 +20,11 @@
 }
 
 #welcomeMsg h4 {
+  line-height: 2em;
+  font-size: 1.2em;
+  color: blue;
   line-height: 1.6em;
+  margin: 0.5em 0;
 }
 
 #container, #lgf, #choice, #welcomeMsg {
@@ -109,7 +113,7 @@
 
 #galerie {
   text-decoration: none;
-  margin-top: 10vh;
+  margin-top: 5vh;
   border: 1px solid darkgrey;
   background: white;
   padding: 0;

@@ -77,16 +77,23 @@
     show(logBtn);
   });
 
-  document.getElementById('logo').addEventListener("click", () => window.location.reload(true));
-  document.getElementById('refresh').addEventListener("click", () => window.location.reload(true));
+  document.getElementById('logo').addEventListener("click", () =>
+    window.location.reload(true)
+  );
+  document.getElementById('refresh').addEventListener("click", () =>
+    window.location.reload(true)
+  );
 
   window.addEventListener('appinstalled', () => {
     show(installedMessage);
     let count = 0;
     setInterval(() => {
-      if (isonPwa()) window.location.reload(true);
-      else count++;
-      if (count == 40) window.location.reload(true);
+      if (isonPwa())
+        window.location.reload(true);
+      else
+        count++;
+      if (count == 40)
+        window.location.reload(true);
     }, 200)
   });
 

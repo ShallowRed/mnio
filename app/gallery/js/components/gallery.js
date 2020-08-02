@@ -1,6 +1,6 @@
-import update from './update';
-import TL from './components/timelapse';
-import DV from './components/dataviz';
+import update from '../utils/update';
+import TL from './timelapse';
+import DV from './dataviz';
 
 const APP = {
   canvas: document.getElementById('canvas'),
@@ -59,7 +59,7 @@ APP.init = GAME => {
     APP.globalSwitches.style.display = "none";
     APP.dataviz.style.display = "none";
     mode.timelapse.on();
-  };
+  }
   setInfo(APP);
   setInsights(APP);
 };
@@ -118,51 +118,43 @@ const mode = {
   }
 };
 
-const remove = id => {
-  const element = document.getElementById(id);
-  console.log();
-  element.parentNode.removeChild(element);
-};
-
-const insights = {
-  tapX: document.getElementById('tapX'),
-  tapY: document.getElementById('tapY'),
-  gaulleRatio: document.getElementById('gaulleRatio'),
-  tapFil: document.getElementById('tapFil'),
-  tapDelay: document.getElementById('tapDelay'),
-  dgScale: document.getElementById('dgScale'),
-  dg: document.getElementById('dg')
-};
-
-
 const setInsights = (APP) => {
-  const gaulleRatio = 0.01 * Math.round(APP.rows / 1.96);
-  insights.tapX.innerHTML = APP.rows / 100;
-  insights.tapY.innerHTML = APP.cols / 100 + "&nbsp;m";
-  insights.gaulleRatio.innerHTML = gaulleRatio + " Général de Gaulle";
-  insights.tapFil.innerHTML = APP.rows * APP.cols * 0.4 + "m";
-  insights.tapDelay.innerHTML = APP.rows * APP.cols * 0.08 + "h";
-  if (gaulleRatio > 1) {
-    insights.dg.style.transform = "scale(" + 1 / gaulleRatio + ")"
-    insights.dgScale.style.transform = "translate(-17px)"
-  }
-  else insights.dgScale.style.transform = "scale(" + gaulleRatio + ") translate(-17px)"
+
+  const tapX = document.getElementById('tapX');
+  const tapY = document.getElementById('tapY');
+  const gaulleRatio = document.getElementById('gaulleRatio');
+  const tapFil = document.getElementById('tapFil');
+  const tapDelay = document.getElementById('tapDelay');
+  const dgScale = document.getElementById('dgScale');
+  const dg = document.getElementById('dg')
+
+  const dgRatio = 0.01 * Math.round(APP.rows / 1.96);
+
+  tapX.innerHTML = APP.rows / 100;
+  tapY.innerHTML = APP.cols / 100 + "&nbsp;m";
+  gaulleRatio.innerHTML = dgRatio + " Général de Gaulle";
+  tapFil.innerHTML = APP.rows * APP.cols * 0.4 + "m";
+  tapDelay.innerHTML = APP.rows * APP.cols * 0.08 + "h";
+
+  if (dgRatio > 1) {
+    dg.style.transform = "scale(" + 1 / dgRatio + ")";
+    dgScale.style.transform = "translate(-17px)";
+  } else dgScale.style.transform = "scale(" + dgRatio + ") translate(-17px)";
 
 };
 
-const info = {
-  date: document.getElementById('date'),
-  players: document.getElementById('players'),
-  dim: document.getElementById('dim'),
-  name: document.getElementById('mnioName'),
-}
+const setInfo = APP => {
 
-const setInfo = (APP) => {
+  const dateRange = document.getElementById('date');
+  const nOfPlayers = document.getElementById('players');
+  const dim = document.getElementById('dim');
+  const mnioName = document.getElementById('mnioName');
+
   const totalPlayers = APP.poorPlayers + APP.players.length;
-  info.name.innerHTML ="mnio.00" + APP.id;
-  info.date.innerHTML = APP.dates;
-  info.players.innerHTML = totalPlayers + " joueurs";
-  info.dim.innerHTML = APP.rows + " x " + APP.cols +" px";
+  mnioName.innerHTML = "mnio.00" + APP.id;
+  dateRange.innerHTML = APP.dates;
+  nOfPlayers.innerHTML = totalPlayers + " joueurs";
+  dim.innerHTML = APP.rows + " x " + APP.cols + " px";
 };
 
 

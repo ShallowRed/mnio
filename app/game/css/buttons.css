@@ -4,22 +4,22 @@
   display: flex;
   justify-content: center;
   box-sizing: border-box;
-}
 
-#buttons button {
-  box-sizing: border-box;
-  max-height: 45px;
-  max-width: 45px;
-  border-radius: 5px;
-  box-shadow: #aaa 5px 5px;
-}
+  & button {
+    box-sizing: border-box;
+    max-height: 45px;
+    max-width: 45px;
+    border-radius: 5px;
+    box-shadow: #aaa 5px 5px;
 
-#buttons button:not(.zoom) {
-  border: solid 1px black;
-}
+    &.zoom {
+      transition: all 0.1s ease;
+      transform: scale(0.7);
+      border: solid 1px black;
+    }
 
-.zoom {
-  transition: all 0.1s ease;
-  transform: scale(0.7);
-  border: solid 1px black;
+    &:not(.zoom) {
+      border: solid 1px black;
+    }
+  }
 }

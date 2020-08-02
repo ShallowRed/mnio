@@ -19,15 +19,20 @@
 }
 
 #insights {
-  display: none;
-  padding: 3%;
+  position: absolute;
+  bottom: 2%;
+  right: 1%;
+  padding: 0.5em 2%;
+  box-sizing: border-box;
+  min-width: 400px;
   max-width: 600px;
-  width: 100%;
+  width: 31%;
+  transform: translate(-30%, -10%);
   border-radius: 10px;
   background: white;
   border: solid 1px #a0a0a0;
-  margin: 5vh auto 0;
   box-shadow: 5px 5px 5px #a0a0a0;
+  display: none;
 }
 
 #legend span:not(#red, #darkblue) {
@@ -48,27 +53,28 @@
   width: 30px;
   height: 30px;
   transition: all 0.3s ease;
+
+  &:hover {
+    cursor: pointer;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+  }
 }
 
-#insights img:hover {
-  cursor: pointer;
-  opacity: 0.7;
-  transition: all 0.3s ease;
-}
+.rect {
+  & * {
+    opacity: 0.6;
+  }
 
-
-.rect * {
-  opacity: 0.6;
+  &:hover * {
+    cursor: pointer;
+    opacity: 0.8;
+  }
 }
 
 #blueplayers, #darkblueplayers, #poors {
   color: blue;
   font-size: 1.1em;
-}
-
-.rect:hover * {
-  cursor: pointer;
-  opacity: 0.8;
 }
 
 #donut, #bars {
@@ -92,12 +98,12 @@
 
 #hueSwitch {
   margin: 0 1em;
-}
 
-#hueSwitch .slider {}
+  & .slider {}
 
-#hueSwitch input:checked+.slider {
-  background-color: #ccc;
+  & input:checked+.slider {
+    background-color: #ccc;
+  }
 }
 
 #legend {

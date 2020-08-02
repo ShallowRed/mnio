@@ -27,16 +27,27 @@ const GAME = {
 };
 
 GAME.init = (data, socket) => {
-  Object.keys(GAME.events).forEach(prop => socket.on('' + prop, data => GAME.events[prop](data)));
-  Object.keys(data.GAME).forEach(prop => GAME[prop] = data.GAME[prop]);
+
+  Object.keys(GAME.events).forEach(eventName =>
+    socket.on('' + eventName, data =>
+      GAME.events[eventName](data)
+    )
+  );
+
+  Object.keys(data.GAME).forEach(prop =>
+    GAME[prop] = data.GAME[prop]
+  );
+
   PLAYER.init(data);
   MAP.init();
   UI.init(GAME, PLAYER, MAP, socket);
+
   if (data.admin) {
     PLAYER.position = (200 * 75);
     MAP.maxcells = 250;
     MAP.startcells = 250;
   }
+
   GAME.render();
 };
 
@@ -81,20 +92,17 @@ GAME.events = {
     });
   },
 
-  moveCallback: () => GAME.flag.moveCallback = true,
+  moveCallback: () =>
+    GAME.flag.moveCallback = true,
 
-  fillCallback: () => GAME.flag.fillCallback = true,
+  fillCallback: () =>
+    GAME.flag.fillCallback = true,
 
-  error: () => window.location.reload(true),
+  error: () =>
+    window.location.reload(true),
 
-  reconnect_attempt: () => {
-
-    // setTimeout(() =>
-    // window.location.reload(true),2000)
-
+  reconnect_attempt: () =>
     window.location.reload(true)
-
-  }
 }
 
 

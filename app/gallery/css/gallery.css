@@ -48,13 +48,13 @@ body {
 #logo, #galleryMenu {
   margin-left: 10px;
   transition: all 0.2s ease;
-}
 
-#logo:hover, #galleryMenu:hover {
-  filter: saturate(0);
-  opacity: 0.4;
-  transition: all 0.2s ease;
-  cursor: pointer;
+  &:hover {
+    filter: saturate(0);
+    opacity: 0.4;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
 }
 
 #gallery {
@@ -69,10 +69,12 @@ a {
   transition: color 0.2s ease;
 }
 
-button a {
-  line-height: 15px;
-}
+button {
+  & a {
+    line-height: 15px;
+  }
 
-button:focus {
-  outline: none;
+  &:focus {
+    outline: none;
+  }
 }

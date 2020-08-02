@@ -7,11 +7,12 @@ import './css/playbar.css';
 import './css/carton.css';
 import './css/dataviz.css';
 
-import APP from './js/gallery';
+import APP from './js/components/gallery';
 
 import game1 from './games/gametest1';
 import game2 from './games/gametest2';
-const games = [game1, game2];
+import game3 from './games/gametest3';
+const games = [game1, game2, game3];
 
 games.forEach(g => {
   const li = document.createElement('li');

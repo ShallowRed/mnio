@@ -1,4 +1,4 @@
-const pokedex = [{
+const Pokedex = [{
   "palette": ["#0b2536", "#b7b4c7", "#021564", "#164a50", "#334a93"],
   "description": "Le chêne de Mambré avec Giotto, Pierre Buraglio, 2001"
 }, {
@@ -90,4 +90,4 @@ const pokedex = [{
   "description": "Renaud captif dans les jardins d’Armide, Maurice Denis, 1932"
 }]
 
-export default pokedex
+export default Pokedex
