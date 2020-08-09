@@ -5,7 +5,7 @@ import {
 
 const move = (direction, GAME, PLAYER, MAP, socket) => {
   if (!GAME.flag.moveCallback) return;
-  socket.emit('MovePlayer', direction);
+  socket.emit('move', direction);
   GAME.flag.moveCallback = false;
   let nextpos = checkMove(direction, GAME, PLAYER);
   if (!nextpos) return;

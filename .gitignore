@@ -1,6 +1,5 @@
 node_modules/
 dist/
-admin/
 data/
 app/gallery/games/
 .remote-sync.json
