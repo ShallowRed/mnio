@@ -1,0 +1,37 @@
+# This is the docker-compose.yml file for our whole infrastructure
+version:            "3.6"
+
+services:
+  mnio:
+    build:          .
+    container_name: mnio
+    ports:
+      - "3000:80"
+    restart:        always
+    networks:
+      infra:
+    depends_on:
+      - mariadb
+
+  mariadb:
+    image:          mariadb
+    container_name: mariadb
+    networks:
+     infra:
+       aliases:
+         - "mariadb"
+    ports:
+       - "3306:3306"
+    volumes:
+       - "mariadb-db:/var/lib/mysql:rw"
+    restart:        always
+    environment:
+    - MYSQL_ROOT_PASSWORD=Lucastom2!
+
+networks:
+  infra:
+    name:           "infra"
+
+volumes:
+  mariadb-db:
+    name:           "mariadb-db"
