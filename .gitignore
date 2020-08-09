@@ -5,3 +5,4 @@ data/
 app/gallery/games/
 .remote-sync.json
 lib/config.js
+docker-compose.yml
