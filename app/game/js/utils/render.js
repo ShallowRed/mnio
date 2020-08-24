@@ -5,20 +5,20 @@ import {
 const Render = {
 
   clear: (position, ctx, PLAYER, GAME, MAP) => {
-    let cell = check(position, PLAYER, GAME, MAP);
+    const cell = check(position, PLAYER, GAME, MAP);
     if (cell) ctx.clearRect(MAP.cellSize * cell[1], MAP.cellSize * cell[0], MAP.cellSize, MAP.cellSize);
   },
 
   color: (position, PLAYER, GAME, MAP) => {
-    let cell = check(position, PLAYER, GAME, MAP);
+    const cell = check(position, PLAYER, GAME, MAP);
     if (!cell) return;
     MAP.ctx[1].clearRect(MAP.cellSize * cell[1], MAP.cellSize * cell[0], MAP.cellSize, MAP.cellSize);
-    MAP.ctx[1].fillStyle = GAME.colors[position];
+    MAP.ctx[1].fillStyle = `#${GAME.colors[position]}`;
     MAP.ctx[1].fillRect(MAP.cellSize * cell[1], MAP.cellSize * cell[0], MAP.cellSize, MAP.cellSize);
   },
 
   allowed: (position, PLAYER, GAME, MAP) => {
-    let cell = check(position, PLAYER, GAME, MAP);
+    const cell = check(position, PLAYER, GAME, MAP);
     if (!cell) return;
     MAP.ctx[0].clearRect(MAP.cellSize * cell[1], MAP.cellSize * cell[0], MAP.cellSize, MAP.cellSize);
     MAP.ctx[0].fillStyle = '#e9e9e9';
@@ -26,20 +26,29 @@ const Render = {
   },
 
   position: (position, PLAYER, GAME, MAP) => {
-    let cell = check(position, PLAYER, GAME, MAP);
-    if (cell) roundRect(MAP.ctx[2], MAP.cellSize * cell[1] + MAP.shift * 1.5, MAP.cellSize * cell[0] + MAP.shift * 1.5, MAP.cellSize - MAP.shift * 3, MAP.cellSize - MAP.shift * 3, MAP.shift, MAP);
+    const cell = check(position, PLAYER, GAME, MAP);
+    if (cell)
+      roundRect(MAP.ctx[2], MAP.cellSize * cell[1] + MAP.shift * 1.5, MAP.cellSize * cell[0] + MAP.shift * 1.5, MAP.cellSize - MAP.shift * 3, MAP.cellSize - MAP.shift * 3, MAP.shift, MAP);
   },
 
   fill: (position, color, GAME, PLAYER, MAP, socket) => {
-    if (!GAME.flag.fillCallback) return;
-    if (GAME.flag.fill) return;
-    if (!GAME.owned.includes(position)) GAME.owned.push(position);
-    GAME.colors[position] = color;
+
+    if (!GAME.flag.fillCallback || GAME.flag.fill) return;
+
+    if (!GAME.owned.includes(position))
+      GAME.owned.push(position);
+
     window.Fill.init(check(position, PLAYER, GAME, MAP), color, GAME, MAP);
+
+    color = color.split('#')[1];
+
+    GAME.colors[position] = color;
+
     socket.emit("fill", {
       position: position,
-      color: color.split('#')[1]
+      color: color
     });
+
     GAME.flag.fillCallback = false;
   }
 };

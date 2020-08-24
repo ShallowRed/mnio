@@ -17,9 +17,9 @@ import './css/tuto.css';
 const socket = io();
 login(socket);
 
-socket.on('InitData', data =>
-  Intro(data, socket)
-);
+socket.on('initData', data => {
+  Intro(data, socket);
+});
 
 socket.on('alert', data =>
   alert(data)
