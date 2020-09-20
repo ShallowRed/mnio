@@ -15,6 +15,7 @@ const esLintrules = {
 
 const babelRules = {
   test: /\.js$/,
+  // exclude: /(node_modules)|(games)|(gallery)|(game)/,
   exclude: /(node_modules)/,
   use: 'babel-loader'
 };
@@ -63,7 +64,7 @@ const cssRules = {
 }
 
 module.exports = [
-  esLintrules,
+  // esLintrules,
   babelRules,
   ejsRules,
   cssRules

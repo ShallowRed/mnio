@@ -68,8 +68,10 @@ APP.renderAll = () => TL.actions.end(APP);
 
 APP.update = () => {
   update(APP);
-  if (APP.isOn.timelapse()) TL.actions.resize(APP);
-  else APP.renderAll();
+  if (APP.isOn.timelapse())
+    TL.actions.resize(APP);
+  else
+    APP.renderAll();
 };
 
 const toggle = {
@@ -109,6 +111,9 @@ const mode = {
 
   dataviz: {
     on: () => {
+      if (!isCartonLoaded) {
+        loadCartonImages();
+      }
       APP.dataviz.style.display = "block";
     },
     off: () => {
@@ -117,6 +122,26 @@ const mode = {
     }
   }
 };
+
+const tlImages = [
+  "reset", "slow", "fast", "pause", "end"
+];
+
+const cartonImages = {
+  dgScale: "reset",
+  dg: "gaulle",
+  woolImg: "fil",
+  delay: "delay"
+};
+
+let isCartonLoaded = false;
+
+const loadCartonImages = () => {
+  Object.entries(cartonImages).forEach(([id, name]) =>
+    document.getElementById(id).src = `/dist/gallery/img/${name}.png`
+  );
+  isCartonLoaded = true;
+}
 
 const setInsights = (APP) => {
 

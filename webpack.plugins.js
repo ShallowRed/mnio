@@ -5,19 +5,19 @@ const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const path = require('path');
 
 const plugins = ({
+  name,
   htmlOutputFileName,
-  ejsEntry,
   inject,
   isFavicon
 }) => {
   const pluginsArray = [
     new MiniCssExtractPlugin({
-      filename: '[name].css',
+      filename: `${name}.css`,
     }),
     new HtmlWebpackPlugin({
       filename: htmlOutputFileName,
       inject: !!inject,
-      template: path.resolve(__dirname, `./app/${ejsEntry}`),
+      template: path.resolve(__dirname, `./app/${name}/index.ejs`),
     })
   ];
   if (!!isFavicon) pluginsArray.push(

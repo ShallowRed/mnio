@@ -5,9 +5,13 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const dev = process.env.NODE_ENV !== "production";
 
+const entry = (name, obj = new Object()) => {
+  obj[name] = path.resolve(__dirname, `./app/${name}/index.js`);
+  return obj;
+};
+
 const config = ({
-  jsEntry,
-  ejsEntry,
+  name,
   outputPath,
   htmlOutputFileName,
   inject,
@@ -16,9 +20,7 @@ const config = ({
   target: "web",
   mode: dev ? 'development' : 'production',
   watch: dev,
-  entry: {
-    game: path.resolve(__dirname, `./app/${jsEntry}`),
-  },
+  entry: entry(name),
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, `./${outputPath}`),
@@ -32,8 +34,8 @@ const config = ({
     rules: Rules
   },
   plugins: Plugins({
+    name: name,
     htmlOutputFileName: htmlOutputFileName,
-    ejsEntry: ejsEntry,
     inject: !!inject,
     isFavicon: !!isFavicon
   })
