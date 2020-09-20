@@ -3,8 +3,9 @@ const Rules = require('./webpack.rules.js');
 const Plugins = require('./webpack.plugins.js');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const dev = process.env.NODE_ENV !== "production";
-
+// const dev = process.env.NODE_ENV !== "production";
+const dev = false;
+console.log(dev);
 const entry = (name, obj = new Object()) => {
   obj[name] = path.resolve(__dirname, `./app/${name}/index.js`);
   return obj;

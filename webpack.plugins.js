@@ -12,7 +12,7 @@ const plugins = ({
 }) => {
   const pluginsArray = [
     new MiniCssExtractPlugin({
-      filename: `${name}.css`,
+      filename: '[name].css',
     }),
     new HtmlWebpackPlugin({
       filename: htmlOutputFileName,

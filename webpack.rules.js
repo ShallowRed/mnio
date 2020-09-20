@@ -64,7 +64,7 @@ const cssRules = {
 }
 
 module.exports = [
-  // esLintrules,
+  esLintrules,
   babelRules,
   ejsRules,
   cssRules
