@@ -43,9 +43,9 @@ GAME.init = (data, socket) => {
   UI.init(GAME, PLAYER, MAP, socket);
 
   if (data.admin) {
-    PLAYER.position = (200 * 75);
-    MAP.maxcells = 400;
-    MAP.startcells = 400;
+    PLAYER.position = 100;
+    MAP.maxcells = 200;
+    MAP.startcells = 200;
   }
 
   GAME.render();

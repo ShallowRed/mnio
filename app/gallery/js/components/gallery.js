@@ -128,7 +128,7 @@ const tlImages = [
 ];
 
 const cartonImages = {
-  dgScale: "reset",
+  dgScale: "cote",
   dg: "gaulle",
   woolImg: "fil",
   delay: "delay"
