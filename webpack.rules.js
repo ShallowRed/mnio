@@ -1,6 +1,6 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const dev = process.env.NODE_ENV !== "production"
-
+// const dev = true;
 const esLintrules = {
   test: /\.js$/,
   enforce: 'pre',

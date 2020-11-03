@@ -38,7 +38,6 @@ import game3 from './games/game.min.3';
       if (xhr.status === 200) {
         const res = JSON.parse(xhr.responseText);
         APP.init(res)
-        console.log(res);
         window.history.pushState({
           "pageTitle": res.id
         }, "", "/gallery/mnio" + res.id);
