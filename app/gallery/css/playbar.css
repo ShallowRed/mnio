@@ -24,11 +24,13 @@
     &:active {
       filter: saturate(100%);
     }
+
+    &:not(#faster) {
+      width: 10%;
+    }
+    
   }
 
-  &:not(#faster) {
-    width: 10%;
-  }
 }
 
 #faster {

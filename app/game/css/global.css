@@ -6,6 +6,18 @@ html {
   --grey: #f2f2f2;
 }
 
+@media screen and (min-width: 650px) {
+  html {
+    font-size: 2vh;
+  }
+}
+
+@media screen and (max-width: 650px) {
+  html {
+    font-size: 2.5vh;
+  }
+}
+
 body {
   touch-action: none;
   margin: 0;

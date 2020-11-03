@@ -9,34 +9,75 @@ import './css/dataviz.css';
 
 import APP from './js/components/gallery';
 
-import game1 from './games/gametest1';
-import game2 from './games/gametest2';
-import game3 from './games/gametest3';
-const games = [game1, game2, game3];
+import game1 from './games/game.min.1';
+import game2 from './games/game.min.2';
+import game3 from './games/game.min.3';
 
-games.forEach(g => {
+[game1, game2, game3].forEach(g => {
+
   const li = document.createElement('li');
-  const h2 = document.createElement('h2');
   APP.list.appendChild(li);
-  li.appendChild(h2);
-  h2.innerHTML = "mnio.00" + g.id + ", " + g.rows + " x " + g.cols + " px";
-  li.id = "game" + g.id;
-  li.addEventListener("click", () => APP.init(g))
+
+  const button = document.createElement('button');
+  button.type = "submit";
+  button.innerHtml = `mnio.00${g.id}, ${g.rows} x ${g.cols} px`;
+  li.appendChild(button);
+
+  const h2 = document.createElement('h2');
+  h2.innerHTML = `mnio.00${g.id}, ${g.rows} x ${g.cols} px`;
+  button.appendChild(h2);
+
+  button.id = `game${g.id}`;
+
+  button.addEventListener("click", () => {
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('PUT', '/game');
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        const res = JSON.parse(xhr.responseText);
+        APP.init(res)
+        console.log(res);
+        window.history.pushState({
+          "pageTitle": res.id
+        }, "", "/gallery/mnio" + res.id);
+      }
+    };
+
+    window.addEventListener('popstate', function(event) {
+      window.location.replace("../gallery")
+    }, false);
+
+    xhr.send(JSON.stringify({
+      id: g.id
+    }));
+  });
 });
 
-const cover = document.getElementById('cover');
 
-window.addEventListener('resize', () => APP.update(), true);
+(() => {
 
-window.addEventListener("orientationchange", () =>
-  setTimeout(() => APP.update(), 500)
-);
+  const cover = document.getElementById('cover');
 
-window.addEventListener("DOMContentLoaded", () => {
-  cover.style.opacity = "0";
-  setTimeout(() => cover.style.display = "none", 300);
-});
+  window.addEventListener('resize', () =>
+    APP.update(), true
+  );
 
-document.getElementById("logo").addEventListener("click", () => {
-  location.replace("https://mnio.fr");
-})
+  window.addEventListener("orientationchange", () =>
+    setTimeout(() =>
+      APP.update(), 500
+    )
+  );
+
+  window.addEventListener("DOMContentLoaded", () => {
+    cover.style.opacity = "0";
+    setTimeout(() =>
+      cover.style.display = "none", 200
+    );
+  });
+
+  document.getElementById("logo").addEventListener("click", () =>
+  window.location.replace("../")
+  )
+})();

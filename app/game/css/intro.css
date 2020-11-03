@@ -41,14 +41,16 @@
 }
 
 @media screen and (min-width: 650px) {
-
   #introMsg {
     position: absolute;
     top: 5vh;
   }
 
-  #introMsg p{
+  #introMsg p {
     font-size: 1.2em;
+    padding: 5vh;
+    line-height: 2rem;
+    max-width: 53%;
   }
 
   #left {
@@ -57,8 +59,14 @@
     margin-left: 60px;
   }
 
+  #palette {
+    padding-top: 5vh;
+    border-top: solid 1px;
+  }
+
   #palette, #choices {
     margin: 15vh 0 5vh;
+    margin: 25vh 0 5vh;
   }
 
   #tap {
@@ -112,6 +120,7 @@
 
   #tapImg {
     max-height: 250px;
+    max-height: 44vh;
     bottom: 37%;
     width: 95%;
     margin: 0 2.5%;

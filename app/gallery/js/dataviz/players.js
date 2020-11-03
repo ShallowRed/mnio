@@ -20,46 +20,46 @@ const drawBars = APP => {
   // splitPlayers(data, totalCells, 3);
 };
 
-const splitPlayers = (data, totalCells, nOfGroups) => {
+// const splitPlayers = (data, totalCells, nOfGroups) => {
+//
+//   const newData = new Array(nOfGroups);
+//   const chunk = Math.floor(totalCells / nOfGroups);
+//   console.log("chunk: " + chunk);
+//   let indexAcc = 0;
+//
+//   for (let i = 0; i < nOfGroups; i++) {
+//     const start = indexAcc;
+//     newData[i] = playersPerChunk(data, chunk, start);
+//     indexAcc += newData[i].length
+//   }
+//
+//   console.log(newData);
+//
+//   newData.forEach(item => {
+//     let accu = 0
+//     item.forEach(e => {
+//       accu += e.owned.length;
+//     });
+//     console.log(accu);
+//   });
+//
+// }
 
-  const newData = new Array(nOfGroups);
-  const chunk = Math.floor(totalCells / nOfGroups);
-  console.log("chunk: " + chunk);
-  let indexAcc = 0;
-
-  for (let i = 0; i < nOfGroups; i++) {
-    const start = indexAcc;
-    newData[i] = playersPerChunk(data, chunk, start);
-    indexAcc += newData[i].length
-  }
-
-  console.log(newData);
-
-  newData.forEach(item => {
-    let accu = 0
-    item.forEach(e => {
-      accu += e.owned.length;
-    });
-    console.log(accu);
-  });
-
-}
-
-const playersPerChunk = (data, chunk, start) => {
-  let accumulator = 0;
-  let stop;
-  data.filter((e, i) => i >= start)
-    .forEach((player, i) => {
-      if (accumulator < chunk) {
-        accumulator += player.owned.length;
-      } else if (!stop) {
-        stop = start + i - 1
-      }
-    });
-  const group = data.slice(start, stop);
-  console.table(group);
-  return group;
-};
+// const playersPerChunk = (data, chunk, start) => {
+//   let accumulator = 0;
+//   let stop;
+//   data.filter((e, i) => i >= start)
+//     .forEach((player, i) => {
+//       if (accumulator < chunk) {
+//         accumulator += player.owned.length;
+//       } else if (!stop) {
+//         stop = start + i - 1
+//       }
+//     });
+//   const group = data.slice(start, stop);
+//   console.table(group);
+//   return group;
+// };
 
 const sortPlayers = players =>
   players.sort((a, b) => (a.owned.length - b.owned.length));

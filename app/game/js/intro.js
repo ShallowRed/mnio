@@ -29,6 +29,15 @@ document.getElementById('rdm').addEventListener("click", () =>
 changeTap();
 
 const Intro = (data, socket) => {
+
+  window.history.pushState({
+    "pageTitle": "test"
+  }, "", "/jouer");
+
+  window.addEventListener('popstate', function(event) {
+    window.location.replace("../")
+  }, false);
+
   if (data.new)
     newPlayer(data, socket);
   else
