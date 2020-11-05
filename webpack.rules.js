@@ -1,6 +1,7 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const dev = process.env.NODE_ENV !== "production"
-// const dev = true;
+console.log("Dev mode :", dev);
+
 const esLintrules = {
   test: /\.js$/,
   enforce: 'pre',
@@ -64,8 +65,8 @@ const cssRules = {
 }
 
 module.exports = [
-  esLintrules,
-  babelRules,
+  dev ? esLintrules : false,
+  // babelRules,
   ejsRules,
   cssRules
-];
+].filter(Boolean);
