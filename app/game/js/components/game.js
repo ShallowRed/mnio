@@ -62,7 +62,7 @@ GAME.render = (animated) => {
 
 GAME.events = {
 
-  NewPlayerPos: position => {
+  newPlayerPos: position => {
     if (position == PLAYER.position) return;
     PLAYER.position = position;
     window.Translate.init(GAME, MAP, PLAYER);
