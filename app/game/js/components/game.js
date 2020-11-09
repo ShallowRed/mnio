@@ -68,7 +68,7 @@ GAME.events = {
     window.Translate.init(GAME, MAP, PLAYER);
   },
 
-  NewPosition: position => {
+  newPosition: position => {
     if (position[0]) {
       GAME.positions.splice(GAME.positions.indexOf(position[0]), 1);
       Render.clear(position[0], MAP.ctx[2], PLAYER, GAME, MAP);
