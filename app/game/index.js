@@ -17,7 +17,7 @@ import './css/tuto.css';
 const socket = io();
 login(socket);
 
-socket.on('initData', data => {
+socket.on('isNew', data => {
   Intro(data, socket);
 });
 

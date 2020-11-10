@@ -17,18 +17,20 @@ const changeTap = () => {
   indexList = indexList.filter(e => e !== tap.index);
   tap.img.src = 'dist/img/pokedex/tap_' + (tap.index + 1) + '.jpg';
   tap.description.innerHTML = Pokedex[tap.index].description;
-  document.querySelectorAll(".pal").forEach((colorButton, i) =>
-    colorButton.style.backgroundColor = Pokedex[tap.index].palette[i]
-  );
+  document.querySelectorAll(".pal")
+    .forEach((colorButton, i) =>
+      colorButton.style.backgroundColor = Pokedex[tap.index].palette[i]
+    );
 }
 
-document.getElementById('rdm').addEventListener("click", () =>
-  changeTap()
-);
+document.getElementById('rdm')
+  .addEventListener("click", () =>
+    changeTap()
+  );
 
 changeTap();
 
-const Intro = (data, socket) => {
+const Intro = (isNew, socket) => {
 
   window.history.pushState({
     "pageTitle": "test"
@@ -38,30 +40,32 @@ const Intro = (data, socket) => {
     window.location.replace("../")
   }, false);
 
-  if (data.new)
-    newPlayer(data, socket);
+  if (isNew)
+    newPlayer(socket);
   else
-    returningPlayer(data, socket);
+    returningPlayer(socket);
   hide(document.getElementById('lobby'));
 }
 
-const newPlayer = (data, socket) => {
-  document.getElementById('intro').style.display = "flex";
-  document.getElementById('select').addEventListener("click", () =>
-    selectPalette(data, socket, tap.index)
-  );
+const newPlayer = (socket) => {
+  document.getElementById('intro')
+    .style.display = "flex";
+  document.getElementById('select')
+    .addEventListener("click", () =>
+      selectPalette(socket, tap.index)
+    );
 };
 
-const returningPlayer = (data, socket) => {
+const returningPlayer = (socket) => {
   TUTO.phase.inGame();
-  GAME.init(data, socket);
+  socket.on("initGame", data => {
+    GAME.init(data, socket);
+  });
 };
 
-const selectPalette = (data, socket, index) => {
-  data.colors = Pokedex[index].palette;
+const selectPalette = (socket, index) => {
   socket.emit("paletteSelected", index);
-  socket.on("startPos", position => {
-    data.position = position;
+  socket.on("initGame", data => {
     TUTO.phase.welcome();
     GAME.init(data, socket);
     hide(document.getElementById('intro'));
