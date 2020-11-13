@@ -1,60 +1,90 @@
-const LOG = {
+const logUserNameBtn = document.getElementById('logBtn');
+const logPasswordBtn = document.getElementById('passBtn');
 
-  box: {
-    user: document.getElementById("user"),
-    pass: document.getElementById("pass"),
-    pass2: document.getElementById("pass2")
+export default {
+  init: (socket) => {
+    const context = { socket };
+    logUserNameBtn.addEventListener('click', checkUsername.bind(context));
   },
 
-  input: {
-    user: document.getElementById("userName"),
-    pass: document.getElementById("Password"),
-    pass2: document.getElementById("Password2")
-  },
+  end: () => {
+    window.history.pushState({
+      "pageTitle": "test"
+    }, "", "/jouer");
 
-  btn: {
-    user: document.getElementById('logBtn'),
-    pass: document.getElementById('passBtn')
-  },
-};
+    window.addEventListener('popstate', function(event) {
+      window.location.replace("../")
+    }, false);
 
-LOG.send = {
-  username: () => {
-    const user = LOG.username = LOG.input.user.value;
-    if (!user.length) alert("Le nom d'utilisateur ne peut pas être nul !")
-    else if (user.length > 15) alert("Le nom d'utilisateur ne doit pas contenir plus de 15 caractères !")
-    else LOG.socket.emit("username", LOG.username);
-  },
-
-  password: () => {
-    const pass = LOG.password = LOG.input.pass.value;
-    const pass2 = LOG.isNew ? LOG.input.pass2.value : pass;
-    if (pass == "startnewgame" && LOG.username == "startnewgame") LOG.socket.emit("setflag");
-    if (pass !== pass2) alert("Les deux mots de passe ne sont pas identiques !")
-    else if (!pass.length) alert("Le mot de passe ne peut pas être nul !")
-    else if (pass.length > 20) alert("Le mot de passe ne doit pas contenir plus de 20 caractères !")
-    else {
-      LOG.socket.emit("password", [LOG.username, LOG.password]);
-      // ids = [LOG.username, LOG.password];
-    }
+    hide(document.getElementById('lobby'));
   }
 };
 
-LOG.askPass = isNew => {
-  LOG.isNew = isNew;
-  LOG.btn.user.style.display = LOG.box.user.style.display = "none";
-  LOG.btn.pass.style.display = LOG.box.pass.style.display = "block";
-  if (isNew) {
-    document.getElementById('passtxt').innerHTML = "Créer un mot de passe";
-    LOG.box.pass2.style.display = "block";
-  }
+const checkUsername = function() {
+  const userName = document.getElementById("userName")
+    .value;
+  !userName.length ? alertCantBeNull() :
+    userName.length > 15 ? alertUserCantBeLong() :
+    sendUsername.call(this, userName);
 };
 
-const login = (socket) => {
-  LOG.socket = socket;
-  LOG.btn.user.addEventListener('click', () => LOG.send.username());
-  LOG.btn.pass.addEventListener('click', () => LOG.send.password());
-  LOG.socket.on("askPass", isNew => LOG.askPass(isNew))
+const sendUsername = function(userName) {
+  const { socket } = this;
+  socket.emit("username", userName);
+  const context = { socket, userName };
+  socket.on("askPass", askPass.bind(context));
+}
+
+const askPass = function(nameIsAvailable) {
+  hideUsernameBox();
+  showPasswordBox();
+  logPasswordBtn.addEventListener('click', sendPassword.bind(this));
+  nameIsAvailable && showConfirmPasswordBox();
 };
 
-export default login
+const hideUsernameBox = () => {
+  const userNameBox = document.getElementById("user");
+  logUserNameBtn.style.display = userNameBox.style.display = "none";
+};
+
+const showPasswordBox = () => {
+  const passwordBox = document.getElementById("pass");
+  logPasswordBtn.style.display = passwordBox.style.display = "block";
+};
+
+const showConfirmPasswordBox = () => {
+  const passwordConfirmBox = document.getElementById("pass2");
+  document.getElementById('passtxt')
+    .innerHTML = "Créer un mot de passe";
+  passwordConfirmBox.style.display = "block";
+};
+
+const sendPassword = function() {
+  const { socket, nameIsAvailable } = this;
+  const passwordInput = document.getElementById("Password");
+  const confirmInput = document.getElementById("Password2");
+  const password = passwordInput.value;
+  const confirmation = nameIsAvailable ? confirmInput.value : password;
+
+  password !== confirmation ? alertCantBeDiff() :
+    !password.length ? alertCantBeNull() :
+    password.length > 20 ? alertPassCantBeLong() :
+    socket.emit("password", password);
+};
+
+const alertCantBeNull = () =>
+  alert("Le nom d'utilisateur ne peut pas être nul !");
+
+const alertUserCantBeLong = () =>
+  alert("Le nom d'utilisateur ne doit pas contenir plus de 15 caractères !");
+
+const alertPassCantBeLong = () =>
+  alert("Le mot de passe ne doit pas contenir plus de 20 caractères !");
+
+const alertCantBeDiff = () =>
+  alert("Les deux mots de passe ne sont pas identiques !");
+
+  const hide = e => {
+    e.style.opacity = "0";
+    setTimeout(() => e.style.display = "none", 300);
+  };

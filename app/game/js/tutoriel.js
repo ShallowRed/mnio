@@ -39,15 +39,19 @@ const TUTO = {
   firstFill: false,
   firstMove: false,
   isFirstFill: event => event.keyCode == 32 && TUTO.firstFill,
-  isFirstMove: event => (event.keyCode == 37 || event.keyCode == 38 || event.keyCode == 39 || event.keyCode == 40) && TUTO.firstMove,
+  isFirstMove: event => (event.keyCode == 37 || event.keyCode == 38 || event
+    .keyCode == 39 || event.keyCode == 40) && TUTO.firstMove,
 
 }
 
 TUTO.init = () => {
 
-  TUTO.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  TUTO.isMobile =
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent);
   TUTO.message = TUTO.isMobile ? TUTO.mobileMessage : TUTO.pcMessage;
-  TUTO.moveIcon.src = 'dist/img/' + (TUTO.isMobile ? 'swipe' : 'pcmove') + '.png';
+  TUTO.moveIcon.src = 'dist/img/' + (TUTO.isMobile ? 'swipe' : 'pcmove') +
+    '.png';
 
   TUTO.btn.follow.addEventListener("click", () => {
     TUTO.firstFill = true;
@@ -58,31 +62,41 @@ TUTO.init = () => {
     })
   });
 
-  document.querySelectorAll('.color').forEach(e => {
-    e.addEventListener("touchstart", event => {
-      event.preventDefault();
-      if (TUTO.firstFill) TUTO.phase.move();
+  document.querySelectorAll('.color')
+    .forEach(e => {
+      e.addEventListener("touchstart", event => {
+        event.preventDefault();
+        if (TUTO.firstFill) TUTO.phase.move();
+      });
+      e.addEventListener("click", () => {
+        if (TUTO.firstFill) TUTO.phase.move();
+      })
     });
-    e.addEventListener("click", () => {
-      if (TUTO.firstFill) TUTO.phase.move();
-    })
-  });
 
   document.addEventListener("touchstart", event => {
     event.preventDefault();
-    if (TUTO.firstMove) TUTO.touch = [event.touches[0].clientX, event.touches[0].clientY]
+    if (TUTO.firstMove) TUTO.touch = [event.touches[0].clientX, event
+      .touches[0].clientY
+    ]
   });
 
   document.addEventListener("touchmove", event => {
     event.preventDefault();
     if (TUTO.firstMove && TUTO.touch) {
-      TUTO.delta = [Math.abs(TUTO.touch[0] - event.touches[0].clientX), Math.abs(TUTO.touch[1] - event.touches[0].clientY)];
+      TUTO.delta = [Math.abs(TUTO.touch[0] - event.touches[0].clientX),
+        Math.abs(TUTO.touch[1] - event.touches[0].clientY)
+      ];
       if (TUTO.delta[0] > 5 || TUTO.delta[1] > 5) TUTO.phase.info();
     }
   });
 
-  TUTO.btn.skip.addEventListener("click", () => TUTO.phase.end());
-  TUTO.btn.play.addEventListener("click", () => TUTO.phase.end());
+  TUTO.btn.skip.addEventListener("click", () => TUTO.phase.last());
+  TUTO.btn.play.addEventListener("click", () => TUTO.phase.last());
+};
+
+TUTO.init = () => {
+  hide(document.getElementById('intro'));
+  TUTO.phase.welcome();
 };
 
 TUTO.phase = {
@@ -130,23 +144,23 @@ TUTO.phase = {
     show(TUTO.lastInfo);
     setTimeout(() => {
       show(TUTO.window);
-      setTimeout(() => TUTO.phase.end(), 3000)
+      setTimeout(() => TUTO.phase.last(), 3000)
     }, 500)
   },
 
-  end: () => {
+  last: () => {
     hide(TUTO.introTuto);
     hide(TUTO.window);
-    setTimeout(() => TUTO.phase.inGame(), 500);
-  },
+    setTimeout(() => TUTO.end(), 500);
+  }
+};
 
-  inGame: () => {
-    hide(TUTO.help);
-    if (TUTO.isMobile) TUTO.mobile.style.display = "block";
-    else TUTO.pc.style.display = "block";
-    TUTO.all.style.display = "block";
-    TUTO.window.style.background = "var(--grey)";
-  },
+TUTO.end = () => {
+  hide(TUTO.help);
+  if (TUTO.isMobile) TUTO.mobile.style.display = "block";
+  else TUTO.pc.style.display = "block";
+  TUTO.all.style.display = "block";
+  TUTO.window.style.background = "var(--grey)";
 }
 
 const hide = (elem, instant) => {
