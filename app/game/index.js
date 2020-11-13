@@ -24,25 +24,12 @@ Login.init(socket);
 
 socket.on('loginSuccess', isPlayerNew => {
   Login.end();
-  isPlayerNew ?
-    PaletteSelection.init(socket, onPaletteSelected) :
-    initGameNowWithoutTuto(socket);
-});
-
-const onPaletteSelected = function() {
-  this.socket.emit("paletteSelected", this.index);
-  this.socket.on("initGame", data => {
-    TUTO.init();
-    GAME.init(data, this.socket);
-  })
-};
-
-const initGameNowWithoutTuto = (socket) => {
+  isPlayerNew && PaletteSelection.init(socket);
   socket.on("initGame", data => {
-    TUTO.end();
+    TUTO.[isPlayerNew ? "init" : "end"]();
     GAME.init(data, socket);
   });
-};
+});
 
 socket.on('alert', data =>
   alert(data)

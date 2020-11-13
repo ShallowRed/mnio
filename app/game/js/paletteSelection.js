@@ -2,7 +2,7 @@ import Pokedex from './components/pokedex';
 
 const paletteSelection = {
 
-  init: (socket, onPaletteSelected) => {
+  init: (socket) => {
     document.getElementById('rdm')
       .addEventListener("click", changeTap);
 
@@ -12,23 +12,21 @@ const paletteSelection = {
       .style.display = "flex";
 
     document.getElementById('select')
-      .addEventListener("click", onPaletteSelected.bind({
-        socket,
-        index: paletteSelection.tap.index
-      }));
-  },
-
-  tap: {
-    index: null,
-    img: document.getElementById("tapImg"),
-    description: document.getElementById("description")
+      .addEventListener("click", () => {
+        socket.emit("paletteSelected", tap.index);
+      });
   }
+};
+
+const tap = {
+  index: null,
+  img: document.getElementById("tapImg"),
+  description: document.getElementById("description")
 };
 
 let indexList = Pokedex.map((e, i) => i);
 
 const changeTap = () => {
-  const { tap } = paletteSelection;
   if (!indexList.length) indexList = Pokedex.map((e, i) => i);
   let rdmIndex = Math.floor(Math.random() * indexList.length);
   tap.index = indexList[rdmIndex];
