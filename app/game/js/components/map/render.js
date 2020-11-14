@@ -1,0 +1,87 @@
+import { check } from '../../utils/utils';
+import fillCell from './fill';
+
+const Render = {
+
+  clear: (position, { GAME, PLAYER, MAP }) => {
+    const ctx = MAP.ctx[2];
+    const cell = check(position, PLAYER, GAME, MAP);
+    if (cell) ctx.clearRect(MAP.cellSize * cell[1], MAP.cellSize * cell[0],
+      MAP.cellSize, MAP.cellSize);
+  },
+
+  color: (position, { GAME, PLAYER, MAP }) => {
+    const cell = check(position, PLAYER, GAME, MAP);
+    if (!cell) return;
+    MAP.ctx[1].clearRect(MAP.cellSize * cell[1], MAP.cellSize * cell[0], MAP
+      .cellSize, MAP.cellSize);
+    MAP.ctx[1].fillStyle = `#${GAME.colors[position]}`;
+    MAP.ctx[1].fillRect(MAP.cellSize * cell[1], MAP.cellSize * cell[0], MAP
+      .cellSize, MAP.cellSize);
+  },
+
+  allowed: (position, { GAME, PLAYER, MAP }) => {
+    const cell = check(position, PLAYER, GAME, MAP);
+    if (!cell) return;
+    MAP.ctx[0].clearRect(MAP.cellSize * cell[1], MAP.cellSize * cell[0], MAP
+      .cellSize, MAP.cellSize);
+    MAP.ctx[0].fillStyle = '#e9e9e9';
+    MAP.ctx[0].fillRect(MAP.cellSize * cell[1], MAP.cellSize * cell[0], MAP
+      .cellSize, MAP.cellSize);
+  },
+
+  position: (position, { GAME, PLAYER, MAP }) => {
+    const cell = check(position, PLAYER, GAME, MAP);
+    if (cell)
+      roundRect(MAP.ctx[2], MAP.cellSize * cell[1] + MAP.shift * 1.5, MAP
+        .cellSize * cell[0] + MAP.shift * 1.5, MAP.cellSize - MAP.shift * 3,
+        MAP.cellSize - MAP.shift * 3, MAP.shift, MAP);
+  },
+
+  fill: (position, color, { GAME, PLAYER, MAP }, socket) => {
+    const { flag } = GAME;
+    if (!flag.fillCallback || flag.fill) return;
+
+    if (!GAME.owned.includes(position))
+      GAME.owned.push(position);
+
+    const drawData = {
+      lw: MAP.lw,
+      cellSize: MAP.cellSize,
+      ctx: MAP.ctx[1]
+    };
+
+    fillCell(check(position, PLAYER, GAME, MAP), color, flag,
+      drawData);
+
+    color = color.split('#')[1];
+
+    GAME.colors[position] = color;
+
+    socket.emit("fill", {
+      position: position,
+      color: color
+    });
+
+    flag.fillCallback = false;
+  }
+};
+
+const roundRect = (ctx, x, y, width, height, radius, MAP) => {
+  ctx.strokeStyle = "black";
+  ctx.lineWidth = MAP.shift;
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + width - radius, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+  ctx.lineTo(x + width, y + height - radius);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+  ctx.lineTo(x + radius, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+  ctx.lineTo(x, y + radius);
+  ctx.quadraticCurveTo(x, y, x + radius, y);
+  ctx.closePath();
+  ctx.stroke();
+}
+
+export default Render

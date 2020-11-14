@@ -1,64 +1,60 @@
-import {
-  indextocoord
-} from '../utils/utils'
+import { indextocoord } from '../utils/utils'
+export default class Player {
 
-const PLAYER = {};
-
-PLAYER.init = ({ position, palette }) => {
-  PLAYER.position = position;
-  PLAYER.palette = palette;
-  PLAYER.Scolor = palette[0];
-  PLAYER.canvas = [document.getElementById('playercanvas'), document
-    .getElementById('shadow')
-  ];
-  PLAYER.canvas[0].getContext('2d')
-    .imageSmoothingEnabled = false;
-};
-
-PLAYER.update = function() {
-  const { GAME, MAP } = this;
-  console.log(this);
-  PLAYER.coord = indextocoord(PLAYER.position, GAME);
-  PLAYER.is = {
-    up: PLAYER.coord[0] < MAP.half[0],
-    down: PLAYER.coord[0] > GAME.cols - MAP.half[0],
-    left: PLAYER.coord[1] < MAP.half[1],
-    right: PLAYER.coord[1] > GAME.rows - MAP.half[1]
+  constructor({ position, palette }) {
+    this.position = position;
+    this.palette = palette;
+    this.sColor = palette[0];
+    this.canvas = [
+      document.getElementById('playercanvas'),
+      document.getElementById('shadow')
+    ];
+    this.canvas[0].getContext('2d')
+      .imageSmoothingEnabled = false;
   }
-};
 
-PLAYER.render = function(animated) {
-  const { GAME, MAP } = this;
+  update(GAME) {
+    const { rows, cols, MAP: { half } } = GAME;
+    this.coord = indextocoord(this.position, { rows, cols });
+    this.is = {
+      up: this.coord[0] < half[0],
+      down: this.coord[0] > cols - half[0],
+      left: this.coord[1] < half[1],
+      right: this.coord[1] > rows - half[1]
+    }
+  }
 
-  PLAYER.canvas.forEach(canvas => {
-    canvas.style.transitionDuration = animated ? GAME.duration + 's' :
-      '0s'
+  render(MAP, { rows, cols, duration }, animated) {
+    const { coord, canvas } = this;
+    const { half, cellSize, shift } = MAP;
 
-    canvas.style.top = (
-      PLAYER.is.up ?
-      PLAYER.coord[0] :
-      PLAYER.is.down ?
-      PLAYER.coord[0] + MAP.cols - GAME.cols - 2 :
-      MAP.half[0] - 1
-    ) * MAP.cellSize + MAP.shift + 'px';
+    canvas.forEach(canvas => {
+      canvas.style.transitionDuration = animated ?
+        `${duration}s` : '0s';
 
-    canvas.style.left = (
-      PLAYER.is.left ? PLAYER.coord[1] :
-      PLAYER.is.right ? PLAYER.coord[1] + MAP.rows - GAME.rows - 2 :
-      MAP.half[1] - 1
-    ) * MAP.cellSize + MAP.shift + 'px';
-  });
+      canvas.style.top = (
+        this.is.up ? coord[0] :
+        this.is.down ? coord[0] + MAP.cols - cols - 2 :
+        half[0] - 1
+      ) * cellSize + shift + 'px';
 
-  if (animated) return;
-  PLAYER.canvas[0].width = PLAYER.canvas[0].height = MAP.cellSize - MAP
-    .shift * 4;
-  PLAYER.canvas[1].style.width = PLAYER.canvas[1].style.height = MAP
-    .cellSize - MAP.shift * 2 - 2 + 'px';
-  PLAYER.canvas.forEach(canvas =>
-    canvas.style.borderRadius = MAP.shift + 'px'
-  );
-  PLAYER.canvas[0].style.borderWidth = MAP.shift + 'px';
+      canvas.style.left = (
+        this.is.left ? coord[1] :
+        this.is.right ? coord[1] + MAP.rows - rows - 2 :
+        half[1] - 1
+      ) * cellSize + shift + 'px';
+    });
+
+    if (animated) return;
+
+    canvas[0].width = canvas[0].height = cellSize - shift * 4;
+    canvas[1].style.width = canvas[1].style.height = cellSize - shift * 2 -
+      2 + 'px';
+
+    canvas.forEach(canvas =>
+      canvas.style.borderRadius = shift + 'px'
+    );
+
+    canvas[0].style.borderWidth = shift + 'px';
+  }
 }
-
-
-export default PLAYER

@@ -2,52 +2,53 @@ import {
   selectColor,
 } from '../utils/utils';
 
-import Render from '../utils/render';
+import Render from '../components/map/render';
 
-import zoom from '../utils/zoom';
-import move from '../utils/move';
+import zoom from '../components/map/zoom';
+import move from '../game/move';
 
 let next;
 
-const KeyboardInput = (event, PLAYER, GAME, UI, MAP, socket) => {
-  if (GAME.flag.translate || !GAME.flag.moveCallback || GAME.flag.input) return;
+const KeyboardInput = (event, context, UI, socket) => {
+  const { PLAYER, GAME, MAP } = context;
+  const { flag } = GAME;
+  if (flag.translate || !flag.moveCallback || flag.input) return;
   switch (event.code) {
 
     case "Space":
-      Render.fill(PLAYER.position, PLAYER.Scolor, GAME, PLAYER, MAP, socket);
+      Render.fill(PLAYER.position, PLAYER.sColor, context, socket);
       break;
 
     case "KeyW":
-      zoom(UI.isAlt ? "out" : "in", GAME, MAP, UI);
+      zoom(UI.isAlt ? "out" : "in", context, UI);
       break;
 
-      //   zoom("out", GAME, MAP, UI);
-      //   break;
-
     case "ControlLeft":
-      next = (PLAYER.palette.indexOf(PLAYER.Scolor) + 1) % PLAYER.palette.length;
+      next = (PLAYER.palette.indexOf(PLAYER.sColor) + 1) % PLAYER.palette
+        .length;
       selectColor(next, PLAYER, UI);
       break;
 
     case "ShiftLeft":
-      next = (PLAYER.palette.indexOf(PLAYER.Scolor) + PLAYER.palette.length - 1) % PLAYER.palette.length;
+      next = (PLAYER.palette.indexOf(PLAYER.sColor) + PLAYER.palette.length -
+        1) % PLAYER.palette.length;
       selectColor(next, PLAYER, UI);
       break;
 
     case "ArrowLeft":
-      move("left", GAME, PLAYER, MAP, socket);
+      move("left", { GAME, PLAYER, MAP }, socket);
       break;
 
     case "ArrowUp":
-      move("up", GAME, PLAYER, MAP, socket);
+      move("up", { GAME, PLAYER, MAP }, socket);
       break;
 
     case "ArrowRight":
-      move("right", GAME, PLAYER, MAP, socket);
+      move("right", { GAME, PLAYER, MAP }, socket);
       break;
 
     case "ArrowDown":
-      move("down", GAME, PLAYER, MAP, socket);
+      move("down", { GAME, PLAYER, MAP }, socket);
       break;
   }
 }

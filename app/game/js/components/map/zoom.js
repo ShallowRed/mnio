@@ -3,10 +3,17 @@ const focusZoom = (btn, bool) => {
   btn.style.transform = bool ? "scale(1)" : "scale(0.8)";
 }
 
-const zoom = (dir, GAME, MAP, UI) => {
-  if (!GAME.flag.ok()) return;
-  focusZoom(UI.zoom[dir], true, GAME.flag.zoom);
-  setTimeout(() => focusZoom(UI.zoom[dir], false, GAME.flag.zoom), 100)
+const zoom = (dir, context, UI) => {
+  const { GAME, MAP } = context;
+  const { flag } = GAME;
+
+  if (!flag.ok()) return;
+
+  focusZoom(UI.zoom[dir], true, flag.zoom);
+
+  setTimeout(() =>
+    focusZoom(UI.zoom[dir], false, flag.zoom), 100);
+
   if (dir == "in") {
     MAP.rows -= 2;
     MAP.cols -= 2;
@@ -14,7 +21,7 @@ const zoom = (dir, GAME, MAP, UI) => {
     MAP.rows += 2;
     MAP.cols += 2;
   }
-  GAME.render();
+  GAME.render(context, UI);
 }
 
 export default zoom;
