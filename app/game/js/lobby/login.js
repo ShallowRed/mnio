@@ -3,6 +3,14 @@ const logPasswordBtn = document.getElementById('passBtn');
 
 export default {
   init: (socket) => {
+
+    // testing
+    sendUsername.call({ socket }, "q");
+    socket.on("askPass", () => {
+      socket.emit("password", "q");
+    });
+    /////////////////////////
+
     const context = { socket };
     logUserNameBtn.addEventListener('click', checkUsername.bind(context));
   },
@@ -12,7 +20,7 @@ export default {
       "pageTitle": "test"
     }, "", "/jouer");
 
-    window.addEventListener('popstate', function(event) {
+    window.addEventListener('popstate', function() {
       window.location.replace("../")
     }, false);
 
@@ -84,7 +92,7 @@ const alertPassCantBeLong = () =>
 const alertCantBeDiff = () =>
   alert("Les deux mots de passe ne sont pas identiques !");
 
-  const hide = e => {
-    e.style.opacity = "0";
-    setTimeout(() => e.style.display = "none", 300);
-  };
+const hide = e => {
+  e.style.opacity = "0";
+  setTimeout(() => e.style.display = "none", 300);
+};

@@ -8,16 +8,19 @@ import {
   touchStart,
   touchEnd,
   touchMove
-} from './mobile';
+} from '../controls/mobile';
 
 import Render from '../utils/render';
-import KeyboardInput from './keyboard';
+import KeyboardInput from '../controls/keyboard';
 
 const UI = {};
 
-UI.init = (GAME, PLAYER, MAP, socket) => {
+UI.init = function(socket) {
+  const { GAME, PLAYER, MAP } = this;
   GetDomElements();
-  Object.keys(Listeners).forEach(event => Listeners[event](GAME, PLAYER, MAP, socket));
+  for (const [evt, listen] of Object.entries(Listeners)) {
+    listen(GAME, PLAYER, MAP, socket);
+  }
   selectColor(0, PLAYER, UI);
 
   document.getElementById('logo').style.display = "block";
@@ -100,7 +103,7 @@ const Listeners = {
 
     UI.colorBtns.forEach((colorBtn, i) => {
 
-      colorBtn.style.background = PLAYER.colors[i];
+      colorBtn.style.background = PLAYER.palette[i];
 
       colorBtn.addEventListener("click", () => {
         if (!GAME.flag.ok()) return;
@@ -131,6 +134,9 @@ const Listeners = {
     document.addEventListener('keyup', event => {
       if (event.code == "AltLeft") UI.isAlt = false;
     });
+    console.log("-----------------------------------------");
+    console.log("-----------------------------------------");
+    console.log(GAME);
     document.addEventListener('keydown', event => KeyboardInput(event, PLAYER, GAME, UI, MAP, socket));
     document.addEventListener('keyup', () => GAME.flag.input = false);
   },

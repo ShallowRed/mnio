@@ -42,9 +42,11 @@ const TUTO = {
   isFirstMove: event => (event.keyCode == 37 || event.keyCode == 38 || event
     .keyCode == 39 || event.keyCode == 40) && TUTO.firstMove,
 
-}
+};
 
 TUTO.init = () => {
+
+  hide(document.getElementById('intro'));
 
   TUTO.isMobile =
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -88,15 +90,13 @@ TUTO.init = () => {
       ];
       if (TUTO.delta[0] > 5 || TUTO.delta[1] > 5) TUTO.phase.info();
     }
+
+
   });
 
+  TUTO.phase.welcome();
   TUTO.btn.skip.addEventListener("click", () => TUTO.phase.last());
   TUTO.btn.play.addEventListener("click", () => TUTO.phase.last());
-};
-
-TUTO.init = () => {
-  hide(document.getElementById('intro'));
-  TUTO.phase.welcome();
 };
 
 TUTO.phase = {
@@ -161,7 +161,7 @@ TUTO.end = () => {
   else TUTO.pc.style.display = "block";
   TUTO.all.style.display = "block";
   TUTO.window.style.background = "var(--grey)";
-}
+};
 
 const hide = (elem, instant) => {
   if (instant) elem.style.display = "none";
@@ -169,13 +169,11 @@ const hide = (elem, instant) => {
     elem.style.opacity = "0";
     setTimeout(() => elem.style.display = "none", 500);
   }
-}
+};
 
 const show = (elem) => {
   elem.style.display = "block";
   setTimeout(() => elem.style.opacity = "1", 50);
-}
-
-TUTO.init();
+};
 
 export default TUTO;

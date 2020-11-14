@@ -19,23 +19,27 @@ const MAP = {
 };
 
 MAP.init = () => {
-  MAP.ctx = Array.from(MAP.canvas).map(canvas =>
-    canvas.getContext('2d')
-  );
+  MAP.ctx = Array.from(MAP.canvas)
+    .map(canvas =>
+      canvas.getContext('2d')
+    );
   MAP.ctx.forEach(ctx =>
     ctx.imageSmoothingEnabled = false
   );
 };
 
 MAP.update = () => {
-  let w = MAP.windowWidth = Math.max(window.innerWidth, document.documentElement.clientWidth);
-  let h = MAP.windowHeight = Math.max(window.innerHeight, document.documentElement.clientHeight);
+  let w = MAP.windowWidth = Math.max(window.innerWidth, document
+    .documentElement.clientWidth);
+  let h = MAP.windowHeight = Math.max(window.innerHeight, document
+    .documentElement.clientHeight);
 
-  if (!MAP.RowCol) MAP.RowCol = [MAP.startcells, MAP.startcells];
-  if (MAP.RowCol[1] <= MAP.mincells) MAP.RowCol[1] = MAP.mincells;
-  if (MAP.RowCol[0] <= MAP.mincells) MAP.RowCol[0] = MAP.mincells;
-  if (MAP.RowCol[1] >= MAP.maxcells) MAP.RowCol[1] = MAP.maxcells;
-  if (MAP.RowCol[0] >= MAP.maxcells) MAP.RowCol[0] = MAP.maxcells;
+  if (!MAP.rows) MAP.rows = MAP.startcells;
+  if (!MAP.cols) MAP.cols = MAP.startcells;
+  if (MAP.rows <= MAP.mincells) MAP.rows = MAP.mincells;
+  if (MAP.cols <= MAP.mincells) MAP.cols = MAP.mincells;
+  if (MAP.rows >= MAP.maxcells) MAP.rows = MAP.maxcells;
+  if (MAP.cols >= MAP.maxcells) MAP.cols = MAP.maxcells;
 
   MAP.ratio = (w > h);
   MAP.Smargin = MAP.ratio ? Math.round(0.01 * w) : Math.round(0.01 * h);
@@ -43,25 +47,25 @@ MAP.update = () => {
   if (MAP.ratio) w -= MAP.Lmargin;
   else h -= MAP.Lmargin;
 
-  MAP.RowCol = MAP.ratio ? [
-    Math.round(MAP.RowCol[1] * h / w) + 2,
-    MAP.RowCol[1]
-  ] : [
-    MAP.RowCol[0],
-    Math.round(MAP.RowCol[0] * w / h) + 2
-  ];
+  MAP.rows = MAP.ratio ?
+    Math.round(MAP.rows * h / w) + 2 :
+    MAP.rows;
+  MAP.cols = MAP.ratio ?
+    MAP.cols :
+    Math.round(MAP.cols * w / h) + 2;
 
-  MAP.cellSize = MAP.ratio ? Math.round(w / (MAP.RowCol[1] - 2)) : Math.round(h / (MAP.RowCol[0] - 2));
+  MAP.cellSize = MAP.ratio ? Math.round(w / (MAP.rows - 2)) : Math.round(h / (
+    MAP.cols - 2));
   MAP.margin.right = MAP.ratio ? MAP.Smargin + MAP.Lmargin : MAP.Smargin;
   MAP.margin.bottom = MAP.ratio ? MAP.Smargin : MAP.Smargin + MAP.Lmargin;
   MAP.margin.left = MAP.margin.top = MAP.Smargin;
 
-  if (MAP.RowCol[0] % 2 == 0) MAP.RowCol[0]++;
-  if (MAP.RowCol[1] % 2 == 0) MAP.RowCol[1]++;
-  MAP.half = [(MAP.RowCol[0] - 1) / 2, (MAP.RowCol[1] - 1) / 2];
+  if (MAP.cols % 2 == 0) MAP.cols++;
+  if (MAP.rows % 2 == 0) MAP.rows++;
+  MAP.half = [(MAP.cols - 1) / 2, (MAP.rows - 1) / 2];
   MAP.lw = Math.round(MAP.cellSize / 6);
-  MAP.width = MAP.cellSize * (MAP.RowCol[1] - 2);
-  MAP.height = MAP.cellSize * (MAP.RowCol[0] - 2);
+  MAP.width = MAP.cellSize * (MAP.rows - 2);
+  MAP.height = MAP.cellSize * (MAP.cols - 2);
   MAP.shift = Math.round(MAP.cellSize / 8);
   MAP.master.style.width = `${MAP.width}px`;
   MAP.master.style.height = `${MAP.height}px`;
@@ -99,15 +103,20 @@ MAP.draw = (PLAYER, GAME) => {
     canvas.style.left = `-${MAP.cellSize * shift.left}px`;
   });
 
-  GAME.allowed.forEach(position => Render.allowed(position, PLAYER, GAME, MAP));
-  GAME.positions.forEach(position => Render.position(position, PLAYER, GAME, MAP));
-  GAME.colors.map((color, i) => color ? i : null).filter(color => color).forEach((position) => Render.color(position, PLAYER, GAME, MAP))
+  GAME.allowed.forEach(position => Render.allowed(position, PLAYER, GAME,
+    MAP));
+  GAME.positions.forEach(position => Render.position(position, PLAYER, GAME,
+    MAP));
+  GAME.colors.map((color, i) => color ? i : null)
+    .filter(color => color)
+    .forEach((position) => Render.color(position, PLAYER, GAME, MAP))
 };
 
 const translate = {
 
   master: (PLAYER, duration, animated) => {
-    MAP.master.style.transitionDuration = (animated) ? duration + 's' : '0s';
+    MAP.master.style.transitionDuration = (animated) ? duration + 's' :
+    '0s';
 
     MAP.master.style.marginTop = `${
       PLAYER.is.up ? MAP.margin.top :
@@ -126,13 +135,17 @@ const translate = {
     const isGoing = dir =>
       PLAYER.lastdir == dir;
 
+    const rowcols = [GAME.cols, GAME.rows];
+
     const isPlayer = (condition, i) =>
       condition == "inCenter" ?
-      PLAYER.coord[i] + 1 >= MAP.half[i] && PLAYER.coord[i] < GAME.RowCol[i] - MAP.half[i] :
+      PLAYER.coord[i] + 1 >= MAP.half[i] && PLAYER.coord[i] < rowcols[i] -
+      MAP.half[i] :
       condition == "onLimit" ?
       PLAYER.coord[i] == MAP.half[i] :
       condition == "strictCenter" ?
-      PLAYER.coord[i] > MAP.half[i] && PLAYER.coord[i] <= GAME.RowCol[i] - MAP.half[i] : null;
+      PLAYER.coord[i] > MAP.half[i] && PLAYER.coord[i] <= rowcols[i] - MAP
+      .half[i] : null;
 
 
     const shift = {

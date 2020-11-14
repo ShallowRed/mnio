@@ -25,12 +25,12 @@ const KeyboardInput = (event, PLAYER, GAME, UI, MAP, socket) => {
       //   break;
 
     case "ControlLeft":
-      next = (PLAYER.colors.indexOf(PLAYER.Scolor) + 1) % PLAYER.colors.length;
+      next = (PLAYER.palette.indexOf(PLAYER.Scolor) + 1) % PLAYER.palette.length;
       selectColor(next, PLAYER, UI);
       break;
 
     case "ShiftLeft":
-      next = (PLAYER.colors.indexOf(PLAYER.Scolor) + PLAYER.colors.length - 1) % PLAYER.colors.length;
+      next = (PLAYER.palette.indexOf(PLAYER.Scolor) + PLAYER.palette.length - 1) % PLAYER.palette.length;
       selectColor(next, PLAYER, UI);
       break;
 
