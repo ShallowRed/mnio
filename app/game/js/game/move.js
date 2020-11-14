@@ -2,13 +2,17 @@ import { indextocoord, coordtoindex } from '../utils/utils';
 import Translate from './translate';
 
 const move = (direction, context, socket) => {
-  const { GAME, PLAYER, MAP } = context;
+  const { GAME, PLAYER } = context;
   const { flag } = GAME;
+
   if (!flag.moveCallback) return;
+
   socket.emit('move', direction);
   flag.moveCallback = false;
+
   const nextpos = checkMove(direction, GAME, PLAYER);
   if (!nextpos) return;
+
   PLAYER.lastdir = direction;
   PLAYER.position = nextpos;
   Translate(context);

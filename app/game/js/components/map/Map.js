@@ -47,12 +47,12 @@ export default class Map {
 
     const ensureLimits = () => {
       const { startcells, maxcells, mincells } = this;
-      if (!this.rows) this.rows = startcells;
       if (!this.cols) this.cols = startcells;
-      if (this.rows <= mincells) this.rows = mincells;
+      if (!this.rows) this.rows = startcells;
       if (this.cols <= mincells) this.cols = mincells;
-      if (this.rows >= maxcells) this.rows = maxcells;
+      if (this.rows <= mincells) this.rows = mincells;
       if (this.cols >= maxcells) this.cols = maxcells;
+      if (this.rows >= maxcells) this.rows = maxcells;
     };
 
     const setDimensions = () => {
@@ -77,36 +77,34 @@ export default class Map {
     };
 
     const setRowColCell = () => {
-      const { rows, cols, windowWidth, windowHeight } = this;
+      const { cols, rows, windowWidth, windowHeight } = this;
       if (this.ratio) {
-        this.rows = Math.round(rows * windowHeight / windowWidth) + 2;
-        this.cellSize = Math.round(windowWidth / (rows - 2));
+        this.cols = Math.round(rows * windowHeight / windowWidth) + 2;
+        this.cellSize = Math.round(windowWidth / (cols - 2));
       } else {
-        this.cols = Math.round(cols * windowWidth / windowHeight) + 2;
-        this.cellSize = Math.round(windowHeight / (cols - 2));
+        this.rows = Math.round(cols * windowWidth / windowHeight) + 2;
+        this.cellSize = Math.round(windowHeight / (rows - 2));
       }
     };
 
     const ensureEven = () => {
-      if (this.cols % 2 == 0) this.cols++;
       if (this.rows % 2 == 0) this.rows++;
+      if (this.cols % 2 == 0) this.cols++;
     };
 
     const setProps = () => {
-      const { rows, cols, cellSize } = this;
+      const { cols, rows, cellSize } = this;
       this.half = [(cols - 1) / 2, (rows - 1) / 2];
       this.lw = Math.round(cellSize / 6);
-      this.width = cellSize * (rows - 2);
       this.height = cellSize * (cols - 2);
+      this.width = cellSize * (rows - 2);
       this.shift = Math.round(cellSize / 8);
     };
 
     const setCanvasSize = () => {
       const { width, height, cellSize } = this;
-
       this.master.style.width = `${width}px`;
       this.master.style.height = `${height}px`;
-
       this.canvas.forEach(c => {
         c.width = width + cellSize * 2;
         c.height = height + cellSize * 2;
@@ -131,10 +129,10 @@ export default class Map {
     setMasksSize();
   }
 
-  render(animated, PLAYER, { rows, cols, duration }) {
+  render(animated, PLAYER, { cols, rows, duration }) {
     translate.master(this, PLAYER, duration, animated);
     if (animated)
-      translate.canvas(this, PLAYER, { rows, cols, duration });
+      translate.canvas(this, PLAYER, { cols, rows, duration });
   }
 
   draw(PLAYER, GAME) {
@@ -190,11 +188,11 @@ const translate = {
     }px`;
   },
 
-  canvas: (MAP, PLAYER, { rows, cols, duration }) => {
+  canvas: (MAP, PLAYER, { cols, rows, duration }) => {
     const isGoing = dir =>
       PLAYER.lastdir == dir;
 
-    const rowcols = [cols, rows];
+    const rowcols = [rows, cols];
 
     const isPlayer = (condition, i) =>
       condition == "inCenter" ?

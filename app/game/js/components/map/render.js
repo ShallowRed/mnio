@@ -3,47 +3,57 @@ import fillCell from './fill';
 
 const Render = {
 
-  clear: (position, { GAME, PLAYER, MAP }) => {
-    const ctx = MAP.ctx[2];
-    const cell = check(position, PLAYER, GAME, MAP);
-    if (cell) ctx.clearRect(MAP.cellSize * cell[1], MAP.cellSize * cell[0],
-      MAP.cellSize, MAP.cellSize);
-  },
-
-  color: (position, { GAME, PLAYER, MAP }) => {
-    const cell = check(position, PLAYER, GAME, MAP);
-    if (!cell) return;
-    MAP.ctx[1].clearRect(MAP.cellSize * cell[1], MAP.cellSize * cell[0], MAP
-      .cellSize, MAP.cellSize);
-    MAP.ctx[1].fillStyle = `#${GAME.colors[position]}`;
-    MAP.ctx[1].fillRect(MAP.cellSize * cell[1], MAP.cellSize * cell[0], MAP
-      .cellSize, MAP.cellSize);
-  },
-
-  allowed: (position, { GAME, PLAYER, MAP }) => {
-    const cell = check(position, PLAYER, GAME, MAP);
-    if (!cell) return;
-    MAP.ctx[0].clearRect(MAP.cellSize * cell[1], MAP.cellSize * cell[0], MAP
-      .cellSize, MAP.cellSize);
-    MAP.ctx[0].fillStyle = '#e9e9e9';
-    MAP.ctx[0].fillRect(MAP.cellSize * cell[1], MAP.cellSize * cell[0], MAP
-      .cellSize, MAP.cellSize);
-  },
-
-  position: (position, { GAME, PLAYER, MAP }) => {
-    const cell = check(position, PLAYER, GAME, MAP);
+  clear: (position, context) => {
+    const { ctx, cellSize } = context.MAP;
+    const cell = check(position, context);
     if (cell)
-      roundRect(MAP.ctx[2], MAP.cellSize * cell[1] + MAP.shift * 1.5, MAP
-        .cellSize * cell[0] + MAP.shift * 1.5, MAP.cellSize - MAP.shift * 3,
-        MAP.cellSize - MAP.shift * 3, MAP.shift, MAP);
+      ctx[2].clearRect(cellSize * cell[1], cellSize * cell[0], cellSize,
+        cellSize);
   },
 
-  fill: (position, color, { GAME, PLAYER, MAP }, socket) => {
-    const { flag } = GAME;
+  color: (position, context) => {
+    const { GAME: { colors }, MAP: { ctx, cellSize } } = context;
+
+    const cell = check(position, context);
+    if (!cell) return;
+
+    ctx[1].clearRect(cellSize * cell[1], cellSize * cell[0], cellSize,
+      cellSize);
+    ctx[1].fillStyle = `#${colors[position]}`;
+    ctx[1].fillRect(cellSize * cell[1], cellSize * cell[0], cellSize,
+      cellSize);
+  },
+
+  allowed: (position, context) => {
+
+    const cell = check(position, context);
+    if (!cell) return;
+    const { ctx, cellSize } = context.MAP;
+    const [x, y] = cell;
+    ctx[0].clearRect(cellSize * y, cellSize * x, cellSize, cellSize);
+    ctx[0].fillStyle = '#e9e9e9';
+    ctx[0].fillRect(cellSize * y, cellSize * x, cellSize, cellSize);
+  },
+
+  position: (position, context) => {
+    const { ctx, cellSize, shift } = context.MAP;
+    const cell = check(position, context);
+
+    if (cell)
+      roundRect(ctx[2], cellSize * cell[1] + shift * 1.5, cellSize * cell[
+          0] + shift * 1.5, cellSize - shift * 3,
+        cellSize - shift * 3, shift);
+  },
+
+  fill: (position, color, context, socket) => {
+    const { GAME: { flag, owned, colors }, MAP } = context;
+
+    console.log(color);
+
     if (!flag.fillCallback || flag.fill) return;
 
-    if (!GAME.owned.includes(position))
-      GAME.owned.push(position);
+    if (!owned.includes(position))
+      owned.push(position);
 
     const drawData = {
       lw: MAP.lw,
@@ -51,12 +61,12 @@ const Render = {
       ctx: MAP.ctx[1]
     };
 
-    fillCell(check(position, PLAYER, GAME, MAP), color, flag,
+    fillCell(check(position, context), color, flag,
       drawData);
 
     color = color.split('#')[1];
 
-    GAME.colors[position] = color;
+    colors[position] = color;
 
     socket.emit("fill", {
       position: position,

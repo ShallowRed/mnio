@@ -10,7 +10,6 @@ export default class Game {
     this.MAP = MAP;
     this.PLAYER = PLAYER;
     this.UI = UI;
-    console.log(this);
   }
 
   render(context, UI, animated) {

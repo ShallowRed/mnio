@@ -7,7 +7,10 @@ const Touch = {
 }
 
 const touchStart = (evt, flag) => {
-  Touch.start = [evt.touches[0].clientX, evt.touches[0].clientY]
+  Touch.start = [
+    evt.touches[0].clientX,
+    evt.touches[0].clientY
+  ];
   flag.input = true;
 }
 

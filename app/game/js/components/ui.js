@@ -104,16 +104,14 @@ const Listeners = {
       colorBtn.addEventListener("click", () => {
         if (!flag.ok()) return;
         selectColor(i, PLAYER, UI);
-        Render.fill(position, sColor, context,
-          socket);
+        Render.fill(position, sColor, context, socket);
       });
 
       colorBtn.addEventListener("touchstart", (event) => {
         event.preventDefault();
         if (!flag.ok()) return;
         selectColor(i, PLAYER, UI);
-        Render.fill(position, sColor, context,
-          socket);
+        Render.fill(position, sColor, context, socket);
       });
     });
 
