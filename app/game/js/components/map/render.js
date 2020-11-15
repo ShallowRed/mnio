@@ -1,68 +1,38 @@
 import { check } from '../../utils/utils';
-import fillCell from './fill';
+import fillAnimation from './fillAnimation';
 
-const Render = {
+const Render2 = {
 
-  clear: (position, context) => {
+  clear: (coord, context) => {
     const { ctx, cellSize } = context.MAP;
-    const cell = check(position, context);
-    if (cell)
-      ctx[2].clearRect(cellSize * cell[1], cellSize * cell[0], cellSize,
-        cellSize);
+    fillCell(coord, cellSize, ctx[2], null);
   },
 
-  color: (position, context) => {
+  color: (position, coord, context) => {
     const { GAME: { colors }, MAP: { ctx, cellSize } } = context;
-
-    const cell = check(position, context);
-    if (!cell) return;
-
-    ctx[1].clearRect(cellSize * cell[1], cellSize * cell[0], cellSize,
-      cellSize);
-    ctx[1].fillStyle = `#${colors[position]}`;
-    ctx[1].fillRect(cellSize * cell[1], cellSize * cell[0], cellSize,
-      cellSize);
+    fillCell(coord, cellSize, ctx[1], `#${colors[position]}`);
   },
 
-  allowed: (position, context) => {
-
-    const cell = check(position, context);
-    if (!cell) return;
+  allowed: (coord, context) => {
     const { ctx, cellSize } = context.MAP;
-    const [x, y] = cell;
-    ctx[0].clearRect(cellSize * y, cellSize * x, cellSize, cellSize);
-    ctx[0].fillStyle = '#e9e9e9';
-    ctx[0].fillRect(cellSize * y, cellSize * x, cellSize, cellSize);
+    fillCell(coord, cellSize, ctx[0], '#e9e9e9');
   },
 
-  position: (position, context) => {
+  position: (coord, context) => {
     const { ctx, cellSize, shift } = context.MAP;
-    const cell = check(position, context);
-
-    if (cell)
-      roundRect(ctx[2], cellSize * cell[1] + shift * 1.5, cellSize * cell[
-          0] + shift * 1.5, cellSize - shift * 3,
-        cellSize - shift * 3, shift);
+    roundSquare(coord, ctx[2], cellSize, shift);
   },
 
   fill: (position, color, context, socket) => {
     const { GAME: { flag, owned, colors }, MAP } = context;
-
-    console.log(color);
 
     if (!flag.fillCallback || flag.fill) return;
 
     if (!owned.includes(position))
       owned.push(position);
 
-    const drawData = {
-      lw: MAP.lw,
-      cellSize: MAP.cellSize,
-      ctx: MAP.ctx[1]
-    };
-
-    fillCell(check(position, context), color, flag,
-      drawData);
+    const coord = check(position, context);
+    fillAnimation(coord, color, flag, MAP);
 
     color = color.split('#')[1];
 
@@ -77,9 +47,40 @@ const Render = {
   }
 };
 
-const roundRect = (ctx, x, y, width, height, radius, MAP) => {
+const renderCell = (position, context, method) => {
+  const cell = check(position, context);
+  if (!cell) return;
+  method(cell, context);
+};
+
+const Render = {};
+
+for (const [key, fn] of Object.entries(Render2)) {
+  Render[key] = (...args) =>
+    renderCell(...args, fn);
+}
+
+console.log(Render);
+
+const fillCell = ([x, y], cellSize, ctx, color) => {
+  ctx.clearRect(cellSize * y, cellSize * x, cellSize, cellSize);
+  if (!color) return;
+  ctx.fillStyle = color;
+  ctx.fillRect(cellSize * y, cellSize * x, cellSize, cellSize);
+};
+
+const roundSquare = ([x, y], ctx, cellSize, shift) =>
+  roundRect(ctx, {
+    x: cellSize * y + shift * 1.5,
+    y: cellSize * x + shift * 1.5,
+    width: cellSize - shift * 3,
+    height: cellSize - shift * 3,
+    radius: shift
+  });
+
+const roundRect = (ctx, { x, y, width, height, radius }) => {
   ctx.strokeStyle = "black";
-  ctx.lineWidth = MAP.shift;
+  ctx.lineWidth = radius;
   ctx.beginPath();
   ctx.moveTo(x + radius, y);
   ctx.lineTo(x + width - radius, y);

@@ -1,30 +1,30 @@
-export default ({ GAME, MAP, PLAYER }) => {
-  GAME.flag.translate = true;
-  const { rows, cols, duration } = GAME;
+export default (context) => {
+  const { GAME, MAP, PLAYER } = context;
+  const { rows, cols, duration, flag } = GAME;
   const gameInfo = { rows, cols, duration };
 
+  flag.translate = true;
   PLAYER.update(GAME);
   MAP.render(true, PLAYER, gameInfo);
   PLAYER.render(MAP, gameInfo, true);
 
-  const start = Date.now();
-  frame({ GAME, MAP, PLAYER }, start);
+  translationFrame(context, Date.now());
 };
 
-const frame = (context, start) => {
+const translationFrame = (context, start) => {
   const { GAME, MAP, PLAYER } = context;
-  const { flag } = GAME;
+  const { flag, duration } = GAME;
 
   const delta = (Date.now() - start) / 1000;
-  const duration = GAME.duration * (flag.fill ? 2.5 : 1);
+  const delay = duration * (flag.fill ? 2.5 : 1);
 
-  if (delta >= duration) {
+  if (delta >= delay) {
     MAP.draw(PLAYER, GAME);
     flag.translate = false;
     return;
   }
 
   window.requestAnimationFrame(() =>
-    frame(context, start)
+    translationFrame(context, start)
   );
 };

@@ -4,12 +4,12 @@ const logPasswordBtn = document.getElementById('passBtn');
 export default {
   init: (socket) => {
 
-    // // testing
-    // sendUsername.call({ socket }, "q");
-    // socket.on("askPass", () => {
-    //   socket.emit("password", "q");
-    // });
-    // /////////////////////////
+    // testing
+    sendUsername.call({ socket }, "q");
+    socket.on("askPass", () => {
+      socket.emit("password", "q");
+    });
+    /////////////////////////
 
     const context = { socket };
     logUserNameBtn.addEventListener('click', checkUsername.bind(context));

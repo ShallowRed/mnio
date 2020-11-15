@@ -3,53 +3,57 @@ import Translate from './translate';
 
 export default function(socket) {
   for (const [eventName, callback] of events) {
-    socket.on(eventName, callback.bind(this));
+    socket.on(eventName, (data) => callback(this, data));
   }
 }
 
 const events = Object.entries({
 
-  newPlayerPos: function(position) {
-    const { PLAYER } = this;
-    if (position !== PLAYER.position) {
-      PLAYER.position = position;
-      Translate(this);
+  newPlayerPos: function(context, newPosition) {
+    let { position } = context.PLAYER;
+    if (newPosition !== position) {
+      position = newPosition;
+      Translate(context);
     }
   },
 
-  newPosition: function(position) {
-    const { positions } = this.GAME;
+  newPosition: function(context, position) {
+    const { positions } = context.GAME;
+
     if (position[0]) {
       positions.splice(positions.indexOf(position[0]), 1);
-      Render.clear(position[0], this);
+      Render.clear(position[0], context);
     }
+
     if (position[1]) {
       positions.push(position[1]);
-      Render.position(position[1], this);
+      Render.position(position[1], context);
     }
   },
 
-  NewCell: function({ position, color }) {
-    const { colors } = this.GAME;
+  NewCell: function(context, {position, color }) {
+    const { colors } = context.GAME;
+
     colors[position] = color;
-    Render.color(position, this);
+    Render.color(position, context);
   },
 
-  AllowedCells: function(cells) {
-    const { allowed } = this.GAME;
+  AllowedCells: function(context, cells) {
+    const { allowed } = context.GAME;
+
     cells.forEach(position => {
       if (allowed.includes(position)) return;
       allowed.push(position);
-      Render.allowed(position, this);
+      Render.allowed(position, context);
     });
   },
 
-  moveCallback: function() {
-    this.GAME.flag.moveCallback = true;
+  moveCallback: function(context) {
+    context.GAME.flag.moveCallback = true;
   },
 
-  fillCallback: function() {
-    this.GAME.flag.fillCallback = true;
+  fillCallback: function(context) {
+    context.GAME.flag.fillCallback = true;
   },
 
   error: () =>

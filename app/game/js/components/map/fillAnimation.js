@@ -1,4 +1,5 @@
-export default (cell, color, flag, { lw, cellSize, ctx }) => {
+export default ([x, y], color, flag, MAP) => {
+  const { lw, cellSize, ctx: [, ctx] } = MAP;
 
   flag.fill = true;
 
@@ -7,13 +8,13 @@ export default (cell, color, flag, { lw, cellSize, ctx }) => {
 
   const divx = 0;
   const divy = 0;
-  const posx = cellSize * cell[1];
-  const posy = cellSize * (cell[0] + 1);
+  const posx = cellSize * y;
+  const posy = cellSize * (x + 1);
 
-  frame(flag, { divx, divy, posx, posy, color }, { ctx, lw, cellSize });
+  fillFrame(flag, { divx, divy, posx, posy, color }, { ctx, lw, cellSize });
 };
 
-const frame = (flag, { divx, divy, posx, posy, color }, {
+const fillFrame = (flag, { divx, divy, posx, posy, color }, {
   ctx,
   lw,
   cellSize
@@ -48,7 +49,7 @@ const frame = (flag, { divx, divy, posx, posy, color }, {
   }
 
   window.requestAnimationFrame(() =>
-    frame(flag, { divx, divy, posx, posy, color }, {
+    fillFrame(flag, { divx, divy, posx, posy, color }, {
       ctx,
       lw,
       cellSize

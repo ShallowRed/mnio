@@ -6,37 +6,42 @@ const move = (direction, context, socket) => {
   const { flag } = GAME;
 
   if (!flag.moveCallback) return;
-
   socket.emit('move', direction);
   flag.moveCallback = false;
 
-  const nextpos = checkMove(direction, GAME, PLAYER);
+  const nextpos = checkMove(direction, GAME, PLAYER.position);
   if (!nextpos) return;
-
   PLAYER.lastdir = direction;
   PLAYER.position = nextpos;
+
   Translate(context);
 }
 
-const checkMove = (direction, GAME, PLAYER) => {
-  let coord = indextocoord(PLAYER.position, GAME);
+const checkMove = (dir, GAME, position) => {
+  const { rows, cols, owned, allowed, colors, positions } = GAME;
 
-  if (direction == "up" && coord[0] !== 0) coord[0]--;
-  else if (direction == "down" && coord[0] !== GAME.cols - 1) coord[0]++;
-  else if (direction == "left" && coord[1] !== 0) coord[1]--;
-  else if (direction == "right" && coord[1] !== GAME.rows - 1) coord[1]++;
+  let [x, y] = indextocoord(position, {rows, cols});
+
+  if (dir == "up" && x !== 0)
+    x--;
+  else if (dir == "down" && x !== cols - 1)
+    x++;
+  else if (dir == "left" && y !== 0)
+    y--;
+  else if (dir == "right" && y !== rows - 1)
+    y++;
   else return;
 
-  let nextpos = coordtoindex(coord, GAME);
+  let nextpos = coordtoindex([x, y], { rows });
 
   if (
-    GAME.owned.includes(nextpos) ||
+    owned.includes(nextpos) ||
     (
-      GAME.allowed.includes(nextpos) &&
-      !GAME.positions.includes(nextpos) &&
-      !GAME.colors[nextpos]
+      allowed.includes(nextpos) &&
+      !positions.includes(nextpos) &&
+      !colors[nextpos]
     )
   ) return nextpos;
-}
+};
 
 export default move;
