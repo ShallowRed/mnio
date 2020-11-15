@@ -14,12 +14,13 @@ const posinview = (position, PLAYER, { rows, cols }, MAP) => {
 const check = (position, GAME) => {
   const { PLAYER, MAP, rows, cols } = GAME;
   let [x, y] = posinview(position, PLAYER, { rows, cols }, MAP);
+  
   if (
     x >= 0 &&
     x <= MAP.cols &&
     y >= 0 &&
     y <= MAP.rows
-  ) return [x,y];
+  ) return [x, y];
 }
 
 const indextocoord = (index, { rows, cols }) => {
@@ -34,12 +35,14 @@ const coordtoindex = (coord, { rows }) => {
 }
 
 const selectColor = (i, PLAYER, UI) => {
-  PLAYER.sColor = PLAYER.palette[i];
-  PLAYER.canvas[0].style.background = PLAYER.sColor;
+  const {sColor, palette, canvas: [canvas]} ) PLAYER;
+
+  sColor = palette[i];
+  canvas.style.background = sColor;
+
   UI.colorBtns.forEach((btn, j) => {
-    btn.style.setProperty('border-width', (j == i) ? "2px" : "1px");
-    btn.style.setProperty('transform', (j == i) ? "scale(0.9)" :
-      "scale(0.7)");
+    btn.style.setProperty('border-width', `${j == i ? 2 : 1}px`);
+    btn.style.setProperty('transform', `scale(${j == i ? 0.7 : 0.9})`);
   });
 }
 

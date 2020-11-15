@@ -23,7 +23,6 @@ export default class Game {
 
     const render = () => this.renderAll();
     window.addEventListener('resize', render);
-    window.addEventListener('resize', () => console.log("a"));
     window.addEventListener("orientationchange", () =>
       setTimeout(render, 500)
     );
@@ -41,8 +40,7 @@ export default class Game {
   }
 
   render(animated) {
-    const { PLAYER, MAP } = this;
-    const { rows, cols, duration } = this;
+    const { PLAYER, MAP, rows, cols, duration } = this;
     const gameInfo = { rows, cols, duration };
 
     MAP.render(PLAYER, gameInfo, animated);
@@ -58,8 +56,8 @@ export default class Game {
     flag.moveCallback = false;
 
     const nextpos = checkMove(direction, position, this);
-    if (!nextpos) return;
-    this.newPosition(nextpos, direction);
+    if (nextpos)
+      this.newPosition(nextpos, direction);
   }
 
   newPosition(position, direction) {

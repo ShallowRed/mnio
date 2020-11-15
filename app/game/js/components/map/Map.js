@@ -22,18 +22,6 @@ export default class Map {
       .map(canvas => canvas.getContext('2d'));
 
     this.ctx.forEach(ctx => ctx.imageSmoothingEnabled = false);
-
-    this.ratio = "null";
-    this.cellSize = "null";
-    this.sMargin = "null";
-    this.lMargin = "null";
-    this.half = "null";
-    this.lw = "null";
-    this.shift = "null";
-    this.width = "null";
-    this.height = "null";
-    this.windowWidth = "null";
-    this.windowHeight = "null";
   }
 
   update() {
@@ -136,7 +124,7 @@ export default class Map {
   }
 
   draw(GAME) {
-    const { PLAYER } = GAME;
+    const { is } = GAME.PLAYER;
     const { ctx, canvas, cellSize } = this;
 
     ctx.forEach(ctx =>
@@ -144,8 +132,8 @@ export default class Map {
     );
 
     const shift = {
-      top: PLAYER.is.up ? 0 : PLAYER.is.down ? 2 : 1,
-      left: PLAYER.is.left ? 0 : PLAYER.is.right ? 2 : 1
+      top: is.up ? 0 : is.down ? 2 : 1,
+      left: is.left ? 0 : is.right ? 2 : 1
     };
 
     canvas.forEach(c => {
@@ -171,23 +159,37 @@ export default class Map {
 const translate = {
 
   master: (MAP, PLAYER, duration, animated) => {
-    MAP.master.style.transitionDuration = (animated) ? duration + 's' :
-      '0s';
+    const {
+      master,
+      margin,
+      ratio,
+      windowHeight,
+      windowWidth,
+      width,
+      height
+    } = MAP;
+    const { is } = PLAYER;
 
-    MAP.master.style.marginTop = `${
-      PLAYER.is.up ? MAP.margin.top :
-      PLAYER.is.down ? MAP.windowHeight - MAP.height - MAP.margin.bottom :
-      MAP.ratio ? Math.round((MAP.windowHeight - MAP.height) / 2) : 0
+    master.style.transitionDuration = `${(animated) ? duration : 0}s`;
+
+    master.style.marginTop = `${
+      is.up ? margin.top :
+      is.down ? windowHeight - height - margin.bottom :
+      ratio ? Math.round((windowHeight - height) / 2) : 0
     }px`;
 
-    MAP.master.style.marginLeft = `${
-      PLAYER.is.left ? MAP.margin.left :
-      PLAYER.is.right ? MAP.windowWidth - MAP.width - MAP.margin.right :
-      MAP.ratio ? 0 : Math.round((MAP.windowWidth - MAP.width) / 2)
+    master.style.marginLeft = `${
+      is.left ? margin.left :
+      is.right ? windowWidth - width - margin.right :
+      ratio ? 0 : Math.round((windowWidth - width) / 2)
     }px`;
   },
 
   canvas: (MAP, PLAYER, { cols, rows, duration }) => {
+
+    const { coord } = PLAYER;
+    const { half } = MAP;
+
     const isGoing = dir =>
       PLAYER.lastdir == dir;
 
@@ -195,13 +197,11 @@ const translate = {
 
     const isPlayer = (condition, i) =>
       condition == "inCenter" ?
-      PLAYER.coord[i] + 1 >= MAP.half[i] && PLAYER.coord[i] < rowcols[i] -
-      MAP.half[i] :
+      coord[i] + 1 >= half[i] && coord[i] < rowcols[i] - half[i] :
       condition == "onLimit" ?
-      PLAYER.coord[i] == MAP.half[i] :
+      coord[i] == half[i] :
       condition == "strictCenter" ?
-      PLAYER.coord[i] > MAP.half[i] && PLAYER.coord[i] <= rowcols[i] - MAP
-      .half[i] : null;
+      coord[i] > half[i] && coord[i] <= rowcols[i] - half[i] : null;
 
 
     const shift = {
@@ -215,13 +215,14 @@ const translate = {
         -2 : null : null
     };
 
-    MAP.canvas.forEach(canvas => {
-      canvas.style.transitionDuration = duration + 's';
+    MAP.canvas.forEach(c => {
+      c.style.transitionDuration = duration + 's';
 
       if (shift.top !== null)
-        canvas.style.top = shift.top * MAP.cellSize + 'px';
+        c.style.top = `${shift.top * MAP.cellSize}px`;
+
       if (shift.left !== null)
-        canvas.style.left = shift.left * MAP.cellSize + 'px';
+        c.style.left = `${shift.left * MAP.cellSize}px`;
     });
   }
 }
