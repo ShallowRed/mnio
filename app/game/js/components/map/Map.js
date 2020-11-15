@@ -1,4 +1,4 @@
-import Render from './render'
+import RenderCell from './renderCell'
 
 export default class Map {
 
@@ -129,13 +129,14 @@ export default class Map {
     setMasksSize();
   }
 
-  render(animated, PLAYER, { cols, rows, duration }) {
+  render(PLAYER, { cols, rows, duration }, animated) {
     translate.master(this, PLAYER, duration, animated);
     if (animated)
       translate.canvas(this, PLAYER, { cols, rows, duration });
   }
 
-  draw(PLAYER, GAME) {
+  draw(GAME) {
+    const { PLAYER } = GAME;
     const { ctx, canvas, cellSize } = this;
 
     ctx.forEach(ctx =>
@@ -153,19 +154,17 @@ export default class Map {
       c.style.left = `-${cellSize * shift.left}px`;
     });
 
-    const context = { PLAYER, GAME, MAP: this };
-
     GAME.allowed.forEach(position =>
-      Render.allowed(position, context)
+      RenderCell.allowed(position, GAME)
     );
 
     GAME.positions.forEach(position =>
-      Render.position(position, context)
+      RenderCell.position(position, GAME)
     );
 
     GAME.colors.map((color, i) => color ? i : null)
       .filter(color => color)
-      .forEach((position) => Render.color(position, context))
+      .forEach((position) => RenderCell.color(position, GAME))
   }
 }
 

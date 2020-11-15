@@ -3,9 +3,8 @@ const focusZoom = (btn, bool) => {
   btn.style.transform = bool ? "scale(1)" : "scale(0.8)";
 }
 
-const zoom = (dir, context, UI) => {
-  const { GAME, MAP } = context;
-  const { flag } = GAME;
+const zoom = (dir, GAME) => {
+  const { flag, UI, MAP } = GAME;
 
   if (!flag.ok()) return;
 
@@ -21,7 +20,7 @@ const zoom = (dir, context, UI) => {
     MAP.rows += 2;
     MAP.cols += 2;
   }
-  GAME.render(context, UI);
+  GAME.renderAll();
 }
 
 export default zoom;

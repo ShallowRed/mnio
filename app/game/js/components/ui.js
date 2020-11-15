@@ -1,12 +1,13 @@
 import { touchStart, touchEnd, touchMove } from '../controls/mobile';
 import { selectColor, } from '../utils/utils';
 import zoom from '../components/map/zoom';
-import Render from '../components/map/render';
+import RenderCell from '../components/map/renderCell';
 import KeyboardInput from '../controls/keyboard';
 
 export default class Ui {
 
-  constructor() {
+  constructor(socket, GAME) {
+
     this.refresh = document.getElementById('refresh');
     this.tuto = {
       openBtn: document.getElementById('openTuto'),
@@ -26,13 +27,16 @@ export default class Ui {
       .style.display = "block";
 
     this.tuto.openBtn.style.display = "block";
+    this.initListeners(socket, GAME);
+
   }
 
-  initListeners(socket, context) {
-    for (const listen of Object.values(Listeners))
-      listen(context, socket, this)
+  initListeners(socket, GAME) {
 
-    selectColor(0, context.PLAYER, this);
+    for (const listen of Object.values(Listeners))
+      listen(socket, GAME, this)
+
+    selectColor(0, GAME.PLAYER, this);
   }
 
   update(MAP) {
@@ -75,10 +79,9 @@ export default class Ui {
 
 const Listeners = {
 
-  click: (context, socket, UI) => {
+  click: (socket, GAME, UI) => {
 
-    const { GAME, PLAYER } = context;
-    const { flag } = GAME;
+    const { flag, PLAYER } = GAME;
     const { tuto } = UI;
 
     tuto.openBtn.addEventListener("click", () => {
@@ -104,20 +107,20 @@ const Listeners = {
       colorBtn.addEventListener("click", () => {
         if (!flag.ok()) return;
         selectColor(i, PLAYER, UI);
-        Render.fill(position, sColor, context, socket);
+        RenderCell.fill(position, sColor, GAME, socket);
       });
 
       colorBtn.addEventListener("touchstart", (event) => {
         event.preventDefault();
         if (!flag.ok()) return;
         selectColor(i, PLAYER, UI);
-        Render.fill(position, sColor, context, socket);
+        RenderCell.fill(position, sColor, GAME, socket);
       });
     });
 
     for (const [key, value] of Object.entries(UI.zoom)) {
       value.addEventListener("click", () => {
-        zoom(key, context, UI)
+        zoom(key, GAME)
       });
     }
 
@@ -129,7 +132,9 @@ const Listeners = {
 
   },
 
-  keyboardEvents: (context, socket, UI) => {
+  keyboardEvents: (socket, GAME, UI) => {
+
+    const { flag } = GAME;
 
     document.addEventListener('keydown', event => {
       if (event.code == "AltLeft")
@@ -142,29 +147,33 @@ const Listeners = {
     });
 
     document.addEventListener('keydown', event =>
-      KeyboardInput(event, context, UI, socket)
+      KeyboardInput(event, GAME, socket)
     );
 
     document.addEventListener('keyup', () =>
-      context.GAME.flag.input = false
+      flag.input = false
     );
   },
 
-  touchEvents: (context, socket) => {
+  touchEvents: (socket, GAME) => {
 
-    const { GAME, MAP: { master } } = context;
-    const { flag } = GAME;
+    const { flag, MAP: { master } } = GAME;
 
     master.addEventListener('touchstart', event =>
       touchStart(event, flag),
-      false);
+      false
+    );
+
     master.addEventListener('touchmove', event =>
-      touchMove(event, context, flag, socket),
-      false);
+      touchMove(event, GAME, flag, socket),
+      false
+    );
+
     master.addEventListener('touchend', event =>
       touchEnd(event, flag),
-      false);
-  },
+      false
+    );
+  }
 };
 
 const hide = (elem) => {

@@ -11,8 +11,8 @@ const posinview = (position, PLAYER, { rows, cols }, MAP) => {
   return [x, y];
 }
 
-const check = (position, { PLAYER, GAME, MAP }) => {
-  const { rows, cols } = GAME;
+const check = (position, GAME) => {
+  const { PLAYER, MAP, rows, cols } = GAME;
   let [x, y] = posinview(position, PLAYER, { rows, cols }, MAP);
   if (
     x >= 0 &&

@@ -1,5 +1,3 @@
-import move from '../game/move';
-
 const Touch = {
   start: [null, null],
   direction: null,
@@ -21,7 +19,7 @@ const touchEnd = (evt, flag) => {
   Touch.lastdir = null;
 }
 
-const touchMove = (evt, context, flag, socket) => {
+const touchMove = (evt, GAME, flag, socket) => {
   let { start, direction, delta, lastdir } = Touch;
 
   if (!start[0] || !start[1]) return;
@@ -49,19 +47,19 @@ const touchMove = (evt, context, flag, socket) => {
     (Math.abs(delta[0]) < 50 && Math.abs(delta[1]) < 50)
   ) return
 
-  move(direction, context, socket);
+  GAME.moveAttempt(direction, socket);
   start = [evt.touches[0].clientX, evt.touches[0].clientY];
   lastdir = direction;
-  keepMoving(context, flag, socket);
+  keepMoving(GAME, flag, socket);
 }
 
-const keepMoving = (context, flag, socket) =>
+const keepMoving = (GAME, flag, socket) =>
   setInterval(() => {
     if (
       flag.moveCallback &&
       !flag.translate &&
       flag.input
-    ) move(Touch.direction, context, socket);
+    ) GAME.moveAttempt(Touch.direction, socket);
     if (!flag.input)
       clearInterval(keepMoving);
   }, 50);

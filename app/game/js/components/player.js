@@ -13,48 +13,61 @@ export default class Player {
       .imageSmoothingEnabled = false;
   }
 
-  update(GAME) {
-    const { rows, cols, MAP: { half } } = GAME;
+  updatePosition(GAME, position, direction) {
+    const { rows, cols, MAP } = GAME;
+    const { half: [halfWidth, halfHeight] } = MAP;
+
+    if (position)
+      this.position = position;
+    if (direction)
+      this.lastdir = direction;
+
     this.coord = indextocoord(this.position, { rows, cols });
+    const [x, y] = this.coord;
+
     this.is = {
-      up: this.coord[0] < half[0],
-      down: this.coord[0] > cols - half[0],
-      left: this.coord[1] < half[1],
-      right: this.coord[1] > rows - half[1]
+      up: x < halfWidth,
+      down: x > cols - halfWidth,
+      left: y < halfHeight,
+      right: y > rows - halfHeight
+    };
+
+    this.posInView = {
+      x: this.is.up ?
+        x : this.is.down ?
+        x + MAP.cols - cols - 2 : halfWidth - 1,
+      y: this.is.left ?
+        y : this.is.right ?
+        y + MAP.rows - rows - 2 : halfHeight - 1
     }
   }
 
-  render(MAP, { rows, cols, duration }, animated) {
-    const { coord, canvas } = this;
-    const { half, cellSize, shift } = MAP;
-
-    canvas.forEach(canvas => {
-      canvas.style.transitionDuration = animated ?
-        `${duration}s` : '0s';
-
-      canvas.style.top = (
-        this.is.up ? coord[0] :
-        this.is.down ? coord[0] + MAP.cols - cols - 2 :
-        half[0] - 1
-      ) * cellSize + shift + 'px';
-
-      canvas.style.left = (
-        this.is.left ? coord[1] :
-        this.is.right ? coord[1] + MAP.rows - rows - 2 :
-        half[1] - 1
-      ) * cellSize + shift + 'px';
-    });
-
-    if (animated) return;
-
-    canvas[0].width = canvas[0].height = cellSize - shift * 4;
-    canvas[1].style.width = canvas[1].style.height = cellSize - shift * 2 -
-      2 + 'px';
-
-    canvas.forEach(canvas =>
-      canvas.style.borderRadius = shift + 'px'
-    );
-
-    canvas[0].style.borderWidth = shift + 'px';
+  render({ cellSize, shift }, { duration }, animated) {
+    const { canvas, posInView } = this;
+    setPositioninView(canvas, posInView, cellSize, shift, animated, duration);
+    if (!animated)
+      setSizeInView(canvas, cellSize, shift)
   }
 }
+
+const setPositioninView = (canvas, posInView, cellSize, shift, animated, duration) => {
+  canvas.forEach(canvas => {
+    canvas.style.transitionDuration = `${animated ? duration : 0}s`;
+    canvas.style.top = posInView.x * cellSize + shift + 'px';
+    canvas.style.left = posInView.y * cellSize + shift + 'px';
+  });
+};
+
+const setSizeInView = (canvas,  cellSize,shift) => {
+  canvas[0].width = canvas[0].height =
+    cellSize - shift * 4;
+
+  canvas[1].style.width = canvas[1].style.height =
+    `${cellSize - shift * 2 - 2}px`
+
+  canvas.forEach(c =>
+    c.style.borderRadius = `${shift}px`
+  );
+
+  canvas[0].style.borderWidth = `${shift}px`;
+};

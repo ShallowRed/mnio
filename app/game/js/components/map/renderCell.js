@@ -1,37 +1,45 @@
 import { check } from '../../utils/utils';
 import fillAnimation from './fillAnimation';
 
-const Render2 = {
+const RenderCell = {
 
-  clear: (coord, context) => {
-    const { ctx, cellSize } = context.MAP;
+  clear: (position, GAME) => {
+    const coord = check(position, GAME);
+    if (!coord) return;
+    const { ctx, cellSize } = GAME.MAP;
     fillCell(coord, cellSize, ctx[2], null);
   },
 
-  color: (position, coord, context) => {
-    const { GAME: { colors }, MAP: { ctx, cellSize } } = context;
+  color: (position, GAME) => {
+    const coord = check(position, GAME);
+    if (!coord) return;
+    const { colors, MAP: { ctx, cellSize } } = GAME;
     fillCell(coord, cellSize, ctx[1], `#${colors[position]}`);
   },
 
-  allowed: (coord, context) => {
-    const { ctx, cellSize } = context.MAP;
+  allowed: (position, GAME) => {
+    const coord = check(position, GAME);
+    if (!coord) return;
+    const { ctx, cellSize } = GAME.MAP;
     fillCell(coord, cellSize, ctx[0], '#e9e9e9');
   },
 
-  position: (coord, context) => {
-    const { ctx, cellSize, shift } = context.MAP;
-    roundSquare(coord, ctx[2], cellSize, shift);
+  position: (position, GAME) => {
+    const coord = check(position, GAME);
+    if (!coord) return;
+    const { ctx, cellSize, shift } = GAME.MAP;
+    roundSquare(coord, cellSize, ctx[2], shift);
   },
 
-  fill: (position, color, context, socket) => {
-    const { GAME: { flag, owned, colors }, MAP } = context;
+  fill: (position, color, GAME, socket) => {
+    const { flag, owned, colors, MAP } = GAME;
 
     if (!flag.fillCallback || flag.fill) return;
 
     if (!owned.includes(position))
       owned.push(position);
 
-    const coord = check(position, context);
+    const coord = check(position, GAME);
     fillAnimation(coord, color, flag, MAP);
 
     color = color.split('#')[1];
@@ -47,20 +55,19 @@ const Render2 = {
   }
 };
 
-const renderCell = (position, context, method) => {
-  const cell = check(position, context);
-  if (!cell) return;
-  method(cell, context);
-};
+// const renderCell = (position, context, method) => {
+//   const cell = check(position, context);
+//   if (!cell) return;
+//   method(cell, context);
+// };
 
-const Render = {};
+// const RenderCell = {};
+//
+// for (const [key, fn] of Object.entries(RenderCell2)) {
+//   RenderCell[key] = (...args) =>
+//     renderCell(...args, fn);
+// }
 
-for (const [key, fn] of Object.entries(Render2)) {
-  Render[key] = (...args) =>
-    renderCell(...args, fn);
-}
-
-console.log(Render);
 
 const fillCell = ([x, y], cellSize, ctx, color) => {
   ctx.clearRect(cellSize * y, cellSize * x, cellSize, cellSize);
@@ -69,7 +76,7 @@ const fillCell = ([x, y], cellSize, ctx, color) => {
   ctx.fillRect(cellSize * y, cellSize * x, cellSize, cellSize);
 };
 
-const roundSquare = ([x, y], ctx, cellSize, shift) =>
+const roundSquare = ([x, y], cellSize, ctx, shift) =>
   roundRect(ctx, {
     x: cellSize * y + shift * 1.5,
     y: cellSize * x + shift * 1.5,
@@ -95,4 +102,4 @@ const roundRect = (ctx, { x, y, width, height, radius }) => {
   ctx.stroke();
 }
 
-export default Render
+export default RenderCell

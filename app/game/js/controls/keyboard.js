@@ -2,15 +2,12 @@ import {
   selectColor,
 } from '../utils/utils';
 
-import Render from '../components/map/render';
+import RenderCell from '../components/map/renderCell';
 
 import zoom from '../components/map/zoom';
-import move from '../game/move';
 
-
-const KeyboardInput = (event, context, UI, socket) => {
-  const { PLAYER, GAME, MAP } = context;
-  const { flag } = GAME;
+const KeyboardInput = (event, GAME, socket) => {
+  const { flag, PLAYER, UI } = GAME;
   const { position, palette, sColor } = PLAYER;
   let next;
 
@@ -23,11 +20,11 @@ const KeyboardInput = (event, context, UI, socket) => {
   switch (event.code) {
 
     case "Space":
-      Render.fill(position, sColor, context, socket);
+      RenderCell.fill(position, sColor, GAME, socket);
       break;
 
     case "KeyW":
-      zoom(UI.isAlt ? "out" : "in", context, UI);
+      zoom(UI.isAlt ? "out" : "in", GAME);
       break;
 
     case "ControlLeft":
@@ -41,19 +38,19 @@ const KeyboardInput = (event, context, UI, socket) => {
       break;
 
     case "ArrowLeft":
-      move("left", context, socket);
+      GAME.moveAttempt("left", socket);
       break;
 
     case "ArrowUp":
-      move("up", context, socket);
+      GAME.moveAttempt("up", socket);
       break;
 
     case "ArrowRight":
-      move("right", context, socket);
+      GAME.moveAttempt("right", socket);
       break;
 
     case "ArrowDown":
-      move("down", context, socket);
+      GAME.moveAttempt("down", socket);
       break;
   }
 }
