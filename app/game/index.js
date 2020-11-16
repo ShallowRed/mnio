@@ -1,11 +1,17 @@
-import './css/global.css';
-import './css/lobby.css';
-import './css/login.css';
-import './css/intro.css';
-import './css/introtuto.css';
-import './css/canvas.css';
-import './css/buttons.css';
-import './css/utils.css';
-import './css/tuto.css';
+import './global.css';
 
-import './js/init.js'
+import './lobby/login.css';
+import './lobby/lobby.css';
+
+import './paletteSelection/paletteSelection.css';
+
+import './tutoriel/introtuto.css';
+import './tutoriel/tutoriel.css';
+
+import './game/components/map/map.css';
+import './game/components/player/player.css';
+import './game/components/ui/ui.css';
+
+///////////////////////
+
+import './game/init.js'

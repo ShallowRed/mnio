@@ -23,3 +23,35 @@
     }
   }
 }
+
+#refresh,
+#openTuto,
+#closeTuto {
+  opacity: 0.5;
+  background: none;
+  border: none;
+  color: black;
+  position: fixed;
+  height: 30px;
+  width: 30px;
+  right: 10px;
+  filter: grayscale(100%);
+
+  &:hover {
+    opacity: 1;
+    color: blue;
+    filter: grayscale(0%);
+  }
+}
+
+#closeTuto,
+#openTuto {
+  display: none;
+  z-index: 970;
+  top: 60px;
+}
+
+#refresh {
+  z-index: 960;
+  top: 10px;
+}

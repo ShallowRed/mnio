@@ -1,0 +1,17 @@
+#playercanvas,
+#shadow {
+  overflow: hidden;
+  position: absolute;
+  transition-timing-function: ease;
+}
+
+#playercanvas {
+  box-sizing: border-box;
+  border: solid white;
+}
+
+#shadow {
+  border: solid 1px #777;
+  box-shadow: 3px 3px 5px 0px #777;
+  mix-blend-mode: multiply;
+}

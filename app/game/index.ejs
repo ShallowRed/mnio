@@ -10,13 +10,12 @@
 
 <body>
 	<img id="logo" src="dist/img/logo-full.png" alt="sorry">
-	<%= require('./ejs/requireHTTPS.ejs')() %>
-	<%= require('./ejs/intro.ejs')() %>
-	<%= require('./ejs/lobby.ejs')() %>
-	<%= require('./ejs/masks.ejs')() %>
-	<%= require('./ejs/canvas.ejs')() %>
-	<%= require('./ejs/tuto.ejs')() %>
-	<%= require('./ejs/buttons.ejs')() %>
+	<%= require('./lobby/requireHTTPS.ejs')() %>
+	<%= require('./paletteSelection/paletteSelection.ejs')() %>
+	<%= require('./lobby/login.ejs')() %>
+	<%= require('./game/components/map/map.ejs')() %>
+	<%= require('./tutoriel/tutoriel.ejs')() %>
+	<%= require('./game/components/ui/ui.ejs')() %>
 </body>
 
 </html>

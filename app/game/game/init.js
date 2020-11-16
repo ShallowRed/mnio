@@ -1,9 +1,9 @@
 import io from 'socket.io-client';
 
-import showInstallOptions from './lobby/installation';
-import Login from './lobby/login';
-import PaletteSelection from './lobby/paletteSelection';
-import Tutoriel from './lobby/tutoriel';
+import showInstallOptions from '../lobby/installation';
+import Login from '../lobby/login';
+import PaletteSelection from '../paletteSelection/paletteSelection';
+import Tutoriel from '../tutoriel/tutoriel';
 
 import Game from './Game';
 
