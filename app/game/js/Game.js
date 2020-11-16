@@ -48,17 +48,15 @@ export default class Game {
 
   update() {
     this.MAP.update();
-    this.PLAYER.updatePosition(this);
-    this.UI.update(this.MAP);
+    this.MAP.setSize();
+    this.PLAYER.update(this);
+    this.UI.render(this.MAP);
   }
 
   render(animated) {
-    const { PLAYER, MAP, rows, cols, duration } = this;
-    const gameInfo = { rows, cols, duration };
-
-    MAP.render(PLAYER, gameInfo, animated);
-    PLAYER.render(MAP, gameInfo, animated);
-    !animated && MAP.draw(this);
+    this.MAP.translate(this, animated);
+    this.PLAYER.render(this, animated);
+    !animated && this.MAP.render(this);
   }
 
   moveAttempt(direction) {
@@ -74,7 +72,7 @@ export default class Game {
   }
 
   newPlayerPos(position, direction) {
-    this.PLAYER.updatePosition(this, position, direction);
+    this.PLAYER.update(this, position, direction);
     this.flag.translate = true;
     this.render(true);
     translationTimeout(this);
@@ -85,18 +83,16 @@ export default class Game {
 
     if (index == "next")
       index = (palette.indexOf(sColor) + 1) % palette.length;
-
     else if (index == "prev")
       index = (palette.indexOf(sColor) + palette.length - 1) % palette.length;
 
-    this.PLAYER.selectColor(index);
-    this.UI.selectColor(index);
+    this.PLAYER.setColor(index);
+    this.UI.focusColorBtn(index);
   }
 
   fill() {
     const { socket, flag, owned, colors, Cell } = this;
     const { position, sColor } = this.PLAYER;
-
     if (!flag.fillCallback || flag.fill) return;
 
     if (!owned.includes(position))
@@ -109,16 +105,17 @@ export default class Game {
     colors[position] = color;
     socket.emit("fill", { position, color });
     flag.fillCallback = false;
+    this.PLAYER.stamp();
   }
 
   zoom(dir) {
     const { flag, UI, MAP } = this;
-
     if (!flag.ok()) return;
 
-    UI.focusZoom(dir, true);
+    UI.focusZoomBtn(dir, true);
+
     setTimeout(() =>
-      UI.focusZoom(dir, false), 100);
+      UI.focusZoomBtn(dir, false), 100);
 
     if (dir == "in") {
       MAP.rows -= 2;

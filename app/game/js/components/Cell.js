@@ -68,7 +68,7 @@ const roundRect = (ctx, { x, y, width, height, radius }) => {
 };
 
 Cell.fillAnimation = ([x, y], GAME) => {
-  const { sColor, flag, MAP: { lw, cellSize, ctx: [, ctx] } } = GAME;
+  const { PLAYER: {sColor}, flag, MAP: { lw, cellSize, ctx: [, ctx] } } = GAME;
 
   flag.fill = true;
   ctx.lineWidth = lw;
@@ -104,7 +104,6 @@ const fillFrame = (flag, { divx, divy, posx, posy, sColor }, {
     ctx.lineWidth = lw;
     divy = cellSize - lw;
   }
-
   ctx.strokeStyle = sColor;
   ctx.beginPath();
   ctx.moveTo(posx, posy - divy - lw / 2);

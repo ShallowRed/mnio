@@ -31,7 +31,11 @@ const onKeyDown = (event, GAME) => {
       break;
 
     case "KeyW":
-      GAME.zoom(isAltPressed ? "out" : "in");
+      GAME.zoom("in");
+      break;
+
+    case "KeyS":
+      if(isAltPressed) GAME.zoom("out");
       break;
 
     case "ControlLeft":

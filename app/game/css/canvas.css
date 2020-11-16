@@ -5,7 +5,9 @@
   box-sizing: border-box;
 }
 
-.mapcanvas, #playercanvas, #shadow {
+.mapcanvas,
+#playercanvas,
+#shadow {
   overflow: hidden;
   position: absolute;
   transition-timing-function: ease;
@@ -22,7 +24,7 @@
 
 #shadow {
   border: solid 1px #777;
-  box-shadow: 3px 3px 6px 0px #777;
+  box-shadow: 3px 3px 5px 0px #777;
   mix-blend-mode: multiply;
 }
 
@@ -32,19 +34,25 @@
   background: var(--grey);
 }
 
-#topmask, #leftmask, #rightmask {
+#topmask,
+#leftmask,
+#rightmask {
   top: 0;
 }
 
-#topmask, #bottommask, #leftmask {
+#topmask,
+#bottommask,
+#leftmask {
   left: 0;
 }
 
-#topmask, #bottommask {
+#topmask,
+#bottommask {
   width: 100%;
 }
 
-#leftmask, #rightmask {
+#leftmask,
+#rightmask {
   height: 100%;
 }
 

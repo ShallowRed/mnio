@@ -58,7 +58,9 @@ const serverEvents = Object.entries({
     window.location.reload(true),
 
   reconnect_attempt: () =>
-    window.location.reload(true)
-});
+    window.location.reload(true),
 
-console.log(serverEvents);
+  alert: message =>
+    alert(message)
+
+});

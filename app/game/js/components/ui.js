@@ -24,7 +24,7 @@ export default class Ui {
 
   }
 
-  update(MAP) {
+  render(MAP) {
     const { lMargin, ratio, windowWidth, windowHeight, margin } = MAP;
 
     this.btns.forEach(btn => {
@@ -61,14 +61,14 @@ export default class Ui {
       (ratio && windowHeight < 600) ? "9%" : "10px";
   }
 
-  selectColor(i) {
+  focusColorBtn(i) {
     this.colorBtns.forEach((btn, j) => {
       btn.style.setProperty('border-width', `${j == i ? 3 : 1}px`);
       btn.style.setProperty('transform', `scale(${j == i ? 0.9 : 0.7})`);
     });
   }
 
-  focusZoom(dir, bool) {
+  focusZoomBtn(dir, bool) {
     const btn = this.zoom[dir];
     btn.style.color = btn.style.borderColor = bool ? "blue" : "black";
     btn.style.transform = `scale(${bool ? 1 : 0.8})`;

@@ -87,6 +87,16 @@ export default class Map {
       this.shift = Math.round(cellSize / 8);
     };
 
+    setWindow();
+    ensureLimits();
+    setDimensions();
+    setRowColCell();
+    ensureEven();
+    setProps();
+  }
+
+  setSize() {
+
     const setCanvasSize = () => {
       const { width, height, cellSize } = this;
       this.master.style.width = `${width}px`;
@@ -105,23 +115,17 @@ export default class Map {
       this.masks.right.style.width = `${margin.right}px`;
     };
 
-    setWindow();
-    ensureLimits();
-    setDimensions();
-    setRowColCell();
-    ensureEven();
-    setProps();
     setCanvasSize();
     setMasksSize();
   }
 
-  render(PLAYER, { cols, rows, duration }, animated) {
-    translate.master(this, PLAYER, duration, animated);
+  translate(GAME, animated) {
+    translate.master(GAME, animated);
     if (animated)
-      translate.canvas(this, PLAYER, { cols, rows, duration });
+      translate.canvas(GAME);
   }
 
-  draw(GAME) {
+  render(GAME) {
     const { is } = GAME.PLAYER;
     const { ctx, canvas, cellSize } = this;
 
@@ -150,13 +154,16 @@ export default class Map {
 
     GAME.colors.map((color, i) => color ? i : null)
       .filter(color => color)
-      .forEach((position) => GAME.Cell.render.color(position, GAME))
+      .forEach((position) =>
+        GAME.Cell.render.color(position, GAME)
+      )
   }
 }
 
 const translate = {
 
-  master: (MAP, PLAYER, duration, animated) => {
+  master: (GAME, animated) => {
+    const { PLAYER: { is }, MAP, duration } = GAME;
     const {
       master,
       margin,
@@ -166,7 +173,6 @@ const translate = {
       width,
       height
     } = MAP;
-    const { is } = PLAYER;
 
     master.style.transitionDuration = `${(animated) ? duration : 0}s`;
 
@@ -183,8 +189,8 @@ const translate = {
     }px`;
   },
 
-  canvas: (MAP, PLAYER, { cols, rows, duration }) => {
-
+  canvas: (GAME) => {
+    const { PLAYER, MAP, cols, rows, duration } = GAME;
     const { coord } = PLAYER;
     const { half } = MAP;
 
@@ -200,7 +206,6 @@ const translate = {
       coord[i] == half[i] :
       condition == "strictCenter" ?
       coord[i] > half[i] && coord[i] <= rowcols[i] - half[i] : null;
-
 
     const shift = {
       top: isPlayer("inCenter", 0) && isGoing("up") ?
