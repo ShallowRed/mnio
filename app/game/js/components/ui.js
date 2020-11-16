@@ -1,5 +1,3 @@
-import zoom from '../components/map/zoom';
-
 export default class Ui {
 
   constructor() {
@@ -70,64 +68,9 @@ export default class Ui {
     });
   }
 
-  listenEvents(GAME) {
-      const { flag } = GAME;
-      const { tuto } = this;
-
-      tuto.openBtn.addEventListener("click", () => {
-        show(tuto.window);
-        tuto.openBtn.style.display = "none";
-        tuto.closeBtn.style.display = "block";
-        flag.tuto = true;
-      });
-
-      tuto.closeBtn.addEventListener("click", () => {
-        hide(tuto.window);
-        tuto.openBtn.style.display = "block";
-        tuto.closeBtn.style.display = "none";
-        flag.tuto = false;
-      });
-
-      const { palette } = PLAYER;
-
-      this.colorBtns.forEach((colorBtn, i) => {
-
-        colorBtn.style.background = GAME.PLAYER.palette[i];
-
-        colorBtn.addEventListener("click", () => {
-          if (!flag.ok()) return;
-          GAME.selectColor(i);
-          GAME.fill();
-        });
-
-        colorBtn.addEventListener("touchstart", (event) => {
-          event.preventDefault();
-          if (!flag.ok()) return;
-          GAME.selectColor(i);
-          GAME.fill();
-        });
-      });
-
-      for (const [key, value] of Object.entries(this.zoom)) {
-        value.addEventListener("click", () => {
-          zoom(key, GAME)
-        });
-      }
-
-      document.addEventListener('click', () => {
-        if (document.activeElement.toString() ==
-          '[object HTMLButtonElement]')
-          document.activeElement.blur();
-      });
+  focusZoom(dir, bool) {
+    const btn = this.zoom[dir];
+    btn.style.color = btn.style.borderColor = bool ? "blue" : "black";
+    btn.style.transform = `scale(${bool ? 1 : 0.8})`;
   }
 }
-
-const hide = (elem) => {
-  elem.style.opacity = "0";
-  setTimeout(() => elem.style.display = "none", 300);
-};
-
-const show = (elem) => {
-  elem.style.display = "block";
-  setTimeout(() => elem.style.opacity = "1", 50);
-};

@@ -1,5 +1,3 @@
-import zoom from '../components/map/zoom';
-
 let isAltPressed = false;
 
 export default (GAME) => {
@@ -9,9 +7,9 @@ export default (GAME) => {
       isAltPressed = true;
 
     if (
-      this.flag.translate ||
-      !this.flag.moveCallback ||
-      this.flag.input
+      GAME.flag.translate ||
+      !GAME.flag.moveCallback ||
+      GAME.flag.input
     ) return;
 
     onKeyDown(event, GAME)
@@ -33,7 +31,7 @@ const onKeyDown = (event, GAME) => {
       break;
 
     case "KeyW":
-      zoom(isAltPressed ? "out" : "in", GAME);
+      GAME.zoom(isAltPressed ? "out" : "in");
       break;
 
     case "ControlLeft":

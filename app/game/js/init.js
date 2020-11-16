@@ -5,7 +5,7 @@ import Login from './lobby/login';
 import PaletteSelection from './lobby/paletteSelection';
 import Tutoriel from './lobby/tutoriel';
 
-import Game from './game/Game';
+import Game from './Game';
 
 showInstallOptions();
 

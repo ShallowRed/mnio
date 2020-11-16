@@ -1,5 +1,3 @@
-import RenderCell from './renderCell'
-
 export default class Map {
 
   constructor() {
@@ -143,16 +141,16 @@ export default class Map {
     });
 
     GAME.allowed.forEach(position =>
-      RenderCell.allowed(position, GAME)
+      GAME.Cell.render.allowed(position, GAME)
     );
 
     GAME.positions.forEach(position =>
-      RenderCell.position(position, GAME)
+      GAME.Cell.render.position(position, GAME)
     );
 
     GAME.colors.map((color, i) => color ? i : null)
       .filter(color => color)
-      .forEach((position) => RenderCell.color(position, GAME))
+      .forEach((position) => GAME.Cell.render.color(position, GAME))
   }
 }
 

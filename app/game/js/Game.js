@@ -1,17 +1,18 @@
-import Player from '../components/Player';
-import Map from '../components/map/Map';
-import Ui from '../components/Ui';
+import Player from './components/Player';
+import Map from './components/Map';
+import Ui from './components/Ui';
+import Cell from './components/Cell';
 
-import listenServerEvents from './onServerEvents';
-import listenKeyboardEvents from '../controls/keyboard';
-import listenTouchEvents from '../controls/mobile';
+import listenServerEvents from './events/server';
+import listenClickEvents from './events/click';
+import listenKeyboardEvents from './events/keyboard';
+import listenTouchEvents from './events/touchScreen';
 
-import translationTimeout from '../utils/translationTimeout';
-import checkMove from '../utils/checkMove';
-import fillAnimation from '../components/map/fillAnimation';
-import { check } from '../utils/utils';
+import translationTimeout from './utils/translationTimeout';
+import checkMove from './utils/checkMove';
+import { check } from './utils/utils';
 
-import '../utils/polyfill';
+import './utils/polyfill';
 
 export default class Game {
 
@@ -22,12 +23,13 @@ export default class Game {
     this.flag = new Flag();
     this.MAP = new Map();
     this.PLAYER = new Player(data.PLAYER);
-    this.UI = new Ui(this);
+    this.UI = new Ui();
+    this.Cell = Cell;
 
     this.selectColor(0);
     this.renderAll();
 
-    this.UI.listenEvents(this);
+    listenClickEvents(this);
     listenKeyboardEvents(this)
     listenTouchEvents(this);
     listenServerEvents(this);
@@ -92,7 +94,7 @@ export default class Game {
   }
 
   fill() {
-    const { socket, flag, owned, colors, MAP } = this;
+    const { socket, flag, owned, colors, Cell } = this;
     const { position, sColor } = this.PLAYER;
 
     if (!flag.fillCallback || flag.fill) return;
@@ -101,12 +103,32 @@ export default class Game {
       owned.push(position);
 
     const coord = check(position, this);
-    fillAnimation(coord, sColor, flag, MAP);
+    Cell.fillAnimation(coord, this);
 
     const color = sColor.substring(1);
     colors[position] = color;
     socket.emit("fill", { position, color });
     flag.fillCallback = false;
+  }
+
+  zoom(dir) {
+    const { flag, UI, MAP } = this;
+
+    if (!flag.ok()) return;
+
+    UI.focusZoom(dir, true);
+    setTimeout(() =>
+      UI.focusZoom(dir, false), 100);
+
+    if (dir == "in") {
+      MAP.rows -= 2;
+      MAP.cols -= 2;
+    } else {
+      MAP.rows += 2;
+      MAP.cols += 2;
+    }
+
+    this.renderAll();
   }
 }
 

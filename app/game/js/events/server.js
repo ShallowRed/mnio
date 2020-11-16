@@ -1,4 +1,4 @@
-import RenderCell from '../components/map/renderCell';
+import Cell from '../components/Cell';
 
 export default (GAME) => {
   for (const [eventName, callback] of serverEvents) {
@@ -20,12 +20,12 @@ const serverEvents = Object.entries({
     const { positions } = GAME;
     if (position[0]) {
       positions.splice(positions.indexOf(position[0]), 1);
-      RenderCell.clear(position[0], GAME);
+      Cell.render.clear(position[0], GAME);
     }
 
     if (position[1]) {
       positions.push(position[1]);
-      RenderCell.position(position[1], GAME);
+      Cell.render.position(position[1], GAME);
     }
   },
 
@@ -33,7 +33,7 @@ const serverEvents = Object.entries({
     const { colors } = GAME;
 
     colors[position] = color;
-    RenderCell.color(position, GAME);
+    Cell.render.color(position, GAME);
   },
 
   AllowedCells(GAME, cells) {
@@ -42,7 +42,7 @@ const serverEvents = Object.entries({
     cells.forEach(position => {
       if (allowed.includes(position)) return;
       allowed.push(position);
-      RenderCell.allowed(position, GAME);
+      Cell.render.allowed(position, GAME);
     });
   },
 
