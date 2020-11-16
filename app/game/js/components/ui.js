@@ -1,12 +1,8 @@
-import { touchStart, touchEnd, touchMove } from '../controls/mobile';
-import { selectColor, } from '../utils/utils';
 import zoom from '../components/map/zoom';
-import RenderCell from '../components/map/renderCell';
-import KeyboardInput from '../controls/keyboard';
 
 export default class Ui {
 
-  constructor(socket, GAME) {
+  constructor() {
 
     this.refresh = document.getElementById('refresh');
     this.tuto = {
@@ -27,16 +23,7 @@ export default class Ui {
       .style.display = "block";
 
     this.tuto.openBtn.style.display = "block";
-    this.initListeners(socket, GAME);
 
-  }
-
-  initListeners(socket, GAME) {
-
-    for (const listen of Object.values(Listeners))
-      listen(socket, GAME, this)
-
-    selectColor(0, GAME.PLAYER, this);
   }
 
   update(MAP) {
@@ -75,106 +62,65 @@ export default class Ui {
       this.refresh.style.right =
       (ratio && windowHeight < 600) ? "9%" : "10px";
   }
-}
 
-const Listeners = {
-
-  click: (socket, GAME, UI) => {
-
-    const { flag, PLAYER } = GAME;
-    const { tuto } = UI;
-
-    tuto.openBtn.addEventListener("click", () => {
-      show(tuto.window);
-      tuto.openBtn.style.display = "none";
-      tuto.closeBtn.style.display = "block";
-      flag.tuto = true;
+  selectColor(i) {
+    this.colorBtns.forEach((btn, j) => {
+      btn.style.setProperty('border-width', `${j == i ? 3 : 1}px`);
+      btn.style.setProperty('transform', `scale(${j == i ? 0.9 : 0.7})`);
     });
-
-    tuto.closeBtn.addEventListener("click", () => {
-      hide(tuto.window);
-      tuto.openBtn.style.display = "block";
-      tuto.closeBtn.style.display = "none";
-      flag.tuto = false;
-    });
-
-    const { palette, position, sColor } = PLAYER;
-
-    UI.colorBtns.forEach((colorBtn, i) => {
-
-      colorBtn.style.background = palette[i];
-
-      colorBtn.addEventListener("click", () => {
-        if (!flag.ok()) return;
-        selectColor(i, PLAYER, UI);
-        RenderCell.fill(position, sColor, GAME, socket);
-      });
-
-      colorBtn.addEventListener("touchstart", (event) => {
-        event.preventDefault();
-        if (!flag.ok()) return;
-        selectColor(i, PLAYER, UI);
-        RenderCell.fill(position, sColor, GAME, socket);
-      });
-    });
-
-    for (const [key, value] of Object.entries(UI.zoom)) {
-      value.addEventListener("click", () => {
-        zoom(key, GAME)
-      });
-    }
-
-    document.addEventListener('click', () => {
-      if (document.activeElement.toString() ==
-        '[object HTMLButtonElement]')
-        document.activeElement.blur();
-    });
-
-  },
-
-  keyboardEvents: (socket, GAME, UI) => {
-
-    const { flag } = GAME;
-
-    document.addEventListener('keydown', event => {
-      if (event.code == "AltLeft")
-        UI.isAlt = true;
-    });
-
-    document.addEventListener('keyup', event => {
-      if (event.code == "AltLeft")
-        UI.isAlt = false;
-    });
-
-    document.addEventListener('keydown', event =>
-      KeyboardInput(event, GAME, socket)
-    );
-
-    document.addEventListener('keyup', () =>
-      flag.input = false
-    );
-  },
-
-  touchEvents: (socket, GAME) => {
-
-    const { flag, MAP: { master } } = GAME;
-
-    master.addEventListener('touchstart', event =>
-      touchStart(event, flag),
-      false
-    );
-
-    master.addEventListener('touchmove', event =>
-      touchMove(event, GAME, flag, socket),
-      false
-    );
-
-    master.addEventListener('touchend', event =>
-      touchEnd(event, flag),
-      false
-    );
   }
-};
+
+  listenEvents(GAME) {
+      const { flag } = GAME;
+      const { tuto } = this;
+
+      tuto.openBtn.addEventListener("click", () => {
+        show(tuto.window);
+        tuto.openBtn.style.display = "none";
+        tuto.closeBtn.style.display = "block";
+        flag.tuto = true;
+      });
+
+      tuto.closeBtn.addEventListener("click", () => {
+        hide(tuto.window);
+        tuto.openBtn.style.display = "block";
+        tuto.closeBtn.style.display = "none";
+        flag.tuto = false;
+      });
+
+      const { palette } = PLAYER;
+
+      this.colorBtns.forEach((colorBtn, i) => {
+
+        colorBtn.style.background = GAME.PLAYER.palette[i];
+
+        colorBtn.addEventListener("click", () => {
+          if (!flag.ok()) return;
+          GAME.selectColor(i);
+          GAME.fill();
+        });
+
+        colorBtn.addEventListener("touchstart", (event) => {
+          event.preventDefault();
+          if (!flag.ok()) return;
+          GAME.selectColor(i);
+          GAME.fill();
+        });
+      });
+
+      for (const [key, value] of Object.entries(this.zoom)) {
+        value.addEventListener("click", () => {
+          zoom(key, GAME)
+        });
+      }
+
+      document.addEventListener('click', () => {
+        if (document.activeElement.toString() ==
+          '[object HTMLButtonElement]')
+          document.activeElement.blur();
+      });
+  }
+}
 
 const hide = (elem) => {
   elem.style.opacity = "0";

@@ -1,58 +1,63 @@
-import {
-  selectColor,
-} from '../utils/utils';
-
-import RenderCell from '../components/map/renderCell';
-
 import zoom from '../components/map/zoom';
 
-const KeyboardInput = (event, GAME, socket) => {
-  const { flag, PLAYER, UI } = GAME;
-  const { position, palette, sColor } = PLAYER;
-  let next;
+let isAltPressed = false;
 
-  if (
-    flag.translate ||
-    !flag.moveCallback ||
-    flag.input
-  ) return;
+export default (GAME) => {
+  document.addEventListener('keydown', event => {
+
+    if (event.code == "AltLeft")
+      isAltPressed = true;
+
+    if (
+      this.flag.translate ||
+      !this.flag.moveCallback ||
+      this.flag.input
+    ) return;
+
+    onKeyDown(event, GAME)
+  });
+
+  document.addEventListener('keyup', event => {
+    if (event.code == "AltLeft")
+      isAltPressed = false;
+    GAME.flag.input = false;
+  });
+};
+
+const onKeyDown = (event, GAME) => {
 
   switch (event.code) {
 
     case "Space":
-      RenderCell.fill(position, sColor, GAME, socket);
+      GAME.fill();
       break;
 
     case "KeyW":
-      zoom(UI.isAlt ? "out" : "in", GAME);
+      zoom(isAltPressed ? "out" : "in", GAME);
       break;
 
     case "ControlLeft":
-      next = (palette.indexOf(sColor) + 1) % palette.length;
-      selectColor(next, PLAYER, UI);
+      GAME.selectColor("next");
       break;
 
     case "ShiftLeft":
-      next = (palette.indexOf(sColor) + palette.length - 1) % palette.length;
-      selectColor(next, PLAYER, UI);
+      GAME.selectColor("prev");
       break;
 
     case "ArrowLeft":
-      GAME.moveAttempt("left", socket);
+      GAME.moveAttempt("left");
       break;
 
     case "ArrowUp":
-      GAME.moveAttempt("up", socket);
+      GAME.moveAttempt("up");
       break;
 
     case "ArrowRight":
-      GAME.moveAttempt("right", socket);
+      GAME.moveAttempt("right");
       break;
 
     case "ArrowDown":
-      GAME.moveAttempt("down", socket);
+      GAME.moveAttempt("down");
       break;
   }
-}
-
-export default KeyboardInput;
+};

@@ -1,8 +1,8 @@
 import RenderCell from '../components/map/renderCell';
 
-export default (GAME, socket) => {
+export default (GAME) => {
   for (const [eventName, callback] of serverEvents) {
-    socket.on(eventName, (data) =>
+    GAME.socket.on(eventName, (data) =>
       callback(GAME, data)
     );
   }
@@ -12,7 +12,7 @@ const serverEvents = Object.entries({
 
   newPlayerPos(GAME, newPosition) {
     if (newPosition !== GAME.PLAYER.position) {
-      GAME.newPosition(newPosition);
+      GAME.newPlayerPos(newPosition);
     }
   },
 

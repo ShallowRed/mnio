@@ -1,4 +1,4 @@
-import Pokedex from './Pokedex';
+import Pokedex from '../../../../lib/pokedex/Pokedex';
 
 const paletteSelection = {
 

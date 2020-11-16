@@ -14,7 +14,7 @@ const posinview = (position, PLAYER, { rows, cols }, MAP) => {
 const check = (position, GAME) => {
   const { PLAYER, MAP, rows, cols } = GAME;
   let [x, y] = posinview(position, PLAYER, { rows, cols }, MAP);
-  
+
   if (
     x >= 0 &&
     x <= MAP.cols &&
@@ -34,20 +34,7 @@ const coordtoindex = (coord, { rows }) => {
   return index;
 }
 
-const selectColor = (i, PLAYER, UI) => {
-  const {sColor, palette, canvas: [canvas]} ) PLAYER;
-
-  sColor = palette[i];
-  canvas.style.background = sColor;
-
-  UI.colorBtns.forEach((btn, j) => {
-    btn.style.setProperty('border-width', `${j == i ? 2 : 1}px`);
-    btn.style.setProperty('transform', `scale(${j == i ? 0.7 : 0.9})`);
-  });
-}
-
 export {
-  selectColor,
   check,
   indextocoord,
   coordtoindex

@@ -1,5 +1,4 @@
 import { check } from '../../utils/utils';
-import fillAnimation from './fillAnimation';
 
 const RenderCell = {
 
@@ -29,45 +28,8 @@ const RenderCell = {
     if (!coord) return;
     const { ctx, cellSize, shift } = GAME.MAP;
     roundSquare(coord, cellSize, ctx[2], shift);
-  },
-
-  fill: (position, color, GAME, socket) => {
-    const { flag, owned, colors, MAP } = GAME;
-
-    if (!flag.fillCallback || flag.fill) return;
-
-    if (!owned.includes(position))
-      owned.push(position);
-
-    const coord = check(position, GAME);
-    fillAnimation(coord, color, flag, MAP);
-
-    color = color.split('#')[1];
-
-    colors[position] = color;
-
-    socket.emit("fill", {
-      position: position,
-      color: color
-    });
-
-    flag.fillCallback = false;
   }
 };
-
-// const renderCell = (position, context, method) => {
-//   const cell = check(position, context);
-//   if (!cell) return;
-//   method(cell, context);
-// };
-
-// const RenderCell = {};
-//
-// for (const [key, fn] of Object.entries(RenderCell2)) {
-//   RenderCell[key] = (...args) =>
-//     renderCell(...args, fn);
-// }
-
 
 const fillCell = ([x, y], cellSize, ctx, color) => {
   ctx.clearRect(cellSize * y, cellSize * x, cellSize, cellSize);
@@ -76,7 +38,7 @@ const fillCell = ([x, y], cellSize, ctx, color) => {
   ctx.fillRect(cellSize * y, cellSize * x, cellSize, cellSize);
 };
 
-const roundSquare = ([x, y], cellSize, ctx, shift) =>
+const roundSquare = ([x, y], cellSize, ctx, shift) => {
   roundRect(ctx, {
     x: cellSize * y + shift * 1.5,
     y: cellSize * x + shift * 1.5,
@@ -84,6 +46,7 @@ const roundSquare = ([x, y], cellSize, ctx, shift) =>
     height: cellSize - shift * 3,
     radius: shift
   });
+};
 
 const roundRect = (ctx, { x, y, width, height, radius }) => {
   ctx.strokeStyle = "black";
@@ -100,6 +63,6 @@ const roundRect = (ctx, { x, y, width, height, radius }) => {
   ctx.quadraticCurveTo(x, y, x + radius, y);
   ctx.closePath();
   ctx.stroke();
-}
+};
 
-export default RenderCell
+export default RenderCell;

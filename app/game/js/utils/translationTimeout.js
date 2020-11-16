@@ -1,4 +1,4 @@
-const translationFrame = (GAME, start) => {
+const translationTimeout = (GAME, start = Date.now()) => {
   const { MAP, flag, duration } = GAME;
 
   const delta = (Date.now() - start) / 1000;
@@ -11,8 +11,8 @@ const translationFrame = (GAME, start) => {
   }
 
   window.requestAnimationFrame(() =>
-    translationFrame(GAME, start)
+    translationTimeout(GAME, start)
   );
 };
 
-export default translationFrame;
+export default translationTimeout;

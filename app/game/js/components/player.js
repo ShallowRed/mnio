@@ -48,6 +48,12 @@ export default class Player {
     if (!animated)
       setSizeInView(canvas, cellSize, shift)
   }
+
+  selectColor(i) {
+    const { palette, canvas: [canvas] } = this;
+    this.sColor = palette[i];
+    canvas.style.background = this.sColor;
+  }
 }
 
 const setPositioninView = (canvas, posInView, cellSize, shift, animated, duration) => {
