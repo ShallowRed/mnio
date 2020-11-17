@@ -7,22 +7,19 @@ const TerserPlugin = require('terser-webpack-plugin');
 const dev = process.env.NODE_ENV !== "production";
 console.log("Dev mode :", dev);
 
-const entry = (name, obj = new Object()) => {
-  obj[name] = path.resolve(__dirname, `./app/${name}/index.js`);
-  return obj;
-};
-
 const config = ({
+  jsEntry,
+  ejsEntry,
   name,
   outputPath,
-  htmlOutputFileName,
+  outputName,
   inject,
   isFavicon
 }) => ({
   target: "web",
   mode: dev ? 'development' : 'production',
   watch: dev,
-  entry: entry(name),
+  entry: jsEntry,
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, `./${outputPath}`),
@@ -36,8 +33,8 @@ const config = ({
     rules: Rules
   },
   plugins: Plugins({
-    name: name,
-    htmlOutputFileName: htmlOutputFileName,
+    ejsEntry,
+    outputName,
     inject: !!inject,
     isFavicon: !!isFavicon
   })

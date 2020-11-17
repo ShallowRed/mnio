@@ -1,0 +1,171 @@
+#intro {
+  display: none;
+  z-index: 70;
+  /* display: flex;  */
+  /* z-index: 999;  */
+  justify-content: center;
+}
+
+#tap {
+  max-width: 600px;
+  min-width: 200px;
+}
+
+#tapImg {
+  width: 100%;
+  float: right;
+  object-fit: contain;
+}
+
+#palette, #choices {
+  height: auto;
+  display: flex;
+  justify-content: space-around;
+}
+
+.pal {
+  box-sizing: border-box;
+  border-radius: 5px;
+  border: solid 1px black;
+  box-shadow: #aaa 5px 5px;
+  width: 50px;
+  height: 50px;
+  transition: background 0.2s ease;
+}
+
+#intro h3 {
+  font-size: 1em;
+  line-height: 1.3em;
+  max-width: 500px;
+  margin: 5vh auto 0;
+}
+
+@media screen and (min-width: 650px) {
+  #introMsg {
+    position: absolute;
+    top: 5vh;
+  }
+
+  #introMsg p {
+    font-size: 1.2em;
+    padding: 5vh;
+    line-height: 2rem;
+    max-width: 53%;
+  }
+
+  #left {
+    width: 30%;
+    max-width: 350px;
+    margin-left: 60px;
+  }
+
+  #palette {
+    padding-top: 5vh;
+    border-top: solid 1px;
+  }
+
+  #palette, #choices {
+    margin: 15vh 0 5vh;
+    margin: 25vh 0 5vh;
+  }
+
+  #tap {
+    width: 50%;
+  }
+
+  #tapImg {
+    max-height: 600px;
+    height: 50vh;
+    float: right;
+  }
+
+  #intro h3 {
+    font-size: 1em;
+    line-height: 1.3em;
+    max-width: 500px;
+    margin: 5vh auto 0;
+  }
+
+  #description {
+    padding-top: 15vh;
+  }
+}
+
+@media screen and (max-width: 650px) {
+  #intro {
+    box-sizing: border-box;
+    padding: 5%;
+    flex-flow: wrap;
+  }
+
+  #choices, #palette, #description, #tapImg {
+    position: absolute;
+    left: 0;
+  }
+
+  #description {
+    padding: 7%;
+    bottom: 23%;
+  }
+
+  #palette {
+    width: 90%;
+    bottom: 15%;
+    margin: 0 5%;
+  }
+
+  #tap {
+    height: 60%;
+  }
+
+  #tapImg {
+    max-height: 250px;
+    max-height: 44vh;
+    bottom: 37%;
+    width: 95%;
+    margin: 0 2.5%;
+  }
+
+  #choices {
+    bottom: 3%;
+    width: 100%;
+  }
+
+  #intro h3 {
+    font-size: 0.9em;
+    line-height: 1.1em;
+    margin: 0;
+  }
+
+  .pal {
+    transform: scale(0.8);
+  }
+}
+
+#rdm, #select {
+  font-size: 1.2em;
+  letter-spacing: 0.1em;
+  border-radius: 5px;
+  color: white;
+  padding: 0.5em 1em;
+}
+
+#select {
+  background: blue;
+  border: 1px solid blue;
+}
+
+#select :hover {
+  background: white;
+  color: blue;
+}
+
+#rdm {
+  color: #666;
+  background: white;
+  border: solid darkgrey 1px;
+}
+
+#rdm:hover {
+  color: blue;
+}

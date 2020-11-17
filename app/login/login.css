@@ -1,0 +1,44 @@
+#logWindow {
+  width: 100%;
+
+  &h4 {
+    margin-bottom: 0;
+  }
+
+  & input {
+    box-sizing: border-box;
+    border: none;
+    border-bottom: solid 1px #888;
+    width: 100%;
+    background: var(--grey);
+    padding: 2vh 10%;
+    display: inline-block;
+    border-radius: 0;
+
+    &:focus {
+      outline: none;
+      border-bottom: solid 1px blue;
+    }
+  }
+}
+
+#forgot {
+  margin-top: 0;
+  color: #666;
+  margin-top: 1vh;
+  float: right;
+  margin-left: auto;
+
+  &:hover {
+    cursor: pointer;
+    color: blue;
+  }
+}
+
+#pass, #pass2, #forgot, #passBtn {
+  display: none;
+}
+
+#user, #pass {
+  margin-top: 15vh;
+}
