@@ -2,7 +2,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const dev = process.env.NODE_ENV !== "production"
 console.log("Dev mode :", dev);
 
-const esLintrules = {
+const esLintRules = {
   test: /\.js$/,
   enforce: 'pre',
   exclude: /node_modules/,
@@ -17,7 +17,7 @@ const esLintrules = {
 const babelRules = {
   test: /\.js$/,
   // exclude: /(node_modules)|(games)|(gallery)|(game)/,
-  exclude: /(node_modules)/,
+  exclude: /node_modules/,
   use: 'babel-loader'
 };
 
@@ -29,6 +29,11 @@ const ejsRules = {
       esModule: false
     }
   }]
+};
+
+const removeDebug = {
+  test: /\.js$/,
+  loader: 'webpack-remove-debug'
 };
 
 const cssRules = {
@@ -65,8 +70,9 @@ const cssRules = {
 }
 
 module.exports = [
-  dev ? esLintrules : false,
-  // babelRules,
+  dev ? esLintRules : false,
+  !dev ? removeDebug : false,
+  // !dev ? babelRules : false,
   ejsRules,
   cssRules
 ].filter(Boolean);

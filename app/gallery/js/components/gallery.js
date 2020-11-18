@@ -77,16 +77,21 @@ APP.update = () => {
 const toggle = {
 
   timelapse: () => {
-    if (!APP.isOn.timelapse()) mode.timelapse.off();
+    if (!APP.isOn.timelapse())
+      mode.timelapse.off();
     else mode.timelapse.on();
-    if (APP.isOn.dataviz()) mode.dataviz.off();
+
+    if (APP.isOn.dataviz())
+      mode.dataviz.off();
     APP.update();
   },
 
   dataviz: () => {
-    if (!APP.isOn.dataviz()) mode.dataviz.off();
+    if (!APP.isOn.dataviz())
+      mode.dataviz.off();
     else mode.dataviz.on();
-    if (APP.isOn.timelapse()) mode.timelapse.off();
+    if (APP.isOn.timelapse())
+      mode.timelapse.off();
     APP.update();
     APP.renderAll();
   }
@@ -99,7 +104,8 @@ const mode = {
       APP.playBar.style.display = "flex";
       TL.actions.clearMap(APP);
       setTimeout(() =>
-        TL.actions.play("slow", APP), 500);
+        TL.actions.play("slow", APP), 500
+      );
     },
     off: () => {
       APP.switch.timelapse.checked = false;

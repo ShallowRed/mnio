@@ -55,5 +55,3 @@ const changeTapestry = () => {
 };
 
 paletteSelection.init(socket);
-
-// export default paletteSelection;

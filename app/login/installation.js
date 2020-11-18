@@ -37,11 +37,6 @@ const initListeners = () => {
       window.location.reload(true)
     );
 
-  // document.getElementById('refresh')
-  //   .addEventListener("click", () =>
-  //     window.location.reload(true)
-  //   );
-
   window.addEventListener("load", () => {
     const title = document.getElementById('logofull');
     title.style.opacity = "1";
@@ -58,7 +53,7 @@ const initListeners = () => {
 const stayInBrowser = () => {
   hide(installMessage);
   hide(installBtn);
-  hide(stayInBrowser);
+  hide(stayInBrowserBtn);
   hide(iosMessage);
   show(logWindow);
   show(logBtn);

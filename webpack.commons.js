@@ -33,6 +33,7 @@ const config = ({
     rules: Rules
   },
   plugins: Plugins({
+    dev,
     ejsEntry,
     name,
     outputName,
