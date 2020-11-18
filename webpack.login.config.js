@@ -7,6 +7,7 @@ const login = Config({
   outputPath: "dist/login",
   outputName: "login.html",
   inject: true,
+  // isFavicon: true,
 });
 
 module.exports = login;

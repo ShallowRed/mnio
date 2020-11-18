@@ -11,12 +11,9 @@ import Login from './login';
 
 showInstallOptions();
 
-const socket = io();
+const socket = io('/login');
 Login.init(socket);
 
 socket.on('loginSuccess', isPlayerNew => {
-  if (isPlayerNew)
-    window.location = "./palette";
-  else
-    window.location = "./gamedev";
+  window.location = isPlayerNew ? "./palette" : "./game";
 });

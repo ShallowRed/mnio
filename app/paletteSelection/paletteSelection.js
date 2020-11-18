@@ -5,7 +5,7 @@ import Pokedex from '../../lib/pokedex/Pokedex';
 
 import io from 'socket.io-client';
 
-const socket = io();
+const socket = io('/palette');
 
 const paletteSelection = {
 
@@ -21,6 +21,7 @@ const paletteSelection = {
     document.getElementById('select')
       .addEventListener("click", () => {
         socket.emit("paletteSelected", tapestry.index);
+        window.location = "./game";
       });
   }
 };
