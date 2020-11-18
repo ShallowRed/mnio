@@ -6,13 +6,13 @@
     "app",
     "dist",
     "data",
-    "admin",
+    "datadev",
     ".gitignore",
     ".gitattributes",
     ".git",
-    "remote-sync.json",
     "README.md",
-    "config"
+    "TODO.md",
+    "webpack.*.js"
   ],
   "watch_options": {
       "followSymlinks": false

@@ -1,4 +1,4 @@
-import '../layouts/global.css';
+import '../global.css';
 
 import './lobby.css';
 import './login.css';

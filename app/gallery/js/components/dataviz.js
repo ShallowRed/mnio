@@ -118,27 +118,4 @@ const mode = {
   }
 };
 
-// Object.keys(DV.switch).forEach(item => {
-//
-//   DV.toggle[item] = () => {
-//
-//     if (!DV.switch[item].checked) DV[item].style.display = "block";
-//     else {
-//       DV[item].style.display = "none";
-//       DV.switch[item].checked = false;
-//     };
-//
-//     Object.keys(DV.switch).filter(e => e !== item ).forEach(el => {
-//       if (DV.switch[el].checked) {
-//         DV[el].style.display = "none";
-//         DV.switch[el].checked = false;
-//       }
-//     })
-//   }
-//
-//   const switchBtn = DV.switch[item];
-//   switchBtn.addEventListener("click", () => DV.toggle[item]())
-// });
-
-
 export default DV;

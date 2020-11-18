@@ -1,28 +1,39 @@
-<%= require('../layouts/mainLayout.ejs')() %>
+<!DOCTYPE html>
+<html>
 
-<div id="intro">
-  <div id="tap">
-    <div id="introMsg">
-      <p>Choisissez une palette de couleurs issue d'une tapisserie du Mobilier National</p>
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Inconsolata&display=swap" rel="stylesheet">
+  <title>MN.io : Un jeu multijoueur du Mobilier National</title>
+  <link rel="license" href="/dist/main.js.LICENSE.txt">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+</head>
+
+<body>
+  <div id="intro">
+    <div id="tap">
+      <div id="introMsg">
+        <p>Choisissez une palette de couleurs issue d'une tapisserie du Mobilier National</p>
+      </div>
+      <div id="palette">
+        <div class="pal"></div>
+        <div class="pal"></div>
+        <div class="pal"></div>
+        <div class="pal"></div>
+        <div class="pal"></div>
+      </div>
+      <img id="tapImg" src="data:," alt>
     </div>
-    <div id="palette">
-      <div class="pal"></div>
-      <div class="pal"></div>
-      <div class="pal"></div>
-      <div class="pal"></div>
-      <div class="pal"></div>
+
+    <div id="left">
+      <div id="choices">
+        <button type="button" id="rdm">changer</button>
+        <button type="button" id="select">choisir</button>
+      </div>
+      <h3 id="description"></h3>
     </div>
-    <img id="tapImg" src="data:," alt>
+
+
   </div>
+</body>
 
-  <div id="left">
-    <div id="choices">
-      <button type="button" id="rdm">changer</button>
-      <button type="button" id="select">choisir</button>
-    </div>
-    <h3 id="description"></h3>
-  </div>
-
-
-</div>
-<%= require('../layouts/footer.ejs')() %>
+</html>

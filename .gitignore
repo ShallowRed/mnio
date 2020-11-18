@@ -1,8 +1,7 @@
 node_modules/
 dist/
-mariadb-db/
 data/
+datadev/
 app/gallery/games/
-.remote-sync.json
 lib/config.js
-docker-compose.yml
+TODO.md

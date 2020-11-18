@@ -1,4 +1,4 @@
-const Config = require('./webpack.global.js');
+const Config = require('./webpack.commons.js');
 
 const gameConfig = Config({
   jsEntry: "./app/game/index.js",

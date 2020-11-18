@@ -1,4 +1,4 @@
-import '../layouts/global.css';
+import '../global.css';
 
 import './tutoriel/introtuto.css';
 import './tutoriel/tutoriel.css';

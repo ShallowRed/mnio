@@ -1,4 +1,4 @@
-const Config = require('./webpack.global.js');
+const Config = require('./webpack.commons.js');
 
 const galleryConfig = Config({
   jsEntry: "./app/gallery/index.js",

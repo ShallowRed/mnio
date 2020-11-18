@@ -1,4 +1,4 @@
-const Config = require('./webpack.global.js');
+const Config = require('./webpack.commons.js');
 
 const login = Config({
   jsEntry: "./app/login/index.js",
@@ -7,7 +7,7 @@ const login = Config({
   outputPath: "dist/login",
   outputName: "login.html",
   inject: true,
-  // isFavicon: true,
+  isFavicon: true,
 });
 
 module.exports = login;

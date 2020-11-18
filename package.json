@@ -1,23 +1,23 @@
 {
   "name": "mnio",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Un jeu de tapisserie en ligne",
   "scripts": {
-    "build": "docker-compose up --build",
-    "dev:gallery": "SET NODE_ENV=dev && webpack --config webpack.gallery.config.js",
-    "prod:gallery": "webpack --config webpack.gallery.config.js",
+    "test": "node lib/index.js",
+    "start": "pm2 start process.json && pm2 logs",
     "dev:login": "SET NODE_ENV=dev && webpack --config webpack.login.config.js",
     "prod:login": "webpack --config webpack.login.config.js",
     "dev:palette": "SET NODE_ENV=dev && webpack --config webpack.palette.config.js",
     "prod:palette": "webpack --config webpack.palette.config.js",
     "dev:game": "SET NODE_ENV=dev && webpack --config webpack.game.config.js",
     "prod:game": "webpack --config webpack.game.config.js",
+    "dev:gallery": "SET NODE_ENV=dev && webpack --config webpack.gallery.config.js",
+    "prod:gallery": "webpack --config webpack.gallery.config.js",
     "prod:all": "npm run prod:login && npm run prod:palette && npm run prod:game",
-    "test": "node lib/index.js",
-    "start": "pm2 start process.json && pm2 logs",
     "reload": "pm2 reload lib/index.js",
     "stop": "pm2 stop lib/index.js",
-    "clean": "node data/cleaner.js"
+    "clean": "node data/cleaner.js",
+    "build": "docker-compose up --build"
   },
   "browserslist": [
     "last 1 version, > 5%, not dead"
@@ -55,14 +55,14 @@
     "webpack-bundle-analyser": "^1.4.0",
     "webpack-cli": "^3.3.12"
   },
+  "author": "Lucas Poulain (ShallowRed)",
+  "license": "ISC",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ShallowRed/mnio.git"
   },
-  "author": "Lucas Poulain (ShallowRed)",
-  "license": "ISC",
+  "homepage": "https://github.com/ShallowRed/mnio#readme",
   "bugs": {
     "url": "https://github.com/ShallowRed/mnio/issues"
-  },
-  "homepage": "https://github.com/ShallowRed/mnio#readme"
+  }
 }

@@ -1,4 +1,4 @@
-const Config = require('./webpack.global.js');
+const Config = require('./webpack.commons.js');
 
 const paletteConfig = Config({
   jsEntry: "./app/PaletteSelection/PaletteSelection.js",
