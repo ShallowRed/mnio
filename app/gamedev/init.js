@@ -4,9 +4,9 @@ import Tutoriel from './tutoriel/tutoriel';
 
 import Game from './Game';
 
-const socket = io();
+const socket = io('/gamedev');
 
 socket.on("initGame", data => {
-  Tutoriel[isPlayerNew ? "init" : "end"]();
+  // Tutoriel[isPlayerNew ? "init" : "end"]();
   new Game(data, socket);
 });

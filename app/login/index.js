@@ -15,20 +15,8 @@ const socket = io();
 Login.init(socket);
 
 socket.on('loginSuccess', isPlayerNew => {
-  console.log("Login sucess");
-
   if (isPlayerNew)
     window.location = "./palette";
   else
-    window.location = "./jouer";
-
-  // Login.end();
-  //
-  // isPlayerNew && PaletteSelection.init(socket);
-  //
-  // socket.on("initGame", data => {
-  //   Tutoriel[isPlayerNew ? "init" : "end"]();
-  //   new Game(data, socket);
-  // });
-
+    window.location = "./gamedev";
 });

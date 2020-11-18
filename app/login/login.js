@@ -13,19 +13,7 @@ export default {
 
     const context = { socket };
     logUserNameBtn.addEventListener('click', checkUsername.bind(context));
-  },
- 
-  // end: () => {
-  //   window.history.pushState({
-  //     "pageTitle": "test"
-  //   }, "", "/jouer");
-  //
-  //   window.addEventListener('popstate', function() {
-  //     window.location.replace("../")
-  //   }, false);
-  //
-  //   hide(document.getElementById('lobby'));
-  // }
+  }
 };
 
 const checkUsername = function() {
@@ -94,8 +82,3 @@ const alertPassCantBeLong = () =>
 
 const alertCantBeDiff = () =>
   alert("Les deux mots de passe ne sont pas identiques !");
-
-const hide = e => {
-  e.style.opacity = "0";
-  setTimeout(() => e.style.display = "none", 300);
-};
