@@ -1,0 +1,52 @@
+#master {
+  overflow: hidden;
+  position: relative;
+  background: white;
+  box-sizing: border-box;
+}
+
+.mapcanvas {
+  overflow: hidden;
+  position: absolute;
+  transition-timing-function: ease;
+}
+
+#canvas3 {
+  opacity: 0.5;
+}
+
+.mask {
+  z-index: 30;
+  position: absolute;
+  background: var(--grey);
+}
+
+#topmask,
+#leftmask,
+#rightmask {
+  top: 0;
+}
+
+#topmask,
+#bottommask,
+#leftmask {
+  left: 0;
+}
+
+#topmask,
+#bottommask {
+  width: 100%;
+}
+
+#leftmask,
+#rightmask {
+  height: 100%;
+}
+
+#bottommask {
+  bottom: 0;
+}
+
+#rightmask {
+  right: 0;
+}

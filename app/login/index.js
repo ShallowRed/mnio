@@ -12,11 +12,16 @@ import Login from './login';
 showInstallOptions();
 
 const socket = io();
-
 Login.init(socket);
 
 socket.on('loginSuccess', isPlayerNew => {
   console.log("Login sucess");
+
+  if (isPlayerNew)
+    window.location = "./palette";
+  else
+    window.location = "./jouer";
+
   // Login.end();
   //
   // isPlayerNew && PaletteSelection.init(socket);

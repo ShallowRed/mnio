@@ -5,6 +5,7 @@ const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const path = require('path');
 
 const plugins = ({
+  name,
   ejsEntry,
   outputName,
   inject,
@@ -12,7 +13,7 @@ const plugins = ({
 }) => {
   const pluginsArray = [
     new MiniCssExtractPlugin({
-      filename: '[name].css',
+      filename:  `${name}.css`,
     }),
     new HtmlWebpackPlugin({
       filename: outputName,

@@ -14,21 +14,22 @@ export default {
     const context = { socket };
     logUserNameBtn.addEventListener('click', checkUsername.bind(context));
   },
-
-  end: () => {
-    window.history.pushState({
-      "pageTitle": "test"
-    }, "", "/jouer");
-
-    window.addEventListener('popstate', function() {
-      window.location.replace("../")
-    }, false);
-
-    hide(document.getElementById('lobby'));
-  }
+ 
+  // end: () => {
+  //   window.history.pushState({
+  //     "pageTitle": "test"
+  //   }, "", "/jouer");
+  //
+  //   window.addEventListener('popstate', function() {
+  //     window.location.replace("../")
+  //   }, false);
+  //
+  //   hide(document.getElementById('lobby'));
+  // }
 };
 
 const checkUsername = function() {
+  console.log("checkUsername");
   const userName = document.getElementById("userName")
     .value;
   !userName.length ? alertCantBeNull() :
@@ -37,6 +38,7 @@ const checkUsername = function() {
 };
 
 const sendUsername = function(userName) {
+  console.log("sendUsername");
   const { socket } = this;
   socket.emit("username", userName);
   const context = { socket, userName };
@@ -44,10 +46,11 @@ const sendUsername = function(userName) {
 }
 
 const askPass = function(nameIsAvailable) {
+  console.log("askPass");
   hideUsernameBox();
   showPasswordBox();
-  logPasswordBtn.addEventListener('click', sendPassword.bind(this));
   nameIsAvailable && showConfirmPasswordBox();
+  logPasswordBtn.addEventListener('click', sendPassword.bind(this));
 };
 
 const hideUsernameBox = () => {

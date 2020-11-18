@@ -21,9 +21,9 @@ const config = ({
   watch: dev,
   entry: jsEntry,
   output: {
-    filename: '[name].js',
+    filename: `${name}.js`,
     path: path.resolve(__dirname, `./${outputPath}`),
-    publicPath: '/dist/'
+    publicPath: `/${outputPath}/`
   },
   optimization: {
     minimize: !dev,
@@ -34,6 +34,7 @@ const config = ({
   },
   plugins: Plugins({
     ejsEntry,
+    name,
     outputName,
     inject: !!inject,
     isFavicon: !!isFavicon

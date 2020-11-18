@@ -1,12 +1,19 @@
-import Pokedex from '../../../lib/pokedex/Pokedex';
+import './paletteSelection.css'
+import '../layouts/global.css';
+
+import Pokedex from '../../lib/pokedex/Pokedex';
+
+import io from 'socket.io-client';
+
+const socket = io();
 
 const paletteSelection = {
 
   init: (socket) => {
     document.getElementById('rdm')
-      .addEventListener("click", changeTap);
+      .addEventListener("click", changeTapestry);
 
-    changeTap();
+    changeTapestry();
 
     document.getElementById('intro')
       .style.display = "flex";
@@ -18,6 +25,7 @@ const paletteSelection = {
   }
 };
 
+
 const tapestry = {
   index: null,
   img: document.getElementById("tapImg"),
@@ -26,18 +34,25 @@ const tapestry = {
 
 let indexList = Pokedex.map((e, i) => i);
 
-const changeTap = () => {
+const changeTapestry = () => {
   if (!indexList.length)
     indexList = Pokedex.map((e, i) => i);
-  let rdmIndex = Math.floor(Math.random() * indexList.length);
+
+  const rdmIndex = Math.floor(Math.random() * indexList.length);
   tapestry.index = indexList[rdmIndex];
-  indexList = indexList.filter(e => e !== tapestry.index);
-  tapestry.img.src = `dist/img/pokedex/tap_${tapestry.index + 1}.jpg`
+  indexList.splice(indexList.indexOf(tapestry.index), 1);
+  tapestry.img.src = `/dist/img/pokedex/tap_${tapestry.index + 1}.jpg`
   tapestry.description.innerHTML = Pokedex[tapestry.index].description;
+
   document.querySelectorAll(".pal")
     .forEach((colorButton, i) =>
       colorButton.style.backgroundColor = Pokedex[tapestry.index].palette[i]
     );
+
+    console.log(tapestry);
+    console.log(indexList);
 };
 
-export default paletteSelection;
+paletteSelection.init(socket);
+
+// export default paletteSelection;

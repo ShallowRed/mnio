@@ -1,8 +1,6 @@
 #intro {
-  display: none;
   z-index: 70;
-  /* display: flex;  */
-  /* z-index: 999;  */
+  display: flex;
   justify-content: center;
 }
 
@@ -17,7 +15,8 @@
   object-fit: contain;
 }
 
-#palette, #choices {
+#palette,
+#choices {
   height: auto;
   display: flex;
   justify-content: space-around;
@@ -64,7 +63,8 @@
     border-top: solid 1px;
   }
 
-  #palette, #choices {
+  #palette,
+  #choices {
     margin: 15vh 0 5vh;
     margin: 25vh 0 5vh;
   }
@@ -98,7 +98,10 @@
     flex-flow: wrap;
   }
 
-  #choices, #palette, #description, #tapImg {
+  #choices,
+  #palette,
+  #description,
+  #tapImg {
     position: absolute;
     left: 0;
   }
@@ -142,7 +145,8 @@
   }
 }
 
-#rdm, #select {
+#rdm,
+#select {
   font-size: 1.2em;
   letter-spacing: 0.1em;
   border-radius: 5px;

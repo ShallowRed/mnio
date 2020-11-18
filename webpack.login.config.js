@@ -1,12 +1,12 @@
 const Config = require('./webpack.global.js');
 
-const galleryConfig = Config({
+const login = Config({
   jsEntry: "./app/login/index.js",
   ejsEntry: "./app/login/index.ejs",
-  name: "gallery",
+  name: "login",
   outputPath: "dist/login",
   outputName: "login.html",
   inject: true,
 });
 
-module.exports = galleryConfig;
+module.exports = login;

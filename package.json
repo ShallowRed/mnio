@@ -10,6 +10,11 @@
     "prod:gallery": "webpack --config webpack.gallery.config.js",
     "dev:login": "SET NODE_ENV=dev && webpack --config webpack.login.config.js",
     "prod:login": "webpack --config webpack.login.config.js",
+    "dev:palette": "SET NODE_ENV=dev && webpack --config webpack.palette.config.js",
+    "prod:palette": "webpack --config webpack.palette.config.js",
+    "dev:gamedev": "SET NODE_ENV=dev && webpack --config webpack.gamedev.config.js",
+    "prod:gamedev": "webpack --config webpack.gamedev.config.js",
+    "prod:all": "npm run prod:login && npm run prod:palette && npm run prod:gamedev",
     "test": "node lib/index.js",
     "start": "pm2 start process.json && pm2 logs",
     "reload": "pm2 reload lib/index.js",
@@ -17,7 +22,7 @@
     "clean": "node data/cleaner.js"
   },
   "browserslist": [
-    "last 3 version, > 0.1%, not dead"
+    "last 1 version, > 5%, not dead"
   ],
   "dependencies": {
     "body-parser": "^1.19.0",

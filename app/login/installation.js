@@ -37,11 +37,11 @@ const initListeners = () => {
       window.location.reload(true)
     );
 
-  document.getElementById('refresh')
-    .addEventListener("click", () =>
-      window.location.reload(true)
-    );
-    
+  // document.getElementById('refresh')
+  //   .addEventListener("click", () =>
+  //     window.location.reload(true)
+  //   );
+
   window.addEventListener("load", () => {
     const title = document.getElementById('logofull');
     title.style.opacity = "1";
