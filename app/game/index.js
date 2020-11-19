@@ -21,3 +21,7 @@ socket.on("initGame", data => {
   // Tutoriel[isPlayerNew ? "init" : "end"]();
   new Game(data, socket);
 });
+
+socket.on('redirect', path => {
+  window.location.href = path;
+})
