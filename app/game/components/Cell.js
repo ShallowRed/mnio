@@ -1,6 +1,8 @@
 import { check } from '../utils/utils';
+import { fillCell, roundSquare } from '../utils/canvas';
 
 const Cell = {
+
   render: {
 
     clear: (position, GAME) => {
@@ -30,98 +32,83 @@ const Cell = {
       const { ctx, cellSize, shift } = GAME.MAP;
       roundSquare(coord, cellSize, ctx[2], shift);
     }
+  },
+
+  fillAnimation(position, GAME) {
+    const [x, y] = check(position, GAME);
+    const {
+      flag,
+      PLAYER: { sColor },
+      MAP: { lw, cellSize, ctx: [, ctx] }
+    } = GAME;
+
+    flag.fill = true;
+    ctx.lineWidth = lw;
+    ctx.strokeStyle = sColor;
+
+    const initCoord = {
+      divx: 0,
+      divy: 0,
+      x: cellSize * y,
+      y: cellSize * (x + 1)
+    };
+
+    fillFrame(flag, initCoord, { ctx, lw, cellSize, sColor });
   }
 };
 
-const fillCell = ([x, y], cellSize, ctx, color) => {
-  ctx.clearRect(cellSize * y, cellSize * x, cellSize, cellSize);
-  if (!color) return;
-  ctx.fillStyle = color;
-  ctx.fillRect(cellSize * y, cellSize * x, cellSize, cellSize);
-};
-
-const roundSquare = ([x, y], cellSize, ctx, shift) => {
-  roundRect(ctx, {
-    x: cellSize * y + shift * 1.5,
-    y: cellSize * x + shift * 1.5,
-    width: cellSize - shift * 3,
-    height: cellSize - shift * 3,
-    radius: shift
-  });
-};
-
-const roundRect = (ctx, { x, y, width, height, radius }) => {
-  ctx.strokeStyle = "black";
-  ctx.lineWidth = radius;
-  ctx.beginPath();
-  ctx.moveTo(x + radius, y);
-  ctx.lineTo(x + width - radius, y);
-  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-  ctx.lineTo(x + width, y + height - radius);
-  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-  ctx.lineTo(x + radius, y + height);
-  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-  ctx.lineTo(x, y + radius);
-  ctx.quadraticCurveTo(x, y, x + radius, y);
-  ctx.closePath();
-  ctx.stroke();
-};
-
-Cell.fillAnimation = ([x, y], GAME) => {
-  const { PLAYER: {sColor}, flag, MAP: { lw, cellSize, ctx: [, ctx] } } = GAME;
-
-  flag.fill = true;
-  ctx.lineWidth = lw;
-  ctx.strokeStyle = sColor;
-
-  const divx = 0;
-  const divy = 0;
-  const posx = cellSize * y;
-  const posy = cellSize * (x + 1);
-
-  fillFrame(flag, { divx, divy, posx, posy, sColor }, { ctx, lw, cellSize });
-};
-
-const fillFrame = (flag, { divx, divy, posx, posy, sColor }, {
+const fillFrame = (flag, { x, y, divx, divy }, {
   ctx,
   lw,
-  cellSize
+  cellSize,
+  sColor
 }) => {
 
-  if (divx == cellSize) {
+  if (endWidth(divx, cellSize)) { // go to beginning of upper line
     divy += lw;
     divx = 0;
   }
 
   divx += Math.round(cellSize / 8);
 
-  if (divx >= cellSize * 0.65) {
+  if (nearEndWidth(divx, cellSize)) { // go to the end of current line
     divx = cellSize;
   }
 
-  if (divy > cellSize * 4.5 / 6) {
+  if (nearEndHeight(divy, cellSize)) { // fill what's left
     lw = cellSize - divy;
     ctx.lineWidth = lw;
     divy = cellSize - lw;
   }
+
+  fillDiv({ divx, divy, x, y }, { ctx, lw, sColor });
+
+  if (
+    nearEndHeight(divy, cellSize) &&
+    endWidth(divx, cellSize)
+  )
+    flag.fill = false;
+  else
+    window.requestAnimationFrame(() =>
+      fillFrame(flag, { x, y, divx, divy }, { ctx, lw, cellSize, sColor })
+    );
+};
+
+const endWidth = (divx, cellSize) =>
+  divx == cellSize;
+
+const nearEndWidth = (divx, cellSize) =>
+  divx >= cellSize * 0.65;
+
+const nearEndHeight = (divy, cellSize) =>
+  divy > cellSize * 4.5 / 6;
+
+const fillDiv = ({ x, y, divx, divy }, { ctx, lw, sColor }) => {
   ctx.strokeStyle = sColor;
   ctx.beginPath();
-  ctx.moveTo(posx, posy - divy - lw / 2);
-  ctx.lineTo(posx + divx, posy - divy - lw / 2);
+  ctx.moveTo(x, y - divy - lw / 2);
+  ctx.lineTo(x + divx, y - divy - lw / 2);
   ctx.stroke();
-
-  if (divy > cellSize * 4.5 / 6 && divx == cellSize) {
-    flag.fill = false;
-    return;
-  }
-
-  window.requestAnimationFrame(() =>
-    fillFrame(flag, { divx, divy, posx, posy, sColor }, {
-      ctx,
-      lw,
-      cellSize
-    })
-  );
 };
 
 export default Cell;

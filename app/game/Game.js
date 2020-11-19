@@ -10,8 +10,6 @@ import listenTouchEvents from './events/touchScreen';
 
 import translationTimeout from './utils/translationTimeout';
 import checkMove from './utils/checkMove';
-import { check } from './utils/utils';
-
 import './utils/polyfill';
 
 export default class Game {
@@ -80,11 +78,13 @@ export default class Game {
 
   selectColor(index) {
     const { sColor, palette } = this.PLAYER;
+    
+    const next =
+      index == "next" ? 1 :
+      index == "prev" ? palette.length - 1 :
+      null;
 
-    if (index == "next")
-      index = (palette.indexOf(sColor) + 1) % palette.length;
-    else if (index == "prev")
-      index = (palette.indexOf(sColor) + palette.length - 1) % palette.length;
+    index = (palette.indexOf(sColor) + next) % palette.length;
 
     this.PLAYER.setColor(index);
     this.UI.focusColorBtn(index);
@@ -98,9 +98,7 @@ export default class Game {
     if (!owned.includes(position))
       owned.push(position);
 
-    const coord = check(position, this);
-    Cell.fillAnimation(coord, this);
-
+    Cell.fillAnimation(position, this);
     const color = sColor.substring(1);
     colors[position] = color;
     socket.emit("fill", { position, color });
