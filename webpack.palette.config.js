@@ -4,7 +4,7 @@ const paletteConfig = Config({
   jsEntry: "./app/PaletteSelection/PaletteSelection.js",
   ejsEntry: "./app/PaletteSelection/PaletteSelection.ejs",
   name: "palette",
-  outputPath: "dist/PaletteSelection",
+  outputPath: "dist/palette",
   outputName: "palette.html",
   inject: true
 });
