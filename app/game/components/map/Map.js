@@ -182,11 +182,13 @@ const translate = {
       ratio ? Math.round((windowHeight - height) / 2) : 0
     }px`;
 
+
     master.style.marginLeft = `${
       is.left ? margin.left :
       is.right ? windowWidth - width - margin.right :
       ratio ? 0 : Math.round((windowWidth - width) / 2)
     }px`;
+
   },
 
   canvas: (GAME) => {
@@ -219,8 +221,7 @@ const translate = {
     };
 
     MAP.canvas.forEach(c => {
-      c.style.transitionDuration = duration + 's';
-
+      c.style.transitionDuration = `${duration}s`;
       if (shift.top !== null)
         c.style.top = `${shift.top * MAP.cellSize}px`;
 
