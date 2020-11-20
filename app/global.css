@@ -23,7 +23,12 @@ body {
   margin: 0;
 }
 
-p, h2, h3, h4, h5, h6 {
+p,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: 'Inconsolata', monospace;
 }
 
@@ -32,7 +37,12 @@ a {
   display: block;
 }
 
-body, #lobby, #https, #tuto, #installedMessage, #intro {
+body,
+#lobby,
+#https,
+#tuto,
+#message-installed,
+#intro {
   position: absolute;
   overflow: hidden;
   height: 100%;
@@ -42,7 +52,10 @@ body, #lobby, #https, #tuto, #installedMessage, #intro {
   background: var(--grey);
 }
 
-#lobby, #https, #tuto, #installedMessage {
+#lobby,
+#https,
+#tuto,
+#message-installed {
   opacity: 1;
   z-index: 800;
   transition: opacity 0.2s ease;

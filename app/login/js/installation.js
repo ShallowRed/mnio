@@ -1,10 +1,12 @@
 const container = document.getElementById('container');
-const iosMessage = document.getElementById('iosMessage');
-const installMessage = document.getElementById('installMessage');
-const installBtn = document.getElementById('installBtn');
-const stayInBrowserBtn = document.getElementById('stayBtn');
-const logWindow = document.getElementById('logWindow');
-const logBtn = document.getElementById('logBtn');
+
+const installBtn = document.querySelector('.install-btn');
+const installMessage = document.querySelector('.message-install');
+const iosMessage = document.querySelector('.message-ios');
+const stayInBrowserBtn = document.querySelector('.stay-btn');
+
+const logWindow = document.querySelector('.login');
+const logUsernameBtn = document.querySelector('.log-username-btn');
 
 const show = (elem) => elem.style.display = 'block';
 const hide = (elem) => elem.style.display = 'none';
@@ -19,9 +21,9 @@ export default () => {
 
 const initListeners = () => {
   const lejeu = document.getElementById('jeu');
-  const welcomeMsg = document.getElementById('welcomeMsg');
+  const welcomeMsg = document.querySelector('.message-welcome');
   const lagalerie = document.getElementById('galerie');
-  const forgot = document.getElementById('forgot');
+  const forgot = document.querySelector('.forgot');
 
   lejeu.addEventListener("click", () => {
     hide(lejeu);
@@ -56,7 +58,7 @@ const stayInBrowser = () => {
   hide(stayInBrowserBtn);
   hide(iosMessage);
   show(logWindow);
-  show(logBtn);
+  show(logUsernameBtn);
 };
 
 const isonPwa = () => {
@@ -68,7 +70,7 @@ const isonPwa = () => {
 
 const beforeinstallprompt = () => {
   hide(logWindow);
-  hide(logBtn);
+  hide(logUsernameBtn);
   show(installMessage);
   show(installBtn);
   show(stayInBrowserBtn);
@@ -87,7 +89,7 @@ const installPwa = () => {
 };
 
 const onAppInstalled = () => {
-  const installedMessage = document.getElementById('installedMessage');
+  const installedMessage = document.querySelector('.message-installed');
   show(installedMessage);
   let count = 0;
   setInterval(() => {
@@ -119,7 +121,7 @@ const appleDevicesInstall = () => {
     show(iosMessage);
     show(stayInBrowserBtn);
     hide(logWindow);
-    hide(logBtn);
+    hide(logUsernameBtn);
   }
 };
 

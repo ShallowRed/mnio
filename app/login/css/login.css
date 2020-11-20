@@ -1,4 +1,4 @@
-#logWindow {
+.login {
   width: 100%;
 
   &h4 {
@@ -22,7 +22,7 @@
   }
 }
 
-#forgot {
+.forgot {
   margin-top: 0;
   color: #666;
   margin-top: 1vh;
@@ -35,10 +35,14 @@
   }
 }
 
-#pass, #pass2, #forgot, #passBtn {
+.login-password,
+.login-confirmation,
+.log-password-btn,
+.forgot {
   display: none;
 }
 
-#user, #pass {
+.login-username,
+.login-password {
   margin-top: 15vh;
 }

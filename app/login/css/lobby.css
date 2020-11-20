@@ -19,7 +19,7 @@
   display: none;
 }
 
-#welcomeMsg h4 {
+.message-welcome h4 {
   line-height: 2em;
   font-size: 1.2em;
   color: blue;
@@ -27,7 +27,10 @@
   margin: 0.5em 0;
 }
 
-#container, #lgf, #choice, #welcomeMsg {
+#container,
+#lgf,
+#choice,
+.message-welcome {
   width: 75%;
   min-width: 200px;
   max-width: 400px;
@@ -35,7 +38,8 @@
   margin-right: auto;
 }
 
-#lobby h1, #container {
+#lobby h1,
+#container {
   opacity: 0;
   transition-delay: 0.5s;
   transition: opacity 0.5s ease;
@@ -73,66 +77,29 @@
   color: blue;
 }
 
-#installMessage p, #installedMessage p {
-  font-size: 1.2em;
-}
-
-#iosMessage p {
-  margin: 1vh 0;
-  line-height: 1.2em;
-  font-size: 1em;
-}
-
-#iosMessage img {
-  height: 30px;
-  width: 30px;
-}
-
-#share {
-  transform: translateY(5px);
-}
-
-#save {
-  transform: translateY(9px);
-}
-
-#https, #installedMessage {
-  z-index: 980;
-  box-sizing: border-box;
-  padding: 20%;
-}
-
-#https p {
-  font-size: 1.5em;
-  line-height: 2em;
-}
-
-#installMessage, #installedMessage, #installBtn, #iosMessage, #stayBtn, #https {
-  display: none;
-}
-
 #galerie {
   text-decoration: none;
   margin-top: 5vh;
   border: 1px solid darkgrey;
   background: white;
   padding: 0;
+
+  &:hover {
+    border: 1px solid blue;
+    color: blue;
+  }
+
+  & a {
+    padding: 2vh 0;
+
+    & p {
+      margin: 0;
+    }
+  }
 }
 
-#galerie a {
-  padding: 2vh 0
-}
-
-#galerie a p {
-  margin: 0;
-}
-
-#galerie:hover {
-  border: 1px solid blue;
-  color: blue;
-}
-
-#jeu, #galerie {
+#jeu,
+#galerie {
   font-size: 1.4em;
   letter-spacing: 0.07em;
   width: 100%;

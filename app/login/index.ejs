@@ -11,8 +11,18 @@
 <body>
 
   <img id="logo" src="dist/img/logo-full.png" alt="sorry">
-  <%= require('./requireHTTPS.ejs')() %>
-  <%= require('./login.ejs')() %>
+  <%= require('./ejs/requireHTTPS.ejs')() %>
+
+  <div id="lobby">
+
+    <%= require('./ejs/lobby.ejs')() %>
+
+    <div id="container">
+      <%= require('./ejs/installation.ejs')() %>
+      <%= require('./ejs/login.ejs')() %>
+    </div>
+
+  </div>
 
 </body>
 

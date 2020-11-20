@@ -29,14 +29,14 @@ const serverEvents = Object.entries({
     }
   },
 
-  NewCell(GAME, { position, color }) {
+  newFill(GAME, { position, color }) {
     const { colors } = GAME;
 
     colors[position] = color;
     Cell.render.color(position, GAME);
   },
 
-  AllowedCells(GAME, cells) {
+  allowedCells(GAME, cells) {
     const { allowed } = GAME;
 
     cells.forEach(position => {
