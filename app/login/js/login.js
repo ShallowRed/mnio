@@ -44,9 +44,7 @@ const askForPassword = (socket, userName, nameIsAvailable) => {
   logPasswordBtn.addEventListener('click', () => {
     sendPassword(socket, nameIsAvailable);
   });
-  socket.on('wrongPass', () =>
-    alert("Mot de passe incorrect pour ce nom d'utilisateur")
-  );
+  socket.on('wrongPass', alertWrongPass);
 };
 
 const sendPassword = (socket, nameIsAvailable) => {
@@ -89,3 +87,6 @@ const alertPassCantBeLong = () =>
 
 const alertCantBeDiff = () =>
   alert("Les deux mots de passe ne sont pas identiques !");
+
+const alertWrongPass = () =>
+  alert("Mot de passe incorrect pour ce nom d'utilisateur");

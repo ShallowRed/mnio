@@ -1,9 +1,8 @@
 .message-welcome {
-  line-height: 2em;
-  font-size: 1.2em;
+  font-size: 1.1em;
   color: blue;
-  line-height: 1.6em;
-  margin: 0.5em 0;
+  line-height: 1.5em;
+  margin: 0 auto;
 }
 
 #galerie {
