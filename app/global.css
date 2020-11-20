@@ -37,12 +37,7 @@ a {
   display: block;
 }
 
-body,
-#lobby,
-#https,
-#tuto,
-#message-installed,
-#intro {
+body {
   position: absolute;
   overflow: hidden;
   height: 100%;
@@ -50,15 +45,6 @@ body,
   top: 0;
   left: 0;
   background: var(--grey);
-}
-
-#lobby,
-#https,
-#tuto,
-#message-installed {
-  opacity: 1;
-  z-index: 800;
-  transition: opacity 0.2s ease;
 }
 
 button {

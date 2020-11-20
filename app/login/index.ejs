@@ -10,20 +10,13 @@
 
 <body>
 
-  <img id="logo" src="dist/img/logo-full.png" alt="sorry">
-  <%= require('./ejs/requireHTTPS.ejs')() %>
-
-  <div id="lobby">
-
-    <%= require('./ejs/lobby.ejs')() %>
-
-    <div id="container">
-      <%= require('./ejs/installation.ejs')() %>
-      <%= require('./ejs/login.ejs')() %>
-    </div>
-
+  <div id="mnio-logo">
+    <img src="dist/img/logo-full.png" alt="sorry">
   </div>
 
+  <%= require('./ejs/lobby.ejs')() %>
+  <%= require('./ejs/installation.ejs')() %>
+  <%= require('./ejs/login.ejs')() %>
 </body>
 
 </html>

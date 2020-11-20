@@ -1,10 +1,12 @@
+.login,
+.login-password,
+.login-confirmation,
+.log-password-btn,
+.forgot {
+  display: none;
+}
+
 .login {
-  width: 100%;
-
-  &h4 {
-    margin-bottom: 0;
-  }
-
   & input {
     box-sizing: border-box;
     border: none;
@@ -22,6 +24,11 @@
   }
 }
 
+.login-username,
+.login-password {
+  margin-top: 15vh;
+}
+
 .forgot {
   margin-top: 0;
   color: #666;
@@ -33,16 +40,4 @@
     cursor: pointer;
     color: blue;
   }
-}
-
-.login-password,
-.login-confirmation,
-.log-password-btn,
-.forgot {
-  display: none;
-}
-
-.login-username,
-.login-password {
-  margin-top: 15vh;
 }

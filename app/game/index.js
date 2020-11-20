@@ -1,5 +1,5 @@
 import '../global.css';
-
+import './main.css';
 import './tutoriel/introtuto.css';
 import './tutoriel/tutoriel.css';
 
@@ -20,8 +20,15 @@ const socket = io('/game');
 socket.on("initGame", data => {
   // Tutoriel[isPlayerNew ? "init" : "end"]();
   new Game(data, socket);
+  showAll();
 });
 
 socket.on('redirect', path => {
   window.location.href = path;
 })
+
+const showAll = () => {
+  [...document.querySelectorAll('body>*')].forEach(el => {
+    el.style.opacity = 1;
+  });
+}

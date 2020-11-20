@@ -1,22 +1,8 @@
-.message-install,
-.message-installed,
+.installation,
+.message-install-ios,
 .install-btn,
-.message-ios,
-.stay-btn,
-#https {
-  display: none;
-}
-
-#https,
 .message-installed {
-  z-index: 980;
-  box-sizing: border-box;
-  padding: 20%;
-}
-
-#https p {
-  font-size: 1.5em;
-  line-height: 2em;
+  display: none;
 }
 
 .message-install p,
@@ -24,7 +10,7 @@
   font-size: 1.2em;
 }
 
-.message-ios {
+.message-install-ios {
   & p {
     margin: 1vh 0;
     line-height: 1.2em;
@@ -34,13 +20,13 @@
   & img {
     height: 30px;
     width: 30px;
-  }
 
-  & #share {
-    transform: translateY(5px);
-  }
+    &:first-of-type {
+      transform: translateY(5px);
+    }
 
-  & #save {
-    transform: translateY(9px);
+    &:last-of-type {
+      transform: translateY(9px);
+    }
   }
 }

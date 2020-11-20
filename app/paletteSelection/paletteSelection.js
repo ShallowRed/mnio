@@ -7,33 +7,34 @@ import io from 'socket.io-client';
 
 const socket = io('/palette');
 
-const paletteSelection = {
+const initPaletteSelection = () => {
+  changeTapestry();
 
-  init: (socket) => {
-    document.getElementById('rdm')
-      .addEventListener("click", changeTapestry);
+  window.addEventListener("load", () => {
+    const container = document.querySelector('.container');
+    container.style.opacity = 1;
+  });
 
-    changeTapestry();
+  const changeBtn = document.querySelector('.tap-change');
+  const selectBtn = document.querySelector('.tap-select');
 
-    document.getElementById('intro')
-      .style.display = "flex";
+  changeBtn.addEventListener("click", changeTapestry);
 
-    document.getElementById('select')
-      .addEventListener("click", () => {
-        socket.emit("paletteSelected", tapestry.index);
-        window.location = "./game";
-      });
-  }
+  selectBtn.addEventListener("click", () => {
+    socket.emit("paletteSelected", tapestry.index);
+    window.location = "./game";
+  });
 };
-
 
 const tapestry = {
   index: null,
-  img: document.getElementById("tapImg"),
-  description: document.getElementById("description")
+  img: document.querySelector(".container img"),
+  description: document.querySelector(".container h3")
 };
 
 let indexList = Pokedex.map((e, i) => i);
+
+const palette = document.querySelectorAll(".palette>div");
 
 const changeTapestry = () => {
   if (!indexList.length)
@@ -45,13 +46,9 @@ const changeTapestry = () => {
   tapestry.img.src = `/dist/img/pokedex/tap_${tapestry.index + 1}.jpg`
   tapestry.description.innerHTML = Pokedex[tapestry.index].description;
 
-  document.querySelectorAll(".pal")
-    .forEach((colorButton, i) =>
-      colorButton.style.backgroundColor = Pokedex[tapestry.index].palette[i]
-    );
-
-    console.log(tapestry);
-    console.log(indexList);
+  palette.forEach((colorButton, i) =>
+    colorButton.style.backgroundColor = Pokedex[tapestry.index].palette[i]
+  );
 };
 
-paletteSelection.init(socket);
+initPaletteSelection();

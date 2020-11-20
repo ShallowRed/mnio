@@ -1,84 +1,8 @@
-const container = document.getElementById('container');
-
-const installBtn = document.querySelector('.install-btn');
-const installMessage = document.querySelector('.message-install');
-const iosMessage = document.querySelector('.message-ios');
-const stayInBrowserBtn = document.querySelector('.stay-btn');
-
-const logWindow = document.querySelector('.login');
-const logUsernameBtn = document.querySelector('.log-username-btn');
-
-const show = (elem) => elem.style.display = 'block';
-const hide = (elem) => elem.style.display = 'none';
-
-export default () => {
-  checkHttps();
-  initListeners();
-  registerServiceWorker();
-  appleDevicesInstall();
-  initPwa();
-};
-
-const initListeners = () => {
-  const lejeu = document.getElementById('jeu');
-  const welcomeMsg = document.querySelector('.message-welcome');
-  const lagalerie = document.getElementById('galerie');
-  const forgot = document.querySelector('.forgot');
-
-  lejeu.addEventListener("click", () => {
-    hide(lejeu);
-    hide(welcomeMsg);
-    hide(lagalerie);
-    show(container);
-  });
-
-  stayInBrowserBtn.addEventListener('click', stayInBrowser);
-
-  document.getElementById('logo')
-    .addEventListener("click", () =>
-      window.location.reload(true)
-    );
-
-  window.addEventListener("load", () => {
-    const title = document.getElementById('logofull');
-    title.style.opacity = "1";
-    container.style.opacity = "1";
-  });
-
-  forgot.addEventListener("click", () => {
-    alert(
-      "Nous ne pouvons pas encore automatiser la gestion des mots de passe. Cependant vous pouvez écrire un mail à lucaspoulain2@gmail.com pour obtenir votre mot de passe"
-    )
-  });
-};
-
-const stayInBrowser = () => {
-  hide(installMessage);
-  hide(installBtn);
-  hide(stayInBrowserBtn);
-  hide(iosMessage);
-  show(logWindow);
-  show(logUsernameBtn);
-};
-
-const isonPwa = () => {
-  return (window.matchMedia('(display-mode: standalone)')
-      .matches) ||
-    (window.navigator.standalone) ||
-    document.referrer.includes('android-app://');
-};
-
-const beforeinstallprompt = () => {
-  hide(logWindow);
-  hide(logUsernameBtn);
-  show(installMessage);
-  show(installBtn);
-  show(stayInBrowserBtn);
-};
+import { hide, show } from './utils';
 
 const installPwa = () => {
+  const installMessage = document.querySelector('.message-install');
   hide(installMessage);
-  hide(installBtn);
   const promptEvent = window.deferredPrompt;
   if (!promptEvent) return;
   promptEvent.prompt();
@@ -88,67 +12,20 @@ const installPwa = () => {
   });
 };
 
-const onAppInstalled = () => {
+const onPwaInstalled = (count = 0) => {
   const installedMessage = document.querySelector('.message-installed');
   show(installedMessage);
-  let count = 0;
   setInterval(() => {
-    if (isonPwa())
+    if (count > 40 || isonPwa())
       window.location.reload(true);
-    else
-      count++;
-    if (count == 40)
-      window.location.reload(true);
+    else count++;
   }, 200)
-}
-
-const initPwa = () => {
-
-  window.addEventListener('beforeinstallprompt', () => {
-    window.deferredPrompt = event;
-    beforeinstallprompt()
-  });
-
-  installBtn.addEventListener('click', installPwa());
-
-  window.addEventListener('appinstalled', onAppInstalled);
 };
 
-const appleDevicesInstall = () => {
-  if (['iPhone', 'iPad', 'iPod'].includes(navigator.platform) &&
-    !navigator.standalone) {
-    show(installMessage);
-    show(iosMessage);
-    show(stayInBrowserBtn);
-    hide(logWindow);
-    hide(logUsernameBtn);
-  }
-};
+const isonPwa = () =>
+  window.matchMedia('(display-mode: standalone)')
+  .matches ||
+  window.navigator.standalone ||
+  document.referrer.includes('android-app://')
 
-const registerServiceWorker = () => {
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/dist/service-worker.js', {
-          scope: '/'
-        })
-        .then(registration => {
-          console.log('SW registered: ', registration);
-        })
-        .catch(registrationError => {
-          console.log('SW registration failed: ', registrationError);
-        });
-    });
-  }
-};
-
-const checkHttps = () => {
-  const https = document.getElementById('https');
-
-  if (window.location.hostname !== "localhost" &&
-    window.location.hostname !== "127.0.0.1" &&
-    window.location.protocol === 'http:') {
-    https.querySelector('a')
-      .href = window.location.href.replace('http://', 'https://');
-    show(https);
-  }
-};
+export { installPwa, onPwaInstalled };

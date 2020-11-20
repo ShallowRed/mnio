@@ -1,18 +1,26 @@
 const logUserNameBtn = document.querySelector('.log-username-btn');
 const logPasswordBtn = document.querySelector('.log-password-btn');
 
-export default {
-  init: (socket) => {
-    // // testing
-    // sendUsername(socket, "q");
-    // socket.on("askPass", () => {
-    //   socket.emit("password", "q");
-    // });
-    logUserNameBtn.addEventListener('click', () => {
-      checkUsername(socket);
+const test = (socket) => {
+  sendUsername(socket, "q");
+  socket.on("askPass", () => {
+    socket.emit("password", "q");
+  });
+}
+
+export default function listenLogin(socket) {
+
+  logUserNameBtn.addEventListener('click', () => {
+    checkUsername(socket);
+  });
+
+  document.querySelector('.forgot')
+    .addEventListener("click", () => {
+      alert("(Fonctionnalité en construction, désolé)");
     });
-  }
-};
+
+  // test(socket);
+}
 
 const checkUsername = (socket) => {
   const userName = document.querySelector(".login-username input")
@@ -36,6 +44,9 @@ const askForPassword = (socket, userName, nameIsAvailable) => {
   logPasswordBtn.addEventListener('click', () => {
     sendPassword(socket, nameIsAvailable);
   });
+  socket.on('wrongPass', () =>
+    alert("Mot de passe incorrect pour ce nom d'utilisateur")
+  );
 };
 
 const sendPassword = (socket, nameIsAvailable) => {
