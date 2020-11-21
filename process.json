@@ -1,7 +1,7 @@
 {
   "script": "lib/index.js",
   "watch": true,
-  "ignore_watch" : [
+  "ignore_watch": [
     "node_modules",
     "app",
     "dist",
@@ -15,6 +15,6 @@
     "webpack.*.js"
   ],
   "watch_options": {
-      "followSymlinks": false
+    "followSymlinks": false
   },
 }

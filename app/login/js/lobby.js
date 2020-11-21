@@ -1,7 +1,7 @@
 import { installPwa, onPwaInstalled } from './installation';
 import { hide, show } from './utils';
 
-export default function initListeners() {
+export default function initListeners(socket) {
   const lobbyWindow = document.querySelector('.lobby');
   const btnToGame = document.querySelectorAll('.lobby button')[1];
 
@@ -24,6 +24,7 @@ export default function initListeners() {
   }
 
   btnToGame.addEventListener("click", () => {
+    socket.emit('play');
     const logWindow = document.querySelector('.login');
     hide(lobbyWindow);
 

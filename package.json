@@ -4,7 +4,9 @@
   "description": "Un jeu de tapisserie en ligne",
   "scripts": {
     "test": "node lib/index.js",
-    "start": "pm2 start process.json && pm2 logs",
+    "start": "pm2 start ecosystem.config.js && pm2 logs",
+    "debug:mnio": "set DEBUG=mnio & node lib/index",
+    "debug:session": "set DEBUG=express-session & node lib/index",
     "dev:login": "SET NODE_ENV=dev && webpack --config webpack.login.config.js",
     "prod:login": "webpack --config webpack.login.config.js",
     "dev:palette": "SET NODE_ENV=dev && webpack --config webpack.palette.config.js",
@@ -14,8 +16,6 @@
     "dev:gallery": "SET NODE_ENV=dev && webpack --config webpack.gallery.config.js",
     "prod:gallery": "webpack --config webpack.gallery.config.js",
     "prod:all": "npm run prod:login && npm run prod:palette && npm run prod:game",
-    "reload": "pm2 reload lib/index.js",
-    "stop": "pm2 stop lib/index.js",
     "clean": "node data/cleaner.js",
     "build": "docker-compose up --build"
   },
@@ -26,6 +26,7 @@
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
     "core-js": "^3.6.5",
+    "debug": "^4.3.1",
     "express": "^4.17.1",
     "express-mysql-session": "^2.1.4",
     "express-session": "^1.17.1",

@@ -7,6 +7,9 @@ import io from 'socket.io-client';
 
 const socket = io('/palette');
 
+socket.on('redirect', path =>
+  window.location = path)
+
 const initPaletteSelection = () => {
   changeTapestry();
 

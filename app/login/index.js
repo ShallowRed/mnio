@@ -10,11 +10,15 @@ import listenLogin from './js/login';
 import registerServiceWorker from './js/registerServiceWorker';
 import initLobby from './js/lobby';
 
-initLobby();
-registerServiceWorker();
 const socket = io('/login');
+initLobby(socket);
+registerServiceWorker();
 listenLogin(socket);
 
 socket.on('loginSuccess', isPlayerNew => {
   window.location = isPlayerNew ? "./palette" : "./game";
+});
+
+socket.on('redirect', path => {
+  window.location = path;
 });
