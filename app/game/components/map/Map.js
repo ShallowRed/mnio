@@ -119,12 +119,6 @@ export default class Map {
     setMasksSize();
   }
 
-  translate(GAME, animated) {
-    translate.master(GAME, animated);
-    if (animated)
-      translate.canvas(GAME);
-  }
-
   render(GAME) {
     const { is } = GAME.PLAYER;
     const { ctx, canvas, cellSize } = this;
@@ -158,6 +152,12 @@ export default class Map {
         GAME.Cell.render.color(position, GAME)
       )
   }
+
+  translate(GAME, animated) {
+    translate.master(GAME, animated);
+    if (animated)
+      translate.canvas(GAME);
+  }
 }
 
 const translate = {
@@ -174,20 +174,32 @@ const translate = {
       height
     } = MAP;
 
-    master.style.transitionDuration = `${(animated) ? duration : 0}s`;
+    master.style.transitionDuration = `${animated ? duration : 0}s`;
 
-    master.style.marginTop = `${
-      is.up ? margin.top :
-      is.down ? windowHeight - height - margin.bottom :
-      ratio ? Math.round((windowHeight - height) / 2) : 0
-    }px`;
+    /////////////// PROBLEM HERE
 
+    const masterMargin = {
+      top: is.up ?
+        margin.top : is.down ?
+        windowHeight - height - margin.bottom : ratio ?
+        Math.round((windowHeight - height) / 2) : 0,
 
-    master.style.marginLeft = `${
-      is.left ? margin.left :
-      is.right ? windowWidth - width - margin.right :
-      ratio ? 0 : Math.round((windowWidth - width) / 2)
-    }px`;
+      left: is.left ?
+        margin.left : is.right ?
+        windowWidth - width -
+        margin.right : ratio ?
+        0 : Math.round((windowWidth - width) / 2)
+    }
+
+    master.style.marginTop = `${margin.top}px`;
+    master.style.marginLeft = `${windowWidth - width -
+    margin.right}px`;
+
+    // master.style.marginLeft = `${masterMargin.left}px`;
+    // master.style.marginLeft = `${masterMargin.left}px`;
+
+    // master.style.marginLeft = `${masterMargin.left}px`;
+    // master.style.marginLeft = `${masterMargin.left}px`;
 
   },
 
