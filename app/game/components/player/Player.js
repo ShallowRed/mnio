@@ -57,8 +57,8 @@ export default class Player {
       halfHeight; // map rowcol even
     // Math.floor(halfHeight) ; // map rowcol uneven
     // Math.floor(halfHeight) + 1; // map rowcol uneven
-
-    console.log("Pos in view :", [this.posInView.x, this.posInView.y]);
+    console.log("Player pos  :", this.coord[1]);
+    console.log("Pos in view :", this.posInView.y);
     console.log("Player is   :", this.is);
   }
 

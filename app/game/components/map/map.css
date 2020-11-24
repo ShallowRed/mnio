@@ -3,11 +3,11 @@
   position: relative;
   background: white;
   box-sizing: border-box;
-  outline: solid 3px red;
+  /* outline: solid 3px red; */
 }
 
 .mapcanvas {
-  outline: solid 5px blue;
+  /* outline: solid 5px blue; */
   overflow: hidden;
   position: absolute;
   transition-timing-function: ease;

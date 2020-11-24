@@ -46,7 +46,7 @@ export default class Map {
       this.ratio = (windowWidth > windowHeight);
 
       if (this.ratio) {
-        this.sMargin = Math.round(0.05 * windowWidth);
+        this.sMargin = Math.round(0.02 * windowWidth);
         this.lMargin = Math.round(0.1 * windowWidth);
         this.width = windowWidth - this.lMargin - this.sMargin;
         this.height = windowHeight - this.sMargin * 2;
@@ -172,53 +172,38 @@ export default class Map {
 
     this.mapShift = this.getShift(Player);
 
-    if (
-      isGoing("right") &&
-      x !== Math.floor(cols / 2) + 1
-    ) {
+    if (isGoing("right")) {
       if (x == cols - halfWidth + 1)
         this.mapShift.left = 0;
-      else if (x > halfWidth)
+      else if (x > halfWidth && x !== Math.floor(cols / 2) + 1)
         this.mapShift.left = -1;
     }
 
-    else if (
-      isGoing("left") &&
-      x !== Math.floor(cols / 2)
-    ) {
+    else if (isGoing("left")) {
       if (x == cols - halfWidth)
         this.mapShift.left = -1;
-      else if (x < cols - halfWidth)
+      else if (x < cols - halfWidth && x !== Math.floor(cols / 2))
         this.mapShift.left = 1;
     }
 
-    else if (isGoing("down") &&
-      y !== Math.floor(rows / 2) + 1
-    ) {
+    else if (isGoing("down")) {
       if (y == rows - halfHeight + 1)
         this.mapShift.top = 0;
-      else if (y > halfHeight)
+      else if (y > halfHeight && y !== Math.floor(rows / 2) + 1)
         this.mapShift.top = -1;
     }
 
-    else if (
-      isGoing("up") &&
-      y !== Math.floor(rows / 2)
-    ) {
+    else if (isGoing("up")) {
       if (y == rows - halfHeight)
         this.mapShift.top = -1;
-      else if (y < rows - halfHeight)
+      else if (y < rows - halfHeight && y !== Math.floor(rows / 2))
         this.mapShift.top = 1;
     }
 
     this.translateCanvas(duration);
 
     // console.log("Map rowCols :", [this.cols, this.rows]);
-    console.log("Map half    :", this.half);
-    console.log("Player pos  :", Player.coord);
-    console.log(y);
-    console.log(y == rows - halfHeight);
-
+    // console.log("Map half    :", this.half[1]);
   }
 
   getShift(Player) {
