@@ -5,42 +5,42 @@ const Cell = {
 
   render: {
 
-    clear: (position, GAME) => {
-      const coord = check(position, GAME);
+    clear: (position, Game) => {
+      const coord = check(position, Game);
       if (!coord) return;
-      const { ctx, cellSize } = GAME.MAP;
+      const { ctx, cellSize } = Game.Map;
       fillCell(coord, cellSize, ctx[2], null);
     },
 
-    color: (position, GAME) => {
-      const coord = check(position, GAME);
+    color: (position, Game) => {
+      const coord = check(position, Game);
       if (!coord) return;
-      const { colors, MAP: { ctx, cellSize } } = GAME;
+      const { colors, Map: { ctx, cellSize } } = Game;
       fillCell(coord, cellSize, ctx[1], `#${colors[position]}`);
     },
 
-    allowed: (position, GAME) => {
-      const coord = check(position, GAME);
+    allowed: (position, Game) => {
+      const coord = check(position, Game);
       if (!coord) return;
-      const { ctx, cellSize } = GAME.MAP;
+      const { ctx, cellSize } = Game.Map;
       fillCell(coord, cellSize, ctx[0], '#e9e9e9');
     },
 
-    position: (position, GAME) => {
-      const coord = check(position, GAME);
+    position: (position, Game) => {
+      const coord = check(position, Game);
       if (!coord) return;
-      const { ctx, cellSize, shift } = GAME.MAP;
+      const { ctx, cellSize, shift } = Game.Map;
       roundSquare(coord, cellSize, ctx[2], shift);
     }
   },
 
-  fillAnimation(position, GAME) {
-    const [x, y] = check(position, GAME);
+  fillAnimation(position, Game) {
+    const [x, y] = check(position, Game);
     const {
       flag,
-      PLAYER: { sColor },
-      MAP: { lw, cellSize, ctx: [, ctx] }
-    } = GAME;
+      Player: { sColor },
+      Map: { lw, cellSize, ctx: [, ctx] }
+    } = Game;
 
     flag.fill = true;
     ctx.lineWidth = lw;
@@ -49,8 +49,8 @@ const Cell = {
     const initCoord = {
       divx: 0,
       divy: 0,
-      x: cellSize * y,
-      y: cellSize * (x + 1)
+      x: cellSize * x,
+      y: cellSize * (y + 1)
     };
 
     fillFrame(flag, initCoord, { ctx, lw, cellSize, sColor });

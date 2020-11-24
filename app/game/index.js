@@ -11,7 +11,7 @@ import './components/ui/ui.css';
 
 import io from 'socket.io-client';
 
-import Tutoriel from './tutoriel/tutoriel';
+// import Tutoriel from './tutoriel/tutoriel';
 
 import Game from './Game';
 

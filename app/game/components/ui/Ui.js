@@ -24,8 +24,8 @@ export default class Ui {
 
   }
 
-  render(MAP) {
-    const { lMargin, ratio, windowWidth, windowHeight, margin } = MAP;
+  render(Map) {
+    const { lMargin, ratio, windowWidth, windowHeight, margin } = Map;
 
     this.btns.forEach(btn => {
       btn.style.height = lMargin + "px";

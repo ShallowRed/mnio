@@ -1,6 +1,6 @@
-export default (GAME) => {
+export default (Game) => {
 
-  const { flag, MAP: { master } } = GAME;
+  const { flag, Map: { master } } = Game;
 
   master.addEventListener('touchstart', event =>
     touchStart(event, flag),
@@ -8,7 +8,7 @@ export default (GAME) => {
   );
 
   master.addEventListener('touchmove', event =>
-    touchMove(event, flag, GAME),
+    touchMove(event, flag, Game),
     false
   );
 
@@ -39,7 +39,7 @@ const touchEnd = (evt, flag) => {
   Touch.lastdir = null;
 }
 
-const touchMove = (evt, flag, GAME) => {
+const touchMove = (evt, flag, Game) => {
   let { start, direction, delta, lastdir } = Touch;
 
   if (!start[0] || !start[1]) return;
@@ -67,19 +67,19 @@ const touchMove = (evt, flag, GAME) => {
     (Math.abs(delta[0]) < 50 && Math.abs(delta[1]) < 50)
   ) return
 
-  GAME.moveAttempt(direction);
+  Game.moveAttempt(direction);
   start = [evt.touches[0].clientX, evt.touches[0].clientY];
   lastdir = direction;
-  keepMoving(GAME, flag);
+  keepMoving(Game, flag);
 }
 
-const keepMoving = (GAME, flag) =>
+const keepMoving = (Game, flag) =>
   setInterval(() => {
     if (
       flag.moveCallback &&
       !flag.translate &&
       flag.input
-    ) GAME.moveAttempt(Touch.direction);
+    ) Game.moveAttempt(Touch.direction);
     if (!flag.input)
       clearInterval(keepMoving);
   }, 50);

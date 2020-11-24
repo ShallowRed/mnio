@@ -1,65 +1,65 @@
 let isAltPressed = false;
 
-export default (GAME) => {
+export default (Game) => {
   document.addEventListener('keydown', event => {
 
     if (event.code == "AltLeft")
       isAltPressed = true;
 
     if (
-      GAME.flag.translate ||
-      !GAME.flag.moveCallback ||
-      GAME.flag.input
+      Game.flag.translate ||
+      !Game.flag.moveCallback ||
+      Game.flag.input
     ) return;
 
-    onKeyDown(event, GAME)
+    onKeyDown(event, Game)
   });
 
   document.addEventListener('keyup', event => {
     if (event.code == "AltLeft")
       isAltPressed = false;
-    GAME.flag.input = false;
+    Game.flag.input = false;
   });
 };
 
-const onKeyDown = (event, GAME) => {
+const onKeyDown = (event, Game) => {
 
   switch (event.code) {
 
     case "Space":
-      GAME.fill();
+      Game.fill();
       break;
 
     case "KeyW":
-      GAME.zoom("in");
+      Game.zoom("in");
       break;
 
     case "KeyS":
-      if(isAltPressed) GAME.zoom("out");
+      if(isAltPressed) Game.zoom("out");
       break;
 
     case "ControlLeft":
-      GAME.selectColor("next");
+      Game.selectColor("next");
       break;
 
     case "ShiftLeft":
-      GAME.selectColor("prev");
+      Game.selectColor("prev");
       break;
 
     case "ArrowLeft":
-      GAME.moveAttempt("left");
+      Game.moveAttempt("left");
       break;
 
     case "ArrowUp":
-      GAME.moveAttempt("up");
+      Game.moveAttempt("up");
       break;
 
     case "ArrowRight":
-      GAME.moveAttempt("right");
+      Game.moveAttempt("right");
       break;
 
     case "ArrowDown":
-      GAME.moveAttempt("down");
+      Game.moveAttempt("down");
       break;
   }
 };

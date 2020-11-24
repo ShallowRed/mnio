@@ -17,11 +17,11 @@ export default class Game {
   constructor(data, socket) {
     this.duration = 0.2;
     this.socket = socket;
-    Object.assign(this, data.GAME);
+    Object.assign(this, data.Game);
     this.flag = new Flag();
-    this.MAP = new Map();
-    this.PLAYER = new Player(data.PLAYER);
-    this.UI = new Ui();
+    this.Map = new Map();
+    this.Player = new Player(data.Player);
+    this.Ui = new Ui();
     this.Cell = Cell;
 
     this.selectColor(0);
@@ -45,20 +45,20 @@ export default class Game {
   }
 
   update() {
-    this.MAP.update();
-    this.MAP.setSize();
-    this.PLAYER.update(this);
-    this.UI.render(this.MAP);
+    this.Map.update();
+    this.Map.setSize();
+    this.Player.update(this);
+    this.Ui.render(this.Map);
   }
 
   render(animated) {
-    this.MAP.translate(this, animated);
-    this.PLAYER.render(this, animated);
-    !animated && this.MAP.render(this);
+    this.Map.translate(this, animated);
+    this.Player.render(this, animated);
+    !animated && this.Map.render(this);
   }
 
   moveAttempt(direction) {
-    const { socket, flag, PLAYER: { position } } = this;
+    const { socket, flag, Player: { position } } = this;
 
     if (!flag.moveCallback || flag.translate) return;
     socket.emit('move', direction);
@@ -70,15 +70,16 @@ export default class Game {
   }
 
   newPlayerPos(position, direction) {
-    this.PLAYER.update(this, position, direction);
+
+    this.Player.update(this, position, direction);
     this.flag.translate = true;
     this.render(true);
     translationTimeout(this);
   }
 
   selectColor(index) {
-    const { sColor, palette } = this.PLAYER;
-    
+    const { sColor, palette } = this.Player;
+
     const next =
       index == "next" ? 1 :
       index == "prev" ? palette.length - 1 :
@@ -86,13 +87,13 @@ export default class Game {
 
     index = (palette.indexOf(sColor) + next) % palette.length;
 
-    this.PLAYER.setColor(index);
-    this.UI.focusColorBtn(index);
+    this.Player.setColor(index);
+    this.Ui.focusColorBtn(index);
   }
 
   fill() {
     const { socket, flag, owned, colors, Cell } = this;
-    const { position, sColor } = this.PLAYER;
+    const { position, sColor } = this.Player;
     if (!flag.fillCallback || flag.fill) return;
 
     if (!owned.includes(position))
@@ -103,24 +104,24 @@ export default class Game {
     colors[position] = color;
     socket.emit("fill", { position, color });
     flag.fillCallback = false;
-    this.PLAYER.stamp();
+    this.Player.stamp();
   }
 
   zoom(dir) {
-    const { flag, UI, MAP } = this;
+    const { flag, Ui, Map } = this;
     if (!flag.ok()) return;
 
-    UI.focusZoomBtn(dir, true);
+    Ui.focusZoomBtn(dir, true);
 
     setTimeout(() =>
-      UI.focusZoomBtn(dir, false), 100);
+      Ui.focusZoomBtn(dir, false), 100);
 
     if (dir == "in") {
-      MAP.rows -= 2;
-      MAP.cols -= 2;
+      Map.rows -= 2;
+      Map.cols -= 2;
     } else {
-      MAP.rows += 2;
-      MAP.cols += 2;
+      Map.rows += 2;
+      Map.cols += 2;
     }
 
     this.renderAll();

@@ -29,7 +29,7 @@ const APP = {
   isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 };
 
-APP.init = GAME => {
+APP.init = Game => {
   APP.gameList.style.display = "none";
   APP.menu.style.display = "flex";
   APP.gallery.style.display = "flex";
@@ -42,7 +42,7 @@ APP.init = GAME => {
   APP.ctx.imageSmoothingEnabled = false;
   APP.ctx2.imageSmoothingEnabled = false;
 
-  Object.keys(GAME).forEach(p => APP[p] = GAME[p]);
+  Object.keys(Game).forEach(p => APP[p] = Game[p]);
 
   Object.keys(toggle).forEach(prop => {
     const switchBtn = APP.switch[prop];
@@ -52,7 +52,7 @@ APP.init = GAME => {
   update(APP)
   TL.init(APP);
   if (!APP.isMobile) {
-    DV.init(APP, GAME);
+    DV.init(APP, Game);
     mode.dataviz.off();
     mode.timelapse.off();
   } else {

@@ -1,38 +1,41 @@
-const posinview = (position, PLAYER, { rows, cols }, MAP) => {
-  let [x, y] = indextocoord(position, { rows, cols });
-  if (PLAYER.is.down)
-    x -= cols - MAP.cols;
-  else if (!PLAYER.is.up)
-    x -= PLAYER.coord[0] - MAP.half[0];
-  if (PLAYER.is.right)
-    y -= rows - MAP.rows;
-  else if (!PLAYER.is.left)
-    y -= PLAYER.coord[1] - MAP.half[1];
-  return [x, y];
-}
-
-const check = (position, GAME) => {
-  const { PLAYER, MAP, rows, cols } = GAME;
-  let [x, y] = posinview(position, PLAYER, { rows, cols }, MAP);
+const check = (position, Game) => {
+  const { Player, Map, rows, cols } = Game;
+  const [x, y] = posInView(position, Player, { rows, cols }, Map);
 
   if (
     x >= 0 &&
-    x <= MAP.cols &&
+    x <= Map.cols + 1 &&
     y >= 0 &&
-    y <= MAP.rows
+    y <= Map.rows + 1
   ) return [x, y];
 }
 
-const indextocoord = (index, { rows, cols }) => {
-  const coordx = (index - (index % rows)) / cols;
-  const coordy = (index % cols);
-  return [coordx, coordy];
+const posInView = (position, Player, { rows, cols }, Map) => {
+  const [x, y] = Player.coord; // player absolute pos
+  const { is } = Player;
+  let [ax, ay] = indextocoord(position, { cols }); // absolute pos
+  const shift = {
+    top: is.up ? 0 : is.down ? 2 : 1,
+    left: is.left ? 0 : is.right ? 2 : 1
+  }
+  return [
+    ax - x + Player.posInView.x + shift.left,
+    ay - y + Player.posInView.y + shift.top
+  ];
 }
 
-const coordtoindex = (coord, { rows }) => {
-  let index = rows * coord[0] + coord[1];
-  return index;
+const indextocoord = (index, { cols }) => {
+  const x = index % cols;
+  const y = (index - x) / cols;
+  return [x, y];
 }
+
+const coordtoindex = ([x, y], { cols }) => {
+  return cols * y + x;
+}
+
+// console.log(indextocoord(13, {cols: 5})); // return [3, 2]
+// console.log(coordtoindex([3, 2], {cols: 5})); // return 13
 
 export {
   check,

@@ -1,17 +1,17 @@
-const translationTimeout = (GAME, start = Date.now()) => {
-  const { MAP, flag, duration } = GAME;
+const translationTimeout = (Game, start = Date.now()) => {
+  const { Map, flag, duration } = Game;
 
   const delta = (Date.now() - start) / 1000;
   const delay = duration * (flag.fill ? 2.5 : 1);
 
   if (delta >= delay) {
-    MAP.render(GAME);
+    Map.render(Game);
     flag.translate = false;
     return;
   }
 
   window.requestAnimationFrame(() =>
-    translationTimeout(GAME, start)
+    translationTimeout(Game, start)
   );
 };
 

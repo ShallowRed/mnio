@@ -1,14 +1,14 @@
 const fillCell = ([x, y], cellSize, ctx, color) => {
-  ctx.clearRect(cellSize * y, cellSize * x, cellSize, cellSize);
+  ctx.clearRect(cellSize * x, cellSize * y, cellSize, cellSize);
   if (!color) return;
   ctx.fillStyle = color;
-  ctx.fillRect(cellSize * y, cellSize * x, cellSize, cellSize);
+  ctx.fillRect(cellSize * x, cellSize * y, cellSize, cellSize);
 };
 
 const roundSquare = ([x, y], cellSize, ctx, shift) => {
   roundRect(ctx, {
-    x: cellSize * y + shift * 1.5,
-    y: cellSize * x + shift * 1.5,
+    x: cellSize * x + shift * 1.5,
+    y: cellSize * y + shift * 1.5,
     width: cellSize - shift * 3,
     height: cellSize - shift * 3,
     radius: shift

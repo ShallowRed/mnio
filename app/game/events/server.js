@@ -1,48 +1,48 @@
 import Cell from '../components/Cell';
 
-export default (GAME) => {
+export default (Game) => {
   for (const [eventName, callback] of serverEvents) {
-    GAME.socket.on(eventName, (data) =>
-      callback(GAME, data)
+    Game.socket.on(eventName, (data) =>
+      callback(Game, data)
     );
   }
 }
 
 const serverEvents = Object.entries({
 
-  newPlayerPos(GAME, newPosition) {
-    if (newPosition !== GAME.PLAYER.position) {
-      GAME.newPlayerPos(newPosition);
+  newPlayerPos(Game, newPosition) {
+    if (newPosition !== Game.Player.position) {
+      Game.newPlayerPos(newPosition);
     }
   },
 
-  newPosition(GAME, position) {
-    const { positions } = GAME;
+  newPosition(Game, position) {
+    const { positions } = Game;
     if (position[0]) {
       positions.splice(positions.indexOf(position[0]), 1);
-      Cell.render.clear(position[0], GAME);
+      Cell.render.clear(position[0], Game);
     }
 
     if (position[1]) {
       positions.push(position[1]);
-      Cell.render.position(position[1], GAME);
+      Cell.render.position(position[1], Game);
     }
   },
 
-  newFill(GAME, { position, color }) {
-    const { colors } = GAME;
+  newFill(Game, { position, color }) {
+    const { colors } = Game;
 
     colors[position] = color;
-    Cell.render.color(position, GAME);
+    Cell.render.color(position, Game);
   },
 
-  allowedCells(GAME, cells) {
-    const { allowed } = GAME;
+  allowedCells(Game, cells) {
+    const { allowed } = Game;
 
     cells.forEach(position => {
       if (allowed.includes(position)) return;
       allowed.push(position);
-      Cell.render.allowed(position, GAME);
+      Cell.render.allowed(position, Game);
     });
   },
 

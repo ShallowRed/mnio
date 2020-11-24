@@ -1,6 +1,6 @@
-export default (GAME) => {
-    const { flag, UI } = GAME;
-    const { tuto } = UI;
+export default (Game) => {
+    const { flag, Ui } = Game;
+    const { tuto } = Ui;
 
     tuto.openBtn.addEventListener("click", () => {
       show(tuto.window);
@@ -16,27 +16,27 @@ export default (GAME) => {
       flag.tuto = false;
     });
 
-    UI.colorBtns.forEach((colorBtn, i) => {
+    Ui.colorBtns.forEach((colorBtn, i) => {
 
-      colorBtn.style.background = GAME.PLAYER.palette[i];
+      colorBtn.style.background = Game.Player.palette[i];
 
       colorBtn.addEventListener("click", () => {
         if (!flag.ok()) return;
-        GAME.selectColor(i);
-        GAME.fill();
+        Game.selectColor(i);
+        Game.fill();
       });
 
       colorBtn.addEventListener("touchstart", (event) => {
         event.preventDefault();
         if (!flag.ok()) return;
-        GAME.selectColor(i);
-        GAME.fill();
+        Game.selectColor(i);
+        Game.fill();
       });
     });
 
-    for (const [direction, btn] of Object.entries(UI.zoom)) {
+    for (const [direction, btn] of Object.entries(Ui.zoom)) {
       btn.addEventListener("click", () => {
-        GAME.zoom(direction)
+        Game.zoom(direction)
       });
     }
 

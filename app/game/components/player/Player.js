@@ -17,9 +17,10 @@ export default class Player {
       .imageSmoothingEnabled = false;
   }
 
-  update(GAME, position, direction) {
-    const { rows, cols, MAP } = GAME;
-    const { half: [halfWidth, halfHeight] } = MAP;
+  update(Game, position, direction) {
+    console.log("-----------------------------------------");
+    const { rows, cols, Map } = Game;
+    const { half: [halfWidth, halfHeight] } = Map;
 
     if (position)
       this.position = position;
@@ -29,23 +30,40 @@ export default class Player {
     this.coord = indextocoord(this.position, { rows, cols });
     const [x, y] = this.coord;
 
-    this.is.up = x < halfWidth;
-    this.is.down = x > cols - halfWidth;
-    this.is.left = y < halfHeight;
-    this.is.right = y > rows - halfHeight;
+    this.is.up = y < halfHeight;
+    this.is.down = y > rows - halfHeight;
+    this.is.centerUp = y < rows / 2;
+    this.is.centerDown = y >= rows / 2;
+    this.is.left = x < halfWidth;
+    this.is.right = x > cols - halfWidth;
+    this.is.centerLeft = x < cols / 2;
+    this.is.centerRight = x >= cols / 2;
 
-    this.posInView.x = this.is.up ?
-      x : this.is.down ?
-      x + MAP.cols - cols - 2 : halfWidth - 1;
+    this.posInView.x = this.is.left ?
+      x :
+      this.is.right ?
+      x + Map.cols - cols :
+      this.is.centerLeft ?
+      halfWidth - 1 :
+      halfWidth;
 
-    this.posInView.y = this.is.left ?
-      y : this.is.right ?
-      y + MAP.rows - rows - 2 : halfHeight - 1;
+    this.posInView.y =
+      this.is.up ?
+      y :
+      this.is.down ?
+      y + Map.rows - rows :
+      this.is.centerUp ?
+      halfHeight - 1 : // map rowcol even
+      halfHeight; // map rowcol even
+    // Math.floor(halfHeight) ; // map rowcol uneven
+    // Math.floor(halfHeight) + 1; // map rowcol uneven
 
+    console.log("Pos in view :", [this.posInView.x, this.posInView.y]);
+    console.log("Player is   :", this.is);
   }
 
-  render(GAME, animated) {
-    const { MAP: { cellSize, shift }, duration } = GAME;
+  render(Game, animated) {
+    const { Map: { cellSize, shift }, duration } = Game;
     const { canvas, posInView } = this;
 
     setPositioninView(canvas, posInView, cellSize, shift, animated, duration);
@@ -81,8 +99,8 @@ const setPositioninView = (canvas, posInView, cellSize, shift, animated,
   duration) => {
   canvas.forEach(canvas => {
     canvas.style.transitionDuration = `${animated ? duration : 0}s`;
-    canvas.style.top = posInView.x * cellSize + shift + 'px';
-    canvas.style.left = posInView.y * cellSize + shift + 'px';
+    canvas.style.left = posInView.x * cellSize + shift + 'px';
+    canvas.style.top = posInView.y * cellSize + shift + 'px';
   });
 };
 

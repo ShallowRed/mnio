@@ -1,17 +1,17 @@
 import { indextocoord, coordtoindex } from './utils';
 
-export default (dir, position, GAME) => {
-  const { rows, cols, owned, allowed, colors, positions } = GAME;
+export default (dir, position, Game) => {
+  const { rows, cols, owned, allowed, colors, positions } = Game;
 
-  let [x, y] = indextocoord(position, { rows, cols });
+  let [x, y] = indextocoord(position, { cols });
 
-  if (dir == "up" && x !== 0) x--;
-  else if (dir == "down" && x !== cols - 1) x++;
-  else if (dir == "left" && y !== 0) y--;
-  else if (dir == "right" && y !== rows - 1) y++;
+  if (dir == "left" && x !== 0) x--;
+  else if (dir == "right" && x !== cols - 1) x++;
+  else if (dir == "up" && y !== 0) y--;
+  else if (dir == "down" && y !== rows - 1) y++;
   else return;
 
-  let nextpos = coordtoindex([x, y], { rows });
+  let nextpos = coordtoindex([x, y], { cols });
 
   if (
     owned.includes(nextpos) ||
