@@ -5,21 +5,13 @@ export default class Map {
     this.startcells = 10;
     this.mincells = 5;
     this.margin = {};
-
     this.master = document.getElementById('master');
     this.canvas = document.querySelectorAll('.mapcanvas');
-
-    this.masks = {
-      top: document.getElementById('topmask'),
-      bottom: document.getElementById('bottommask'),
-      right: document.getElementById('rightmask'),
-      left: document.getElementById('leftmask')
-    };
-
-    this.ctx = Array.from(this.canvas)
-      .map(canvas => canvas.getContext('2d'));
-
-    this.ctx.forEach(ctx => ctx.imageSmoothingEnabled = false);
+    this.ctx = [...this.canvas].map(canvas => {
+      const context = canvas.getContext('2d');
+      context.imageSmoothingEnabled = false;
+      return context;
+    });
   }
 
   update() {
@@ -75,21 +67,12 @@ export default class Map {
       }
     };
 
-    const ensureEven = () => {
-      if (this.rows % 2 == 0) {
-        this.rows++;
-      }
-      if (this.cols % 2 == 0) {
-        this.cols++;
-      }
-    };
-
     const setProps = () => {
       const { cols, rows, cellSize } = this;
-      this.half = [cols / 2, rows / 2];
-      this.lw = Math.round(cellSize / 6);
       this.height = cellSize * rows;
       this.width = cellSize * cols;
+      this.half = [Math.floor((cols - 1) / 2), Math.floor((rows - 1) / 2)];
+      this.lw = Math.round(cellSize / 6);
       this.shift = Math.round(cellSize / 8);
     };
 
@@ -97,62 +80,38 @@ export default class Map {
     ensureLimits();
     setDimensions();
     setRowColCell();
-    // ensureEven();
     setProps();
   }
 
   setSize() {
+    const { width, height, cellSize, margin } = this;
 
-    const setCanvasSize = () => {
-      const { width, height, cellSize, margin } = this;
+    this.master.style.width = `${width}px`;
+    this.master.style.height = `${height}px`;
+    this.master.style.marginTop = `${margin.top}px`;
+    this.master.style.marginLeft = `${margin.left}px`;
 
-      this.master.style.width = `${width}px`;
-      this.master.style.height = `${height}px`;
-      this.master.style.marginTop = `${margin.top}px`;
-      this.master.style.marginLeft = `${margin.left}px`;
-
-      this.canvas.forEach(c => {
-        // c.width = width;
-        c.width = width + cellSize * 2;
-        // c.height = height;
-        c.height = height + cellSize * 2;
-        c.style.top = `-${cellSize}px`;
-        c.style.left = `-${cellSize}px`;
-      });
-    };
-
-    const setMasksSize = () => {
-      const { margin } = this;
-      this.masks.top.style.height = `${margin.top}px`;
-      this.masks.bottom.style.height = `${margin.bottom}px`;
-      this.masks.left.style.width = `${margin.left}px`;
-      this.masks.right.style.width = `${margin.right}px`;
-    };
-
-    setCanvasSize();
-    setMasksSize();
+    this.canvas.forEach(c => {
+      c.width = width + cellSize * 2;
+      c.height = height + cellSize * 2;
+      c.style.top = `-${cellSize}px`;
+      c.style.left = `-${cellSize}px`;
+    });
   }
 
   render(Game) {
-
+    this.resetShift();
+    this.translateCanvas(0)
     this.ctx.forEach(ctx =>
       ctx.clearRect(0, 0, this.canvas[1].width, this.canvas[1].height)
     );
 
-    const { is } = Game.Player;
-
-    this.mapShift = this.getShift(Game.Player);
-
-    this.translateCanvas(0)
-
     Game.allowed.forEach(position =>
       Game.Cell.render.allowed(position, Game)
     );
-
     Game.positions.forEach(position =>
       Game.Cell.render.position(position, Game)
     );
-
     Game.colors.map((color, i) => color ? i : null)
       .filter(color => color)
       .forEach((position) =>
@@ -162,64 +121,59 @@ export default class Map {
 
   translate(Game, animated) {
     if (!animated) return;
-
-    const { Player, Map, cols, rows, duration } = Game;
-    const { coord: [x, y], is, lastdir } = Player;
-    const { half: [halfWidth, halfHeight] } = Map;
-
-    const isGoing = direction =>
-      lastdir == direction;
-
-    this.mapShift = this.getShift(Player);
-
-    if (isGoing("right")) {
-      if (x == cols - halfWidth + 1)
-        this.mapShift.left = 0;
-      else if (x > halfWidth && x !== Math.floor(cols / 2) + 1)
-        this.mapShift.left = -1;
-    }
-
-    else if (isGoing("left")) {
-      if (x == cols - halfWidth)
-        this.mapShift.left = -1;
-      else if (x < cols - halfWidth && x !== Math.floor(cols / 2))
-        this.mapShift.left = 1;
-    }
-
-    else if (isGoing("down")) {
-      if (y == rows - halfHeight + 1)
-        this.mapShift.top = 0;
-      else if (y > halfHeight && y !== Math.floor(rows / 2) + 1)
-        this.mapShift.top = -1;
-    }
-
-    else if (isGoing("up")) {
-      if (y == rows - halfHeight)
-        this.mapShift.top = -1;
-      else if (y < rows - halfHeight && y !== Math.floor(rows / 2))
-        this.mapShift.top = 1;
-    }
-
-    this.translateCanvas(duration);
-
-    // console.log("Map rowCols :", [this.cols, this.rows]);
-    // console.log("Map half    :", this.half[1]);
-  }
-
-  getShift(Player) {
-    const { is } = Player;
-    return {
-      top: is.up ? 1 : is.down ? -1 : 0,
-      left: is.left ? 1 : is.right ? -1 : 0
-    };
+    this.setTranslationShift(Game.Player, Game);
+    this.translateCanvas(Game.duration, true);
   }
 
   translateCanvas(duration) {
-    console.log("map shift   :", this.mapShift);
     this.canvas.forEach(c => {
       c.style.transitionDuration = `${duration}s`;
       c.style.transform =
         `translate(${this.mapShift.left * this.cellSize}px, ${this.mapShift.top * this.cellSize}px)`;
     });
   }
-};
+
+  resetShift() {
+    this.mapShift = {
+      top: 0,
+      left: 0
+    };
+  }
+
+  setTranslationShift(Player, Game) {
+
+    const directions = Object.entries({
+      right: { key: "left", direction: -1, dimension: 0 },
+      left: { key: "left", direction: 1, dimension: 0 },
+      down: { key: "top", direction: -1, dimension: 1 },
+      up: { key: "top", direction: 1, dimension: 1 }
+    });
+
+    for (const [directionName, { key, direction, dimension }] of directions) {
+      if (
+        Player.lastdir == directionName &&
+        this.needTranslation(dimension, direction, Player, Game)
+      ) this.mapShift[key] = direction;
+    }
+  }
+
+  needTranslation(i, dir, Player, Game) {
+
+    const pX = Player.coord;
+    const gX = [Game.cols, Game.rows];
+    const hgX = gX.map(x => Math.floor(x / 2) + 1)
+    const mX = [this.cols, this.rows];
+    const hmX = this.half;
+    const shift = (dir + 1) / 2;
+
+    if (
+      pX[i] > hmX[i] - shift &&
+      pX[i] < gX[i] - hmX[i] - shift &&
+      (
+        pX[i] !== hgX[i] - shift ||
+        mX[i] % 2 !== 0
+      )
+    )
+      return true;
+  }
+}

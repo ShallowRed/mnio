@@ -10,17 +10,12 @@ const check = (position, Game) => {
   ) return [x, y];
 }
 
-const posInView = (position, Player, { rows, cols }, Map) => {
+const posInView = (position, Player, { cols }) => {
   const [x, y] = Player.coord; // player absolute pos
-  const { is } = Player;
   let [ax, ay] = indextocoord(position, { cols }); // absolute pos
-  const shift = {
-    top: is.up ? 0 : is.down ? 2 : 1,
-    left: is.left ? 0 : is.right ? 2 : 1
-  }
   return [
-    ax - x + Player.posInView.x + shift.left,
-    ay - y + Player.posInView.y + shift.top
+    ax - x + Player.posInView.x + 1,
+    ay - y + Player.posInView.y + 1
   ];
 }
 

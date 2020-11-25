@@ -7,68 +7,77 @@ export default class Player {
     this.sColor = palette[0];
     this.is = {};
     this.posInView = {};
-
     this.canvas = [
       document.getElementById('playercanvas'),
       document.getElementById('shadow')
     ];
-
     this.canvas[0].getContext('2d')
       .imageSmoothingEnabled = false;
   }
 
   update(Game, position, direction) {
-    console.log("-----------------------------------------");
-    const { rows, cols, Map } = Game;
-    const { half: [halfWidth, halfHeight] } = Map;
-
     if (position)
       this.position = position;
     if (direction)
       this.lastdir = direction;
 
-    this.coord = indextocoord(this.position, { rows, cols });
-    const [x, y] = this.coord;
+    this.coord = indextocoord(this.position, Game);
 
-    this.is.up = y < halfHeight;
-    this.is.down = y > rows - halfHeight;
-    this.is.centerUp = y < rows / 2;
-    this.is.centerDown = y >= rows / 2;
-    this.is.left = x < halfWidth;
-    this.is.right = x > cols - halfWidth;
-    this.is.centerLeft = x < cols / 2;
-    this.is.centerRight = x >= cols / 2;
+    const [pX, pY] = this.coord;
+    const [gX, gY] = [Game.cols, Game.rows];
+    const [mX, mY] = [Game.Map.cols, Game.Map.rows];
+    const [hmX, hmY] = Game.Map.half;
+    const [hgX, hgY] = [gX, gY].map(e => Math.floor(e / 2));
+    const [mXisEven, mYisEven] = [mX, mY].map(e => e % 2 == 0);
+    this.is.left = pX < hmX + 1;
+    this.is.right = pX > gX - hmX - 1;
+    this.is.up = pY < hmY + 1;
+    this.is.down = pY > gY - hmY - 1;
+    this.is.centerRight = pX > hgX && mXisEven;
+    this.is.centerDown = pY > hgY && mYisEven;
 
     this.posInView.x = this.is.left ?
-      x :
+      pX :
       this.is.right ?
-      x + Map.cols - cols :
-      this.is.centerLeft ?
-      halfWidth - 1 :
-      halfWidth;
+      pX + mX - gX :
+      this.is.centerRight ?
+      hmX + 1 :
+      hmX;
 
     this.posInView.y =
       this.is.up ?
-      y :
+      pY :
       this.is.down ?
-      y + Map.rows - rows :
-      this.is.centerUp ?
-      halfHeight - 1 : // map rowcol even
-      halfHeight; // map rowcol even
-    // Math.floor(halfHeight) ; // map rowcol uneven
-    // Math.floor(halfHeight) + 1; // map rowcol uneven
-    console.log("Player pos  :", this.coord[1]);
-    console.log("Pos in view :", this.posInView.y);
-    console.log("Player is   :", this.is);
+      pY + mY - gY :
+      this.is.centerDown ?
+      hmY + 1 :
+      hmY;
   }
 
   render(Game, animated) {
-    const { Map: { cellSize, shift }, duration } = Game;
-    const { canvas, posInView } = this;
-
-    setPositioninView(canvas, posInView, cellSize, shift, animated, duration);
+    const { Map, duration } = Game;
+    this.setPositioninView(Map, duration);
     if (!animated)
-      setSizeInView(canvas, cellSize, shift)
+      this.setSizeInView(Map)
+  }
+
+  setPositioninView({ cellSize, shift, animated }, duration) {
+    this.canvas.forEach(canvas => {
+      canvas.style.transitionDuration = `${animated ? duration : 0}s`;
+      canvas.style.left = this.posInView.x * cellSize + shift + 'px';
+      canvas.style.top = this.posInView.y * cellSize + shift + 'px';
+    });
+  }
+
+  setSizeInView({ cellSize, shift }) {
+    const { canvas } = this;
+    canvas[0].width = canvas[0].height = cellSize - shift * 4;
+    canvas[1].style.width = canvas[1].style.height =
+      `${cellSize - shift * 2 - 2}px`
+    canvas.forEach(c =>
+      c.style.borderRadius = `${shift}px`
+    );
+    canvas[0].style.borderWidth = `${shift}px`;
   }
 
   setColor(i) {
@@ -94,25 +103,3 @@ export default class Player {
     }, 100)
   }
 }
-
-const setPositioninView = (canvas, posInView, cellSize, shift, animated,
-  duration) => {
-  canvas.forEach(canvas => {
-    canvas.style.transitionDuration = `${animated ? duration : 0}s`;
-    canvas.style.left = posInView.x * cellSize + shift + 'px';
-    canvas.style.top = posInView.y * cellSize + shift + 'px';
-  });
-};
-
-const setSizeInView = (canvas, cellSize, shift) => {
-  canvas[0].width = canvas[0].height = cellSize - shift * 4;
-
-  canvas[1].style.width = canvas[1].style.height =
-    `${cellSize - shift * 2 - 2}px`
-
-  canvas.forEach(c =>
-    c.style.borderRadius = `${shift}px`
-  );
-
-  canvas[0].style.borderWidth = `${shift}px`;
-};
