@@ -32,7 +32,7 @@ const roundRect = (ctx, { x, y, width, height, radius }) => {
   ctx.stroke();
 };
 
-module.exports = {
+export {
   fillCell,
   roundSquare
 };

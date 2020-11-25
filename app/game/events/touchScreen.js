@@ -40,7 +40,7 @@ const touchEnd = (evt, flag) => {
 }
 
 const touchMove = (evt, flag, Game) => {
-  let { start, direction, delta, lastdir } = Touch;
+  let { start, delta } = Touch;
 
   if (!start[0] || !start[1]) return;
 
@@ -49,17 +49,17 @@ const touchMove = (evt, flag, Game) => {
     start[1] - evt.touches[0].clientY
   ];
 
-  direction = Math.abs(delta[0]) > Math.abs(delta[1]) ?
+  Touch.direction = Math.abs(delta[0]) > Math.abs(delta[1]) ?
     delta[0] > 0 ? "left" : "right" : delta[1] > 0 ? "up" :
     "down";
 
-  if (!lastdir) lastdir = direction;
+  if (!Touch.lastdir) Touch.lastdir = Touch.direction;
 
   if (
-    lastdir !== direction &&
+    Touch.lastdir !== Touch.direction &&
     Math.abs(delta[0]) < 50 &&
     Math.abs(Touch.delta[1]) < 5
-  ) direction = lastdir;
+  ) Touch.direction = Touch.lastdir;
 
   if (
     !flag.moveCallback ||
@@ -67,19 +67,18 @@ const touchMove = (evt, flag, Game) => {
     (Math.abs(delta[0]) < 50 && Math.abs(delta[1]) < 50)
   ) return
 
-  Game.moveAttempt(direction);
+  Game.moveAttempt(Touch.direction);
   start = [evt.touches[0].clientX, evt.touches[0].clientY];
-  lastdir = direction;
-  keepMoving(Game, flag);
-}
+  Touch.lastdir = Touch.direction;
 
-const keepMoving = (Game, flag) =>
-  setInterval(() => {
+  const keepMove = () => {
     if (
       flag.moveCallback &&
       !flag.translate &&
-      flag.input
+      flag.input && Touch.direction
     ) Game.moveAttempt(Touch.direction);
     if (!flag.input)
       clearInterval(keepMoving);
-  }, 50);
+  }
+  const keepMoving = setInterval(keepMove, 150);
+}

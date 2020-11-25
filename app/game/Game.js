@@ -70,7 +70,6 @@ export default class Game {
   }
 
   newPlayerPos(position, direction) {
-
     this.Player.update(this, position, direction);
     this.flag.translate = true;
     this.render(true);

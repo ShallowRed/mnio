@@ -70,9 +70,10 @@ const cssRules = {
 }
 
 module.exports = [
-  dev ? esLintRules : false,
+  esLintRules,
+  // dev ? esLintRules : false,
   !dev ? removeDebug : false,
-  // !dev ? babelRules : false,
+  !dev ? babelRules : false,
   ejsRules,
   cssRules
 ].filter(Boolean);
