@@ -56,12 +56,12 @@ export default class Player {
 
   render(Game, animated) {
     const { Map, duration } = Game;
-    this.setPositioninView(Map, duration);
+    this.setPositioninView(Map, duration, animated);
     if (!animated)
       this.setSizeInView(Map)
   }
 
-  setPositioninView({ cellSize, shift, animated }, duration) {
+  setPositioninView({ cellSize, shift }, duration, animated) {
     this.canvas.forEach(canvas => {
       canvas.style.transitionDuration = `${animated ? duration : 0}s`;
       canvas.style.left = this.posInView.x * cellSize + shift + 'px';

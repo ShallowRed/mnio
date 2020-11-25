@@ -79,13 +79,13 @@ export default class Game {
 
   selectColor(index) {
     const { sColor, palette } = this.Player;
-
     const next =
       index == "next" ? 1 :
       index == "prev" ? palette.length - 1 :
       null;
 
-    index = (palette.indexOf(sColor) + next) % palette.length;
+    if (next)
+      index = (palette.indexOf(sColor) + next) % palette.length;
 
     this.Player.setColor(index);
     this.Ui.focusColorBtn(index);
@@ -112,16 +112,15 @@ export default class Game {
     if (!flag.ok()) return;
 
     Ui.focusZoomBtn(dir, true);
-
     setTimeout(() =>
-      Ui.focusZoomBtn(dir, false), 100);
+      Ui.focusZoomBtn(dir, false), 200);
 
     if (dir == "in") {
-      Map.rows -= 2;
-      Map.cols -= 2;
+      Map.rows -= 1;
+      Map.cols -= 1;
     } else {
-      Map.rows += 2;
-      Map.cols += 2;
+      Map.rows += 1;
+      Map.cols += 1;
     }
 
     this.renderAll();

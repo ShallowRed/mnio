@@ -3,53 +3,14 @@
   position: relative;
   background: white;
   box-sizing: border-box;
-  /* outline: solid 3px red; */
 }
 
 .mapcanvas {
-  /* outline: solid 5px blue; */
   overflow: hidden;
   position: absolute;
   transition-timing-function: ease;
-}
 
-#canvas3 {
-  opacity: 0.5;
-}
-
-.mask {
-  display: none;
-  z-index: 30;
-  position: absolute;
-  background: var(--grey);
-}
-
-#topmask,
-#leftmask,
-#rightmask {
-  top: 0;
-}
-
-#topmask,
-#bottommask,
-#leftmask {
-  left: 0;
-}
-
-#topmask,
-#bottommask {
-  width: 100%;
-}
-
-#leftmask,
-#rightmask {
-  height: 100%;
-}
-
-#bottommask {
-  bottom: 0;
-}
-
-#rightmask {
-  right: 0;
+  &:last-of-type {
+    opacity: 0.5;
+  }
 }

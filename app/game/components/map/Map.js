@@ -1,9 +1,9 @@
 export default class Map {
 
   constructor() {
-    this.maxcells = 20;
-    this.startcells = 10;
-    this.mincells = 5;
+    this.maxcells = 40;
+    this.startcells = 20;
+    this.mincells = 10;
     this.margin = {};
     this.master = document.getElementById('master');
     this.canvas = document.querySelectorAll('.mapcanvas');
@@ -105,17 +105,17 @@ export default class Map {
     this.ctx.forEach(ctx =>
       ctx.clearRect(0, 0, this.canvas[1].width, this.canvas[1].height)
     );
-
+    const { render } = Game.Cell;
     Game.allowed.forEach(position =>
-      Game.Cell.render.allowed(position, Game)
+      render.allowed(position, Game)
     );
     Game.positions.forEach(position =>
-      Game.Cell.render.position(position, Game)
+      render.position(position, Game)
     );
     Game.colors.map((color, i) => color ? i : null)
       .filter(color => color)
       .forEach((position) =>
-        Game.Cell.render.color(position, Game)
+        render.color(position, Game)
       )
   }
 
@@ -157,22 +157,19 @@ export default class Map {
     }
   }
 
-  needTranslation(i, dir, Player, Game) {
+  needTranslation(i, direction, Player, Game) {
 
     const pX = Player.coord;
     const gX = [Game.cols, Game.rows];
     const hgX = gX.map(x => Math.floor(x / 2) + 1)
-    const mX = [this.cols, this.rows];
+    const mXisUneven = [this.cols, this.rows].map(e => e % 2 !== 0);
     const hmX = this.half;
-    const shift = (dir + 1) / 2;
+    const shift = (direction + 1) / 2;
 
     if (
       pX[i] > hmX[i] - shift &&
       pX[i] < gX[i] - hmX[i] - shift &&
-      (
-        pX[i] !== hgX[i] - shift ||
-        mX[i] % 2 !== 0
-      )
+      (pX[i] !== hgX[i] - shift || mXisUneven[i])
     )
       return true;
   }
