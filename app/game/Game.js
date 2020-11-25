@@ -130,12 +130,12 @@ class Flag {
   constructor() {
     this.fill = false;
     this.translate = false;
-    this.input = false;
+    this.touch = false;
     this.zoom = false;
     this.ok = () => (
       !this.translate &&
       !this.fill &&
-      !this.input &&
+      !this.touch &&
       !this.zoom &&
       !this.tuto
     );

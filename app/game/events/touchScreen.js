@@ -20,65 +20,90 @@ export default (Game) => {
 
 const Touch = {
   start: [null, null],
+  delta: [null, null],
   direction: null,
-  delta: null,
-}
+  lastdir: null,
+  limit: 80,
+
+  setOrigin(evt) {
+    this.start[0] = evt.touches[0].clientX;
+    this.start[1] = evt.touches[0].clientY
+  },
+
+  setLimit(amount = 50) {
+    this.limit = amount;
+  },
+
+  getDelta(evt) {
+    this.delta[0] = this.start[0] - evt.touches[0].clientX;
+    this.delta[1] = this.start[1] - evt.touches[0].clientY;
+  },
+
+  getDirection() {
+    const [deltaX, deltaY] = this.delta;
+    if (Math.abs(deltaX) > Math.abs(deltaY))
+      this.direction = deltaX > 0 ? "left" : "right"
+    else
+      this.direction = deltaY > 0 ? "up" : "down";
+  },
+
+  saveDirection() {
+    this.lastdir = this.direction;
+  },
+
+  useLastDir() {
+    this.direction = this.lastdir;
+  },
+
+  isSameDirection() {
+    return this.lastdir === this.direction;
+  },
+
+  isTooSmall() {
+    return Math.abs(Touch.delta[0]) < Touch.limit &&
+      Math.abs(Touch.delta[1]) < Touch.limit;
+  }
+};
 
 const touchStart = (evt, flag) => {
-  Touch.start = [
-    evt.touches[0].clientX,
-    evt.touches[0].clientY
-  ];
-  flag.input = true;
+  flag.touch = true;
+  Touch.setOrigin(evt);
 }
 
 const touchEnd = (evt, flag) => {
-  flag.input = false;
+  flag.touch = false;
+  Touch.setLimit();
   Touch.start = [null, null];
   Touch.direction = null;
   Touch.lastdir = null;
 }
 
 const touchMove = (evt, flag, Game) => {
-  let { start, delta } = Touch;
-
+  let { start, lastdir, } = Touch;
   if (!start[0] || !start[1]) return;
 
-  delta = [
-    start[0] - evt.touches[0].clientX,
-    start[1] - evt.touches[0].clientY
-  ];
-
-  Touch.direction = Math.abs(delta[0]) > Math.abs(delta[1]) ?
-    delta[0] > 0 ? "left" : "right" : delta[1] > 0 ? "up" :
-    "down";
-
-  if (!Touch.lastdir) Touch.lastdir = Touch.direction;
+  Touch.getDelta(evt);
+  Touch.getDirection();
+  if (!lastdir) Touch.saveDirection();
 
   if (
-    Touch.lastdir !== Touch.direction &&
-    Math.abs(delta[0]) < 50 &&
-    Math.abs(Touch.delta[1]) < 5
-  ) Touch.direction = Touch.lastdir;
+    !flag.moveCallback || flag.translate ||
+    Touch.isTooSmall()
+  ) return;
 
-  if (
-    !flag.moveCallback ||
-    flag.translate ||
-    (Math.abs(delta[0]) < 50 && Math.abs(delta[1]) < 50)
-  ) return
-
+  // console.log("moveAttempt", Touch.direction);
   Game.moveAttempt(Touch.direction);
-  start = [evt.touches[0].clientX, evt.touches[0].clientY];
-  Touch.lastdir = Touch.direction;
+  Touch.setOrigin(evt);
+  Touch.setLimit(20);
+  Touch.saveDirection();
 
-  const keepMove = () => {
+  const keepMoving = setInterval(() => {
     if (
       flag.moveCallback &&
       !flag.translate &&
-      flag.input && Touch.direction
+      flag.touch && Touch.direction
     ) Game.moveAttempt(Touch.direction);
-    if (!flag.input)
+    if (!flag.touch)
       clearInterval(keepMoving);
-  }
-  const keepMoving = setInterval(keepMove, 150);
+  }, 100);
 }

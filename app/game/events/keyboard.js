@@ -8,17 +8,14 @@ export default (Game) => {
 
     if (
       Game.flag.translate ||
-      !Game.flag.moveCallback ||
-      Game.flag.input
+      !Game.flag.moveCallback
     ) return;
-
     onKeyDown(event, Game)
   });
 
   document.addEventListener('keyup', event => {
     if (event.code == "AltLeft")
       isAltPressed = false;
-    Game.flag.input = false;
   });
 };
 
