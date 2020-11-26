@@ -6,7 +6,7 @@ export default class Player {
     this.palette = palette;
     this.sColor = palette[0];
     this.is = {};
-    this.posInView = [0,0];
+    this.posInView = [0, 0];
     this.canvas = [
       document.getElementById('playercanvas'),
       document.getElementById('shadow')
@@ -20,38 +20,45 @@ export default class Player {
       this.position = position;
     if (direction)
       this.lastdir = direction;
-
     this.coord = indextocoord(this.position, Game);
 
-    const [pX, pY] = this.coord;
-    const [gX, gY] = [Game.cols, Game.rows];
-    const [mX, mY] = [Game.Map.cols, Game.Map.rows];
-    const [hmX, hmY] = Game.Map.half;
+    const pX = this.coord;
+    const gX = [Game.cols, Game.rows];
+    const mX = [Game.Map.cols, Game.Map.rows];
+    const hmX = Game.Map.half;
 
-    this.is.left = pX < Math.ceil(hmX);
-    this.is.right = pX > gX - hmX - 1 ;
-    this.is.up = pY < Math.ceil(hmY);
-    this.is.down = pY > gY - hmY - 1;
+    const Directions = [
+      ["left", "right"],
+      ["up", "down"]
+    ];
 
-    this.posInView[0] = this.is.left ?
-      pX :
-      this.is.right ?
-      pX + mX - gX :
-      hmX;
+    const checkIfPlayerInZone = (direction, i, j) => {
+      this.is[direction] = j == 0 ?
+        pX[i] < Math.ceil(hmX[i]) :
+        pX[i] > gX[i] - hmX[i] - 1;
+    }
 
-    this.posInView[1] =
-      this.is.up ?
-      pY :
-      this.is.down ?
-      pY + mY - gY :
-      hmY;
+    const getPosInView = ([negativeDir, positiveDir], i) => {
+      return this.is[negativeDir] ?
+        pX[i] :
+        this.is[positiveDir] ?
+        pX[i] + mX[i] - gX[i] :
+        hmX[i]
+    }
 
-      // console.log("---------------------------");
-      // console.log("Player :", this.is);
-      // console.log("[pX, pY]   :", [pX, pY]);
-      // console.log("[gX, gY]   :", [gX, gY]);
-      // console.log("[mX, mY]   :", [mX, mY]);
-      // console.log("[hmX, hmY] :", [hmX, hmY]);
+    Directions.forEach((dimension, i) =>
+      dimension.forEach((direction, j) =>
+        checkIfPlayerInZone(direction, i, j)
+      ));
+
+      this.posInView = Directions.map(getPosInView);
+
+    // console.log("---------------------------");
+    // console.log("Player :", this.is);
+    // console.log("[pX, pY]   :", [pX, pY]);
+    // console.log("[gX, gY]   :", [gX, gY]);
+    // console.log("[mX, mY]   :", [mX, mY]);
+    // console.log("[hmX, hmY] :", [hmX, hmY]);
   }
 
   render(Game, animated) {

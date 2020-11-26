@@ -3,7 +3,7 @@ export default class Map {
   constructor() {
     this.maxcells = 20;
     this.startcells = 8;
-    this.mincells = 4;
+    this.mincells = 5;
     this.margin = {};
     this.master = document.getElementById('master');
     this.canvas = document.querySelectorAll('.mapcanvas');
@@ -142,35 +142,38 @@ export default class Map {
 
   setTranslationShift(Player, Game) {
 
-    const directions = {
-      right: { dimension: 0, direction: -1 },
-      left: { dimension: 0, direction: 1 },
-      down: { dimension: 1, direction: -1 },
-      up: { dimension: 1, direction: 1, }
-    }
+    const Directions = [
+      ["right", "left"],
+      ["down", "up"]
+    ];
 
-    const direction = directions[Player.lastdir];
-    this.setDirectionShift(direction, Player, Game);
+    Directions.forEach((dimension, i) => {
+      dimension.forEach((direction, j) => {
+        if (Player.lastdir == direction)
+          this.setDirectionShift(i, j, Player, Game);
+      });
+    });
   }
 
-  setDirectionShift({ dimension, direction }, Player, Game) {
-
+  setDirectionShift(dimension, direction, Player, Game) {
     const pX = Player.coord[dimension];
     const hX = this.half[dimension];
     const gX = [Game.cols, Game.rows][dimension];
     const key = ["left", "top"][dimension];
-    const directionShift = (direction + 1) / 2;
-    const hmX = [hX - directionShift, gX - hX - directionShift]
+    const hmX = [
+      hX - direction,
+      gX - hX - direction
+    ];
 
     if (pX > hmX[0] && pX < hmX[1]) {
-      const evenShift =
+      const evenCoef =
         pX == Math.ceil(hmX[0]) ||
         pX == Math.floor(hmX[0]) ||
         pX == Math.ceil(hmX[1]) ||
         pX == Math.floor(hmX[1]) ?
         0.5 : 1;
 
-      this.mapShift[key] = direction * evenShift;
+      this.mapShift[key] = (2 * direction - 1) * evenCoef;
     }
   }
 
