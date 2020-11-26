@@ -6,7 +6,7 @@ export default class Player {
     this.palette = palette;
     this.sColor = palette[0];
     this.is = {};
-    this.posInView = {};
+    this.posInView = [0,0];
     this.canvas = [
       document.getElementById('playercanvas'),
       document.getElementById('shadow')
@@ -36,7 +36,7 @@ export default class Player {
     this.is.centerRight = pX > hgX && mXisEven;
     this.is.centerDown = pY > hgY && mYisEven;
 
-    this.posInView.x = this.is.left ?
+    this.posInView[0] = this.is.left ?
       pX :
       this.is.right ?
       pX + mX - gX :
@@ -44,7 +44,7 @@ export default class Player {
       hmX + 1 :
       hmX;
 
-    this.posInView.y =
+    this.posInView[1] =
       this.is.up ?
       pY :
       this.is.down ?
@@ -64,8 +64,8 @@ export default class Player {
   setPositioninView({ cellSize, shift }, duration, animated) {
     this.canvas.forEach(canvas => {
       canvas.style.transitionDuration = `${animated ? duration : 0}s`;
-      canvas.style.left = this.posInView.x * cellSize + shift + 'px';
-      canvas.style.top = this.posInView.y * cellSize + shift + 'px';
+      canvas.style.left = this.posInView[0] * cellSize + shift + 'px';
+      canvas.style.top = this.posInView[1] * cellSize + shift + 'px';
     });
   }
 

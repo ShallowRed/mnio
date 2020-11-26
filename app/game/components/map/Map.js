@@ -1,9 +1,9 @@
 export default class Map {
 
   constructor() {
-    this.maxcells = 40;
-    this.startcells = 20;
-    this.mincells = 10;
+    this.maxcells = 20;
+    this.startcells = 8;
+    this.mincells = 4;
     this.margin = {};
     this.master = document.getElementById('master');
     this.canvas = document.querySelectorAll('.mapcanvas');
@@ -172,5 +172,38 @@ export default class Map {
       (pX[i] !== hgX[i] - shift || mXisUneven[i])
     )
       return true;
+  }
+
+  zoom(Game) {
+    const { cellSize, canvas } = this;
+    const {posInView, is} = Game.Player;
+    const startPos = posInView.map(e => e);
+    const startSize = Object.assign({}, { cellSize })
+      .cellSize;
+
+    Game.update(true);
+
+    const delta = startSize - this.cellSize;
+    const factor = this.cellSize / startSize;
+    const shiftLeft = is.left ? -1 : is.right ? 2 : 0.5;
+    const shiftUp = is.up ? -1 : is.down ? 2 : 0.5;
+
+    const scaleOrigin = [
+      (posInView[0] + shiftLeft * 3) * this.cellSize,
+      (posInView[1] + shiftUp * 3) * this.cellSize
+    ]
+
+    setTimeout(() => {
+      this.setSize();
+      Game.render();
+    }, 1000)
+
+    canvas.forEach(c => {
+      c.style.transitionDuration = `${Game.duration}s`;
+      c.style.transformOrigin = scaleOrigin.map(e => e + "px")
+        .join(" ");
+      c.style.transform = `scale(${factor}) `;
+
+    });
   }
 }

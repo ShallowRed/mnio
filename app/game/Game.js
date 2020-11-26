@@ -44,17 +44,17 @@ export default class Game {
     this.render();
   }
 
-  update() {
+  update(isZoom) {
     this.Map.update();
-    this.Map.setSize();
     this.Player.update(this);
+    !isZoom && this.Map.setSize();
     this.Ui.render(this.Map);
   }
 
-  render(animated) {
-    this.Map.translate(this, animated);
-    this.Player.render(this, animated);
-    !animated && this.Map.render(this);
+  render(isAnimated) {
+    this.Map.translate(this, isAnimated);
+    this.Player.render(this, isAnimated);
+    !isAnimated && this.Map.render(this);
   }
 
   moveAttempt(direction) {
@@ -121,8 +121,9 @@ export default class Game {
       Map.rows += 1;
       Map.cols += 1;
     }
+    // this.renderAll();
 
-    this.renderAll();
+    Map.zoom(this);
   }
 }
 

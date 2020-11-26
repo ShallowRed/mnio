@@ -1,6 +1,6 @@
-const indextocoord = (index, { cols }) => {
+const indextocoord = (index, { cols, rows }) => {
   const x = index % cols;
-  const y = (index - x) / cols;
+  const y = (index - x) / rows;
   return [x, y];
 }
 
@@ -9,27 +9,27 @@ const coordtoindex = ([x, y], { cols }) => {
 }
 
 const check = (position, Game) => {
-  const { Player, Map } = Game;
-  const [x, y] = posInView(position, Player, Game);
-  if (
-    x >= 0 &&
-    x <= Map.cols + 1 &&
-    y >= 0 &&
-    y <= Map.rows + 1
-  ) return [x, y];
+  const coord = getPosInView(position, Game);
+  if (isInMap(coord, Game.Map))
+    return coord;
 }
 
-const posInView = (position, Player, { cols }) => {
-  const [pX, pY] = Player.coord; // player absolute pos
-  const [aX, aY] = indextocoord(position, { cols }); // this absolute pos
+const isInMap = ([x, y], Map) => {
+  return x >= 0 &&
+    y >= 0 &&
+    x <= Map.cols + 1 &&
+    y <= Map.rows + 1
+};
+
+const getPosInView = (position, { Player, cols, rows }) => {
+  const [pX, pY] = Player.coord; // player abs pos
+  const [pvX, pvY] = Player.posInView; // player rel pos
+  const [aX, aY] = indextocoord(position, { cols, rows }); // this abs pos
   return [
-    aX - pX + Player.posInView.x + 1,
-    aY - pY + Player.posInView.y + 1
+    aX - pX + pvX + 1,
+    aY - pY + pvY + 1
   ];
 }
-
-// console.log(indextocoord(13, {cols: 5})); // return [3, 2]
-// console.log(coordtoindex([3, 2], {cols: 5})); // return 13
 
 export {
   check,

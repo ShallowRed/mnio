@@ -3,7 +3,7 @@ import { indextocoord, coordtoindex } from './utils';
 export default (dir, position, Game) => {
   const { rows, cols, owned, allowed, colors, positions } = Game;
 
-  let [x, y] = indextocoord(position, { cols });
+  let [x, y] = indextocoord(position, { cols, rows });
 
   if (dir == "left" && x !== 0) x--;
   else if (dir == "right" && x !== cols - 1) x++;
