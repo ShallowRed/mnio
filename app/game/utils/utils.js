@@ -15,10 +15,10 @@ const check = (position, Game) => {
 }
 
 const isInMap = ([x, y], Map) => {
-  return x >= 0 &&
-    y >= 0 &&
-    x <= Map.cols + 1 &&
-    y <= Map.rows + 1
+  return x >= -1 &&
+    y >= -1 &&
+    x <= Map.cols + 2 &&
+    y <= Map.rows + 2
 };
 
 const getPosInView = (position, { Player, cols, rows }) => {

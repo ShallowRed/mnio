@@ -27,21 +27,16 @@ export default class Player {
     const [gX, gY] = [Game.cols, Game.rows];
     const [mX, mY] = [Game.Map.cols, Game.Map.rows];
     const [hmX, hmY] = Game.Map.half;
-    const [hgX, hgY] = [gX, gY].map(e => Math.floor(e / 2));
-    const [mXisEven, mYisEven] = [mX, mY].map(e => e % 2 == 0);
-    this.is.left = pX < hmX + 1;
-    this.is.right = pX > gX - hmX - 1;
-    this.is.up = pY < hmY + 1;
+
+    this.is.left = pX < Math.ceil(hmX);
+    this.is.right = pX > gX - hmX - 1 ;
+    this.is.up = pY < Math.ceil(hmY);
     this.is.down = pY > gY - hmY - 1;
-    this.is.centerRight = pX > hgX && mXisEven;
-    this.is.centerDown = pY > hgY && mYisEven;
 
     this.posInView[0] = this.is.left ?
       pX :
       this.is.right ?
       pX + mX - gX :
-      this.is.centerRight ?
-      hmX + 1 :
       hmX;
 
     this.posInView[1] =
@@ -49,9 +44,14 @@ export default class Player {
       pY :
       this.is.down ?
       pY + mY - gY :
-      this.is.centerDown ?
-      hmY + 1 :
       hmY;
+
+      // console.log("---------------------------");
+      // console.log("Player :", this.is);
+      // console.log("[pX, pY]   :", [pX, pY]);
+      // console.log("[gX, gY]   :", [gX, gY]);
+      // console.log("[mX, mY]   :", [mX, mY]);
+      // console.log("[hmX, hmY] :", [hmX, hmY]);
   }
 
   render(Game, animated) {

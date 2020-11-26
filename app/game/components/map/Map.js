@@ -71,7 +71,7 @@ export default class Map {
       const { cols, rows, cellSize } = this;
       this.height = cellSize * rows;
       this.width = cellSize * cols;
-      this.half = [Math.floor((cols - 1) / 2), Math.floor((rows - 1) / 2)];
+      this.half = [(cols - 1) / 2, (rows - 1) / 2];
       this.lw = Math.round(cellSize / 6);
       this.shift = Math.round(cellSize / 8);
     };
@@ -142,41 +142,41 @@ export default class Map {
 
   setTranslationShift(Player, Game) {
 
-    const directions = Object.entries({
-      right: { key: "left", direction: -1, dimension: 0 },
-      left: { key: "left", direction: 1, dimension: 0 },
-      down: { key: "top", direction: -1, dimension: 1 },
-      up: { key: "top", direction: 1, dimension: 1 }
-    });
-
-    for (const [directionName, { key, direction, dimension }] of directions) {
-      if (
-        Player.lastdir == directionName &&
-        this.needTranslation(dimension, direction, Player, Game)
-      ) this.mapShift[key] = direction;
+    const directions = {
+      right: { dimension: 0, direction: -1 },
+      left: { dimension: 0, direction: 1 },
+      down: { dimension: 1, direction: -1 },
+      up: { dimension: 1, direction: 1, }
     }
+
+    const direction = directions[Player.lastdir];
+    this.setDirectionShift(direction, Player, Game);
   }
 
-  needTranslation(i, direction, Player, Game) {
+  setDirectionShift({ dimension, direction }, Player, Game) {
 
-    const pX = Player.coord;
-    const gX = [Game.cols, Game.rows];
-    const hgX = gX.map(x => Math.floor(x / 2) + 1)
-    const mXisUneven = [this.cols, this.rows].map(e => e % 2 !== 0);
-    const hmX = this.half;
-    const shift = (direction + 1) / 2;
+    const pX = Player.coord[dimension];
+    const hX = this.half[dimension];
+    const gX = [Game.cols, Game.rows][dimension];
+    const key = ["left", "top"][dimension];
+    const directionShift = (direction + 1) / 2;
+    const hmX = [hX - directionShift, gX - hX - directionShift]
 
-    if (
-      pX[i] > hmX[i] - shift &&
-      pX[i] < gX[i] - hmX[i] - shift &&
-      (pX[i] !== hgX[i] - shift || mXisUneven[i])
-    )
-      return true;
+    if (pX > hmX[0] && pX < hmX[1]) {
+      const evenShift =
+        pX == Math.ceil(hmX[0]) ||
+        pX == Math.floor(hmX[0]) ||
+        pX == Math.ceil(hmX[1]) ||
+        pX == Math.floor(hmX[1]) ?
+        0.5 : 1;
+
+      this.mapShift[key] = direction * evenShift;
+    }
   }
 
   zoom(Game) {
     const { cellSize, canvas } = this;
-    const {posInView, is} = Game.Player;
+    const { posInView, is } = Game.Player;
     const startPos = posInView.map(e => e);
     const startSize = Object.assign({}, { cellSize })
       .cellSize;
@@ -189,18 +189,31 @@ export default class Map {
     const shiftUp = is.up ? -1 : is.down ? 2 : 0.5;
 
     const scaleOrigin = [
-      (posInView[0] + shiftLeft * 3) * this.cellSize,
-      (posInView[1] + shiftUp * 3) * this.cellSize
+      (is.left ? this.cellSize : is.right ? canvas[0].width - this
+        .cellSize : (canvas[0].width + this.cellSize) / 2),
+      (is.up ? this.cellSize : is.down ? canvas[0].height - this.cellSize :
+        (canvas[0].height + this.cellSize) / 2)
     ]
+
+    // const scaleOrigin = [
+    //   is.left ? 0 : is.right ? 100 : 50,
+    //   is.up ? 0 : is.down ? 100 : 50
+    // ]
+
+    // const scaleOrigin = [
+    //   (posInView[0] + shiftLeft * 3) * this.cellSize,
+    //   (posInView[1] + shiftUp * 3) * this.cellSize
+    // ]
 
     setTimeout(() => {
       this.setSize();
       Game.render();
-    }, 1000)
+    }, 200)
 
     canvas.forEach(c => {
       c.style.transitionDuration = `${Game.duration}s`;
       c.style.transformOrigin = scaleOrigin.map(e => e + "px")
+        // c.style.transformOrigin = scaleOrigin.map(e => e + "%")
         .join(" ");
       c.style.transform = `scale(${factor}) `;
 

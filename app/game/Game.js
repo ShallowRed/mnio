@@ -121,9 +121,8 @@ export default class Game {
       Map.rows += 1;
       Map.cols += 1;
     }
-    // this.renderAll();
-
-    Map.zoom(this);
+    this.renderAll();
+    // Map.zoom(this);
   }
 }
 
