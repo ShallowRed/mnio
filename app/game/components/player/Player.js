@@ -22,50 +22,45 @@ export default class Player {
       this.lastdir = direction;
     this.coord = indextocoord(this.position, Game);
 
-    const pX = this.coord;
-    const gX = [Game.cols, Game.rows];
-    const mX = [Game.Map.cols, Game.Map.rows];
-    const hmX = Game.Map.half;
+    const isPlayerInZone = (dimension, direction) => {
+      const pX = Game.Player.coord[dimension];
+      const gX = [Game.cols, Game.rows][dimension];
+      const hX = Game.Map.half[dimension];
+      return direction == 0 ?
+        pX < Math.ceil(hX) :
+        pX > gX - hX - 1;
+    }
+
+    const getPosInView = ([negativeDir, positiveDir], dimension) => {
+      const pX = Game.Player.coord[dimension];
+      const gX = [Game.cols, Game.rows][dimension];
+      const mX =[Game.Map.cols, Game.Map.rows][dimension];
+      const hX = Game.Map.half[dimension];
+      return this.is[negativeDir] ?
+        pX :
+        !this.is[positiveDir] ?
+        hX :
+        pX + mX - gX;
+    }
 
     const Directions = [
       ["left", "right"],
       ["up", "down"]
     ];
 
-    const checkIfPlayerInZone = (direction, i, j) => {
-      this.is[direction] = j == 0 ?
-        pX[i] < Math.ceil(hmX[i]) :
-        pX[i] > gX[i] - hmX[i] - 1;
-    }
-
-    const getPosInView = ([negativeDir, positiveDir], i) => {
-      return this.is[negativeDir] ?
-        pX[i] :
-        this.is[positiveDir] ?
-        pX[i] + mX[i] - gX[i] :
-        hmX[i]
-    }
-
     Directions.forEach((dimension, i) =>
       dimension.forEach((direction, j) =>
-        checkIfPlayerInZone(direction, i, j)
+        this.is[direction] = isPlayerInZone(i, j)
       ));
 
       this.posInView = Directions.map(getPosInView);
-
-    // console.log("---------------------------");
-    // console.log("Player :", this.is);
-    // console.log("[pX, pY]   :", [pX, pY]);
-    // console.log("[gX, gY]   :", [gX, gY]);
-    // console.log("[mX, mY]   :", [mX, mY]);
-    // console.log("[hmX, hmY] :", [hmX, hmY]);
   }
 
   render(Game, animated) {
     const { Map, duration } = Game;
     this.setPositioninView(Map, duration, animated);
     if (!animated)
-      this.setSizeInView(Map)
+      this.setSizeInView(Map);
   }
 
   setPositioninView({ cellSize, shift }, duration, animated) {
