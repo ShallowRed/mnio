@@ -1,7 +1,7 @@
 import Player from './components/player/Player';
 import Map from './components/map/Map';
 import Ui from './components/ui/Ui';
-import Cell from './components/Cell';
+import Cell from './components/cell/Cell';
 
 import listenServerEvents from './events/server';
 import listenClickEvents from './events/click';

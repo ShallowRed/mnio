@@ -1,4 +1,4 @@
-import { indextocoord } from './converters';
+import { indextocoord } from '../../utils/converters';
 
 export const check = (position, Game) => {
   const coord = getPosInView(position, Game);
