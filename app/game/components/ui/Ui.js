@@ -1,7 +1,7 @@
 export default class Ui {
 
-  constructor() {
-
+  constructor(Map) {
+    this.Map = () => Map;
     this.refresh = document.getElementById('refresh');
     this.tuto = {
       openBtn: document.getElementById('openTuto'),
@@ -24,8 +24,8 @@ export default class Ui {
 
   }
 
-  render(Map) {
-    const { lMargin, ratio, windowWidth, windowHeight, margin } = Map;
+  render() {
+    const { lMargin, ratio, windowWidth, windowHeight, margin } = this.Map();
 
     this.btns.forEach(btn => {
       btn.style.height = lMargin + "px";

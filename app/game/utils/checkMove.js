@@ -1,4 +1,4 @@
-import { indextocoord, coordtoindex } from './utils';
+import { indextocoord, coordtoindex } from './converters';
 
 export default (dir, position, Game) => {
   const { rows, cols, owned, allowed, colors, positions } = Game;

@@ -19,11 +19,11 @@ export default class Game {
     this.socket = socket;
     Object.assign(this, data.Game);
     this.flag = new Flag();
-    this.Map = new Map();
-    this.Player = new Player(data.Player);
-    this.Ui = new Ui();
-    this.Cell = Cell;
-
+    this.Map = new Map(this);
+    this.Player = new Player(data.Player, this);
+    this.Ui = new Ui(this.Map);
+    this.Cell = new Cell(this);
+    console.log(this.Cell);
     this.selectColor(0);
     this.renderAll();
 
@@ -46,15 +46,15 @@ export default class Game {
 
   update(isZoom) {
     this.Map.update();
-    this.Player.update(this);
+    this.Player.update();
     !isZoom && this.Map.setSize();
-    this.Ui.render(this.Map);
+    this.Ui.render();
   }
 
   render(isAnimated) {
-    this.Map.translate(this, isAnimated);
-    this.Player.render(this, isAnimated);
-    !isAnimated && this.Map.render(this);
+    this.Map.translate(isAnimated);
+    this.Player.render(isAnimated);
+    !isAnimated && this.Map.render();
   }
 
   moveAttempt(direction) {
@@ -70,7 +70,7 @@ export default class Game {
   }
 
   newPlayerPos(position, direction) {
-    this.Player.update(this, position, direction);
+    this.Player.update(position, direction);
     this.flag.translate = true;
     this.render(true);
     translationTimeout(this);
@@ -122,7 +122,7 @@ export default class Game {
       Map.cols += 1;
     }
     this.renderAll();
-    // Map.zoom(this);
+    // Map.zoom();
   }
 }
 

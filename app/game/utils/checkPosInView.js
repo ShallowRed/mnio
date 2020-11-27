@@ -1,14 +1,6 @@
-const indextocoord = (index, { cols, rows }) => {
-  const x = index % cols;
-  const y = (index - x) / rows;
-  return [x, y];
-}
+import { indextocoord } from './converters';
 
-const coordtoindex = ([x, y], { cols }) => {
-  return cols * y + x;
-}
-
-const check = (position, Game) => {
+export const check = (position, Game) => {
   const coord = getPosInView(position, Game);
   if (isInMap(coord, Game.Map))
     return coord;
@@ -29,10 +21,4 @@ const getPosInView = (position, { Player, cols, rows }) => {
     aX - pX + pvX + 1,
     aY - pY + pvY + 1
   ];
-}
-
-export {
-  check,
-  indextocoord,
-  coordtoindex
 }

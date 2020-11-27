@@ -1,5 +1,3 @@
-import Cell from '../components/Cell';
-
 export default (Game) => {
   for (const [eventName, callback] of serverEvents) {
     Game.socket.on(eventName, (data) =>
@@ -16,33 +14,27 @@ const serverEvents = Object.entries({
     }
   },
 
-  newPosition(Game, position) {
-    const { positions } = Game;
-    if (position[0]) {
-      positions.splice(positions.indexOf(position[0]), 1);
-      Cell.render.clear(position[0], Game);
-    }
-
-    if (position[1]) {
-      positions.push(position[1]);
-      Cell.render.position(position[1], Game);
-    }
+  newPosition({ positions, Cell }, [lastPos, newPos]) {
+    lastPos && (
+      positions.splice(positions.indexOf(lastPos), 1),
+      Cell.render.clear(lastPos)
+    );
+    newPos && (
+      positions.push(newPos),
+      Cell.render.position(newPos)
+    )
   },
 
-  newFill(Game, { position, color }) {
-    const { colors } = Game;
-
+  newFill({ colors, Cell }, { position, color }) {
     colors[position] = color;
-    Cell.render.color(position, Game);
+    Cell.render.color(position);
   },
 
-  allowedCells(Game, cells) {
-    const { allowed } = Game;
-
+  allowedCells({ allowed, Cell }, cells) {
     cells.forEach(position => {
       if (allowed.includes(position)) return;
       allowed.push(position);
-      Cell.render.allowed(position, Game);
+      Cell.render.allowed(position);
     });
   },
 

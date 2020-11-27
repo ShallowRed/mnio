@@ -5,7 +5,7 @@ const translationTimeout = (Game, start = Date.now()) => {
   const delay = duration * (flag.fill ? 2.5 : 1);
 
   if (delta >= delay) {
-    Map.render(Game);
+    Map.render();
     flag.translate = false;
     return;
   }

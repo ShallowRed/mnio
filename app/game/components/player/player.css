@@ -1,12 +1,11 @@
-#playercanvas,
+#player,
 #shadow {
   overflow: hidden;
   position: absolute;
   transition-timing-function: ease;
 }
 
-#playercanvas {
-  box-sizing: border-box;
+#player {
   border: solid white;
 }
 

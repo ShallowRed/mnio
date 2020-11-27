@@ -1,60 +1,75 @@
-import { check } from '../utils/utils';
+import { check } from '../utils/checkPosInView';
 import { fillCell, roundSquare } from '../utils/canvas';
 
-const Cell = {
+export default class Cell {
+  constructor(Game) {
+    this.render = {};
 
-  render: {
-
-    clear: (position, Game) => {
-      const coord = check(position, Game);
-      if (!coord) return;
-      const { ctx, cellSize } = Game.Map;
-      fillCell(coord, cellSize, ctx[2], null);
-    },
-
-    color: (position, Game) => {
-      const coord = check(position, Game);
-      if (!coord) return;
-      const { colors, Map: { ctx, cellSize } } = Game;
-      fillCell(coord, cellSize, ctx[1], `#${colors[position]}`);
-    },
-
-    allowed: (position, Game) => {
-      const coord = check(position, Game);
-      if (!coord) return;
-      const { ctx, cellSize } = Game.Map;
-      fillCell(coord, cellSize, ctx[0], '#e9e9e9');
-    },
-
-    position: (position, Game) => {
-      const coord = check(position, Game);
-      if (!coord) return;
-      const { ctx, cellSize, shift } = Game.Map;
-      roundSquare(coord, cellSize, ctx[2], shift);
+    for (const [key, fn] of renderCell) {
+      this.render[key] = (position) => {
+        fn(position, Game);
+      }
     }
+
+    this.fillAnimation = (position) =>
+      fillAnimation(position, Game);
+  }
+}
+
+const renderCell = Object.entries({
+
+  clear: (position, Game) => {
+    const coord = check(position, Game);
+    if (!coord) return;
+    const { ctx, cellSize } = Game.Map;
+    fillCell(coord, cellSize, ctx[2], null);
   },
 
-  fillAnimation(position, Game) {
-    const [x, y] = check(position, Game);
-    const {
-      flag,
-      Player: { sColor },
-      Map: { lw, cellSize, ctx: [, ctx] }
-    } = Game;
+  color: (position, Game) => {
+    const coord = check(position, Game);
+    if (!coord) return;
+    const { colors, Map: { ctx, cellSize } } = Game;
+    fillCell(coord, cellSize, ctx[1], `#${colors[position]}`);
+  },
 
-    flag.fill = true;
-    ctx.lineWidth = lw;
-    ctx.strokeStyle = sColor;
+  allowed: (position, Game) => {
+    const coord = check(position, Game);
+    if (!coord) return;
+    const { ctx, cellSize } = Game.Map;
+    fillCell(coord, cellSize, ctx[0], '#e9e9e9');
+  },
 
-    const initCoord = {
-      divx: 0,
-      divy: 0,
-      x: cellSize * x,
-      y: cellSize * (y + 1)
-    };
-
-    fillFrame(flag, initCoord, { ctx, lw, cellSize, sColor });
+  position: (position, Game) => {
+    const coord = check(position, Game);
+    if (!coord) return;
+    const { ctx, cellSize } = Game.Map;
+    const shift = Math.round(cellSize / 8);
+    roundSquare(coord, cellSize, ctx[2], shift);
   }
+});
+
+const fillAnimation = (position, Game) => {
+  const [x, y] = check(position, Game);
+  const {
+    flag,
+    Player: { sColor },
+    Map: { cellSize, ctx: [, ctx] }
+  } = Game;
+
+  const lw = Math.round(cellSize / 6);
+
+  flag.fill = true;
+  ctx.lineWidth = lw;
+  ctx.strokeStyle = sColor;
+
+  const initCoord = {
+    divx: 0,
+    divy: 0,
+    x: cellSize * x,
+    y: cellSize * (y + 1)
+  };
+
+  fillFrame(flag, initCoord, { ctx, lw, cellSize, sColor });
 };
 
 const fillFrame = (flag, { x, y, divx, divy }, {
@@ -110,5 +125,3 @@ const fillDiv = ({ x, y, divx, divy }, { ctx, lw, sColor }) => {
   ctx.lineTo(x + divx, y - divy - lw / 2);
   ctx.stroke();
 };
-
-export default Cell;
