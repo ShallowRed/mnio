@@ -52,7 +52,7 @@ export default class Game {
   }
 
   render(isAnimated) {
-    this.Map.translate(isAnimated);
+    isAnimated && this.Map.translateAnimation();
     this.Player.render(isAnimated);
     !isAnimated && this.Map.render();
   }

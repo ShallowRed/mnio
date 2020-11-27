@@ -23,7 +23,7 @@ export default class Player {
 
   update(position, direction) {
     this.updatePosition(position, direction);
-    this.getPlayerZone();
+    this.updatePlayerZone();
     this.updatePosInView();
   }
 
@@ -35,7 +35,7 @@ export default class Player {
     this.coord = indextocoord(this.position, this.Game());
   }
 
-  getPlayerZone() {
+  updatePlayerZone() {
     this.Directions.forEach((dimension, i) =>
       dimension.forEach((directionName, j) =>
         this.is[directionName] = this.isPlayerInZone(i, j)

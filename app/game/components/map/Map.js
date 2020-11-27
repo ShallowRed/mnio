@@ -18,10 +18,17 @@ export default class Map {
       return context;
     });
 
-    this.Directions = [
-      ["right", "left"],
-      ["down", "up"]
-    ];
+    this.Directions = {
+       right: { dimension: 0, sense: 0 },
+       left: { dimension: 0, sense: 1 },
+       down: { dimension: 1, sense: 0 },
+       up: { dimension: 1, sense: 1 }
+     };
+
+    // this.Directions = [
+    //   ["right", "left"],
+    //   ["down", "up"]
+    // ];
   }
 
   update() {
@@ -95,8 +102,7 @@ export default class Map {
     });
   }
 
-  render() {
-    const Game = this.Game();
+  render(Game = this.Game()) {
     const { Cell } = Game;
 
     this.resetShift();
@@ -137,30 +143,21 @@ export default class Map {
     });
   }
 
-  translate(isAnimated) {
-    if (!isAnimated) return;
-    this.setTranslationShift();
-    this.translateCanvas(this.Game()
-      .duration);
+  translateAnimation(Game = this.Game()) {
+    const direction = this.Directions[Game.Player.lastdir];
+    this.setDirectionShift(direction);
+    this.translateCanvas(Game.duration);
   }
 
-  setTranslationShift(Player = this.Player()) {
-    this.Directions.forEach((dimension, i) => {
-      dimension.forEach((directionName, j) => {
-        if (Player.lastdir == directionName)
-          this.setDirectionShift(i, j);
-      });
-    });
-  }
-
-  setDirectionShift(dimension, sense, Player = this.Player()) {
+  setDirectionShift({dimension, sense}, Player = this.Player()) {
     const { pX, gX, hX } = Player.getCoords(dimension);
-    const key = ["left", "top"][dimension];
     const centerStart = hX - sense;
     const centerEnd = gX - hX - sense;
     if (pX > centerStart && pX < centerEnd) {
-      const evenCoef = this.getEvenCoef(pX, centerStart, centerEnd);
-      this.shift[key] = (2 * sense - 1) * evenCoef;
+      const dimensionKey = ["left", "top"][dimension];
+      const senseCoef = [-1, 1][sense];
+      const isEvenCoef = this.getEvenCoef(pX, centerStart, centerEnd);
+      this.shift[dimensionKey] = senseCoef * isEvenCoef;
     }
   }
 
@@ -173,6 +170,8 @@ export default class Map {
   }
 
   zoom(Game = this.Game(), Player = this.Player()) {
+    Game.update(true);
+
     const { cellSize, canvas } = this;
     const { posInView, is } = Player;
     const startPos = posInView.map(e => e);
@@ -180,9 +179,6 @@ export default class Map {
       .cellSize;
 
     const delta = startSize - this.cellSize;
-
-    Game.update(true);
-
 
     const origin = [(
       is.left ? this.cellSize :
@@ -201,8 +197,9 @@ export default class Map {
     //   (posInView[1] + shiftUp * 3) * this.cellSize
     // ]
 
-    this.scale.factor = this.cellSize / startSize;
-    this.setScaleOrigin(origin);
+    const factor = this.cellSize / startSize;
+
+    this.setScaleVector(origin, factor);
     this.scaleCanvas();
     setTimeout(() => {
       this.setSize();
@@ -210,7 +207,8 @@ export default class Map {
     }, 200)
   }
 
-  setScaleOrigin(origin) {
+  setScaleVector(origin, factor) {
+    this.scale.factor = factor;
     this.scale.origin = origin.map(e => e + "px")
       .join(" ");
   }
