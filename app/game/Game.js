@@ -1,6 +1,6 @@
-import Player from './components/player/Player';
-import Map from './components/map/Map';
-import Ui from './components/ui/Ui';
+import Player from './components/Player';
+import Map from './components/Map';
+import Ui from './components/Ui';
 import Cell from './components/cell/Cell';
 
 import listenServerEvents from './events/server';
@@ -23,7 +23,6 @@ export default class Game {
     this.Player = new Player(data.Player, this);
     this.Ui = new Ui(this.Map);
     this.Cell = new Cell(this);
-    console.log(this.Cell);
     this.selectColor(0);
     this.renderAll();
 
@@ -114,15 +113,8 @@ export default class Game {
     setTimeout(() =>
       Ui.focusZoomBtn(dir, false), 200);
 
-    if (dir == "in") {
-      Map.rows -= 1;
-      Map.cols -= 1;
-    } else {
-      Map.rows += 1;
-      Map.cols += 1;
-    }
-    this.renderAll();
-    // Map.zoom();
+    // this.renderAll();
+    Map.zoom(dir);
   }
 }
 

@@ -9,9 +9,8 @@ export default class Map {
     this.margin = {};
     this.shift = {};
     this.scale = {};
-    this.master = document.getElementById('master');
-    this.canvas = document.querySelectorAll('.mapcanvas');
-
+    this.master = document.getElementById('map');
+    this.canvas = document.querySelectorAll('canvas');
     this.ctx = [...this.canvas].map(canvas => {
       const context = canvas.getContext('2d');
       context.imageSmoothingEnabled = false;
@@ -19,30 +18,27 @@ export default class Map {
     });
 
     this.Directions = {
-       right: { dimension: 0, sense: 0 },
-       left: { dimension: 0, sense: 1 },
-       down: { dimension: 1, sense: 0 },
-       up: { dimension: 1, sense: 1 }
-     };
-
-    // this.Directions = [
-    //   ["right", "left"],
-    //   ["down", "up"]
-    // ];
+      right: { dimension: 0, sense: 0 },
+      left: { dimension: 0, sense: 1 },
+      down: { dimension: 1, sense: 0 },
+      up: { dimension: 1, sense: 1 }
+    };
   }
 
   update() {
-    this.getWindowDimensions();
+    [0,1].forEach(dimension => {
+      this.getWindowDimension(dimension);
+    });
     this.ensureLimits();
-    this.getCanvasDimensions();
     this.getCellProps();
   }
 
-  getWindowDimensions() {
-    this.windowWidth = Math.max(window.innerWidth, document
-      .documentElement.clientWidth);
-    this.windowHeight = Math.max(window.innerHeight, document
-      .documentElement.clientHeight);
+  getWindowDimension(dimension) { //////////// test
+    const dimensionKey = ["Width", "Height"][dimension]
+    this[dimensionKey] = 0.95 * Math.max(
+      window[`inner${dimensionKey}`],
+      document.documentElement[`client${dimensionKey}`]
+    );
   }
 
   ensureLimits() {
@@ -55,50 +51,48 @@ export default class Map {
     if (this.rows >= maxcells) this.rows = maxcells;
   }
 
-  getCanvasDimensions() {
-    const { windowWidth, windowHeight } = this;
-    this.ratio = (windowWidth > windowHeight);
-
-    if (this.ratio) {
-      this.sMargin = Math.round(0.02 * windowWidth);
-      this.lMargin = Math.round(0.1 * windowWidth);
-      this.width = windowWidth - this.lMargin - this.sMargin;
-      this.height = windowHeight - this.sMargin * 2;
-      this.margin.right = this.lMargin;
-      this.margin.bottom = this.sMargin;
-    } else {
-      this.sMargin = Math.round(0.01 * windowHeight);
-      this.lMargin = Math.round(0.11 * windowHeight);
-      this.width = windowWidth - this.sMargin * 2;
-      this.height = windowHeight - this.lMargin - this.sMargin;
-      this.margin.right = this.sMargin;
-      this.margin.bottom = this.lMargin;
-    }
-    this.margin.left = this.margin.top = this.sMargin;
-  }
-
   getCellProps() {
-    const { width, height } = this;
+    this.ratio = (this.Width > this.Height);
+
     if (this.ratio) {
-      this.cols = Math.round(this.rows * width / height);
-      this.cellSize = Math.round(width / this.cols);
+      this.Width = 0.9 * this.Width;
+      this.master.style.top = "50%";
+      this.master.style.left = "45%";
+      this.cols = Math.round(this.rows * this.Width / this.Height);
+      this.cellSize = Math.round(this.Width / this.cols);
     } else {
-      this.rows = Math.round(this.cols * height / width);
-      this.cellSize = Math.round(height / this.rows);
+      this.Height = 0.9 * this.Height;
+      this.master.style.top = "45%";
+      this.master.style.left = "50%";
+      this.rows = Math.round(this.cols * this.Height / this.Width);
+      this.cellSize = Math.round(this.Height / this.rows);
     }
   }
 
   setSize() {
-    const { cols, rows, cellSize, margin } = this;
+    const { cols, rows, cellSize } = this;
     this.master.style.width = `${cellSize * cols}px`;
     this.master.style.height = `${cellSize * rows}px`;
-    this.master.style.marginTop = `${margin.top}px`;
-    this.master.style.marginLeft = `${margin.left}px`;
     this.canvas.forEach(c => {
       c.width = cellSize * (cols + 2);
       c.height = cellSize * (rows + 2);
       c.style.top = `-${cellSize}px`;
       c.style.left = `-${cellSize}px`;
+    });
+  }
+
+  setDimensionSize(dimension) { //////////// test
+    const { cellSize, margin } = this;
+    const mX = [this.cols, this.rows][dimension];
+    const dimensionKey = ['width', 'height'][dimension];
+    const marginKey = ['marginTop', 'marginLeft'][dimension];
+    const orientationKey = ['top', 'left'][dimension];
+
+    this.master.style[dimensionKey] = `${cellSize * mX}px`;
+    this.master.style[marginKey] = `${margin[orientationKey]}px`;
+    this.canvas.forEach(canvas => {
+      canvas[dimensionKey] = cellSize * (mX + 2);
+      canvas.style[orientationKey] = `-${cellSize}px`;
     });
   }
 
@@ -149,7 +143,7 @@ export default class Map {
     this.translateCanvas(Game.duration);
   }
 
-  setDirectionShift({dimension, sense}, Player = this.Player()) {
+  setDirectionShift({ dimension, sense }, Player = this.Player()) {
     const { pX, gX, hX } = Player.getCoords(dimension);
     const centerStart = hX - sense;
     const centerEnd = gX - hX - sense;
@@ -169,39 +163,40 @@ export default class Map {
     return coef
   }
 
-  zoom(Game = this.Game(), Player = this.Player()) {
+  zoom(dir, Game = this.Game(), Player = this.Player()) {
+    if (Game.flag.zoom) return;
+    Game.flag.zoom = true;
+
+    const { cS1 } = Object.assign({}, { cS1: this.cellSize })
+    const pX1 = Player.posInView.map(pvX => (pvX + 1.5) * cS1);
+    const mX1 = [this.cols, this.rows].map(mX => mX * cS1);
+
+    const coef = dir == "in" ? -0.5 : 0.5;
+    this.rows += coef;
+    this.cols += coef;
+
     Game.update(true);
 
-    const { cellSize, canvas } = this;
-    const { posInView, is } = Player;
-    const startPos = posInView.map(e => e);
-    const startSize = Object.assign({}, { cellSize })
-      .cellSize;
+    const { cS2 } = Object.assign({}, { cS2: this.cellSize })
+    const pX2 = Player.posInView.map(pvX => (pvX + 1.5) * cS2);
+    const mX2 = [this.cols, this.rows].map(mX => mX * cS2);
 
-    const delta = startSize - this.cellSize;
+    const factor = cS2 / cS1;
+    const dCs = cS1 - cS2;
 
-    const origin = [(
-      is.left ? this.cellSize :
-      is.right ?
-      canvas[0].width - this.cellSize :
-      (canvas[0].width + this.cellSize) / 2
-    ), (
-      is.up ? this.cellSize :
-      is.down ?
-      canvas[0].height - this.cellSize :
-      (canvas[0].height + this.cellSize) / 2
-    )];
+    const dX = mX1.map((e, i) => {
+      return (mX1[i] - mX2[i]) / 2
+    })
 
-    // const scaleOrigin = [
-    //   (posInView[0] + shiftLeft * 3) * this.cellSize,
-    //   (posInView[1] + shiftUp * 3) * this.cellSize
-    // ]
-
-    const factor = this.cellSize / startSize;
+    const origin = pX1.map((e, i) => {
+      return (pX1[i] * factor - pX2[i] - dCs - dX[i]) / (factor - 1)
+    })
 
     this.setScaleVector(origin, factor);
     this.scaleCanvas();
+
     setTimeout(() => {
+      Game.flag.zoom = false;
       this.setSize();
       Game.render();
     }, 200)
@@ -215,11 +210,12 @@ export default class Map {
 
   scaleCanvas() {
     const { duration } = this.Game();
-    const { canvas, scale: origin, factor } = this;
+    const { canvas, scale } = this;
+
     canvas.forEach(c => {
       c.style.transitionDuration = `${duration}s`;
-      c.style.transformOrigin = origin;
-      c.style.transform = `scale(${factor}) `;
+      c.style.transformOrigin = scale.origin;
+      c.style.transform = `scale(${scale.factor}) `;
     });
   }
 }

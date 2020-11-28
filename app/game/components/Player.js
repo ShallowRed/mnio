@@ -1,4 +1,4 @@
-import { indextocoord } from '../../utils/converters'
+import { indextocoord } from '../utils/converters'
 export default class Player {
 
   constructor({ position, palette }, Game) {

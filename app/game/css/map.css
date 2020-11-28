@@ -1,11 +1,12 @@
-#master {
+#map {
   overflow: hidden;
-  position: relative;
+  position: absolute;
   background: white;
   box-sizing: border-box;
+  transform: translate(-50%, -50%);
 }
 
-.mapcanvas {
+canvas {
   overflow: hidden;
   position: absolute;
   transition-timing-function: ease;

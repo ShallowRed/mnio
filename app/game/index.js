@@ -1,11 +1,11 @@
 import '../global.css';
-import './main.css';
 import './tutoriel/introtuto.css';
 import './tutoriel/tutoriel.css';
 
-import './components/map/map.css';
-import './components/player/player.css';
-import './components/ui/ui.css';
+import './css/main.css';
+import './css/map.css';
+import './css/player.css';
+import './css/ui.css';
 
 ///////////////////////
 

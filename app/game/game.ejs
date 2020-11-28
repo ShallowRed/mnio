@@ -10,9 +10,38 @@
 
 <body>
 	<a href='/'><img id="logo" src="dist/img/logo-full.png" alt="sorry"></a>
-	<%= require('./components/map/map.ejs')() %>
 	<%= require('./tutoriel/tutoriel.ejs')() %>
-	<%= require('./components/ui/ui.ejs')() %>
+
+	<section>
+		<div id="map" style="position: relative;">
+			<canvas></canvas>
+			<canvas></canvas>
+			<canvas></canvas>
+
+			<div id="player"></div>
+			<div id="shadow"></div>
+		</div>
+
+		<div id="buttons">
+			<button type="button" class="zoom" id="zoomin">+</button>
+			<button type="button" class="zoom" id="zoomout">-</button>
+			<button type="button" class="color" id="c1"></button>
+			<button type="button" class="color" id="c2"></button>
+			<button type="button" class="color" id="c3"></button>
+			<button type="button" class="color" id="c4"></button>
+			<button type="button" class="color" id="c5"></button>
+		</div>
+	</section>
+
+	<div id="utils">
+		<button id="refresh" type="button" onclick="window.location='/'">
+			<img src="dist/img/refresh.png" alt="sorry">
+		</button>
+		<button id="openTuto" type="button">
+			<img src="dist/img/what.png" alt="sorry">
+		</button>
+	</div>
+
 </body>
 
 </html>

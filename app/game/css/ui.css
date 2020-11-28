@@ -1,5 +1,5 @@
 #buttons {
-  position: absolute;
+  /* position: absolute; */
   z-index: 50;
   display: flex;
   justify-content: center;
@@ -7,8 +7,12 @@
 
   & button {
     box-sizing: border-box;
-    max-height: 45px;
-    max-width: 45px;
+    width: 5vw;
+    height: 5vw;
+    min-height: 40px;
+    min-width: 40px;
+    max-height: 50px;
+    max-width: 50px;
     border-radius: 5px;
     box-shadow: #aaa 5px 5px;
 
@@ -44,14 +48,14 @@
   }
 }
 
+#refresh {
+  z-index: 960;
+  top: 10px;
+}
+
 #closeTuto,
 #openTuto {
   display: none;
   z-index: 970;
   top: 60px;
-}
-
-#refresh {
-  z-index: 960;
-  top: 10px;
 }

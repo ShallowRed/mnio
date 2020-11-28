@@ -8,6 +8,7 @@ export default class Ui {
       closeBtn: document.getElementById('closeTuto'),
       window: document.getElementById('tuto')
     };
+    this.section = document.querySelector('section');
     this.elem = document.documentElement;
     this.btns = document.querySelectorAll('#buttons button');
     this.btnsBar = document.getElementById('buttons');
@@ -21,44 +22,22 @@ export default class Ui {
       .style.display = "block";
 
     this.tuto.openBtn.style.display = "block";
-
   }
 
-  render() {
-    const { lMargin, ratio, windowWidth, windowHeight, margin } = this.Map();
-
-    this.btns.forEach(btn => {
-      btn.style.height = lMargin + "px";
-      btn.style.width = lMargin + "px";
-      btn.style.margin = "0";
-    });
-
-    if (ratio) this.btns[2].style.marginTop = "3vh";
-    else this.btns[2].style.marginLeft = "5%";
-
+  render(Map = this.Map()) {
+    this.btns[2].style.marginTop = Map.ratio ? "3vh" : "0";
+    this.btns[2].style.marginLeft = Map.ratio ? "0" : "5%";
+    this.section.style.flexDirection = Map.ratio ? "row" : "column";
     const props = Object.entries({
       flexFlow: ["column", "row"],
-      width: ["10%", "100%"],
-      height: ["100%", "10%"],
-      top: ["0", "auto"],
-      right: ["0", "auto"],
-      bottom: ["auto", "0"],
-      paddingLeft: ["2%", "0px"],
-      paddingTop: ["0px", "1%"]
+      height: ["auto", "10%"],
+      width: ["10%", "auto"],
+      float: ["right", "none"],
+      margin: ["0 0 0 auto", "auto 0 0"],
     });
-
     for (const [key, value] of props) {
-      this.btnsBar.style[key] = value[ratio ? 0 : 1];
+      this.btnsBar.style[key] = value[Map.ratio ? 0 : 1];
     }
-
-    this.tuto.window.style.width = `${windowWidth - margin.right + 2}px`;
-    this.tuto.window.style.height =
-      `${windowHeight - margin.bottom + 2}px`;
-
-    this.tuto.openBtn.style.right =
-      this.tuto.closeBtn.style.right =
-      this.refresh.style.right =
-      (ratio && windowHeight < 600) ? "9%" : "10px";
   }
 
   focusColorBtn(i) {
