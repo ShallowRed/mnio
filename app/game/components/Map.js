@@ -26,18 +26,19 @@ export default class Map {
   }
 
   update() {
-    [0,1].forEach(dimension => {
-      this.getWindowDimension(dimension);
-    });
+    this.getWindowDimension();
     this.ensureLimits();
     this.getCellProps();
   }
 
-  getWindowDimension(dimension) { //////////// test
-    const dimensionKey = ["Width", "Height"][dimension]
-    this[dimensionKey] = 0.95 * Math.max(
-      window[`inner${dimensionKey}`],
-      document.documentElement[`client${dimensionKey}`]
+  getWindowDimension() { //////////// test
+    this.Width = 0.95 * Math.max(
+      window.innerWidth,
+      document.documentElement.clientWidth
+    );
+    this.Height = 0.95 * Math.max(
+      window.innerHeight,
+      document.documentElement.clientHeight
     );
   }
 
