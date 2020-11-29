@@ -81,21 +81,6 @@ export default class Map {
     });
   }
 
-  setDimensionSize(dimension) { //////////// test
-    const { cellSize, margin } = this;
-    const mX = [this.cols, this.rows][dimension];
-    const dimensionKey = ['width', 'height'][dimension];
-    const marginKey = ['marginTop', 'marginLeft'][dimension];
-    const orientationKey = ['top', 'left'][dimension];
-
-    this.master.style[dimensionKey] = `${cellSize * mX}px`;
-    this.master.style[marginKey] = `${margin[orientationKey]}px`;
-    this.canvas.forEach(canvas => {
-      canvas[dimensionKey] = cellSize * (mX + 2);
-      canvas.style[orientationKey] = `-${cellSize}px`;
-    });
-  }
-
   render(Game = this.Game()) {
     const { Cell } = Game;
 
