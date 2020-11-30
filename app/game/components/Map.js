@@ -3,7 +3,7 @@ export default class Map {
   constructor(Game) {
     this.Game = () => Game;
     this.Player = () => Game.Player;
-    this.maxcells = 20;
+    this.maxcells = 16;
     this.startcells = 8;
     this.mincells = 5;
     this.margin = {};
@@ -42,31 +42,37 @@ export default class Map {
     );
   }
 
-  ensureLimits() {
-    const { startcells, maxcells, mincells } = this;
-    if (!this.cols) this.cols = startcells;
-    if (!this.rows) this.rows = startcells;
-    if (this.cols <= mincells) this.cols = mincells;
-    if (this.rows <= mincells) this.rows = mincells;
-    if (this.cols >= maxcells) this.cols = maxcells;
-    if (this.rows >= maxcells) this.rows = maxcells;
-  }
-
   getCellProps() {
     this.ratio = (this.Width > this.Height);
 
     if (this.ratio) {
-      this.Width = 0.9 * this.Width;
       this.master.style.top = "50%";
       this.master.style.left = "45%";
-      this.cols = Math.round(this.rows * this.Width / this.Height);
+      // this.master.style.width = `85%`;
+      // this.master.style.height = `95%`;
+
+      this.mainDim = this.cols;
+
+      if (!this.cols)
+        this.cols = this.startcells;
+
+      this.Width = 0.9 * this.Width;
       this.cellSize = Math.round(this.Width / this.cols);
+      this.rows = Math.round(this.Height / this.cellSize);
     } else {
-      this.Height = 0.9 * this.Height;
       this.master.style.top = "45%";
       this.master.style.left = "50%";
-      this.rows = Math.round(this.cols * this.Height / this.Width);
+      // this.master.style.width = `95%`;
+      // this.master.style.height = `85%`;
+
+      this.mainDim = this.rows;
+
+      if (!this.rows)
+        this.rows = this.startcells;
+
+      this.Height = 0.9 * this.Height;
       this.cellSize = Math.round(this.Height / this.rows);
+      this.cols = Math.round(this.Width / this.cellSize);
     }
   }
 
@@ -116,6 +122,14 @@ export default class Map {
   }
 
   translateCanvas(duration) {
+
+    // const { is } = this.Player();
+    // const deltaY = this.master.offsetHeight - this.cellSize * this.rows;
+    // const deltaX = this.master.offsetWidth - this.cellSize * this.cols;
+    // this.delta = {};
+    // this.delta.top = is.up ? 0 : is.down ? deltaY : deltaY/2;
+    // this.delta.left = is.left ? 0 : is.right ? deltaX : deltaX/2;
+
     this.canvas.forEach(c => {
       c.style.transitionDuration = `${duration}s`;
       c.style.transform =
@@ -157,9 +171,22 @@ export default class Map {
     const pX1 = Player.posInView.map(pvX => (pvX + 1.5) * cS1);
     const mX1 = [this.cols, this.rows].map(mX => mX * cS1);
 
-    const coef = dir == "in" ? -0.5 : 0.5;
-    this.rows += coef;
-    this.cols += coef;
+    const coef = dir == "in" ? -1 : 1;
+
+    if (this.mainDim == this.cols) {
+      if (this.cols > this.mincells && dir == "in")
+        this.cols += coef;
+      else if (this.cols < this.maxcells && dir == "out")
+        this.cols += coef;
+      else return;
+    }
+    if (this.mainDim == this.rows) {
+      if (this.rows > this.mincells && dir == "in")
+        this.rows += coef;
+      else if (this.rows < this.maxcells && dir == "out")
+        this.cols += coef;
+      else return;
+    }
 
     Game.update(true);
 
