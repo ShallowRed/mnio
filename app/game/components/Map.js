@@ -27,7 +27,6 @@ export default class Map {
 
   update() {
     this.getWindowDimension();
-    this.ensureLimits();
     this.getCellProps();
   }
 
@@ -43,33 +42,30 @@ export default class Map {
   }
 
   getCellProps() {
-    this.ratio = (this.Width > this.Height);
+    this.ratio = (this.Width >= this.Height);
 
     if (this.ratio) {
       this.master.style.top = "50%";
       this.master.style.left = "45%";
-      // this.master.style.width = `85%`;
-      // this.master.style.height = `95%`;
+      this.master.style.width = `85%`;
+      this.master.style.height = `95%`;
 
-      this.mainDim = this.cols;
-
+      this.mainDim = 0;
       if (!this.cols)
         this.cols = this.startcells;
-
       this.Width = 0.9 * this.Width;
       this.cellSize = Math.round(this.Width / this.cols);
       this.rows = Math.round(this.Height / this.cellSize);
+
     } else {
       this.master.style.top = "45%";
       this.master.style.left = "50%";
-      // this.master.style.width = `95%`;
-      // this.master.style.height = `85%`;
+      this.master.style.width = `95%`;
+      this.master.style.height = `85%`;
 
-      this.mainDim = this.rows;
-
+      this.mainDim = 1;
       if (!this.rows)
         this.rows = this.startcells;
-
       this.Height = 0.9 * this.Height;
       this.cellSize = Math.round(this.Height / this.rows);
       this.cols = Math.round(this.Width / this.cellSize);
@@ -78,8 +74,8 @@ export default class Map {
 
   setSize() {
     const { cols, rows, cellSize } = this;
-    this.master.style.width = `${cellSize * cols}px`;
-    this.master.style.height = `${cellSize * rows}px`;
+    // this.master.style.width = `${cellSize * cols}px`;
+    // this.master.style.height = `${cellSize * rows}px`;
     this.canvas.forEach(c => {
       c.width = cellSize * (cols + 2);
       c.height = cellSize * (rows + 2);
@@ -171,22 +167,8 @@ export default class Map {
     const pX1 = Player.posInView.map(pvX => (pvX + 1.5) * cS1);
     const mX1 = [this.cols, this.rows].map(mX => mX * cS1);
 
-    const coef = dir == "in" ? -1 : 1;
-
-    if (this.mainDim == this.cols) {
-      if (this.cols > this.mincells && dir == "in")
-        this.cols += coef;
-      else if (this.cols < this.maxcells && dir == "out")
-        this.cols += coef;
-      else return;
-    }
-    if (this.mainDim == this.rows) {
-      if (this.rows > this.mincells && dir == "in")
-        this.rows += coef;
-      else if (this.rows < this.maxcells && dir == "out")
-        this.cols += coef;
-      else return;
-    }
+    this.incrementMainDimension(dir);
+    //todo return if not possible
 
     Game.update(true);
 
@@ -202,7 +184,8 @@ export default class Map {
     })
 
     const origin = pX1.map((e, i) => {
-      return (pX1[i] * factor - pX2[i] - dCs - dX[i]) / (factor - 1)
+      return (pX1[i] * factor - pX2[i] - dCs) / (factor - 1)
+      // return (pX1[i] * factor - pX2[i] - dCs - dX[i]) / (factor - 1)
     })
 
     this.setScaleVector(origin, factor);
@@ -212,7 +195,30 @@ export default class Map {
       Game.flag.zoom = false;
       this.setSize();
       Game.render();
-    }, 200)
+    }, 600)
+  }
+
+  incrementMainDimension(dir, Game = this.Game()){
+    const coef = dir == "in" ? -2 : 2;
+    if (this.mainDim == 0) {
+      if (this.cols > this.mincells && dir == "in")
+        this.cols += coef;
+      else if (this.cols < this.maxcells && dir == "out")
+        this.cols += coef;
+      else {
+        Game.flag.zoom = false;
+        return;
+      }
+    } else if (this.mainDim == 1) {
+      if (this.rows > this.mincells && dir == "in")
+        this.rows += coef;
+      else if (this.rows < this.maxcells && dir == "out")
+        this.cols += coef;
+      else {
+        Game.flag.zoom = false;
+        return;
+      }
+    }
   }
 
   setScaleVector(origin, factor) {
