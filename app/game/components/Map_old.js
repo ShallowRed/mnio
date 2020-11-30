@@ -9,7 +9,7 @@ export default class Map {
     this.margin = {};
     this.shift = {};
     this.scale = {};
-    this.view = document.getElementById('view');
+    this.master = document.getElementById('map');
     this.canvas = document.querySelectorAll('canvas');
     this.ctx = [...this.canvas].map(canvas => {
       const context = canvas.getContext('2d');
@@ -25,64 +25,62 @@ export default class Map {
     };
   }
 
-  // getWindowDimension() { //////////// test
-  //   this.Width = 0.95 * Math.max(
-  //     window.innerWidth,
-  //     document.documentElement.clientWidth
-  //   );
-  //   this.Height = 0.95 * Math.max(
-  //     window.innerHeight,
-  //     document.documentElement.clientHeight
-  //   );
-  // }
-
-  //   window.innerWidth && document.documentElement.clientWidth ?
-  // Math.min(window.innerWidth, document.documentElement.clientWidth) :
-  // window.innerWidth ||
-  // document.documentElement.clientWidth ||
-  // document.getElementsByTagName('body')[0].clientWidth;
-
   update() {
-    this.ratio = (window.innerWidth >= window.innerHeight);
-    if (this.ratio) {
-      this.view.style.top = "50%";
-      this.view.style.left = "45%";
-      this.view.style.width = "85%";
-      this.view.style.height = "95%";
+    this.getWindowDimension();
+    this.getCellProps();
+  }
 
-      const width = Math.round(0.85 * window.innerWidth);
-      const height = Math.round(0.95 * window.innerHeight);
+  getWindowDimension() { //////////// test
+    this.Width = 0.95 * Math.max(
+      window.innerWidth,
+      document.documentElement.clientWidth
+    );
+    this.Height = 0.95 * Math.max(
+      window.innerHeight,
+      document.documentElement.clientHeight
+    );
+  }
+
+  getCellProps() {
+    this.ratio = (this.Width >= this.Height);
+
+    if (this.ratio) {
+      this.master.style.top = "50%";
+      this.master.style.left = "45%";
+      this.master.style.width = `85%`;
+      this.master.style.height = `95%`;
 
       this.mainDim = 0;
       if (!this.cols)
         this.cols = this.startcells;
-      this.cellSize = Math.round(width / this.cols);
-      this.rows = Math.round(height / this.cellSize);
+      this.Width = 0.9 * this.Width;
+      this.cellSize = Math.round(this.Width / this.cols);
+      this.rows = Math.round(this.Height / this.cellSize);
 
     } else {
-      this.view.style.top = "45%";
-      this.view.style.left = "50%";
-      this.view.style.width = "95%";
-      this.view.style.height = "85%";
-
-      const width = Math.round(0.95 * window.innerWidth);
-      const height = Math.round(0.85 * window.innerHeight);
+      this.master.style.top = "45%";
+      this.master.style.left = "50%";
+      this.master.style.width = `95%`;
+      this.master.style.height = `85%`;
 
       this.mainDim = 1;
       if (!this.rows)
         this.rows = this.startcells;
-      this.cellSize = Math.round(height / this.rows);
-      this.cols = Math.round(width / this.cellSize);
+      this.Height = 0.9 * this.Height;
+      this.cellSize = Math.round(this.Height / this.rows);
+      this.cols = Math.round(this.Width / this.cellSize);
     }
   }
 
-  setCanvasSizeAndPos() {
+  setSize() {
     const { cols, rows, cellSize } = this;
-    this.canvas.forEach(canvas => {
-      canvas.width = cellSize * (cols + 2);
-      canvas.height = cellSize * (rows + 2);
-      canvas.style.top = `-${cellSize}px`;
-      canvas.style.left = `-${cellSize}px`;
+    // this.master.style.width = `${cellSize * cols}px`;
+    // this.master.style.height = `${cellSize * rows}px`;
+    this.canvas.forEach(c => {
+      c.width = cellSize * (cols + 2);
+      c.height = cellSize * (rows + 2);
+      c.style.top = `-${cellSize}px`;
+      c.style.left = `-${cellSize}px`;
     });
   }
 
@@ -90,8 +88,8 @@ export default class Map {
     const { Cell } = Game;
 
     this.resetShift();
-    this.translateCanvas({duration: 0})
-    this.clearAllCanvas();
+    this.translateCanvas(0)
+    this.clearCanvas();
 
     Game.allowed.forEach(position =>
       Cell.render.allowed(position)
@@ -113,17 +111,17 @@ export default class Map {
     this.shift.left = 0;
   }
 
-  clearAllCanvas() {
+  clearCanvas() {
     this.ctx.forEach(ctx =>
       ctx.clearRect(0, 0, this.canvas[1].width, this.canvas[1].height)
     );
   }
 
-  translateCanvas({duration}) {
+  translateCanvas(duration) {
 
     // const { is } = this.Player();
-    // const deltaY = this.view.offsetHeight - this.cellSize * this.rows;
-    // const deltaX = this.view.offsetWidth - this.cellSize * this.cols;
+    // const deltaY = this.master.offsetHeight - this.cellSize * this.rows;
+    // const deltaX = this.master.offsetWidth - this.cellSize * this.cols;
     // this.delta = {};
     // this.delta.top = is.up ? 0 : is.down ? deltaY : deltaY/2;
     // this.delta.left = is.left ? 0 : is.right ? deltaX : deltaX/2;
@@ -137,9 +135,8 @@ export default class Map {
 
   translateAnimation(Game = this.Game()) {
     const direction = this.Directions[Game.Player.lastdir];
-    const {duration} = Game;
     this.setDirectionShift(direction);
-    this.translateCanvas({duration});
+    this.translateCanvas(Game.duration);
   }
 
   setDirectionShift({ dimension, sense }, Player = this.Player()) {
@@ -172,6 +169,7 @@ export default class Map {
 
     this.incrementMainDimension(dir);
     //todo return if not possible
+
     Game.update(true);
 
     const { cS2 } = Object.assign({}, { cS2: this.cellSize })
@@ -195,12 +193,12 @@ export default class Map {
 
     setTimeout(() => {
       Game.flag.zoom = false;
-      this.setCanvasSizeAndPos();
+      this.setSize();
       Game.render();
     }, 600)
   }
 
-  incrementMainDimension(dir, Game = this.Game()) {
+  incrementMainDimension(dir, Game = this.Game()){
     const coef = dir == "in" ? -2 : 2;
     if (this.mainDim == 0) {
       if (this.cols > this.mincells && dir == "in")

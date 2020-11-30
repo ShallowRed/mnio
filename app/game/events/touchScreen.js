@@ -1,18 +1,18 @@
 export default (Game) => {
 
-  const { flag, Map: { master } } = Game;
+  const { flag, Map: { view } } = Game;
 
-  master.addEventListener('touchstart', event =>
+  view.addEventListener('touchstart', event =>
     touchStart(event, flag),
     false
   );
 
-  master.addEventListener('touchmove', event =>
+  view.addEventListener('touchmove', event =>
     touchMove(event, flag, Game),
     false
   );
 
-  master.addEventListener('touchend', event =>
+  view.addEventListener('touchend', event =>
     touchEnd(event, flag),
     false
   );

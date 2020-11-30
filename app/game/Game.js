@@ -46,7 +46,7 @@ export default class Game {
   update(isZoom) {
     this.Map.update();
     this.Player.update();
-    !isZoom && this.Map.setSize();
+    !isZoom && this.Map.setCanvasSizeAndPos();
     this.Ui.render();
   }
 
