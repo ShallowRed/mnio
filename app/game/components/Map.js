@@ -6,7 +6,6 @@ export default class Map {
     this.maxcells = 16;
     this.startcells = 8;
     this.mincells = 5;
-    this.margin = {};
     this.shift = {};
     this.delta = {};
     this.scale = {};
@@ -21,58 +20,77 @@ export default class Map {
     };
   }
 
-  // getWindowDimension() { //////////// test
-  //   this.Width = 0.95 * Math.max(
-  //     window.innerWidth,
-  //     document.documentElement.clientWidth
-  //   );
-  //   this.Height = 0.95 * Math.max(
-  //     window.innerHeight,
-  //     document.documentElement.clientHeight
-  //   );
-  // }
-
-  //   window.innerWidth && document.documentElement.clientWidth ?
-  // Math.min(window.innerWidth, document.documentElement.clientWidth) :
-  // window.innerWidth ||
-  // document.documentElement.clientWidth ||
-  // document.getElementsByTagName('body')[0].clientWidth;
+  ////////////////////////////////////////////////////
 
   update() {
     this.ratio = (window.innerWidth >= window.innerHeight);
-    if (this.ratio) {
-      this.view.style.top = "50%";
-      this.view.style.left = "45%";
 
-      this.view.style.width = "85%";
-      this.view.style.height = "95%";
+    const mainDimension = this.ratio ? 0 : 1;
 
-      this.width = Math.round(0.85 * window.innerWidth);
-      this.height = Math.round(0.95 * window.innerHeight);
+    const { position, size, numCells, windowSize } =
+    this.getDimensionKeys(mainDimension);
 
-      this.mainDim = 0;
-      if (!this.cols)
-        this.cols = this.startcells;
-      this.cellSize = Math.round(this.width / this.cols);
-      this.rows = Math.round(this.height / this.cellSize);
-
-    } else {
-      this.view.style.top = "45%";
-      this.view.style.left = "50%";
-
-      this.view.style.width = "95%";
-      this.view.style.height = "85%";
-
-      this.width = Math.round(0.95 * window.innerWidth);
-      this.height = Math.round(0.85 * window.innerHeight);
-
-      this.mainDim = 1;
-      if (!this.rows)
-        this.rows = this.startcells;
-      this.cellSize = Math.round(this.height / this.rows);
-      this.cols = Math.round(this.width / this.cellSize);
-    }
+    this.setViewPosition(position);
+    this.setViewSize(size);
+    this.updateCanvasSize(size, windowSize);
+    this.updateCellSizeFromMainDim(size, numCells);
+    this.updateSecDimFromCellSize(size, numCells);
   }
+
+  getDimensionKeys(d) {
+    return {
+      position: {
+        main: ["left", "top"][d],
+        sec: ["top", "left"][d]
+      },
+      size: {
+        main: ["width", "height"][d],
+        sec: ["height", "width"][d]
+      },
+      numCells: {
+        main: ["cols", "rows"][d],
+        sec: ["rows", "cols"][d]
+      },
+      windowSize: {
+        main: ["innerWidth", "innerHeight"][d],
+        sec: ["innerHeight", "innerWidth"][d]
+      }
+    };
+  }
+
+  setViewPosition(position) {
+    this.view.style[position.main] = "45%";
+    this.view.style[position.sec] = "50%";
+  }
+
+  setViewSize(size) {
+    this.view.style[size.main] = "85%";
+    this.view.style[size.sec] = "95%";
+  }
+
+  updateCanvasSize(size, windowSize) {
+    ////// Math.max( window.innerHeight, document.documentElement.clientHeight);
+    // window.innerWidth && document.documentElement.clientWidth ?
+    // Math.min(window.innerWidth, document.documentElement.clientWidth) :
+    // window.innerWidth ||
+    // document.documentElement.clientWidth ||
+    // document.getElementsByTagName('body')[0].clientWidth;
+
+    this[size.main] = Math.round(0.85 * window[windowSize.main]);
+    this[size.sec] = Math.round(0.95 * window[windowSize.sec]);
+  }
+
+  updateCellSizeFromMainDim(size, numCells) {
+    if (!this[numCells.main])
+      this[numCells.main] = this.startcells;
+    this.cellSize = Math.round(this[size.main] / this[numCells.main]);
+  }
+
+  updateSecDimFromCellSize(size, numCells) {
+    this[numCells.sec] = Math.round(this[size.sec] / this.cellSize);
+  }
+
+  ////////////////////////////////////////////////////
 
   setCanvasSizeAndPos() {
     const { cols, rows, cellSize } = this;
@@ -83,6 +101,8 @@ export default class Map {
       canvas.style.left = `-${1 * cellSize}px`;
     });
   }
+
+  ////////////////////////////////////////////////////
 
   render(Game = this.Game()) {
     const { Cell } = Game;
@@ -117,7 +137,10 @@ export default class Map {
     );
   }
 
-  translateCanvas({ duration }, Player = this.Player(), Game = this.Game()) {
+  ////////////////////////////////////////////////////
+
+  translateCanvas({ duration }, Player = this.Player(), Game = this
+    .Game()) {
 
     const { is } = Player;
     const deltaX = this.width - this.cellSize * this.cols;
@@ -127,13 +150,13 @@ export default class Map {
     const { pX: pY, gX: gY, hX: hY } = Player.getCoords(1);
 
     this.delta.left = pX <= hX ? 0 : pX >= hX - 1 ? deltaX : deltaX / 2;
-    this.delta.top = pY <= hY ? 0 : pY >= gY - hY -1 ? deltaY : deltaY / 2;
+    this.delta.top = pY <= hY ? 0 : pY >= gY - hY - 1 ? deltaY : deltaY /
+      2;
 
     this.canvas.forEach(c => {
       c.style.transitionDuration = `${duration}s`;
       c.style.transform =
         `translate(${this.shift.left * this.cellSize + this.delta.left}px, ${this.shift.top * (this.cellSize) + this.delta.top}px)`;
-        // `translate(${this.shift.left * this.cellSize}px, ${this.shift.top * this.cellSize}px)`;
     });
   }
 
@@ -144,7 +167,8 @@ export default class Map {
     this.translateCanvas({ duration });
   }
 
-  setDirectionShift({ dimension, sense }, Player = this.Player()) {
+  setDirectionShift({ dimension, sense },
+    Player = this.Player()) {
     const { pX, gX, hX } = Player.getCoords(dimension);
     const centerStart = hX - sense;
     const centerEnd = gX - hX - sense;
@@ -164,6 +188,8 @@ export default class Map {
     return coef
   }
 
+  ////////////////////////////////////////////////////
+
   zoom2(dir, Game = this.Game(), Player = this.Player()) {
     this.incrementMainDimension(dir);
     //todo return if not possible
@@ -172,37 +198,26 @@ export default class Map {
     Game.render();
   }
 
+  ////////////////////////////////////////////////////
+
   zoom(dir, Game = this.Game(), Player = this.Player()) {
     if (Game.flag.zoom) return;
     Game.flag.zoom = true;
-
     const { cS1 } = Object.assign({}, { cS1: this.cellSize })
     const pX1 = Player.posInView.map(pvX => (pvX + 1.5) * cS1);
     const mX1 = [this.cols, this.rows].map(mX => mX * cS1);
-
     this.incrementMainDimension(dir);
-    //todo return if not possible
     Game.update(true);
-
     const { cS2 } = Object.assign({}, { cS2: this.cellSize })
     const pX2 = Player.posInView.map(pvX => (pvX + 1.5) * cS2);
     const mX2 = [this.cols, this.rows].map(mX => mX * cS2);
-
     const factor = cS2 / cS1;
     const dCs = cS1 - cS2;
-
-    const dX = mX1.map((e, i) => {
-      return (mX1[i] - mX2[i]) / 2
-    })
-
-    const origin = pX1.map((e, i) => {
-      return (pX1[i] * factor - pX2[i] - dCs) / (factor - 1)
-      // return (pX1[i] * factor - pX2[i] - dCs - dX[i]) / (factor - 1)
-    })
-
+    const dX = mX1.map((e, i) => (mX1[i] - mX2[i]) / 2);
+    const origin = pX1.map((e, i) => (pX1[i] * factor - pX2[i] - dCs) / (
+      factor - 1));
     this.setScaleVector(origin, factor);
     this.scaleCanvas();
-
     setTimeout(() => {
       Game.flag.zoom = false;
       this.setCanvasSizeAndPos();
@@ -212,7 +227,7 @@ export default class Map {
 
   incrementMainDimension(dir, Game = this.Game()) {
     const coef = dir == "in" ? -2 : 2;
-    if (this.mainDim == 0) {
+    if (this.ratio) {
       if (this.cols > this.mincells && dir == "in")
         this.cols += coef;
       else if (this.cols < this.maxcells && dir == "out")
@@ -221,7 +236,7 @@ export default class Map {
         Game.flag.zoom = false;
         return;
       }
-    } else if (this.mainDim == 1) {
+    } else {
       if (this.rows > this.mincells && dir == "in")
         this.rows += coef;
       else if (this.rows < this.maxcells && dir == "out")

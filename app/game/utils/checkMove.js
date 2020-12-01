@@ -1,7 +1,7 @@
 import { indextocoord, coordtoindex } from './converters';
 
 export default (dir, position, Game) => {
-  const { rows, cols, owned, allowed, colors, positions } = Game;
+  const { rows, cols } = Game;
 
   let [x, y] = indextocoord(position, { cols, rows });
 
@@ -11,14 +11,17 @@ export default (dir, position, Game) => {
   else if (dir == "down" && y !== rows - 1) y++;
   else return;
 
-  let nextpos = coordtoindex([x, y], { cols });
+  const nextpos = coordtoindex([x, y], { cols });
+  if (isAvailable(nextpos, Game)) return nextpos;
+};
 
-  if (
+const isAvailable = (nextpos, { owned, allowed, colors, positions }) => {
+  return (
     owned.includes(nextpos) ||
     (
       allowed.includes(nextpos) &&
       !positions.includes(nextpos) &&
       !colors[nextpos]
     )
-  ) return nextpos;
-};
+  );
+}

@@ -9,7 +9,13 @@ export default (Game) => {
 const serverEvents = Object.entries({
 
   newPlayerPos(Game, newPosition) {
+    Game.flag.moveCallback = true;
+    console.log("_____________________");
+    console.log("server nextPos :", newPosition);
+    console.log("move allowed: ", true)
+    console.log("_____________________");
     if (newPosition !== Game.Player.position) {
+      console.log("!!! Game.Player.position :", Game.Player.position);
       Game.newPlayerPos(newPosition);
     }
   },
@@ -39,7 +45,9 @@ const serverEvents = Object.entries({
   },
 
   moveCallback({ flag }) {
-    flag.moveCallback = true;
+    // console.log("__________________________________________");
+    // console.log("__ moveCallBack received");
+    // flag.moveCallback = true;
   },
 
   fillCallback({ flag }) {

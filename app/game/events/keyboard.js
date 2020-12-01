@@ -6,10 +6,14 @@ export default (Game) => {
     if (event.code == "AltLeft")
       isAltPressed = true;
 
+    console.log("=> key moveAttempt");
+    console.log("ok to move ?", Game.flag.moveCallback, !Game.flag.translate);
+
     if (
       Game.flag.translate ||
       !Game.flag.moveCallback
     ) return;
+
     onKeyDown(event, Game)
   });
 
@@ -32,7 +36,7 @@ const onKeyDown = (event, Game) => {
       break;
 
     case "KeyS":
-      if(isAltPressed) Game.zoom("out");
+      if (isAltPressed) Game.zoom("out");
       break;
 
     case "ControlLeft":

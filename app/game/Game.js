@@ -58,14 +58,18 @@ export default class Game {
 
   moveAttempt(direction) {
     const { socket, flag, Player: { position } } = this;
-
-    if (!flag.moveCallback || flag.translate) return;
+    if (!this.flag.moveCallback || flag.translate) return;
     socket.emit('move', direction);
-    flag.moveCallback = false;
+    console.log("-----------------------------------------");
+    console.log("sent moveAttempt");
 
     const nextpos = checkMove(direction, position, this);
-    if (nextpos)
+    if (nextpos) {
+      this.flag.moveCallback = false;
+      console.log("client nextPos :", nextpos);
+      console.log("move allowed: ", false)
       this.newPlayerPos(nextpos, direction);
+    }
   }
 
   newPlayerPos(position, direction) {
@@ -125,15 +129,16 @@ class Flag {
     this.translate = false;
     this.touch = false;
     this.zoom = false;
-    this.ok = () => (
-      !this.translate &&
+    this.fillCallback = true;
+    this.moveCallback = true;
+    this.tuto = false;
+  }
+
+  ok() {
+    return !this.translate &&
       !this.fill &&
       !this.touch &&
       !this.zoom &&
       !this.tuto
-    );
-    this.fillCallback = true;
-    this.moveCallback = true;
-    this.tuto = false;
   }
 }
