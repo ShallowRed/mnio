@@ -2,10 +2,10 @@ import '../global.css';
 import './tutoriel/introtuto.css';
 import './tutoriel/tutoriel.css';
 
-import './css/main.css';
-import './css/map.css';
-import './css/player.css';
-import './css/ui.css';
+import './styles/main.css';
+import './styles/map.css';
+import './styles/player.css';
+import './styles/ui.css';
 
 ///////////////////////
 

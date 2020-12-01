@@ -114,7 +114,8 @@ export default class Game {
       Ui.focusZoomBtn(dir, false), 200);
 
     // this.renderAll();
-    Map.zoom(dir);
+    Map.zoom2(dir);
+    // Map.zoom(dir);
   }
 }
 

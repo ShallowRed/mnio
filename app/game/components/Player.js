@@ -80,13 +80,13 @@ export default class Player {
   }
 
   setSpritePosition(isAnimated) {
-    const { cellSize } = this.Map();
+    const { cellSize, delta } = this.Map();
     const { duration } = this.Game();
     const shift = Math.round(cellSize / 8);
     this.sprite.forEach(sprite => {
       sprite.style.transitionDuration = `${isAnimated ? duration : 0}s`;
-      sprite.style.left = `${this.posInView[0] * cellSize + shift}px`;
-      sprite.style.top = `${this.posInView[1] * cellSize + shift}px`;
+      sprite.style.left = `${this.posInView[0] * cellSize + shift + (delta.left || 0)}px`;
+      sprite.style.top = `${this.posInView[1] * cellSize + shift + (delta.top || 0)}px`;
     });
 
   }
