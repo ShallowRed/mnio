@@ -6,9 +6,10 @@ export default class Map {
     this.maxcells = 16;
     this.startcells = 8;
     this.mincells = 5;
-    this.shift = {};
-    this.delta = {};
-    this.scale = {};
+    this.numCells = [0, 0];
+    this.size = [0, 0];
+    this.shift = [0, 0];
+    this.delta = [0, 0];
     this.view = document.getElementById('view');
     this.canvas = document.querySelectorAll('canvas');
     this.ctx = [...this.canvas].map(canvas => canvas.getContext('2d'));
@@ -24,92 +25,91 @@ export default class Map {
 
   update() {
     this.ratio = (window.innerWidth >= window.innerHeight);
-
-    const mainDimension = this.ratio ? 0 : 1;
-
-    const { position, size, numCells, windowSize } =
-    this.getDimensionKeys(mainDimension);
-
-    this.setViewPosition(position);
-    this.setViewSize(size);
-    this.updateCanvasSize(size, windowSize);
-    this.updateCellSizeFromMainDim(size, numCells);
-    this.updateSecDimFromCellSize(size, numCells);
+    this.getMainDimension();
+    this.setViewPosition();
+    this.setViewSize();
+    this.updateCanvasSize();
+    this.updateCellSizeFromMainDim();
+    this.updateSecDimFromCellSize();
   }
 
-  getDimensionKeys(d) {
-    return {
-      position: {
-        main: ["left", "top"][d],
-        sec: ["top", "left"][d]
-      },
-      size: {
-        main: ["width", "height"][d],
-        sec: ["height", "width"][d]
-      },
-      numCells: {
-        main: ["cols", "rows"][d],
-        sec: ["rows", "cols"][d]
-      },
-      windowSize: {
-        main: ["innerWidth", "innerHeight"][d],
-        sec: ["innerHeight", "innerWidth"][d]
-      }
-    };
+  getMainDimension() {
+    this.mainDimension = this.ratio ? 0 : 1;
+    this.secDimension = this.ratio ? 1 : 0;
   }
 
-  setViewPosition(position) {
-    this.view.style[position.main] = "45%";
-    this.view.style[position.sec] = "50%";
+  setViewPosition() {
+    const { mainDimension: mD } = this;
+    this.view.style[["left", "top"][mD]] = "45%";
+    this.view.style[["top", "left"][mD]] = "50%";
   }
 
-  setViewSize(size) {
-    this.view.style[size.main] = "85%";
-    this.view.style[size.sec] = "95%";
+  setViewSize() {
+    const { mainDimension: mD } = this;
+    this.view.style[["width", "height"][mD]] = "85%";
+    this.view.style[["height", "width"][mD]] = "95%";
   }
 
-  updateCanvasSize(size, windowSize) {
+  updateCanvasSize() {
     ////// Math.max( window.innerHeight, document.documentElement.clientHeight);
     // window.innerWidth && document.documentElement.clientWidth ?
     // Math.min(window.innerWidth, document.documentElement.clientWidth) :
     // window.innerWidth ||
     // document.documentElement.clientWidth ||
     // document.getElementsByTagName('body')[0].clientWidth;
-
-    this[size.main] = Math.round(0.85 * window[windowSize.main]);
-    this[size.sec] = Math.round(0.95 * window[windowSize.sec]);
+    const windowSize = ["innerWidth", "innerHeight"];
+    const { mainDimension: mD, secDimension: sD } = this;
+    this.size[mD] = Math.round(0.85 * window[windowSize[mD]]);
+    this.size[sD] = Math.round(0.95 * window[windowSize[sD]]);
   }
 
-  updateCellSizeFromMainDim(size, numCells) {
-    if (!this[numCells.main])
-      this[numCells.main] = this.startcells;
-    this.cellSize = Math.round(this[size.main] / this[numCells.main]);
+  updateCellSizeFromMainDim() {
+    const { mainDimension: mD } = this;
+    if (!this.numCells[mD])
+      this.numCells[mD] = this.startcells;
+    this.cellSize = Math.round(this.size[mD] / this.numCells[mD]);
   }
 
-  updateSecDimFromCellSize(size, numCells) {
-    this[numCells.sec] = Math.round(this[size.sec] / this.cellSize);
+  updateSecDimFromCellSize() {
+    const { secDimension: sD } = this;
+    this.numCells[sD] = Math.round(this.size[sD] / this.cellSize);
+    console.log("numCells", this.numCells);
   }
 
   ////////////////////////////////////////////////////
 
   setCanvasSizeAndPos() {
-    const { cols, rows, cellSize } = this;
+    const { cellSize, numCells: [mX, mY] } = this;
     this.canvas.forEach(canvas => {
-      canvas.width = cellSize * (cols + 2);
-      canvas.height = cellSize * (rows + 2);
-      canvas.style.top = `-${1 * cellSize}px`;
-      canvas.style.left = `-${1 * cellSize}px`;
+      canvas.width = cellSize * (mX + 2);
+      canvas.height = cellSize * (mY + 2);
+      canvas.style.top = `-${cellSize}px`;
+      canvas.style.left = `-${cellSize}px`;
     });
   }
 
   ////////////////////////////////////////////////////
 
-  render(Game = this.Game()) {
-    const { Cell } = Game;
-
+  render() {
     this.resetShift();
     this.translateCanvas({ duration: 0 })
     this.clearAllCanvas();
+    this.drawAllCells();
+  }
+
+  resetShift() {
+    this.shift[0] = 0;
+    this.shift[1] = 0;
+  }
+
+  clearAllCanvas() {
+    this.ctx.forEach(ctx =>
+      ctx.clearRect(0, 0, this.canvas[1].width, this.canvas[1].height)
+    );
+  }
+
+  drawAllCells(Game = this.Game()) {
+    const { Cell } = Game;
 
     Game.allowed.forEach(position =>
       Cell.render.allowed(position)
@@ -126,38 +126,38 @@ export default class Map {
       )
   }
 
-  resetShift() {
-    this.shift.top = 0;
-    this.shift.left = 0;
-  }
-
-  clearAllCanvas() {
-    this.ctx.forEach(ctx =>
-      ctx.clearRect(0, 0, this.canvas[1].width, this.canvas[1].height)
-    );
-  }
-
   ////////////////////////////////////////////////////
 
-  translateCanvas({ duration }, Player = this.Player(), Game = this
-    .Game()) {
-
-    const { is } = Player;
-    const deltaX = this.width - this.cellSize * this.cols;
-    const deltaY = this.height - this.cellSize * this.rows;
-
-    const { pX, gX, hX } = Player.getCoords(0);
-    const { pX: pY, gX: gY, hX: hY } = Player.getCoords(1);
-
-    this.delta.left = pX <= hX ? 0 : pX >= hX - 1 ? deltaX : deltaX / 2;
-    this.delta.top = pY <= hY ? 0 : pY >= gY - hY - 1 ? deltaY : deltaY /
-      2;
-
-    this.canvas.forEach(c => {
-      c.style.transitionDuration = `${duration}s`;
-      c.style.transform =
-        `translate(${this.shift.left * this.cellSize + this.delta.left}px, ${this.shift.top * (this.cellSize) + this.delta.top}px)`;
+  translateCanvas({ duration }) {
+    this.getDelta();
+    const translateValue = this.getTranslateValue();
+    this.canvas.forEach(canvas => {
+      canvas.style.transitionDuration = `${duration}s`;
+      canvas.style.transform = `translate(${translateValue})`;
     });
+  }
+
+  getDelta(Player = this.Player()) {
+
+    this.delta = this.numCells.map((numCells, i) => {
+      const { pX, gX, hX } = Player.getCoords(i);
+
+      const viewCanvasDelta = this.size[i] - numCells * this.cellSize;
+
+      const posInViewCoef =
+        pX <= hX ? 0 :
+        pX >= gX - hX - 1 ? 1 :
+        (1 / 2) + 0.5;
+
+      return viewCanvasDelta * posInViewCoef;
+    });
+  }
+
+  getTranslateValue() {
+    return [0, 1].map(i =>
+        `${this.shift[i] * this.cellSize + this.delta[i]}px`
+      )
+      .join(', ');
   }
 
   translateAnimation(Game = this.Game()) {
@@ -167,101 +167,37 @@ export default class Map {
     this.translateCanvas({ duration });
   }
 
-  setDirectionShift({ dimension, sense },
-    Player = this.Player()) {
+  setDirectionShift({ dimension, sense }, Player = this.Player()) {
     const { pX, gX, hX } = Player.getCoords(dimension);
-    const centerStart = hX - sense;
-    const centerEnd = gX - hX - sense;
-    if (pX > centerStart && pX < centerEnd) {
-      const dimensionKey = ["left", "top"][dimension];
+    const center = {
+      start: hX - sense,
+      end: gX - hX - sense
+    };
+    if (pX > center.start && pX < center.end) {
       const senseCoef = [-1, 1][sense];
-      const isEvenCoef = this.getEvenCoef(pX, centerStart, centerEnd);
-      this.shift[dimensionKey] = senseCoef * isEvenCoef;
+      const isEvenCoef = this.getEvenCoef(pX, center);
+      this.shift[dimension] = senseCoef * isEvenCoef;
     }
   }
 
-  getEvenCoef(pX, centerStart, centerEnd, coef = 1) {
-    if (pX == Math.ceil(centerStart) ||
-      pX == Math.floor(centerStart) ||
-      pX == Math.ceil(centerEnd) ||
-      pX == Math.floor(centerEnd)) coef = 0.5;
+  getEvenCoef(pX, { start, end }, coef = 1) {
+    if (pX == Math.ceil(start) ||
+      pX == Math.floor(start) ||
+      pX == Math.ceil(end) ||
+      pX == Math.floor(end)) coef = 0.5;
     return coef
   }
 
-  ////////////////////////////////////////////////////
+  incrementMainDimension(direction) {
+    const increment = direction == "in" ? -1 : 1;
+    const d = this.mainDimension;
 
-  zoom2(dir, Game = this.Game(), Player = this.Player()) {
-    this.incrementMainDimension(dir);
-    //todo return if not possible
-    Game.update(true);
-    this.setCanvasSizeAndPos();
-    Game.render();
-  }
+    if (
+      (direction == "in" && this.numCells[d] <= this.mincells) ||
+      (direction == "out" && this.numCells[d] >= this.maxcells)
+    ) return;
 
-  ////////////////////////////////////////////////////
-
-  zoom(dir, Game = this.Game(), Player = this.Player()) {
-    if (Game.flag.zoom) return;
-    Game.flag.zoom = true;
-    const { cS1 } = Object.assign({}, { cS1: this.cellSize })
-    const pX1 = Player.posInView.map(pvX => (pvX + 1.5) * cS1);
-    const mX1 = [this.cols, this.rows].map(mX => mX * cS1);
-    this.incrementMainDimension(dir);
-    Game.update(true);
-    const { cS2 } = Object.assign({}, { cS2: this.cellSize })
-    const pX2 = Player.posInView.map(pvX => (pvX + 1.5) * cS2);
-    const mX2 = [this.cols, this.rows].map(mX => mX * cS2);
-    const factor = cS2 / cS1;
-    const dCs = cS1 - cS2;
-    const dX = mX1.map((e, i) => (mX1[i] - mX2[i]) / 2);
-    const origin = pX1.map((e, i) => (pX1[i] * factor - pX2[i] - dCs) / (
-      factor - 1));
-    this.setScaleVector(origin, factor);
-    this.scaleCanvas();
-    setTimeout(() => {
-      Game.flag.zoom = false;
-      this.setCanvasSizeAndPos();
-      Game.render();
-    }, 600)
-  }
-
-  incrementMainDimension(dir, Game = this.Game()) {
-    const coef = dir == "in" ? -2 : 2;
-    if (this.ratio) {
-      if (this.cols > this.mincells && dir == "in")
-        this.cols += coef;
-      else if (this.cols < this.maxcells && dir == "out")
-        this.cols += coef;
-      else {
-        Game.flag.zoom = false;
-        return;
-      }
-    } else {
-      if (this.rows > this.mincells && dir == "in")
-        this.rows += coef;
-      else if (this.rows < this.maxcells && dir == "out")
-        this.cols += coef;
-      else {
-        Game.flag.zoom = false;
-        return;
-      }
-    }
-  }
-
-  setScaleVector(origin, factor) {
-    this.scale.factor = factor;
-    this.scale.origin = origin.map(e => e + "px")
-      .join(" ");
-  }
-
-  scaleCanvas() {
-    const { duration } = this.Game();
-    const { canvas, scale } = this;
-
-    canvas.forEach(c => {
-      c.style.transitionDuration = `${duration}s`;
-      c.style.transformOrigin = scale.origin;
-      c.style.transform = `scale(${scale.factor}) `;
-    });
+    this.numCells[d] += increment;
+    return true;
   }
 }

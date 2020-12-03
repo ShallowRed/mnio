@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const Rules = require('./webpack.rules.js');
 const Plugins = require('./webpack.plugins.js');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
@@ -32,14 +33,36 @@ const config = ({
   module: {
     rules: Rules
   },
-  plugins: Plugins({
-    dev,
-    ejsEntry,
-    name,
-    outputName,
-    inject: !!inject,
-    isFavicon: !!isFavicon
-  })
-})
+  plugins: [
+    ...Plugins({
+      dev,
+      ejsEntry,
+      name,
+      outputName,
+      inject: !!inject,
+      isFavicon: !!isFavicon
+    }),
+    // new webpack.HotModuleReplacementPlugin({
+    //   multiStep: true
+    // })
+  ],
+  // devServer: {
+  //   contentBase: path.resolve(__dirname, "./dist/login"),
+  //   historyApiFallback: true,
+  //   hot: true,
+  //   inline: true,
+  //   open: true,
+  //   hot: true,
+  //   host: 'localhost', // Defaults to `localhost`
+  //   port: 4000, // Defaults to 8080
+  //   proxy: {
+  //     '/': {
+  //       target: 'http://localhost:3000/',
+  //       secure: false
+  //     }
+  //   }
+  // },
+  // devtool: "eval-source-map"
+});
 
 module.exports = config;

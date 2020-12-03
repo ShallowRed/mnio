@@ -38,16 +38,16 @@ export default class Game {
     );
   }
 
-  renderAll() {
-    this.update();
+  renderAll(isZoom) {
+    this.update(isZoom);
     this.render();
   }
 
   update(isZoom) {
     this.Map.update();
     this.Player.update();
-    !isZoom && this.Map.setCanvasSizeAndPos();
-    this.Ui.render();
+    this.Map.setCanvasSizeAndPos();
+    !isZoom && this.Ui.render();
   }
 
   render(isAnimated) {
@@ -60,14 +60,14 @@ export default class Game {
     const { socket, flag, Player: { position } } = this;
     if (!this.flag.moveCallback || flag.translate) return;
     socket.emit('move', direction);
-    console.log("-----------------------------------------");
-    console.log("sent moveAttempt");
+    // console.log("-----------------------------------------");
+    // console.log("sent moveAttempt");
 
     const nextpos = checkMove(direction, position, this);
     if (nextpos) {
       this.flag.moveCallback = false;
-      console.log("client nextPos :", nextpos);
-      console.log("move allowed: ", false)
+      // console.log("client nextPos :", nextpos);
+      // console.log("move allowed: ", false)
       this.newPlayerPos(nextpos, direction);
     }
   }
@@ -117,9 +117,9 @@ export default class Game {
     setTimeout(() =>
       Ui.focusZoomBtn(dir, false), 200);
 
-    // this.renderAll();
-    Map.zoom2(dir);
-    // Map.zoom(dir);
+    const isZoomable = Map.incrementMainDimension(dir);
+    if (isZoomable)
+      this.renderAll(true);
   }
 }
 

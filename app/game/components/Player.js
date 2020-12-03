@@ -68,7 +68,7 @@ export default class Player {
   getCoords(dimension, Game = this.Game(), Map = this.Map()) {
     const pX = this.coord[dimension];
     const gX = [Game.cols, Game.rows][dimension];
-    const mX = [Map.cols, Map.rows][dimension];
+    const mX = Map.numCells[dimension];
     const hX = (mX - 1) / 2;
     return { pX, gX, mX, hX };
   }
@@ -85,8 +85,8 @@ export default class Player {
     const shift = Math.round(cellSize / 8);
     this.sprite.forEach(sprite => {
       sprite.style.transitionDuration = `${isAnimated ? duration : 0}s`;
-      sprite.style.left = `${this.posInView[0] * cellSize + shift + (delta.left || 0)}px`;
-      sprite.style.top = `${this.posInView[1] * cellSize + shift + (delta.top || 0)}px`;
+      sprite.style.left = `${this.posInView[0] * cellSize + shift + (delta[0] || 0)}px`;
+      sprite.style.top = `${this.posInView[1] * cellSize + shift + (delta[1] || 0)}px`;
     });
 
   }

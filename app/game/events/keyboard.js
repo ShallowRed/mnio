@@ -6,8 +6,7 @@ export default (Game) => {
     if (event.code == "AltLeft")
       isAltPressed = true;
 
-    console.log("=> key moveAttempt");
-    console.log("ok to move ?", Game.flag.moveCallback, !Game.flag.translate);
+    // console.log("moveAttempt ok ?", Game.flag.moveCallback, !Game.flag.translate);
 
     if (
       Game.flag.translate ||

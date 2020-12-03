@@ -9,8 +9,8 @@ export const check = (position, Game) => {
 const isInMap = ([x, y], Map) => {
   return x >= -1 &&
     y >= -1 &&
-    x <= Map.cols + 2 &&
-    y <= Map.rows + 2
+    x <= Map.numCells[0] + 2 &&
+    y <= Map.numCells[1] + 2
 };
 
 const getPosInView = (position, { Player, cols, rows }) => {
