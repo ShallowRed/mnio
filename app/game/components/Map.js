@@ -85,15 +85,15 @@ export default class Map {
   setCanvasSize() {
     const { cellSize, numCells: [mX, mY] } = this;
     this.canvas.forEach(canvas => {
-      canvas.width = cellSize * (mX + 2);
-      canvas.height = cellSize * (mY + 2);
+      canvas.width = cellSize * (mX + 4);
+      canvas.height = cellSize * (mY + 4);
     });
   }
 
   setCanvasPos() {
     this.canvas.forEach(canvas => {
-      canvas.style.top = `-${this.cellSize}px`;
-      canvas.style.left = `-${this.cellSize}px`;
+      canvas.style.top = `-${this.cellSize * 2}px`;
+      canvas.style.left = `-${this.cellSize * 2}px`;
     });
   }
 

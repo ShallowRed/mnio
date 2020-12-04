@@ -9,13 +9,13 @@ export const check = (position, Game) => {
 const getPosInView = (position, { Player, cols, rows }) => {
   return indexToCoord(position, { cols, rows })
     .map((coord, i) =>
-      coord - Player.coord[i] + Player.posInView[i] + 1
+      coord - Player.coord[i] + Player.posInView[i] + 2
     )
 }
 
 const isInMap = ([x, y], Map) => {
-  return x >= -1 &&
-    y >= -1 &&
-    x <= Map.numCells[0] + 2 &&
-    y <= Map.numCells[1] + 2
+  return x > 0 &&
+    y > 0 &&
+    x <= Map.numCells[0] + 3 &&
+    y <= Map.numCells[1] + 3
 };
