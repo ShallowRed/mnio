@@ -1,9 +1,16 @@
-import { indextocoord } from '../../utils/converters';
+import { indexToCoord } from '../../utils/converters';
 
 export const check = (position, Game) => {
   const coord = getPosInView(position, Game);
   if (isInMap(coord, Game.Map))
     return coord;
+}
+
+const getPosInView = (position, { Player, cols, rows }) => {
+  return indexToCoord(position, { cols, rows })
+    .map((coord, i) =>
+      coord - Player.coord[i] + Player.posInView[i] + 1
+    )
 }
 
 const isInMap = ([x, y], Map) => {
@@ -12,13 +19,3 @@ const isInMap = ([x, y], Map) => {
     x <= Map.numCells[0] + 2 &&
     y <= Map.numCells[1] + 2
 };
-
-const getPosInView = (position, { Player, cols, rows }) => {
-  const [pX, pY] = Player.coord; // player abs pos
-  const [pvX, pvY] = Player.posInView; // player rel pos
-  const [aX, aY] = indextocoord(position, { cols, rows }); // this abs pos
-  return [
-    aX - pX + pvX + 1,
-    aY - pY + pvY + 1
-  ];
-}

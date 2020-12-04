@@ -9,7 +9,6 @@ export default class Ui {
       window: document.getElementById('tuto')
     };
     this.section = document.querySelector('section');
-    this.elem = document.documentElement;
     this.btns = document.querySelectorAll('#buttons button');
     this.btnsBar = document.getElementById('buttons');
     this.colorBtns = document.querySelectorAll('.color');
@@ -47,8 +46,15 @@ export default class Ui {
     });
   }
 
-  focusZoomBtn(dir, bool) {
-    const btn = this.zoom[dir];
+  focusZoomBtn(direction) {
+    this.setZoomBtn(direction, true);
+    setTimeout(() =>
+      this.setZoomBtn(direction, false),
+      200);
+  }
+
+  setZoomBtn(direction, bool) {
+    const btn = this.zoom[direction];
     btn.style.color = btn.style.borderColor = bool ? "blue" : "black";
     btn.style.transform = `scale(${bool ? 1 : 0.8})`;
   }

@@ -8,6 +8,7 @@ import listenClickEvents from './events/click';
 import listenKeyboardEvents from './events/keyboard';
 import listenTouchEvents from './events/touchScreen';
 
+import Flag from './utils/Flag';
 import translationTimeout from './utils/translationTimeout';
 import checkMove from './utils/checkMove';
 import './utils/polyfill';
@@ -24,59 +25,71 @@ export default class Game {
     this.Ui = new Ui(this.Map);
     this.Cell = new Cell(this);
     this.selectColor(0);
-    this.renderAll();
+    this.render({ isZoom: false });
 
     listenClickEvents(this);
     listenKeyboardEvents(this)
     listenTouchEvents(this);
     listenServerEvents(this);
 
-    const render = () => this.renderAll();
+    const render = () => this.render({ isZoom: false });
     window.addEventListener('resize', render);
     window.addEventListener("orientationchange", () =>
       setTimeout(render, 500)
     );
   }
 
-  renderAll(isZoom) {
-    this.update(isZoom);
-    this.render();
-  }
-
-  update(isZoom) {
-    this.Map.update();
-    this.Player.update();
-    this.Map.setCanvasSizeAndPos();
-    !isZoom && this.Ui.render();
-  }
-
-  render(isAnimated) {
-    isAnimated && this.Map.translateAnimation();
-    this.Player.render(isAnimated);
-    !isAnimated && this.Map.render();
+  render({ isZoom }) {
+    !isZoom && (
+      this.Map.setView(),
+      this.Ui.render()
+    );
+    this.Player.updatePosition();
+    this.Map.updateCanvas();
+    this.Player.updatePosInView();
+    this.Map.setCanvasSize();
+    this.Map.setCanvasPos();
+    this.Map.render();
+    this.Player.setSpritePosition({ duration: 0 });
+    this.Player.setSpriteSize();
   }
 
   moveAttempt(direction) {
-    const { socket, flag, Player: { position } } = this;
-    if (!this.flag.moveCallback || flag.translate) return;
-    socket.emit('move', direction);
-    // console.log("-----------------------------------------");
-    // console.log("sent moveAttempt");
-
-    const nextpos = checkMove(direction, position, this);
+    if (!this.flag.moveCallback || this.flag.translate) return;
+    // console.log("-----------------------------------------"); console.log("sent moveAttempt");
+    this.socket.emit('move', direction);
+    const nextpos = checkMove(direction, this.Player.position, this);
     if (nextpos) {
       this.flag.moveCallback = false;
-      // console.log("client nextPos :", nextpos);
-      // console.log("move allowed: ", false)
       this.newPlayerPos(nextpos, direction);
+      // console.log("client nextPos :", nextpos);console.log("move allowed: ", false)
     }
   }
 
   newPlayerPos(position, direction) {
-    this.Player.update(position, direction);
+    const { duration } = this;
     this.flag.translate = true;
-    this.render(true);
-    translationTimeout(this);
+    this.Player.updatePosition(position, direction);
+    this.Player.updatePosInView();
+    this.Map.translateAnimation();
+    this.Player.setSpritePosition({ duration });
+    translationTimeout(this, () => this.Map.render());
+  }
+
+  zoom(direction) {
+    if (!this.flag.ok()) return;
+    this.Ui.focusZoomBtn(direction);
+    const isZoomable = this.Map.incrementMainDimension(direction);
+    if (isZoomable)
+      this.render({ isZoom: true });
+  }
+
+  getCoords(dimension) {
+    const pX = this.Player.coord[dimension];
+    const gX = [this.cols, this.rows][dimension];
+    const mX = this.Map.numCells[dimension];
+    const hX = (mX - 1) / 2;
+    return { pX, gX, mX, hX };
   }
 
   selectColor(index) {
@@ -107,38 +120,5 @@ export default class Game {
     socket.emit("fill", { position, color });
     flag.fillCallback = false;
     this.Player.stamp();
-  }
-
-  zoom(dir) {
-    const { flag, Ui, Map } = this;
-    if (!flag.ok()) return;
-
-    Ui.focusZoomBtn(dir, true);
-    setTimeout(() =>
-      Ui.focusZoomBtn(dir, false), 200);
-
-    const isZoomable = Map.incrementMainDimension(dir);
-    if (isZoomable)
-      this.renderAll(true);
-  }
-}
-
-class Flag {
-  constructor() {
-    this.fill = false;
-    this.translate = false;
-    this.touch = false;
-    this.zoom = false;
-    this.fillCallback = true;
-    this.moveCallback = true;
-    this.tuto = false;
-  }
-
-  ok() {
-    return !this.translate &&
-      !this.fill &&
-      !this.touch &&
-      !this.zoom &&
-      !this.tuto
   }
 }

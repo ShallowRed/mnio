@@ -1,4 +1,4 @@
-import { indextocoord } from '../utils/converters'
+import { indexToCoord } from '../utils/converters'
 export default class Player {
 
   constructor({ position, palette }, Game) {
@@ -14,17 +14,6 @@ export default class Player {
       document.getElementById('player'),
       document.getElementById('shadow')
     ];
-
-    this.Directions = [
-      ["left", "right"],
-      ["up", "down"]
-    ];
-  }
-
-  update(position, direction) {
-    this.updatePosition(position, direction);
-    this.updatePlayerZone();
-    this.updatePosInView();
   }
 
   updatePosition(position, direction) {
@@ -32,62 +21,34 @@ export default class Player {
       this.position = position;
     if (direction)
       this.lastdir = direction;
-    this.coord = indextocoord(this.position, this.Game());
+    this.coord = indexToCoord(this.position, this.Game());
   }
 
-  updatePlayerZone() {
-    this.Directions.forEach((dimension, i) =>
-      dimension.forEach((directionName, j) =>
-        this.is[directionName] = this.isPlayerInZone(i, j)
-      ));
-  }
-
-  isPlayerInZone(dimension, sense) {
-    const { pX, gX, hX } = this.getCoords(dimension);
-    return sense == 0 ?
-      pX < Math.ceil(hX) :
-      pX > gX - hX - 1;
-  }
-
-  updatePosInView() {
-    this.posInView = this.Directions.map((dimension, i) =>
-      this.getPosInView(dimension, i)
-    );
-  }
-
-  getPosInView([negativeDir, positiveDir], dimension) {
-    const { pX, gX, mX, hX } = this.getCoords(dimension);
-    // console.log({ pX, gX, mX, hX });
-    return this.is[negativeDir] ?
-      pX :
-      !this.is[positiveDir] ?
-      hX :
-      pX + mX - gX;
-  }
-
-  getCoords(dimension, Game = this.Game(), Map = this.Map()) {
-    const pX = this.coord[dimension];
-    const gX = [Game.cols, Game.rows][dimension];
-    const mX = Map.numCells[dimension];
-    const hX = (mX - 1) / 2;
-    return { pX, gX, mX, hX };
-  }
-
-  render(isAnimated) {
-    this.setSpritePosition(isAnimated);
-    if (!isAnimated)
-      this.setSpriteSize();
-  }
-
-  setSpritePosition(isAnimated) {
-    const { cellSize, delta } = this.Map();
-    const { duration } = this.Game();
-    const shift = Math.round(cellSize / 8);
-    this.sprite.forEach(sprite => {
-      sprite.style.transitionDuration = `${isAnimated ? duration : 0}s`;
-      sprite.style.left = `${this.posInView[0] * cellSize + shift + (delta[0] || 0)}px`;
-      sprite.style.top = `${this.posInView[1] * cellSize + shift + (delta[1] || 0)}px`;
+  updatePosInView(Game = this.Game()) {
+    this.posInView = this.coord.map((pX, dimension) => {
+      const { gX, mX, hX } = Game.getCoords(dimension);
+      return pX < Math.ceil(hX) ?
+        pX :
+        pX > gX - hX - 1 ?
+        pX + mX - gX :
+        hX;
     });
+
+  }
+
+  setSpritePosition({ duration }) {
+    this.sprite.forEach(sprite => {
+      sprite.style.transitionDuration = `${duration}s`;
+      sprite.style.transform = `translate(${this.getTranslateValue()})`;
+    });
+  }
+
+  getTranslateValue(Map = this.Map()) {
+    const shift = Math.round(Map.cellSize / 8);
+    return this.posInView.map((posInView, i) =>
+        `${posInView * Map.cellSize + Map.delta[i] + shift}px`
+      )
+      .join(', ');
 
   }
 
@@ -107,6 +68,7 @@ export default class Player {
     sprite.forEach(c =>
       c.style.borderRadius = `${shift}px`
     );
+
     sprite[0].style.borderWidth = `${shift}px`;
   }
 
@@ -117,6 +79,7 @@ export default class Player {
   }
 
   stamp() {
+    return;
     const { sprite: [player, shadow] } = this;
     player.style.transitionDuration = 0.1;
     shadow.style.transitionDuration = 0.1;

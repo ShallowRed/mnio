@@ -1,6 +1,5 @@
 #player,
 #shadow {
-  overflow: hidden;
   position: absolute;
   transition-timing-function: ease;
 }

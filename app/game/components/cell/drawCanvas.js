@@ -1,14 +1,16 @@
-const fillCell = ([x, y], cellSize, ctx, color) => {
-  ctx.clearRect(cellSize * x, cellSize * y, cellSize, cellSize);
+const fillCell = (coord, cellSize, ctx, color) => {
+  const [vX, vY] = coord.map(x => Math.floor(cellSize * x));
+  ctx.clearRect(vX, vY, cellSize, cellSize);
   if (!color) return;
   ctx.fillStyle = color;
-  ctx.fillRect(cellSize * x, cellSize * y, cellSize, cellSize);
+  ctx.fillRect(vX, vY, cellSize, cellSize);
 };
 
-const roundSquare = ([x, y], cellSize, ctx, shift) => {
+const roundSquare = (coord, cellSize, ctx, shift) => {
+  const [x, y] = coord.map(x => Math.floor(cellSize * x));
   roundRect(ctx, {
-    x: cellSize * x + shift * 1.5,
-    y: cellSize * y + shift * 1.5,
+    x,
+    y,
     width: cellSize - shift * 3,
     height: cellSize - shift * 3,
     radius: shift

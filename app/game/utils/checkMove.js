@@ -1,9 +1,9 @@
-import { indextocoord, coordtoindex } from './converters';
+import { indexToCoord, coordToIndex } from './converters';
 
 export default (dir, position, Game) => {
   const { rows, cols } = Game;
 
-  let [x, y] = indextocoord(position, { cols, rows });
+  let [x, y] = indexToCoord(position, { cols, rows });
 
   if (dir == "left" && x !== 0) x--;
   else if (dir == "right" && x !== cols - 1) x++;
@@ -11,7 +11,7 @@ export default (dir, position, Game) => {
   else if (dir == "down" && y !== rows - 1) y++;
   else return;
 
-  const nextpos = coordtoindex([x, y], { cols });
+  const nextpos = coordToIndex([x, y], { cols });
   if (isAvailable(nextpos, Game)) return nextpos;
 };
 

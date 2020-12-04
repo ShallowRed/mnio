@@ -3,9 +3,9 @@ export default class Map {
   constructor(Game) {
     this.Game = () => Game;
     this.Player = () => Game.Player;
-    this.maxcells = 16;
-    this.startcells = 8;
     this.mincells = 5;
+    this.startcells = 8;
+    this.maxcells = 16;
     this.numCells = [0, 0];
     this.size = [0, 0];
     this.shift = [0, 0];
@@ -23,17 +23,14 @@ export default class Map {
 
   ////////////////////////////////////////////////////
 
-  update() {
-    this.ratio = (window.innerWidth >= window.innerHeight);
+  setView() {
     this.getMainDimension();
     this.setViewPosition();
     this.setViewSize();
-    this.updateCanvasSize();
-    this.updateCellSizeFromMainDim();
-    this.updateSecDimFromCellSize();
   }
 
   getMainDimension() {
+    this.ratio = (window.innerWidth >= window.innerHeight);
     this.mainDimension = this.ratio ? 0 : 1;
     this.secDimension = this.ratio ? 1 : 0;
   }
@@ -50,6 +47,14 @@ export default class Map {
     this.view.style[["height", "width"][mD]] = "95%";
   }
 
+  ////////////////////////////////////////////////////
+
+  updateCanvas() {
+    this.updateCanvasSize();
+    this.updateCellSizeFromMainDimension();
+    this.updateSecDimensionFromCellSize();
+  }
+
   updateCanvasSize() {
     ////// Math.max( window.innerHeight, document.documentElement.clientHeight);
     // window.innerWidth && document.documentElement.clientWidth ?
@@ -63,28 +68,32 @@ export default class Map {
     this.size[sD] = Math.round(0.95 * window[windowSize[sD]]);
   }
 
-  updateCellSizeFromMainDim() {
+  updateCellSizeFromMainDimension() {
     const { mainDimension: mD } = this;
     if (!this.numCells[mD])
       this.numCells[mD] = this.startcells;
     this.cellSize = Math.round(this.size[mD] / this.numCells[mD]);
   }
 
-  updateSecDimFromCellSize() {
+  updateSecDimensionFromCellSize() {
     const { secDimension: sD } = this;
     this.numCells[sD] = Math.round(this.size[sD] / this.cellSize);
-    console.log("numCells", this.numCells);
   }
 
   ////////////////////////////////////////////////////
 
-  setCanvasSizeAndPos() {
+  setCanvasSize() {
     const { cellSize, numCells: [mX, mY] } = this;
     this.canvas.forEach(canvas => {
       canvas.width = cellSize * (mX + 2);
       canvas.height = cellSize * (mY + 2);
-      canvas.style.top = `-${cellSize}px`;
-      canvas.style.left = `-${cellSize}px`;
+    });
+  }
+
+  setCanvasPos() {
+    this.canvas.forEach(canvas => {
+      canvas.style.top = `-${this.cellSize}px`;
+      canvas.style.left = `-${this.cellSize}px`;
     });
   }
 
@@ -137,12 +146,12 @@ export default class Map {
     });
   }
 
-  getDelta(Player = this.Player()) {
+  getDelta(Game = this.Game()) {
 
-    this.delta = this.numCells.map((numCells, i) => {
-      const { pX, gX, hX } = Player.getCoords(i);
+    this.delta = this.numCells.map((numCells, dimension) => {
+      const { pX, gX, hX } = Game.getCoords(dimension);
 
-      const viewCanvasDelta = this.size[i] - numCells * this.cellSize;
+      const viewCanvasDelta = this.size[dimension] - numCells * this.cellSize;
 
       const posInViewCoef =
         pX <= hX ? 0 :
@@ -154,8 +163,8 @@ export default class Map {
   }
 
   getTranslateValue() {
-    return [0, 1].map(i =>
-        `${this.shift[i] * this.cellSize + this.delta[i]}px`
+    return this.shift.map((shift, i) =>
+        `${shift * this.cellSize + this.delta[i]}px`
       )
       .join(', ');
   }
@@ -167,8 +176,8 @@ export default class Map {
     this.translateCanvas({ duration });
   }
 
-  setDirectionShift({ dimension, sense }, Player = this.Player()) {
-    const { pX, gX, hX } = Player.getCoords(dimension);
+  setDirectionShift({ dimension, sense }, Game = this.Game()) {
+    const { pX, gX, hX } = Game.getCoords(dimension);
     const center = {
       start: hX - sense,
       end: gX - hX - sense
@@ -187,6 +196,8 @@ export default class Map {
       pX == Math.floor(end)) coef = 0.5;
     return coef
   }
+
+  ////////////////////////////////////////////////////
 
   incrementMainDimension(direction) {
     const increment = direction == "in" ? -1 : 1;
