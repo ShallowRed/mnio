@@ -6,16 +6,17 @@ export const check = (position, Game) => {
     return coord;
 }
 
-const getPosInView = (position, { Player, cols, rows }) => {
+const getPosInView = (position, { Map, Player, cols, rows }) => {
   return indexToCoord(position, { cols, rows })
     .map((coord, i) =>
-      coord - Player.coord[i] + Player.posInView[i] + 2
+      coord - Player.coord[i] + Player.posInView[i] + Map.numOffscreen
     )
 }
 
 const isInMap = ([x, y], Map) => {
-  return x > 0 &&
-    y > 0 &&
-    x <= Map.numCells[0] + 3 &&
-    y <= Map.numCells[1] + 3
+  const oS = Map.numOffscreen;
+  return x > -oS &&
+    y > -oS &&
+    x <= Map.numCells[0] + 1 + oS &&
+    y <= Map.numCells[1] + 1 + oS
 };

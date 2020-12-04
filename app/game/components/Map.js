@@ -6,10 +6,11 @@ export default class Map {
     this.mincells = 5;
     this.startcells = 8;
     this.maxcells = 16;
+    this.numOffscreen = 1.5;
     this.numCells = [0, 0];
     this.size = [0, 0];
-    this.shift = [0, 0];
-    this.delta = [0, 0];
+    this.translateCoef = [0, 0];
+    this.deltaFromView = [0, 0];
     this.view = document.getElementById('view');
     this.canvas = document.querySelectorAll('canvas');
     this.ctx = [...this.canvas].map(canvas => canvas.getContext('2d'));
@@ -85,15 +86,17 @@ export default class Map {
   setCanvasSize() {
     const { cellSize, numCells: [mX, mY] } = this;
     this.canvas.forEach(canvas => {
-      canvas.width = cellSize * (mX + 4);
-      canvas.height = cellSize * (mY + 4);
+      canvas.width = cellSize * (mX + this.numOffscreen * 2);
+      // canvas.width = cellSize * (mX + 4);
+      canvas.height = cellSize * (mY + this.numOffscreen * 2);
+      // canvas.height = cellSize * (mY + 4);
     });
   }
 
   setCanvasPos() {
     this.canvas.forEach(canvas => {
-      canvas.style.top = `-${this.cellSize * 2}px`;
-      canvas.style.left = `-${this.cellSize * 2}px`;
+      canvas.style.top = `-${Math.round(this.numOffscreen * this.cellSize)}px`;
+      canvas.style.left = `-${Math.round(this.numOffscreen * this.cellSize)}px`;
     });
   }
 
@@ -107,8 +110,8 @@ export default class Map {
   }
 
   resetShift() {
-    this.shift[0] = 0;
-    this.shift[1] = 0;
+    this.translateCoef[0] = 0;
+    this.translateCoef[1] = 0;
   }
 
   clearAllCanvas() {
@@ -138,54 +141,51 @@ export default class Map {
   ////////////////////////////////////////////////////
 
   translateCanvas({ duration }) {
-    this.getDelta();
-    const translateValue = this.getTranslateValue();
+    // this.setCanvasPos();
+    this.updateTranslateValue();
     this.canvas.forEach(canvas => {
       canvas.style.transitionDuration = `${duration}s`;
-      canvas.style.transform = `translate(${translateValue})`;
+      canvas.style.transform = `translate(${this.translateValue})`;
     });
   }
 
-  getDelta(Game = this.Game()) {
+  updateTranslateValue() {
+    this.updateDelta();
+    this.translateValue = this.translateCoef.map((translateCoef, i) =>
+        // `${translateCoef * this.cellSize}px`
+        `${translateCoef * this.cellSize + this.deltaFromView[i]}px`
+      )
+      .join(', ');
+  }
 
-    this.delta = this.numCells.map((numCells, dimension) => {
+  updateDelta(Game = this.Game()) {
+    this.deltaFromView = this.numCells.map((numCells, dimension) => {
       const { pX, gX, hX } = Game.getCoords(dimension);
-
       const viewCanvasDelta = this.size[dimension] - numCells * this.cellSize;
 
       const posInViewCoef =
         pX <= hX ? 0 :
         pX >= gX - hX - 1 ? 1 :
-        (1 / 2) + 0.5;
+        1 / 2;
 
       return viewCanvasDelta * posInViewCoef;
     });
   }
 
-  getTranslateValue() {
-    return this.shift.map((shift, i) =>
-        `${shift * this.cellSize + this.delta[i]}px`
-      )
-      .join(', ');
-  }
-
   translateAnimation(Game = this.Game()) {
     const direction = this.Directions[Game.Player.lastdir];
     const { duration } = Game;
-    this.setDirectionShift(direction);
+    this.updateTranslateCoef(direction);
     this.translateCanvas({ duration });
   }
 
-  setDirectionShift({ dimension, sense }, Game = this.Game()) {
+  updateTranslateCoef({ dimension, sense }, Game = this.Game()) {
     const { pX, gX, hX } = Game.getCoords(dimension);
-    const center = {
-      start: hX - sense,
-      end: gX - hX - sense
-    };
+    const center = { start: hX - sense, end: gX - hX - sense };
     if (pX > center.start && pX < center.end) {
       const senseCoef = [-1, 1][sense];
       const isEvenCoef = this.getEvenCoef(pX, center);
-      this.shift[dimension] = senseCoef * isEvenCoef;
+      this.translateCoef[dimension] = senseCoef * isEvenCoef;
     }
   }
 
@@ -193,7 +193,9 @@ export default class Map {
     if (pX == Math.ceil(start) ||
       pX == Math.floor(start) ||
       pX == Math.ceil(end) ||
-      pX == Math.floor(end)) coef = 0.5;
+      pX == Math.floor(end)) {
+        coef = 0.5;
+      };
     return coef
   }
 
