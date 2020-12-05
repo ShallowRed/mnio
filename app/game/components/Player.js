@@ -83,13 +83,9 @@ export default class Player {
     const { sprite: [player, shadow] } = this;
     player.style.transitionDuration = 0.1;
     shadow.style.transitionDuration = 0.1;
-    player.style.transform = "translate(0px, 0px)";
-    shadow.style.transform = "translate(0px, 0px)";
     shadow.style.boxShadow = "0px 0px 0px 0px #777";
 
     setTimeout(() => {
-      player.style.transform = "translate(-2px, -2px)";
-      shadow.style.transform = "translate(-2px, -2px)";
       shadow.style.boxShadow = "3px 3px 5px 0px #777";
       player.style.transitionDuration = 0.2;
       shadow.style.transitionDuration = 0.2;

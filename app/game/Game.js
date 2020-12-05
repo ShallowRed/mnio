@@ -24,19 +24,15 @@ export default class Game {
     this.Player = new Player(data.Player, this);
     this.Ui = new Ui(this.Map);
     this.Cell = new Cell(this);
+
     this.selectColor(0);
     this.render({ isZoom: false });
 
+    this.listenWindowEvents();
     listenClickEvents(this);
     listenKeyboardEvents(this)
     listenTouchEvents(this);
     listenServerEvents(this);
-
-    const render = () => this.render({ isZoom: false });
-    window.addEventListener('resize', render);
-    window.addEventListener("orientationchange", () =>
-      setTimeout(render, 500)
-    );
   }
 
   render({ isZoom }) {
@@ -54,21 +50,27 @@ export default class Game {
     this.Player.setSpriteSize();
   }
 
+  listenWindowEvents() {
+    const render = () => this.render({ isZoom: false });
+    window.addEventListener('resize', render);
+    window.addEventListener("orientationchange", () =>
+      setTimeout(render, 500)
+    );
+  }
+
   moveAttempt(direction) {
     if (!this.flag.moveCallback || this.flag.translate) return;
-    // console.log("-----------------------------------------"); console.log("sent moveAttempt");
     this.socket.emit('move', direction);
     const nextpos = checkMove(direction, this.Player.position, this);
     if (nextpos) {
       this.flag.moveCallback = false;
-      this.newPlayerPos(nextpos, direction);
-      // console.log("client nextPos :", nextpos);console.log("move allowed: ", false)
+      this.flag.translate = true;
+      this.movePlayer(nextpos, direction);
     }
   }
 
-  newPlayerPos(position, direction) {
+  movePlayer(position, direction) {
     const { duration } = this;
-    this.flag.translate = true;
     this.Player.updatePosition(position, direction);
     this.Player.updatePosInView();
     this.Map.translateAnimation();

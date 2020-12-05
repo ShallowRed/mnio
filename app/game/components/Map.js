@@ -57,12 +57,6 @@ export default class Map {
   }
 
   updateCanvasSize() {
-    ////// Math.max( window.innerHeight, document.documentElement.clientHeight);
-    // window.innerWidth && document.documentElement.clientWidth ?
-    // Math.min(window.innerWidth, document.documentElement.clientWidth) :
-    // window.innerWidth ||
-    // document.documentElement.clientWidth ||
-    // document.getElementsByTagName('body')[0].clientWidth;
     const windowSize = ["innerWidth", "innerHeight"];
     const { mainDimension: mD, secDimension: sD } = this;
     this.size[mD] = Math.round(0.85 * window[windowSize[mD]]);
@@ -151,7 +145,6 @@ export default class Map {
   updateTranslateValue() {
     this.updateDelta();
     this.translateValue = this.translateCoef.map((translateCoef, i) =>
-        // `${translateCoef * this.cellSize}px`
         `${translateCoef * this.cellSize + this.deltaFromView[i]}px`
       )
       .join(', ');

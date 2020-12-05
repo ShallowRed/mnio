@@ -1,7 +1,9 @@
-const translationTimeout = (Game, callback, start = Date.now()) => {
+const translationTimeout = (Game, callback, start = Date.now(), delay = Game.duration*1.1) => {
 
   const delta = (Date.now() - start) / 1000;
-  const delay = Game.duration * (Game.flag.fill ? 2.5 : 1);
+
+  if (Game.flag.fill)
+    delay += 0.015;
 
   if (delta >= delay) {
     callback();
@@ -10,7 +12,7 @@ const translationTimeout = (Game, callback, start = Date.now()) => {
   }
 
   window.requestAnimationFrame(() =>
-    translationTimeout(Game, callback, start)
+    translationTimeout(Game, callback, start, delay)
   );
 };
 

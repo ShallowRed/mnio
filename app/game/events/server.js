@@ -10,13 +10,8 @@ const serverEvents = Object.entries({
 
   newPlayerPos(Game, newPosition) {
     Game.flag.moveCallback = true;
-    // console.log("_____________________");
-    // console.log("server nextPos :", newPosition);
-    // console.log("move allowed: ", true)
-    if (newPosition !== Game.Player.position) {
-      // console.log("!!! Game.Player.position :", Game.Player.position);
-      Game.newPlayerPos(newPosition);
-    }
+    if (newPosition !== Game.Player.position)
+      Game.movePlayer(newPosition);
   },
 
   newPosition({ positions, Cell }, [lastPos, newPos]) {
@@ -35,20 +30,13 @@ const serverEvents = Object.entries({
     Cell.render.color(position);
   },
 
-  allowedCells({ allowed, Cell }, cells) {
+  allowedCells({ allowed, Cell, flag }, cells) {
     cells.forEach(position => {
       if (allowed.includes(position)) return;
       allowed.push(position);
-      Cell.render.allowed(position);
+      if (!flag.translate)
+        Cell.render.allowed(position);
     });
-  },
-
-  moveCallback(
-    // { flag }
-  ) {
-    // console.log("__________________________________________");
-    // console.log("__ moveCallBack received");
-    // flag.moveCallback = true;
   },
 
   fillCallback({ flag }) {
