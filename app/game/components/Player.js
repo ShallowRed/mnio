@@ -46,7 +46,6 @@ export default class Player {
   getTranslateValue(Map = this.Map()) {
     const shift = Math.round(Map.cellSize / 8);
     return this.posInView.map((posInView, i) =>
-        // `${posInView * Map.cellSize + shift}px`
         `${posInView * Map.cellSize + Map.deltaFromView[i] + shift}px`
       )
       .join(', ');

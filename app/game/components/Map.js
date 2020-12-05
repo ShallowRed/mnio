@@ -84,32 +84,32 @@ export default class Map {
   ////////////////////////////////////////////////////
 
   setCanvasSize() {
-    const { cellSize, numCells: [mX, mY] } = this;
+    const { cellSize, numCells, numOffscreen } = this;
     this.canvas.forEach(canvas => {
-      canvas.width = cellSize * (mX + this.numOffscreen * 2);
-      // canvas.width = cellSize * (mX + 4);
-      canvas.height = cellSize * (mY + this.numOffscreen * 2);
-      // canvas.height = cellSize * (mY + 4);
+      canvas.width = cellSize * (numCells[0] + numOffscreen * 2);
+      canvas.height = cellSize * (numCells[1] + numOffscreen * 2);
     });
   }
 
   setCanvasPos() {
     this.canvas.forEach(canvas => {
-      canvas.style.top = `-${Math.round(this.numOffscreen * this.cellSize)}px`;
-      canvas.style.left = `-${Math.round(this.numOffscreen * this.cellSize)}px`;
+      canvas.style.top =
+        `-${Math.round(this.numOffscreen * this.cellSize)}px`;
+      canvas.style.left =
+        `-${Math.round(this.numOffscreen * this.cellSize)}px`;
     });
   }
 
   ////////////////////////////////////////////////////
 
   render() {
-    this.resetShift();
+    this.resetTranslateCoef();
     this.translateCanvas({ duration: 0 })
     this.clearAllCanvas();
     this.drawAllCells();
   }
 
-  resetShift() {
+  resetTranslateCoef() {
     this.translateCoef[0] = 0;
     this.translateCoef[1] = 0;
   }
@@ -141,7 +141,6 @@ export default class Map {
   ////////////////////////////////////////////////////
 
   translateCanvas({ duration }) {
-    // this.setCanvasPos();
     this.updateTranslateValue();
     this.canvas.forEach(canvas => {
       canvas.style.transitionDuration = `${duration}s`;
@@ -161,7 +160,8 @@ export default class Map {
   updateDelta(Game = this.Game()) {
     this.deltaFromView = this.numCells.map((numCells, dimension) => {
       const { pX, gX, hX } = Game.getCoords(dimension);
-      const viewCanvasDelta = this.size[dimension] - numCells * this.cellSize;
+      const viewCanvasDelta = this.size[dimension] - numCells * this
+        .cellSize;
 
       const posInViewCoef =
         pX <= hX ? 0 :
@@ -181,22 +181,28 @@ export default class Map {
 
   updateTranslateCoef({ dimension, sense }, Game = this.Game()) {
     const { pX, gX, hX } = Game.getCoords(dimension);
-    const center = { start: hX - sense, end: gX - hX - sense };
-    if (pX > center.start && pX < center.end) {
-      const senseCoef = [-1, 1][sense];
-      const isEvenCoef = this.getEvenCoef(pX, center);
-      this.translateCoef[dimension] = senseCoef * isEvenCoef;
+    this.updateCenter(gX, hX, sense)
+    if (pX > this.center.start && pX < this.center.end) {
+      this.updateSenseCoef(sense);
+      this.updateEvenCoef(pX);
+      this.translateCoef[dimension] = this.senseCoef * this.evenCoef;
     }
   }
 
-  getEvenCoef(pX, { start, end }, coef = 1) {
-    if (pX == Math.ceil(start) ||
+  updateCenter(gX, hX, sense) {
+    this.center = { start: hX - sense, end: gX - hX - sense };
+  }
+
+  updateSenseCoef(sense) {
+    this.senseCoef = [-1, 1][sense]
+  }
+
+  updateEvenCoef(pX) {
+    const { start, end } = this.center;
+    this.evenCoef = (pX == Math.ceil(start) ||
       pX == Math.floor(start) ||
       pX == Math.ceil(end) ||
-      pX == Math.floor(end)) {
-        coef = 0.5;
-      };
-    return coef
+      pX == Math.floor(end)) ? 0.5 : 1;
   }
 
   ////////////////////////////////////////////////////
