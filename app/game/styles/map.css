@@ -1,16 +1,20 @@
 #view {
   overflow: hidden;
   position: absolute;
-  background: white;
   box-sizing: border-box;
   transform: translate(-50%, -50%);
+  outline: solid 1px;
 }
 
 canvas {
   overflow: hidden;
   position: absolute;
-  transition-timing-function: ease;
+  /* transition-timing-function: linear; */
+  display: inline-block;
+  transition-timing-function: ease-in;
+  transform-origin: top left;
 
+  /* transition-timing-function: ease; */
   &:last-of-type {
     opacity: 0.5;
   }

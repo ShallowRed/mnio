@@ -1,5 +1,6 @@
 const fillCell = (coord, cellSize, ctx, color) => {
-  const [vX, vY] = coord.map(x => Math.floor(cellSize * x));
+  // const [vX, vY] = coord.map(x => (cellSize * x));
+  const [vX, vY] = coord.map(x => Math.round(cellSize * x));
   ctx.clearRect(vX, vY, cellSize, cellSize);
   if (!color) return;
   ctx.fillStyle = color;
@@ -8,7 +9,7 @@ const fillCell = (coord, cellSize, ctx, color) => {
 
 const roundSquare = (coord, cellSize, ctx, shift) => {
   // BUG: posin viex is wrong
-  const [x, y] = coord.map(x => Math.floor(cellSize * x));
+  const [x, y] = coord.map(x => Math.round(cellSize * x));
   roundRect(ctx, {
     x,
     y,

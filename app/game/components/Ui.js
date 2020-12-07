@@ -2,7 +2,6 @@ export default class Ui {
 
   constructor(Map) {
     this.Map = () => Map;
-    this.refresh = document.getElementById('refresh');
     this.tuto = {
       openBtn: document.getElementById('openTuto'),
       closeBtn: document.getElementById('closeTuto'),
@@ -29,10 +28,12 @@ export default class Ui {
     this.section.style.flexDirection = Map.ratio ? "row" : "column";
     const props = Object.entries({
       flexFlow: ["column", "row"],
+      // height: ["50%", "10%"],
       height: ["auto", "10%"],
-      width: ["10%", "auto"],
+      width: ["10%", "100%"],
+      // width: ["10%", "auto"],
       float: ["right", "none"],
-      margin: ["0 0 0 auto", "auto 0 0"],
+      margin: ["auto 0 auto auto", "auto auto 0"],
     });
     for (const [key, value] of props) {
       this.btnsBar.style[key] = value[Map.ratio ? 0 : 1];
@@ -41,8 +42,11 @@ export default class Ui {
 
   focusColorBtn(i) {
     this.colorBtns.forEach((btn, j) => {
-      btn.style.setProperty('border-width', `${j == i ? 3 : 1}px`);
-      btn.style.setProperty('transform', `scale(${j == i ? 0.9 : 0.7})`);
+      const borderWidth = j == i ? 3 : 1;
+      const scale = j == i ? 1 : 0.8;
+      // const scale = 1;
+      btn.style.setProperty('border-width', `${borderWidth}px`);
+      btn.style.setProperty('transform', `scale(${scale})`);
     });
   }
 

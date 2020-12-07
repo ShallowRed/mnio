@@ -57,6 +57,7 @@ export default class Map {
   }
 
   updateCanvasSize() {
+
     const windowSize = ["innerWidth", "innerHeight"];
     const { mainDimension: mD, secDimension: sD } = this;
     this.size[mD] = Math.round(0.85 * window[windowSize[mD]]);
@@ -143,7 +144,6 @@ export default class Map {
   }
 
   updateTranslateValue() {
-    this.updateDelta();
     this.translateValue = this.translateCoef.map((translateCoef, i) =>
         `${translateCoef * this.cellSize + this.deltaFromView[i]}px`
       )
@@ -151,6 +151,7 @@ export default class Map {
   }
 
   updateDelta(Game = this.Game()) {
+    // console.log("- UPDATE DELTA");
     this.deltaFromView = this.numCells.map((numCells, dimension) => {
       const { pX, gX, hX } = Game.getCoords(dimension);
       const viewCanvasDelta = this.size[dimension] - numCells * this
@@ -160,7 +161,7 @@ export default class Map {
         pX <= hX ? 0 :
         pX >= gX - hX - 1 ? 1 :
         1 / 2;
-
+      // return 0
       return viewCanvasDelta * posInViewCoef;
     });
   }
@@ -174,7 +175,8 @@ export default class Map {
 
   updateTranslateCoef({ dimension, sense }, Game = this.Game()) {
     const { pX, gX, hX } = Game.getCoords(dimension);
-    this.updateCenter(gX, hX, sense)
+    this.updateCenter(gX, hX, sense);
+    this.updateDelta();
     if (pX > this.center.start && pX < this.center.end) {
       this.updateSenseCoef(sense);
       this.updateEvenCoef(pX);
@@ -192,10 +194,12 @@ export default class Map {
 
   updateEvenCoef(pX) {
     const { start, end } = this.center;
-    this.evenCoef = (pX == Math.ceil(start) ||
+    this.evenCoef = (
+      pX == Math.ceil(start) ||
       pX == Math.floor(start) ||
       pX == Math.ceil(end) ||
-      pX == Math.floor(end)) ? 0.5 : 1;
+      pX == Math.floor(end)
+    ) ? 0.5 : 1;
   }
 
   ////////////////////////////////////////////////////
@@ -212,4 +216,66 @@ export default class Map {
     this.numCells[d] += increment;
     return true;
   }
+
+  freezeProps(Player = this.Player()) {
+    const props = Object.assign({}, {
+      cellSize: this.cellSize,
+      deltaFromView: this.deltaFromView.map(e => e),
+      posInView: Player.posInView.map((pVX, i) =>
+        pVX
+        // (pVX + this.numOffscreen + 0.5) * this.cellSize
+      )
+    });
+    console.log(props);
+    return props;
+  }
+
+  zoomAnimation(direction, {
+    cellSize: cS1,
+    deltaFromView: dX1,
+    posInView: pX1
+  }, {
+    cellSize: cS2,
+    deltaFromView: dX2,
+    posInView: pX2
+  }) {
+    const factor = Math.round(100000 * cS2 / cS1) / 100000;
+
+    const dCs = (cS2 - cS1) * this.numOffscreen;
+    // const dCs = (cS2 - cS1) * this.numOffscreen;
+
+    // const dd = [0, 1].map((e, i) => dX2[i] - dX1[i]);
+    // console.log("dd :", dd);
+    console.log("dX1 :", dX1);
+    console.log("dX2 :", dX2);
+    const deltaPos = [0, 1].map((item, i) => {
+        // const oX = dCs * 2;
+        // const oX = 1.5 * (cS2 - factor * cS1);
+        // const a = pX2[i] - factor * pX1[i];
+        console.log(pX2[i] - pX1[i]);
+        const oX = - dCs + (pX2[i] - pX1[i]) * cS1 - dX1[i];
+        // return `${oX}px`
+        return `${Math.round(oX * 2000) / 2000}px`
+      })
+      .join(', ');
+
+    console.log("deltaPos :", deltaPos);
+
+    this.canvas.forEach(canvas => {
+      canvas.style.transitionDuration = "0.8s";
+      canvas.style.transform = `scale(${factor}) `;
+      setTimeout(() => {
+        canvas.style.transform =
+          `scale(${factor}) translate(${deltaPos})`;
+      }, 1000)
+    });
+  }
 }
+
+
+// const origin = [0, 1].map((item, i) => {
+//     const oX = (factor * pX1[i] - pX2[i] - dCs - dX2[i]) / (
+//       factor - 1);
+//     return `${Math.round(oX * 20) / 20}px`
+//   })
+//   .join(' ');

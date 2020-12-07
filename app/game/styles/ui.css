@@ -1,24 +1,24 @@
 #buttons {
-  /* position: absolute; */
   z-index: 50;
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   box-sizing: border-box;
+  max-width: 400px;
 
   & button {
     box-sizing: border-box;
-    width: 5vw;
-    height: 5vw;
-    min-height: 40px;
-    min-width: 40px;
-    max-height: 50px;
-    max-width: 50px;
+    width: max(13vw, 5vh);
+    height: max(13vw, 5vh);
+    min-height: 25px;
+    min-width: 25px;
+    max-height: 60px;
+    max-width: 60px;
     border-radius: 5px;
     box-shadow: #aaa 5px 5px;
 
     &.zoom {
       transition: all 0.1s ease;
-      transform: scale(0.7);
+      transform: scale(0.8);
       border: solid 1px black;
     }
 

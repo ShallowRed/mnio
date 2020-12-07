@@ -18,8 +18,8 @@ export const fillAnimation = (position, Game) => {
   const initCoord = {
     divx: 0,
     divy: 0,
-    x: Math.floor(cellSize * x),
-    y: Math.floor(cellSize * (y + 1))
+    x: Math.round(cellSize * x),
+    y: Math.round(cellSize * (y + 1))
   };
 
   fillFrame(flag, initCoord, { ctx, lw, cellSize, sColor });

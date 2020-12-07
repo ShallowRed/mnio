@@ -42,6 +42,8 @@ export default class Game {
     );
     this.Player.updatePosition();
     this.Map.updateCanvas();
+    this.Map.updateDelta();
+
     this.Player.updatePosInView();
     this.Map.setCanvasSize();
     this.Map.setCanvasPos();
@@ -78,12 +80,45 @@ export default class Game {
     translationTimeout(this, () => this.Map.render());
   }
 
+  // zoom(direction) {
+  //   if (!this.flag.ok()) return;
+  //   this.Ui.focusZoomBtn(direction);
+  //   const isZoomable = this.Map.incrementMainDimension(direction);
+  //   if (isZoomable)
+  //     this.render({ isZoom: true });
+  // }
   zoom(direction) {
     if (!this.flag.ok()) return;
+    if (this.flag.isZooming) return;
     this.Ui.focusZoomBtn(direction);
+    this.Map.updateDelta();
+
+    console.log("-----------------------------------------");
+    const start = this.Map.freezeProps();
+
     const isZoomable = this.Map.incrementMainDimension(direction);
-    if (isZoomable)
-      this.render({ isZoom: true });
+    if (!isZoomable) return;
+    this.flag.isZooming = true;
+    this.Player.updatePosition();
+    this.Map.updateCanvas();
+    this.Player.updatePosInView();
+    this.Map.updateDelta();
+
+    const end = this.Map.freezeProps();
+
+    this.Map.zoomAnimation(direction, start, end);
+
+    setTimeout(() => {
+      this.Map.setCanvasSize();
+      this.Map.setCanvasPos();
+      this.Map.render();
+      this.Player.setSpritePosition({ duration: 0 });
+      this.Player.setSpriteSize();
+      // setTimeout(() => {
+        this.flag.isZooming = false;
+        console.log("-- Render");
+      // }, 200);
+    }, 2200);
   }
 
   getCoords(dimension) {
