@@ -38,11 +38,12 @@ export default class Game {
   render() {
     this.Map.setView();
     this.Ui.render();
+
     this.Player.updatePosition();
     this.Map.updateCanvas();
     this.Map.updateDelta();
-
     this.Player.updatePosInView();
+
     this.Map.setCanvasSize();
     this.Map.setCanvasPos();
     this.Map.render();
@@ -71,17 +72,9 @@ export default class Game {
 
   movePlayer(position, direction) {
     const { duration } = this;
-
-    const start = {
-      coord: this.Player.coord.map(e => e),
-      posInView: this.Player.posInView.map(e => e)
-    };
-
     this.Player.updatePosition(position, direction);
     this.Player.updatePosInView();
-
-    this.Map.updateTranslateCoef(start);
-
+    this.Map.updateTranslateCoef();
     this.Map.translateCanvas({ duration });
     this.Player.setSpritePosition({ duration });
     translationTimeout(this, () => this.Map.render());
@@ -96,20 +89,15 @@ export default class Game {
     const isZoomable = this.Map.incrementMainDimension(direction);
     if (!isZoomable) return;
     this.flag.isZooming = true;
-
-    const start = Object.assign({}, {
-      cS1: this.Map.cellSize,
-      pX1: this.Player.posInView.map(e => e),
-    });
-
+    
     this.Player.updatePosition();
     this.Map.updateCanvas();
     this.Player.updatePosInView();
     this.Map.updateDelta();
 
-    this.Map.updateScaleVector(direction, start);
+    this.Map.updateScaleVector(direction);
 
-    this.Map.zoomAnimation();
+    this.Map.zoom();
     this.Player.setSpritePosition({ duration: 0.2 });
     this.Player.setSpriteSize();
 

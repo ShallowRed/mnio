@@ -17,6 +17,8 @@ export default class Player {
   }
 
   updatePosition(position, direction) {
+    if (this.coord)
+      this.lastCoord = [...this.coord];
     if (position)
       this.position = position;
     if (direction)
@@ -25,6 +27,7 @@ export default class Player {
   }
 
   updatePosInView(Game = this.Game()) {
+    this.lastPosInView = [...this.posInView];
     this.posInView = this.coord.map((pX, dimension) => {
       const { gX, mX, hX } = Game.getCoords(dimension);
       return pX < Math.ceil(hX) ?
@@ -33,7 +36,6 @@ export default class Player {
         pX + mX - gX :
         hX;
     });
-
   }
 
   setSpritePosition({ duration }) {

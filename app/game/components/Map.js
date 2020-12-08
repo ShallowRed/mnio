@@ -62,6 +62,10 @@ export default class Map {
     const { mainDimension: mD } = this;
     if (!this.numCells[mD])
       this.numCells[mD] = this.startcells;
+    if (this.cellSize) {
+      const { cellSize } = this;
+      this.lastCellSize = cellSize
+    }
     this.cellSize = Math.round(this.size[mD] / this.numCells[mD]);
   }
 
@@ -131,21 +135,22 @@ export default class Map {
 
   translateCanvas({ duration }) {
     this.updateDelta();
-    this.updateTranslateValue();
+    this.updateTranslateVector();
     this.canvas.forEach(canvas => {
       canvas.style.transitionDuration = `${duration}s`;
-      canvas.style.transform = `translate(${this.translateValue})`;
+      canvas.style.transform = `translate(${this.translateVector})`;
     });
   }
 
-  updateTranslateCoef(start, Player = this.Player()) {
-    this.translateCoef = [0, 1].map((e, i) =>
-      start.coord[i] - Player.coord[i] - start.posInView[i] + Player.posInView[i]
+  updateTranslateCoef() {
+    const { lastCoord, coord, lastPosInView, posInView } = this.Player();
+    this.translateCoef = lastCoord.map((x, i) =>
+      x - coord[i] + posInView[i] - lastPosInView[i]
     )
   }
 
-  updateTranslateValue() {
-    this.translateValue = this.translateCoef.map((translateCoef, i) =>
+  updateTranslateVector() {
+    this.translateVector = this.translateCoef.map((translateCoef, i) =>
         `${translateCoef * this.cellSize + this.deltaFromView[i]}px`
       )
       .join(', ');
@@ -182,21 +187,28 @@ export default class Map {
     return true;
   }
 
-  updateScaleVector(direction, { cS1, pX1 }) {
+  updateScaleVector(direction, Player = this.Player()) {
+    const cS1 = this.lastCellSize;
+    const cS2 = this.cellSize;
+    const dCs = (cS1 - cS2) * this.numOffscreen;
 
-    const pX2 = this.Player().posInView;
+    this.scale.factor = Math.round(1000 * cS2 / cS1) / 1000;
 
-    this.scale.factor = Math.round(1000 * this.cellSize / cS1) / 1000;
-    const dCs = (cS1 - this.cellSize) * this.numOffscreen;
-
-    this.scale.translation = [0, 1].map((item, i) => {
-        const oX = dCs + (pX2[i] - pX1[i]) * this.cellSize + this.deltaFromView[i];
+    this.scale.translation = [0, 1].map((e, i) => {
+        const oX = this.getTranslation(i, dCs, cS2);
         return `${Math.round(oX * 2) / 2}px`
       })
       .join(', ');
   }
 
-  zoomAnimation() {
+  getTranslation(dimension, dCs, cS2, Player = this.Player()) {
+    const dV = this.deltaFromView[dimension];
+    const pX1 = Player.lastPosInView[dimension];
+    const pX2 = Player.posInView[dimension];
+    return dCs + (pX2 - pX1) * cS2 + dV;
+  }
+
+  zoom() {
     this.canvas.forEach(canvas => {
       canvas.style.transitionDuration = "0.2s";
       canvas.style.transform =
