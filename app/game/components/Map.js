@@ -57,7 +57,6 @@ export default class Map {
   }
 
   updateCanvasSize() {
-
     const windowSize = ["innerWidth", "innerHeight"];
     const { mainDimension: mD, secDimension: sD } = this;
     this.size[mD] = Math.round(0.85 * window[windowSize[mD]]);
@@ -161,7 +160,6 @@ export default class Map {
         pX <= hX ? 0 :
         pX >= gX - hX - 1 ? 1 :
         1 / 2;
-      // return 0
       return viewCanvasDelta * posInViewCoef;
     });
   }
@@ -205,7 +203,8 @@ export default class Map {
   ////////////////////////////////////////////////////
 
   incrementMainDimension(direction) {
-    const increment = direction == "in" ? -1 : 1;
+    const increment = 1;
+    const sense = direction == "in" ? -1 : 1;
     const d = this.mainDimension;
 
     if (
@@ -213,7 +212,7 @@ export default class Map {
       (direction == "out" && this.numCells[d] >= this.maxcells)
     ) return;
 
-    this.numCells[d] += increment;
+    this.numCells[d] += increment * sense;
     return true;
   }
 
@@ -221,61 +220,29 @@ export default class Map {
     const props = Object.assign({}, {
       cellSize: this.cellSize,
       deltaFromView: this.deltaFromView.map(e => e),
-      posInView: Player.posInView.map((pVX, i) =>
-        pVX
-        // (pVX + this.numOffscreen + 0.5) * this.cellSize
-      )
+      posInView: Player.posInView.map(e => e),
     });
-    console.log(props);
     return props;
   }
 
-  zoomAnimation(direction, {
-    cellSize: cS1,
-    deltaFromView: dX1,
-    posInView: pX1
-  }, {
+  zoomAnimation(direction, { cellSize: cS1, posInView: pX1 }, {
     cellSize: cS2,
     deltaFromView: dX2,
     posInView: pX2
   }) {
-    const factor = Math.round(100000 * cS2 / cS1) / 100000;
-
+    const factor = Math.round(1000 * cS2 / cS1) / 1000;
     const dCs = (cS2 - cS1) * this.numOffscreen;
-    // const dCs = (cS2 - cS1) * this.numOffscreen;
 
-    // const dd = [0, 1].map((e, i) => dX2[i] - dX1[i]);
-    // console.log("dd :", dd);
-    console.log("dX1 :", dX1);
-    console.log("dX2 :", dX2);
     const deltaPos = [0, 1].map((item, i) => {
-        // const oX = dCs * 2;
-        // const oX = 1.5 * (cS2 - factor * cS1);
-        // const a = pX2[i] - factor * pX1[i];
-        console.log(pX2[i] - pX1[i]);
-        const oX = - dCs + (pX2[i] - pX1[i]) * cS1 - dX1[i];
-        // return `${oX}px`
-        return `${Math.round(oX * 2000) / 2000}px`
+        const oX = (dX2[i] - dCs + (pX2[i] - pX1[i]) * cS2) / factor;
+        return `${Math.round(oX * 2) / 2}px`
       })
       .join(', ');
 
-    console.log("deltaPos :", deltaPos);
-
     this.canvas.forEach(canvas => {
-      canvas.style.transitionDuration = "0.8s";
-      canvas.style.transform = `scale(${factor}) `;
-      setTimeout(() => {
-        canvas.style.transform =
-          `scale(${factor}) translate(${deltaPos})`;
-      }, 1000)
+      canvas.style.transitionDuration = "0.2s";
+      canvas.style.transform =
+        `scale(${factor}) translate(${deltaPos})`;
     });
   }
 }
-
-
-// const origin = [0, 1].map((item, i) => {
-//     const oX = (factor * pX1[i] - pX2[i] - dCs - dX2[i]) / (
-//       factor - 1);
-//     return `${Math.round(oX * 20) / 20}px`
-//   })
-//   .join(' ');

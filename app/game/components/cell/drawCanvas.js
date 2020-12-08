@@ -1,5 +1,4 @@
 const fillCell = (coord, cellSize, ctx, color) => {
-  // const [vX, vY] = coord.map(x => (cellSize * x));
   const [vX, vY] = coord.map(x => Math.round(cellSize * x));
   ctx.clearRect(vX, vY, cellSize, cellSize);
   if (!color) return;

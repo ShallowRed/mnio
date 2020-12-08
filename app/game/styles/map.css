@@ -9,12 +9,10 @@
 canvas {
   overflow: hidden;
   position: absolute;
-  /* transition-timing-function: linear; */
   display: inline-block;
-  transition-timing-function: ease-in;
+  transition-timing-function: linear;
   transform-origin: top left;
 
-  /* transition-timing-function: ease; */
   &:last-of-type {
     opacity: 0.5;
   }
