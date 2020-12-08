@@ -3,7 +3,7 @@
   position: absolute;
   box-sizing: border-box;
   transform: translate(-50%, -50%);
-  outline: solid 1px;
+  background: white;
 }
 
 canvas {

@@ -9,17 +9,12 @@ export default class Map {
     this.numOffscreen = 1.5;
     this.numCells = [0, 0];
     this.size = [0, 0];
-    this.translateCoef = [0, 0];
+    this.scale = {},
+      this.translateCoef = [0, 0];
     this.deltaFromView = [0, 0];
     this.view = document.getElementById('view');
     this.canvas = document.querySelectorAll('canvas');
     this.ctx = [...this.canvas].map(canvas => canvas.getContext('2d'));
-    this.Directions = {
-      right: { dimension: 0, sense: 0 },
-      left: { dimension: 0, sense: 1 },
-      down: { dimension: 1, sense: 0 },
-      up: { dimension: 1, sense: 1 }
-    };
   }
 
   ////////////////////////////////////////////////////
@@ -135,11 +130,18 @@ export default class Map {
   ////////////////////////////////////////////////////
 
   translateCanvas({ duration }) {
+    this.updateDelta();
     this.updateTranslateValue();
     this.canvas.forEach(canvas => {
       canvas.style.transitionDuration = `${duration}s`;
       canvas.style.transform = `translate(${this.translateValue})`;
     });
+  }
+
+  updateTranslateCoef(start, Player = this.Player()) {
+    this.translateCoef = [0, 1].map((e, i) =>
+      start.coord[i] - Player.coord[i] - start.posInView[i] + Player.posInView[i]
+    )
   }
 
   updateTranslateValue() {
@@ -164,42 +166,6 @@ export default class Map {
     });
   }
 
-  translateAnimation(Game = this.Game()) {
-    const direction = this.Directions[Game.Player.lastdir];
-    const { duration } = Game;
-    this.updateTranslateCoef(direction);
-    this.translateCanvas({ duration });
-  }
-
-  updateTranslateCoef({ dimension, sense }, Game = this.Game()) {
-    const { pX, gX, hX } = Game.getCoords(dimension);
-    this.updateCenter(gX, hX, sense);
-    this.updateDelta();
-    if (pX > this.center.start && pX < this.center.end) {
-      this.updateSenseCoef(sense);
-      this.updateEvenCoef(pX);
-      this.translateCoef[dimension] = this.senseCoef * this.evenCoef;
-    }
-  }
-
-  updateCenter(gX, hX, sense) {
-    this.center = { start: hX - sense, end: gX - hX - sense };
-  }
-
-  updateSenseCoef(sense) {
-    this.senseCoef = [-1, 1][sense]
-  }
-
-  updateEvenCoef(pX) {
-    const { start, end } = this.center;
-    this.evenCoef = (
-      pX == Math.ceil(start) ||
-      pX == Math.floor(start) ||
-      pX == Math.ceil(end) ||
-      pX == Math.floor(end)
-    ) ? 0.5 : 1;
-  }
-
   ////////////////////////////////////////////////////
 
   incrementMainDimension(direction) {
@@ -216,33 +182,25 @@ export default class Map {
     return true;
   }
 
-  freezeProps(Player = this.Player()) {
-    const props = Object.assign({}, {
-      cellSize: this.cellSize,
-      deltaFromView: this.deltaFromView.map(e => e),
-      posInView: Player.posInView.map(e => e),
-    });
-    return props;
-  }
+  updateScaleVector(direction, { cS1, pX1 }) {
 
-  zoomAnimation(direction, { cellSize: cS1, posInView: pX1 }, {
-    cellSize: cS2,
-    deltaFromView: dX2,
-    posInView: pX2
-  }) {
-    const factor = Math.round(1000 * cS2 / cS1) / 1000;
-    const dCs = (cS2 - cS1) * this.numOffscreen;
+    const pX2 = this.Player().posInView;
 
-    const deltaPos = [0, 1].map((item, i) => {
-        const oX = (dX2[i] - dCs + (pX2[i] - pX1[i]) * cS2) / factor;
+    this.scale.factor = Math.round(1000 * this.cellSize / cS1) / 1000;
+    const dCs = (cS1 - this.cellSize) * this.numOffscreen;
+
+    this.scale.translation = [0, 1].map((item, i) => {
+        const oX = dCs + (pX2[i] - pX1[i]) * this.cellSize + this.deltaFromView[i];
         return `${Math.round(oX * 2) / 2}px`
       })
       .join(', ');
+  }
 
+  zoomAnimation() {
     this.canvas.forEach(canvas => {
       canvas.style.transitionDuration = "0.2s";
       canvas.style.transform =
-        `scale(${factor}) translate(${deltaPos})`;
+        `translate(${this.scale.translation}) scale(${this.scale.factor}) `;
     });
   }
 }

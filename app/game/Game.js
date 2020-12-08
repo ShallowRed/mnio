@@ -35,7 +35,7 @@ export default class Game {
     listenServerEvents(this);
   }
 
-  render({ isZoom }) {
+  render() {
     this.Map.setView();
     this.Ui.render();
     this.Player.updatePosition();
@@ -51,7 +51,7 @@ export default class Game {
   }
 
   listenWindowEvents() {
-    const render = () => this.render({ isZoom: false });
+    const render = () => this.render();
     window.addEventListener('resize', render);
     window.addEventListener("orientationchange", () =>
       setTimeout(render, 500)
@@ -71,9 +71,18 @@ export default class Game {
 
   movePlayer(position, direction) {
     const { duration } = this;
+
+    const start = {
+      coord: this.Player.coord.map(e => e),
+      posInView: this.Player.posInView.map(e => e)
+    };
+
     this.Player.updatePosition(position, direction);
     this.Player.updatePosInView();
-    this.Map.translateAnimation();
+
+    this.Map.updateTranslateCoef(start);
+
+    this.Map.translateCanvas({ duration });
     this.Player.setSpritePosition({ duration });
     translationTimeout(this, () => this.Map.render());
   }
@@ -86,22 +95,28 @@ export default class Game {
 
     const isZoomable = this.Map.incrementMainDimension(direction);
     if (!isZoomable) return;
-
-    const start = this.Map.freezeProps();
     this.flag.isZooming = true;
+
+    const start = Object.assign({}, {
+      cS1: this.Map.cellSize,
+      pX1: this.Player.posInView.map(e => e),
+    });
+
     this.Player.updatePosition();
     this.Map.updateCanvas();
     this.Player.updatePosInView();
     this.Map.updateDelta();
-    const end = this.Map.freezeProps();
-    this.Map.zoomAnimation(direction, start, end);
+
+    this.Map.updateScaleVector(direction, start);
+
+    this.Map.zoomAnimation();
+    this.Player.setSpritePosition({ duration: 0.2 });
+    this.Player.setSpriteSize();
 
     setTimeout(() => {
       this.Map.setCanvasSize();
       this.Map.setCanvasPos();
       this.Map.render();
-      this.Player.setSpritePosition({ duration: 0 });
-      this.Player.setSpriteSize();
       setTimeout(() => {
         this.flag.isZooming = false;
       }, 20);
