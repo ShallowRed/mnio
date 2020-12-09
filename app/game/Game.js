@@ -66,8 +66,7 @@ export default class Game {
     this.Player.updatePosInView();
     this.Map.updateCanvasOrigin();
 
-    this.Map.setCanvasSize();
-    this.Map.setCanvasPos();
+    this.Map.setCanvas();
     this.Map.render();
     this.Player.setSpritePosition({ duration: 0 });
     this.Player.setSpriteSize();
@@ -110,8 +109,7 @@ export default class Game {
     this.Player.setSpriteSize();
 
     setTimeout(() => {
-      this.Map.setCanvasSize();
-      this.Map.setCanvasPos();
+      this.Map.setCanvas();
       this.Map.render();
       setTimeout(() => {
         this.flag.isZooming = false;

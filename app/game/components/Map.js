@@ -23,6 +23,7 @@ export default class Map {
     this.getMainDimension();
     this.setViewPosition();
     this.setViewSize();
+    this.updateViewSize();
   }
 
   getMainDimension() {
@@ -43,23 +44,22 @@ export default class Map {
     this.view.style[["height", "width"][mD]] = "95%";
   }
 
-  ////////////////////////////////////////////////////
-
-  updateCanvas() {
-    this.updateCanvasSize();
-    this.updateCellSizeFromMainDimension();
-    this.updateSecDimensionFromCellSize();
-    this.updateViewCanvasDeltaSize();
-  }
-
-  updateCanvasSize() {
+  updateViewSize() {
     const windowSize = ["innerWidth", "innerHeight"];
     const { mainDimension: mD, secDimension: sD } = this;
     this.viewSize[mD] = Math.round(0.85 * window[windowSize[mD]]);
     this.viewSize[sD] = Math.round(0.95 * window[windowSize[sD]]);
   }
 
-  updateCellSizeFromMainDimension() {
+  ////////////////////////////////////////////////////
+
+  updateCanvas() {
+    this.updateCellSize();
+    this.updateSecDimensionNumCells();
+    this.updateViewCanvasDeltaSize();
+  }
+
+  updateCellSize() {
     const { mainDimension: mD } = this;
     if (!this.numCells[mD])
       this.numCells[mD] = this.startcells;
@@ -70,7 +70,7 @@ export default class Map {
     this.cellSize = Math.round(this.viewSize[mD] / this.numCells[mD]);
   }
 
-  updateSecDimensionFromCellSize() {
+  updateSecDimensionNumCells() {
     const { secDimension: sD } = this;
     this.numCells[sD] = Math.round(this.viewSize[sD] / this.cellSize);
   }
@@ -81,7 +81,18 @@ export default class Map {
     )
   }
 
+  updateCanvasOrigin(Player = this.Player()) {
+    this.canvasOrigin = this.viewCanvasDelta.map((viewCanvasDelta, i) => {
+      return viewCanvasDelta * Player.posInViewCoef[i];
+    });
+  }
+
   ////////////////////////////////////////////////////
+
+  setCanvas() {
+    this.setCanvasSize();
+    this.setCanvasPos();
+  }
 
   setCanvasSize() {
     const { cellSize, numCells, numOffscreen } = this;
@@ -107,11 +118,6 @@ export default class Map {
     this.translateCanvas({ duration: 0 })
     this.clearAllCanvas();
     this.drawAllCells();
-  }
-
-  resetTranslateCoef() {
-    this.translateCoef[0] = 0;
-    this.translateCoef[1] = 0;
   }
 
   clearAllCanvas() {
@@ -149,23 +155,22 @@ export default class Map {
     });
   }
 
-  updateTranslateCoef() {
-    const { lastCoord, coord, lastPosInView, posInView } = this.Player();
-    this.translateCoef = lastCoord.map((x, i) =>
-      x - coord[i] + posInView[i] - lastPosInView[i]
-    )
-  }
-
   updateTranslateVector() {
     this.translateVector = this.translateCoef.map((translateCoef, i) =>
       `${translateCoef * this.cellSize + this.canvasOrigin[i]}px`
     );
   }
 
-  updateCanvasOrigin(Player = this.Player()) {
-    this.canvasOrigin = this.viewCanvasDelta.map((viewCanvasDelta, i) => {
-      return viewCanvasDelta * Player.posInViewCoef[i];
-    });
+  resetTranslateCoef() {
+    this.translateCoef[0] = 0;
+    this.translateCoef[1] = 0;
+  }
+
+  updateTranslateCoef() {
+    const { lastCoord, coord, lastPosInView, posInView } = this.Player();
+    this.translateCoef = lastCoord.map((x, i) =>
+      x - coord[i] + posInView[i] - lastPosInView[i]
+    )
   }
 
   ////////////////////////////////////////////////////
@@ -192,16 +197,16 @@ export default class Map {
     this.scale.factor = Math.round(1000 * cS2 / cS1) / 1000;
 
     this.scale.translation = [0, 1].map((e, i) => {
-      const oX = this.getTranslation(i, dCs, cS2);
+      const oX = this.getScaleTranslation(i, dCs, cS2);
       return `${Math.round(oX * 2) / 2}px`
     });
   }
 
-  getTranslation(dimension, dCs, cS2, Player = this.Player()) {
-    const dV = this.canvasOrigin[dimension];
+  getScaleTranslation(dimension, dCs, cS2, Player = this.Player()) {
+    const cO = this.canvasOrigin[dimension];
     const pX1 = Player.lastPosInView[dimension];
     const pX2 = Player.posInView[dimension];
-    return dCs + (pX2 - pX1) * cS2 + dV;
+    return dCs + (pX2 - pX1) * cS2 + cO;
   }
 
   zoom() {
