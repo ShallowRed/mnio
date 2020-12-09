@@ -18,6 +18,8 @@ export default class Player {
     ];
   }
 
+  ////////////////////////////////////////////////////
+
   updatePosition(position, direction) {
     if (this.coord)
       this.lastCoord = [...this.coord];
@@ -58,10 +60,18 @@ export default class Player {
       1 / 2;
   }
 
+  ////////////////////////////////////////////////////
+
+  render(Game = this.Game()) {
+    const { isZooming, isTranslating } = Game.flag;
+    const duration = (isTranslating || isZooming) ? Game.duration : 0;
+    this.setSpritePosition({ duration });
+    !isTranslating && this.setSpriteSize();
+  }
+
   setSpritePosition({ duration }) {
     this.sprite.forEach(sprite => {
       sprite.style.transitionDuration = `${duration}s`;
-      console.log(Map.canvasOrigin);
       sprite.style.transform = `translate(${this.getTranslateValue()})`;
     });
   }

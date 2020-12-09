@@ -9,7 +9,7 @@ export default (Game) => {
 const serverEvents = Object.entries({
 
   newPlayerPos(Game, newPosition) {
-    Game.flag.moveCallback = true;
+    Game.flag.waitingServerConfirmMove = false;
     if (newPosition !== Game.Player.position)
       Game.movePlayer(newPosition);
   },
@@ -34,13 +34,13 @@ const serverEvents = Object.entries({
     cells.forEach(position => {
       if (allowed.includes(position)) return;
       allowed.push(position);
-      if (!flag.translate)
+      if (!flag.isTranslating)
         Cell.render.allowed(position);
     });
   },
 
-  fillCallback({ flag }) {
-    flag.fillCallback = true;
+  confirmFill({ flag }) {
+    flag.waitingServerConfirmFill = false;
   },
 
   error: () =>

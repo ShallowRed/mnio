@@ -8,8 +8,7 @@ import listenClickEvents from './events/click';
 import listenKeyboardEvents from './events/keyboard';
 import listenTouchEvents from './events/touchScreen';
 
-import Flag from './utils/Flag';
-import translationTimeout from './utils/translationTimeout';
+import animationTimeout from './utils/animationTimeout';
 import checkMove from './utils/checkMove';
 import './utils/polyfill';
 
@@ -19,14 +18,13 @@ export default class Game {
     this.duration = 0.2;
     this.socket = socket;
     Object.assign(this, data.Game);
-    this.flag = new Flag();
     this.Map = new Map(this);
     this.Player = new Player(data.Player, this);
     this.Ui = new Ui(this.Map);
     this.Cell = new Cell(this);
-
+    this.flag = {};
     this.selectColor(0);
-    this.render({ isZoom: false });
+    this.render();
 
     this.listenWindowEvents();
     listenClickEvents(this);
@@ -45,76 +43,65 @@ export default class Game {
     );
   }
 
-  moveAttempt(direction) {
-    if (!this.flag.moveCallback || this.flag.translate) return;
-    this.socket.emit('move', direction);
-    const nextpos = checkMove(direction, this.Player.position, this);
-    if (nextpos) {
-      this.flag.moveCallback = false;
-      this.flag.translate = true;
-      this.movePlayer(nextpos, direction);
-    }
-  }
-
-
   render() {
     this.Map.setView();
     this.Ui.render();
 
-    this.Player.updatePosition();
-    this.Map.updateCanvas();
+    this.updateState();
+
+    this.Map.render();
+
+    this.Player.render();
+  }
+
+  updateState(position, direction) {
+    this.Player.updatePosition(position, direction);
+    !this.flag.isTranslating && this.Map.updateCanvasGrid();
     this.Player.updatePosInView();
     this.Map.updateCanvasOrigin();
-
-    this.Map.setCanvas();
-    this.Map.render();
-    this.Player.setSpritePosition({ duration: 0 });
-    this.Player.setSpriteSize();
   }
 
   ////////////////////////////////////////////////////
 
+  moveAttempt(direction) {
+    if (this.flag.waitingServerConfirmMove || this.flag.isTranslating || this
+      .flag.isZooming) return;
+    this.socket.emit('move', direction);
+    const nextpos = checkMove(direction, this.Player.position, this);
+    nextpos && this.movePlayer(nextpos, direction);
+  }
+
   movePlayer(position, direction) {
-    const { duration } = this;
+    this.flag.waitingServerConfirmMove = true;
+    this.flag.isTranslating = true;
 
-    this.Player.updatePosition(position, direction);
-    this.Player.updatePosInView();
-    this.Map.updateCanvasOrigin();
+    this.updateState(position, direction);
 
-    this.Map.updateTranslateCoef();
+    this.Map.translateCanvas({ duration: this.duration });
+    animationTimeout(this, () => {
+      this.Map.render();
+      this.flag.isTranslating = false;
+    });
 
-    this.Map.translateCanvas({ duration });
-    this.Player.setSpritePosition({ duration });
-    translationTimeout(this, () => this.Map.render());
+    this.Player.render();
   }
 
   zoom(direction) {
-    if (!this.flag.ok()) return;
-    if (this.flag.isZooming) return;
+    if (this.flag.isZooming || this.flag.isTranslating) return;
     this.Ui.focusZoomBtn(direction);
-
-    const isZoomable = this.Map.incrementMainDimension(direction);
+    const isZoomable = this.Map.incrementMainNumCells(direction);
     if (!isZoomable) return;
     this.flag.isZooming = true;
 
-    this.Player.updatePosition();
-    this.Map.updateCanvas();
-    this.Player.updatePosInView();
-    this.Map.updateCanvasOrigin();
-
-    this.Map.updateScaleVector(direction);
+    this.updateState();
 
     this.Map.zoom();
-    this.Player.setSpritePosition({ duration: 0.2 });
-    this.Player.setSpriteSize();
-
-    setTimeout(() => {
-      this.Map.setCanvas();
+    animationTimeout(this, () => {
       this.Map.render();
-      setTimeout(() => {
-        this.flag.isZooming = false;
-      }, 20);
-    }, 200);
+      this.flag.isZooming = false;
+    });
+
+    this.Player.render();
   }
 
   ////////////////////////////////////////////////////
@@ -136,7 +123,7 @@ export default class Game {
   fill() {
     const { socket, flag, owned, colors, Cell } = this;
     const { position, sColor } = this.Player;
-    if (!flag.fillCallback || flag.fill) return;
+    if (flag.waitingServerConfirmFill || flag.fill) return;
 
     if (!owned.includes(position))
       owned.push(position);
@@ -145,7 +132,7 @@ export default class Game {
     const color = sColor.substring(1);
     colors[position] = color;
     socket.emit("fill", { position, color });
-    flag.fillCallback = false;
+    flag.waitingServerConfirmFill = true;
     this.Player.stamp();
   }
 }

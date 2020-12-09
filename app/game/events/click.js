@@ -21,14 +21,14 @@ export default (Game) => {
       colorBtn.style.background = Game.Player.palette[i];
 
       colorBtn.addEventListener("click", () => {
-        if (!flag.ok()) return;
+        if (flag.isTranslating || flag.isZooming) return;
         Game.selectColor(i);
         Game.fill();
       });
 
       colorBtn.addEventListener("touchstart", (event) => {
         event.preventDefault();
-        if (!flag.ok()) return;
+        if (flag.isTranslating || flag.isZooming) return;
         Game.selectColor(i);
         Game.fill();
       });

@@ -53,7 +53,7 @@ export default class Map {
 
   ////////////////////////////////////////////////////
 
-  updateCanvas() {
+  updateCanvasGrid() {
     this.updateCellSize();
     this.updateSecDimensionNumCells();
     this.updateViewCanvasDeltaSize();
@@ -89,45 +89,33 @@ export default class Map {
 
   ////////////////////////////////////////////////////
 
-  setCanvas() {
-    this.setCanvasSize();
-    this.setCanvasPos();
-  }
-
-  setCanvasSize() {
+  setCanvasSizeAndPos() {
     const { cellSize, numCells, numOffscreen } = this;
     this.canvas.forEach(canvas => {
       canvas.width = cellSize * (numCells[0] + numOffscreen * 2);
       canvas.height = cellSize * (numCells[1] + numOffscreen * 2);
-    });
-  }
-
-  setCanvasPos() {
-    this.canvas.forEach(canvas => {
       canvas.style.top =
-        `-${Math.round(this.numOffscreen * this.cellSize)}px`;
+        `-${Math.round(numOffscreen * cellSize)}px`;
       canvas.style.left =
-        `-${Math.round(this.numOffscreen * this.cellSize)}px`;
+        `-${Math.round(numOffscreen * cellSize)}px`;
     });
   }
 
   ////////////////////////////////////////////////////
 
   render() {
-    this.resetTranslateCoef();
-    this.translateCanvas({ duration: 0 })
-    this.clearAllCanvas();
-    this.drawAllCells();
+    const { isTranslating } = this.Game();
+    !isTranslating && this.Map.setCanvasSizeAndPos();
+    this.Map.translateCanvas({ duration: 0 })
+    this.Map.renderCells();
   }
 
-  clearAllCanvas() {
+  renderCells(Game = this.Game()) {
+    const { Cell } = Game;
+
     this.ctx.forEach(ctx =>
       ctx.clearRect(0, 0, this.canvas[1].width, this.canvas[1].height)
     );
-  }
-
-  drawAllCells(Game = this.Game()) {
-    const { Cell } = Game;
 
     Game.allowed.forEach(position =>
       Cell.render.allowed(position)
@@ -147,7 +135,7 @@ export default class Map {
   ////////////////////////////////////////////////////
 
   translateCanvas({ duration }) {
-    this.updateTranslateVector();
+    this.updateTranslateVector(duration);
     this.canvas.forEach(canvas => {
       canvas.style.transitionDuration = `${duration}s`;
       canvas.style.transform =
@@ -155,7 +143,10 @@ export default class Map {
     });
   }
 
-  updateTranslateVector() {
+  updateTranslateVector(duration) {
+    duration ?
+      this.updateTranslateCoef() :
+      this.resetTranslateCoef();
     this.translateVector = this.translateCoef.map((translateCoef, i) =>
       `${translateCoef * this.cellSize + this.canvasOrigin[i]}px`
     );
@@ -175,21 +166,30 @@ export default class Map {
 
   ////////////////////////////////////////////////////
 
-  incrementMainDimension(direction) {
+  incrementMainNumCells(direction) {
     const increment = 2;
     const sense = direction == "in" ? -1 : 1;
-    const d = this.mainDimension;
+    const { mainDimension: mD } = this;
 
     if (
-      (direction == "in" && this.numCells[d] <= this.mincells) ||
-      (direction == "out" && this.numCells[d] >= this.maxcells)
+      (direction == "in" && this.numCells[mD] <= this.mincells) ||
+      (direction == "out" && this.numCells[mD] >= this.maxcells)
     ) return;
 
-    this.numCells[d] += increment * sense;
+    this.numCells[mD] += increment * sense;
     return true;
   }
 
-  updateScaleVector(direction, Player = this.Player()) {
+  zoom() {
+    this..updateScaleVector();
+    this.canvas.forEach(canvas => {
+      canvas.style.transitionDuration = "0.2s";
+      canvas.style.transform =
+        `translate(${this.scale.translation.join(', ')}) scale(${this.scale.factor}) `;
+    });
+  }
+
+  updateScaleVector(Player = this.Player()) {
     const cS1 = this.lastCellSize;
     const cS2 = this.cellSize;
     const dCs = (cS1 - cS2) * this.numOffscreen;
@@ -209,11 +209,4 @@ export default class Map {
     return dCs + (pX2 - pX1) * cS2 + cO;
   }
 
-  zoom() {
-    this.canvas.forEach(canvas => {
-      canvas.style.transitionDuration = "0.2s";
-      canvas.style.transform =
-        `translate(${this.scale.translation.join(', ')}) scale(${this.scale.factor}) `;
-    });
-  }
 }

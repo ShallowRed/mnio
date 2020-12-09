@@ -7,8 +7,8 @@ export default (Game) => {
       isAltPressed = true;
 
     if (
-      Game.flag.translate ||
-      !Game.flag.moveCallback
+      Game.flag.isTranslating ||
+      Game.flag.waitingServerConfirmMove
     ) return;
 
     onKeyDown(event, Game)

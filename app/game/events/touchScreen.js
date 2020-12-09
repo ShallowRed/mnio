@@ -87,7 +87,7 @@ const touchMove = (evt, flag, Game) => {
   if (!lastdir) Touch.saveDirection();
 
   if (
-    !flag.moveCallback || flag.translate ||
+    flag.waitingServerConfirmMove || flag.isTranslating ||
     Touch.isTooSmall()
   ) return;
 
@@ -99,8 +99,8 @@ const touchMove = (evt, flag, Game) => {
 
   const keepMoving = setInterval(() => {
     if (
-      flag.moveCallback &&
-      !flag.translate &&
+      !flag.waitingServerConfirmMove &&
+      !flag.isTranslating &&
       flag.touch && Touch.direction
     ) Game.moveAttempt(Touch.direction);
     if (!flag.touch)
