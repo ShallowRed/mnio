@@ -26,7 +26,7 @@ export default (Game) => {
         Game.fill();
       });
 
-      colorBtn.addEventListener("touchstart", (event) => {
+      colorBtn.addEventListener("touchend", (event) => {
         event.preventDefault();
         if (flag.isTranslating || flag.isZooming) return;
         Game.selectColor(i);

@@ -28,10 +28,8 @@ export default class Ui {
     this.section.style.flexDirection = Map.ratio ? "row" : "column";
     const props = Object.entries({
       flexFlow: ["column", "row"],
-      // height: ["50%", "10%"],
       height: ["auto", "10%"],
       width: ["10%", "100%"],
-      // width: ["10%", "auto"],
       float: ["right", "none"],
       margin: ["auto 0 auto auto", "auto auto 0"],
     });
@@ -44,7 +42,6 @@ export default class Ui {
     this.colorBtns.forEach((btn, j) => {
       const borderWidth = j == i ? 3 : 1;
       const scale = j == i ? 1 : 0.8;
-      // const scale = 1;
       btn.style.setProperty('border-width', `${borderWidth}px`);
       btn.style.setProperty('transform', `scale(${scale})`);
     });

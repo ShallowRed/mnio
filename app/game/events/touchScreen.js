@@ -66,12 +66,12 @@ const Touch = {
 };
 
 const touchStart = (evt, flag) => {
-  flag.touch = true;
+  flag.isTouching = true;
   Touch.setOrigin(evt);
 }
 
 const touchEnd = (evt, flag) => {
-  flag.touch = false;
+  flag.isTouching = false;
   Touch.setLimit();
   Touch.start = [null, null];
   Touch.direction = null;
@@ -91,19 +91,18 @@ const touchMove = (evt, flag, Game) => {
     Touch.isTooSmall()
   ) return;
 
-  // console.log("moveAttempt", Touch.direction);
   Game.moveAttempt(Touch.direction);
   Touch.setOrigin(evt);
-  Touch.setLimit(20);
+  Touch.setLimit(120);
   Touch.saveDirection();
 
   const keepMoving = setInterval(() => {
     if (
       !flag.waitingServerConfirmMove &&
       !flag.isTranslating &&
-      flag.touch && Touch.direction
+      flag.isTouching && Touch.direction
     ) Game.moveAttempt(Touch.direction);
-    if (!flag.touch)
+    if (!flag.isTouching)
       clearInterval(keepMoving);
   }, 100);
 }

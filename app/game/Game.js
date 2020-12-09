@@ -62,6 +62,7 @@ export default class Game {
       this.flag.isTranslating ||
       this.flag.isZooming
     ) return;
+    console.log("moveAttempt");
     this.socket.emit('move', direction);
     const nextpos = checkMove(direction, this.Player.position, this);
     nextpos && this.movePlayer(nextpos, direction);
