@@ -89,6 +89,13 @@ export default class Map {
 
   ////////////////////////////////////////////////////
 
+  render() {
+    const { isTranslating } = this.Game();
+    !isTranslating && this.setCanvasSizeAndPos();
+    this.translateCanvas({ duration: 0 })
+    this.renderCells();
+  }
+
   setCanvasSizeAndPos() {
     const { cellSize, numCells, numOffscreen } = this;
     this.canvas.forEach(canvas => {
@@ -99,15 +106,6 @@ export default class Map {
       canvas.style.left =
         `-${Math.round(numOffscreen * cellSize)}px`;
     });
-  }
-
-  ////////////////////////////////////////////////////
-
-  render() {
-    const { isTranslating } = this.Game();
-    !isTranslating && this.Map.setCanvasSizeAndPos();
-    this.Map.translateCanvas({ duration: 0 })
-    this.Map.renderCells();
   }
 
   renderCells(Game = this.Game()) {
@@ -147,6 +145,7 @@ export default class Map {
     duration ?
       this.updateTranslateCoef() :
       this.resetTranslateCoef();
+
     this.translateVector = this.translateCoef.map((translateCoef, i) =>
       `${translateCoef * this.cellSize + this.canvasOrigin[i]}px`
     );
@@ -181,7 +180,7 @@ export default class Map {
   }
 
   zoom() {
-    this..updateScaleVector();
+    this.updateScaleVector();
     this.canvas.forEach(canvas => {
       canvas.style.transitionDuration = "0.2s";
       canvas.style.transform =
@@ -208,5 +207,4 @@ export default class Map {
     const pX2 = Player.posInView[dimension];
     return dCs + (pX2 - pX1) * cS2 + cO;
   }
-
 }

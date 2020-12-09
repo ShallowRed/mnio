@@ -33,8 +33,6 @@ export default class Game {
     listenServerEvents(this);
   }
 
-  ////////////////////////////////////////////////////
-
   listenWindowEvents() {
     const render = () => this.render();
     window.addEventListener('resize', render);
@@ -46,11 +44,8 @@ export default class Game {
   render() {
     this.Map.setView();
     this.Ui.render();
-
     this.updateState();
-
     this.Map.render();
-
     this.Player.render();
   }
 
@@ -61,11 +56,12 @@ export default class Game {
     this.Map.updateCanvasOrigin();
   }
 
-  ////////////////////////////////////////////////////
-
   moveAttempt(direction) {
-    if (this.flag.waitingServerConfirmMove || this.flag.isTranslating || this
-      .flag.isZooming) return;
+    if (
+      this.flag.waitingServerConfirmMove ||
+      this.flag.isTranslating ||
+      this.flag.isZooming
+    ) return;
     this.socket.emit('move', direction);
     const nextpos = checkMove(direction, this.Player.position, this);
     nextpos && this.movePlayer(nextpos, direction);
@@ -103,8 +99,6 @@ export default class Game {
 
     this.Player.render();
   }
-
-  ////////////////////////////////////////////////////
 
   selectColor(index) {
     const { sColor, palette } = this.Player;
