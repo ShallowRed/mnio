@@ -9,6 +9,8 @@ export default class Player {
     this.sColor = palette[0];
     this.is = {};
     this.posInView = [0, 0];
+    this.posInViewCoef = [0, 0];
+    this.lastCoord = [0, 0];
 
     this.sprite = [
       document.getElementById('player'),
@@ -28,19 +30,38 @@ export default class Player {
 
   updatePosInView(Game = this.Game()) {
     this.lastPosInView = [...this.posInView];
-    this.posInView = this.coord.map((pX, dimension) => {
-      const { gX, mX, hX } = Game.getCoords(dimension);
-      return pX < Math.ceil(hX) ?
-        pX :
-        pX > gX - hX - 1 ?
-        pX + mX - gX :
-        hX;
+
+    [0, 1].forEach((i) => {
+      const pX = this.coord[i];
+      const gX = [Game.cols, Game.rows][i];
+      const mX = Game.Map.numCells[i];
+      const hX = (mX - 1) / 2;
+
+      this.posInView[i] = this.getPosInView(gX, mX, hX, pX);
+      this.posInViewCoef[i] = this.getPosInViewCoef(gX, mX, hX, pX);
     });
+  }
+
+  getPosInView(gX, mX, hX, pX) {
+    return pX < Math.ceil(hX) ?
+      pX :
+      pX > gX - hX - 1 ?
+      pX + mX - gX :
+      hX;
+  }
+
+  getPosInViewCoef(gX, mX, hX, pX) {
+    return pX <= hX ?
+      0 :
+      pX >= gX - hX - 1 ?
+      1 :
+      1 / 2;
   }
 
   setSpritePosition({ duration }) {
     this.sprite.forEach(sprite => {
       sprite.style.transitionDuration = `${duration}s`;
+      console.log(Map.canvasOrigin);
       sprite.style.transform = `translate(${this.getTranslateValue()})`;
     });
   }
@@ -48,7 +69,7 @@ export default class Player {
   getTranslateValue(Map = this.Map()) {
     const shift = Math.round(Map.cellSize / 8);
     return this.posInView.map((posInView, i) =>
-        `${posInView * Map.cellSize + Map.deltaFromView[i] + shift}px`
+        `${posInView * Map.cellSize + Map.canvasOrigin[i] + shift}px`
       )
       .join(', ');
 

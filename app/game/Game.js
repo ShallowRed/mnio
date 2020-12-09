@@ -35,21 +35,7 @@ export default class Game {
     listenServerEvents(this);
   }
 
-  render() {
-    this.Map.setView();
-    this.Ui.render();
-
-    this.Player.updatePosition();
-    this.Map.updateCanvas();
-    this.Map.updateDelta();
-    this.Player.updatePosInView();
-
-    this.Map.setCanvasSize();
-    this.Map.setCanvasPos();
-    this.Map.render();
-    this.Player.setSpritePosition({ duration: 0 });
-    this.Player.setSpriteSize();
-  }
+  ////////////////////////////////////////////////////
 
   listenWindowEvents() {
     const render = () => this.render();
@@ -70,11 +56,34 @@ export default class Game {
     }
   }
 
+
+  render() {
+    this.Map.setView();
+    this.Ui.render();
+
+    this.Player.updatePosition();
+    this.Map.updateCanvas();
+    this.Player.updatePosInView();
+    this.Map.updateCanvasOrigin();
+
+    this.Map.setCanvasSize();
+    this.Map.setCanvasPos();
+    this.Map.render();
+    this.Player.setSpritePosition({ duration: 0 });
+    this.Player.setSpriteSize();
+  }
+
+  ////////////////////////////////////////////////////
+
   movePlayer(position, direction) {
     const { duration } = this;
+
     this.Player.updatePosition(position, direction);
     this.Player.updatePosInView();
+    this.Map.updateCanvasOrigin();
+
     this.Map.updateTranslateCoef();
+
     this.Map.translateCanvas({ duration });
     this.Player.setSpritePosition({ duration });
     translationTimeout(this, () => this.Map.render());
@@ -84,16 +93,15 @@ export default class Game {
     if (!this.flag.ok()) return;
     if (this.flag.isZooming) return;
     this.Ui.focusZoomBtn(direction);
-    this.Map.updateDelta();
 
     const isZoomable = this.Map.incrementMainDimension(direction);
     if (!isZoomable) return;
     this.flag.isZooming = true;
-    
+
     this.Player.updatePosition();
     this.Map.updateCanvas();
     this.Player.updatePosInView();
-    this.Map.updateDelta();
+    this.Map.updateCanvasOrigin();
 
     this.Map.updateScaleVector(direction);
 
@@ -111,13 +119,7 @@ export default class Game {
     }, 200);
   }
 
-  getCoords(dimension) {
-    const pX = this.Player.coord[dimension];
-    const gX = [this.cols, this.rows][dimension];
-    const mX = this.Map.numCells[dimension];
-    const hX = (mX - 1) / 2;
-    return { pX, gX, mX, hX };
-  }
+  ////////////////////////////////////////////////////
 
   selectColor(index) {
     const { sColor, palette } = this.Player;
