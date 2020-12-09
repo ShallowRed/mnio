@@ -47,6 +47,14 @@ body {
   background: var(--grey);
 }
 
+* {
+  user-select: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
 button {
   font-size: 2em;
   transition: all 0.2s ease;

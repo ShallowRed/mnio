@@ -3,14 +3,14 @@ export default class Map {
   constructor(Game) {
     this.Game = () => Game;
     this.Player = () => Game.Player;
-    this.mincells = 5;
-    this.startcells = 8;
-    this.maxcells = 16;
+    this.mincells = 7;
+    this.startcells = 13;
+    this.maxcells = 20;
     this.numOffscreen = 1.5;
     this.numCells = [0, 0];
     this.viewSize = [0, 0];
-    this.scale = {},
-      this.translateCoef = [0, 0];
+    this.scale = {};
+    this.translateCoef = [0, 0];
     this.canvasOrigin = [0, 0];
     this.view = document.getElementById('view');
     this.canvas = document.querySelectorAll('canvas');
@@ -34,20 +34,20 @@ export default class Map {
 
   setViewPosition() {
     const { mainDimension: mD } = this;
-    this.view.style[["left", "top"][mD]] = "45%";
+    this.view.style[["left", "top"][mD]] = "44.5%";
     this.view.style[["top", "left"][mD]] = "50%";
   }
 
   setViewSize() {
     const { mainDimension: mD } = this;
-    this.view.style[["width", "height"][mD]] = "85%";
+    this.view.style[["width", "height"][mD]] = "85.5%";
     this.view.style[["height", "width"][mD]] = "95%";
   }
 
   updateViewSize() {
     const windowSize = ["innerWidth", "innerHeight"];
     const { mainDimension: mD, secDimension: sD } = this;
-    this.viewSize[mD] = Math.round(0.85 * window[windowSize[mD]]);
+    this.viewSize[mD] = Math.round(0.855 * window[windowSize[mD]]);
     this.viewSize[sD] = Math.round(0.95 * window[windowSize[sD]]);
   }
 

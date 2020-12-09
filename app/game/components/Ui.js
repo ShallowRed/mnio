@@ -23,27 +23,39 @@ export default class Ui {
   }
 
   render(Map = this.Map()) {
-    this.btns[2].style.marginTop = Map.ratio ? "3vh" : "0";
-    this.btns[2].style.marginLeft = Map.ratio ? "0" : "5%";
+
     this.section.style.flexDirection = Map.ratio ? "row" : "column";
-    const props = Object.entries({
-      flexFlow: ["column", "row"],
-      height: ["auto", "10%"],
-      width: ["10%", "100%"],
-      float: ["right", "none"],
-      margin: ["auto 0 auto auto", "auto auto 0"],
-    });
-    for (const [key, value] of props) {
+
+    for (const [key, value] of Object.entries({
+        flexFlow: ["column", "row"],
+        height: ["auto", "11%"],
+        width: ["11%", "100%"],
+        float: ["right", "none"],
+        margin: ["auto 0 auto auto", "auto auto 0"],
+      })) {
       this.btnsBar.style[key] = value[Map.ratio ? 0 : 1];
     }
+
+    for (const [key, value] of Object.entries({
+        height: ["10vh", "10vw"],
+        width: ["10vh", "10vw"],
+        margin: [".8vh 0", "0 .8vw"]
+      })) {
+      this.btns.forEach(btn =>
+        btn.style[key] = value[Map.ratio ? 0 : 1]
+      );
+    }
+
+    this.btns[2].style.marginTop = Map.ratio ? "3vh" : "0";
+    this.btns[2].style.marginLeft = Map.ratio ? "0" : "5vw";
   }
 
-  focusColorBtn(i) {
-    this.colorBtns.forEach((btn, j) => {
-      const borderWidth = j == i ? 3 : 1;
-      const scale = j == i ? 1 : 0.8;
-      btn.style.setProperty('border-width', `${borderWidth}px`);
-      btn.style.setProperty('transform', `scale(${scale})`);
+  focusColorBtn(selectedIndex) {
+    this.colorBtns.forEach((btn, index) => {
+      const borderWidth = index == selectedIndex ? 2 : 1;
+      const scale = index == selectedIndex ? 1 : 0.9;
+      btn.style.borderWidth = `${borderWidth}px`;
+      btn.style.transform = `scale(${scale})`;
     });
   }
 
