@@ -62,7 +62,6 @@ export default class Game {
       this.flag.isTranslating ||
       this.flag.isZooming
     ) return;
-    console.log("moveAttempt");
     this.socket.emit('move', direction);
     const nextpos = checkMove(direction, this.Player.position, this);
     nextpos && this.movePlayer(nextpos, direction);
@@ -74,7 +73,7 @@ export default class Game {
 
     this.updateState(position, direction);
 
-    this.Map.translateCanvas({ duration: this.duration });
+    this.Map.translateCanvas({ duration: this.duration * 0.9 });
     animationTimeout(this, () => {
       this.Map.render();
       this.flag.isTranslating = false;

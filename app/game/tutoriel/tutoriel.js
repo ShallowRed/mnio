@@ -46,7 +46,7 @@ const TUTO = {
 
 TUTO.init = () => {
 
-  hide(document.getElementById('intro'));
+  // hide(document.getElementById('intro'));
 
   TUTO.isMobile =
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(

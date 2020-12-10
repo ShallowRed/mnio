@@ -104,5 +104,5 @@ const touchMove = (evt, flag, Game) => {
     ) Game.moveAttempt(Touch.direction);
     if (!flag.isTouching)
       clearInterval(keepMoving);
-  }, 100);
+  }, 20);
 }

@@ -5,8 +5,8 @@ export default class Map {
     this.Player = () => Game.Player;
     this.mincells = 7;
     this.startcells = 13;
-    this.maxcells = 20;
-    this.numOffscreen = 1.5;
+    this.maxcells = 24;
+    this.numOffscreen = 2;
     this.numCells = [0, 0];
     this.viewSize = [0, 0];
     this.scale = {};
@@ -75,7 +75,7 @@ export default class Map {
     this.numCells[sD] = Math.round(this.viewSize[sD] / this.cellSize);
   }
 
-  updateViewCanvasDeltaSize(i) {
+  updateViewCanvasDeltaSize() {
     this.viewCanvasDelta = [0, 1].map(i =>
       this.viewSize[i] - this.numCells[i] * this.cellSize
     )
@@ -182,13 +182,13 @@ export default class Map {
   zoom() {
     this.updateScaleVector();
     this.canvas.forEach(canvas => {
-      canvas.style.transitionDuration = "0.2s";
+      canvas.style.transitionDuration = "0.19s";
       canvas.style.transform =
         `translate(${this.scale.translation.join(', ')}) scale(${this.scale.factor}) `;
     });
   }
 
-  updateScaleVector(Player = this.Player()) {
+  updateScaleVector() {
     const cS1 = this.lastCellSize;
     const cS2 = this.cellSize;
     const dCs = (cS1 - cS2) * this.numOffscreen;

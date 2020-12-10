@@ -9,7 +9,7 @@
 </head>
 
 <body>
-	<a href='/'><img id="logo" src="dist/img/logo-full.png" alt="sorry"></a>
+	<a href='/login'><img id="logo" src="dist/img/logo-full.png" alt="sorry"></a>
 	<%= require('./tutoriel/tutoriel.ejs')() %>
 
 	<section>
@@ -31,10 +31,10 @@
 			<button type="button" class="color" id="c4"></button>
 			<button type="button" class="color" id="c5"></button>
 		</div>
-	</section>
+	</section>,
 
 	<div id="utils">
-		<button id="refresh" type="button" onclick="window.location='/'">
+		<button id="refresh" type="button" onclick="window.location.reload(true)">
 			<img src="dist/img/refresh.png" alt="sorry">
 		</button>
 		<button id="openTuto" type="button">

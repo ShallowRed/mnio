@@ -1,5 +1,5 @@
 const animationTimeout = (Game, callback, start = Date.now(), delay = Game
-  .duration * 1.1) => {
+  .duration) => {
 
   const delta = (Date.now() - start) / 1000;
 
