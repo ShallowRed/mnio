@@ -5,3 +5,5 @@ datadev/
 app/gallery/games/
 lib/config.js
 TODO.md
+.ftpconfig
+passenger.log

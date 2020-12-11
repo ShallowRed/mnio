@@ -12,7 +12,7 @@ import initLobby from './js/lobby';
 
 const socket = io('/login');
 initLobby(socket);
-registerServiceWorker();
+// registerServiceWorker();
 listenLogin(socket);
 
 socket.on('loginSuccess', isPlayerNew => {
