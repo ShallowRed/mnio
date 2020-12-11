@@ -35,7 +35,7 @@
     "express": "^4.17.1",
     "express-mysql-session": "^2.1.4",
     "express-session": "^1.17.1",
-    "mysql": "^2.18.1",
+    "mysql": "git://github.com/mysqljs/mysql#e3e123e9af7c0829a6c1417d911572a75b4a5f95",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
