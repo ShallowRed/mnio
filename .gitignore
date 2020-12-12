@@ -1,11 +1,8 @@
 node_modules/
 dist/
-mariadb-db/
 data/
-app/gallery/games/
-.remote-sync.json
-lib/config.js
-docker-compose.yml
 datadev/
+app/gallery/games/
+lib/config.js
 TODO.md
 .ftpconfig

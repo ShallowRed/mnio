@@ -1,36 +1,48 @@
 {
   "name": "mnio",
   "version": "0.0.1",
+  "engines": {
+    "node": ">=12.0.0",
+    "npm": ">=6.0.0"
+  },
   "description": "Un jeu de tapisserie en ligne",
   "scripts": {
-    "build": "docker-compose up --build",
-    "prod": "webpack --config webpack.game.config.js",
-    "dev": "SET NODE_ENV=dev && webpack --config webpack.game.config.js",
-    "devgallery": "SET NODE_ENV=dev && webpack --config webpack.gallery.config.js",
-    "prodgallery": "webpack --config webpack.gallery.config.js",
-    "test": "node lib/index.js",
-    "start": "pm2 start process.json && pm2 logs",
-    "reload": "pm2 reload lib/index.js",
-    "stop": "pm2 stop lib/index.js",
-    "clean": "node data/cleaner.js"
+    "start": "node lib/index",
+    "test:server": "node lib/index.js",
+    "dev:server": "pm2 start ecosystem.config.js && pm2 logs",
+    "debug:mnio": "set DEBUG=mnio & node lib/index",
+    "debug:session": "set DEBUG=express-session & node lib/index",
+    "dev:login": "SET NODE_ENV=dev && webpack --config webpack.login.config.js",
+    "prod:login": "webpack --config webpack.login.config.js",
+    "dev:palette": "SET NODE_ENV=dev && webpack --config webpack.palette.config.js",
+    "prod:palette": "webpack --config webpack.palette.config.js",
+    "dev:game": "SET NODE_ENV=dev && webpack --config webpack.game.config.js",
+    "prod:game": "webpack --config webpack.game.config.js",
+    "dev:gallery": "SET NODE_ENV=dev && webpack --config webpack.gallery.config.js",
+    "prod:gallery": "webpack --config webpack.gallery.config.js",
+    "prod:all": "npm run prod:login && npm run prod:palette && npm run prod:game",
+    "clean": "node data/cleaner.js",
+    "build": "docker-compose up --build"
   },
   "browserslist": [
-    "last 3 version, > 0.1%, not dead"
+    "last 3 version, > 2%, not dead, not ie <= 11"
   ],
   "dependencies": {
-    "at-least-node": "^1.0.0",
     "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
     "core-js": "^3.6.5",
+    "debug": "^4.3.1",
     "express": "^4.17.1",
-    "mysql": "^2.18.1",
-    "npm": "^6.14.8",
-    "pm2": "^4.4.0",
+    "express-mysql-session": "^2.1.4",
+    "express-session": "^1.17.1",
+    "mysql": "git://github.com/mysqljs/mysql#e3e123e9af7c0829a6c1417d911572a75b4a5f95",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.5",
     "@babel/core": "^7.11.1",
     "@babel/preset-env": "^7.11.0",
+    "@webpack-cli/serve": "^1.1.0",
     "babel-loader": "^8.1.0",
     "css-loader": "^3.6.0",
     "d3": "^5.16.0",
@@ -46,17 +58,19 @@
     "postcss-normalize": "^9.0.0",
     "postcss-preset-env": "^6.7.0",
     "terser-webpack-plugin": "^2.3.7",
-    "webpack": "^4.44.1",
-    "webpack-cli": "^3.3.12"
+    "webpack": "^4.41.5",
+    "webpack-cli": "^4.2.0",
+    "webpack-dev-server": "^3.11.0",
+    "webpack-remove-debug": "^0.1.0"
   },
+  "author": "Lucas Poulain (ShallowRed)",
+  "license": "ISC",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ShallowRed/mnio.git"
   },
-  "author": "Lucas Poulain (ShallowRed)",
-  "license": "ISC",
+  "homepage": "https://github.com/ShallowRed/mnio#readme",
   "bugs": {
     "url": "https://github.com/ShallowRed/mnio/issues"
-  },
-  "homepage": "https://github.com/ShallowRed/mnio#readme"
+  }
 }

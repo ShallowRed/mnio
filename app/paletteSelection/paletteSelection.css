@@ -1,0 +1,176 @@
+body>div {
+  z-index: 70;
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background: var(--grey);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+section:first-of-type {
+  max-width: 600px;
+  min-width: 200px;
+}
+
+section>div {
+  height: auto;
+  display: flex;
+  justify-content: space-around;
+}
+
+.palette>div {
+  box-sizing: border-box;
+  border-radius: 5px;
+  border: solid 1px black;
+  box-shadow: #aaa 5px 5px;
+  width: 50px;
+  height: 50px;
+  transition: background 0.2s ease;
+}
+
+img {
+  float: right;
+  object-fit: contain;
+}
+
+h3 {
+  font-size: 1em;
+  line-height: 1.3em;
+  max-width: 500px;
+  margin: 5vh auto 0;
+}
+
+@media screen and (min-width: 650px) {
+  section:first-of-type {
+    width: 50%;
+  }
+
+  p {
+    position: absolute;
+    box-sizing: border-box;
+    top: 5vh;
+    font-size: 1.2em;
+    padding: 5vh;
+    line-height: 2rem;
+    max-width: 53%;
+  }
+
+  section>div {
+    margin: 15vh 0 5vh;
+    margin: 25vh 0 5vh;
+  }
+
+  .palette {
+    padding-top: 5vh;
+    border-top: solid 1px;
+  }
+
+  img {
+    width: 100%;
+    max-height: 600px;
+    height: 50vh;
+    float: right;
+  }
+
+  section:last-of-type {
+    width: 30%;
+    max-width: 350px;
+    margin-left: 60px;
+  }
+
+  h3 {
+    font-size: 1em;
+    line-height: 1.3em;
+    max-width: 500px;
+    margin: 5vh auto 0;
+    padding-top: 15vh;
+  }
+}
+
+@media screen and (max-width: 650px) {
+  body>div {
+    box-sizing: border-box;
+    padding: 5%;
+    flex-flow: wrap;
+  }
+
+  section:first-of-type {
+    height: 60%;
+  }
+
+  section>div,
+  h3,
+  img {
+    position: absolute;
+    left: 0;
+  }
+
+  h3 {
+    padding: 7%;
+    bottom: 23%;
+  }
+
+  .palette {
+    width: 90%;
+    bottom: 15%;
+    margin: 0 5%;
+
+    &>div {
+      transform: scale(0.8);
+    }
+  }
+
+  img {
+    max-height: 250px;
+    max-height: 44vh;
+    bottom: 37%;
+    width: 95%;
+    margin: 0 2.5%;
+  }
+
+  .buttons {
+    bottom: 3%;
+    width: 100%;
+  }
+
+  h3 {
+    font-size: 0.9em;
+    line-height: 1.1em;
+    margin: 0;
+  }
+}
+
+.tap-change,
+.tap-select {
+  font-size: 1.2em;
+  letter-spacing: 0.1em;
+  border-radius: 5px;
+  color: white;
+  padding: 0.5em 1em;
+}
+
+.tap-select {
+  background: blue;
+  border: 1px solid blue;
+}
+
+.tap-select :hover {
+  background: white;
+  color: blue;
+}
+
+.tap-change {
+  color: #666;
+  background: white;
+  border: solid darkgrey 1px;
+}
+
+.tap-change:hover {
+  color: blue;
+}

@@ -1,26 +1,36 @@
+import '../global.css';
+import './tutoriel/introtuto.css';
+import './tutoriel/tutoriel.css';
+
+import './styles/main.css';
+import './styles/map.css';
+import './styles/player.css';
+import './styles/ui.css';
+
+///////////////////////
+
 import io from 'socket.io-client';
 
-import './js/lobby';
-import Intro from './js/intro';
-import login from './js/login';
+import Tutoriel from './tutoriel/tutoriel';
 
-import './css/global.css';
-import './css/lobby.css';
-import './css/login.css';
-import './css/intro.css';
-import './css/introtuto.css';
-import './css/canvas.css';
-import './css/buttons.css';
-import './css/utils.css';
-import './css/tuto.css';
+import Game from './Game';
 
-const socket = io();
-login(socket);
+const socket = io('/game');
 
-socket.on('initData', data => {
-  Intro(data, socket);
+socket.on("initGame", data => {
+  // console.log(data);
+  // Tutoriel.init();
+  // Tutoriel[isPlayerNew ? "init" : "end"]();
+  new Game(data, socket);
+  showAll();
 });
 
-socket.on('alert', data =>
-  alert(data)
-);
+socket.on('redirect', path => {
+  window.location.href = path;
+})
+
+const showAll = () => {
+  [...document.querySelectorAll('body>*')].forEach(el => {
+    el.style.opacity = 1;
+  });
+}

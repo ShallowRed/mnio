@@ -9,9 +9,9 @@ import './css/dataviz.css';
 
 import APP from './js/components/gallery';
 
-import game1 from './games/game.min.1';
-import game2 from './games/game.min.2';
-import game3 from './games/game.min.3';
+import game1 from '../../datadev/games.min/game.min.1';
+import game2 from '../../datadev/games.min/game.min.2';
+import game3 from '../../datadev/games.min/game.min.3';
 
 [game1, game2, game3].forEach(g => {
 
