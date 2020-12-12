@@ -1,6 +1,6 @@
 {
   "name": "mnio",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "Un jeu de tapisserie en ligne",
   "scripts": {
     "build": "docker-compose up --build",
