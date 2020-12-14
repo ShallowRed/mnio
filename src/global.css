@@ -47,7 +47,7 @@ body {
   background: var(--grey);
 }
 
-* {
+*:not(input) {
   user-select: none;
   -webkit-user-select: none;
   -khtml-user-select: none;

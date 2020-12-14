@@ -1,10 +1,10 @@
 const Config = require('./webpack.commons.js');
 
 const login = Config({
-  jsEntry: "./app/login/index.js",
-  ejsEntry: "./app/login/index.ejs",
+  jsEntry: "./src/login/index.js",
+  ejsEntry: "./src/login/index.ejs",
   name: "login",
-  outputPath: "dist/login",
+  outputPath: "srv/dist/login",
   outputName: "login.html",
   inject: true,
   isFavicon: true,

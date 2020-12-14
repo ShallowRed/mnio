@@ -1,10 +1,10 @@
 const Config = require('./webpack.commons.js');
 
 const galleryConfig = Config({
-  jsEntry: "./app/gallery/index.js",
-  ejsEntry: "./app/gallery/index.ejs",
+  jsEntry: "./src/gallery/index.js",
+  ejsEntry: "./src/gallery/index.ejs",
   name: "gallery",
-  outputPath: "dist/gallery",
+  outputPath: "srv/dist/gallery",
   outputName: "gallery.html"
 });
 

@@ -1,8 +1,11 @@
 node_modules/
-dist/
-data/
-datadev/
-app/gallery/games/
-lib/config.js
 TODO.md
 .ftpconfig
+srv/datadev/
+srv/dist/
+srv/node_modules/
+srv/.git/
+srv/.gitignore/
+srv/.gitattributes/
+srv/lib/config.js
+srv/

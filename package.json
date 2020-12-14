@@ -1,17 +1,8 @@
 {
-  "name": "mnio",
-  "version": "0.0.1",
-  "engines": {
-    "node": ">=12.0.0",
-    "npm": ">=6.0.0"
-  },
+  "name": "mnio-src",
+  "version": "0.0.2",
   "description": "Un jeu de tapisserie en ligne",
   "scripts": {
-    "start": "node lib/index",
-    "test:server": "node lib/index.js",
-    "dev:server": "pm2 start ecosystem.config.js && pm2 logs",
-    "debug:mnio": "set DEBUG=mnio & node lib/index",
-    "debug:session": "set DEBUG=express-session & node lib/index",
     "dev:login": "SET NODE_ENV=dev && webpack --config webpack.login.config.js",
     "prod:login": "webpack --config webpack.login.config.js",
     "dev:palette": "SET NODE_ENV=dev && webpack --config webpack.palette.config.js",
@@ -20,23 +11,13 @@
     "prod:game": "webpack --config webpack.game.config.js",
     "dev:gallery": "SET NODE_ENV=dev && webpack --config webpack.gallery.config.js",
     "prod:gallery": "webpack --config webpack.gallery.config.js",
-    "prod:all": "npm run prod:login && npm run prod:palette && npm run prod:game",
-    "clean": "node data/cleaner.js",
-    "build": "docker-compose up --build"
+    "prod:all": "npm run prod:login && npm run prod:palette && npm run prod:game"
   },
   "browserslist": [
     "last 3 version, > 2%, not dead, not ie <= 11"
   ],
   "dependencies": {
-    "body-parser": "^1.19.0",
-    "cookie-parser": "^1.4.5",
-    "core-js": "^3.6.5",
-    "debug": "^4.3.1",
-    "express": "^4.17.1",
-    "express-mysql-session": "^2.1.4",
-    "express-session": "^1.17.1",
-    "mysql": "git://github.com/mysqljs/mysql#e3e123e9af7c0829a6c1417d911572a75b4a5f95",
-    "socket.io": "^2.3.0"
+    "core-js": "^3.6.5"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.5",

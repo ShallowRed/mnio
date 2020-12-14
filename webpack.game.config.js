@@ -1,10 +1,10 @@
 const Config = require('./webpack.commons.js');
 
 const gameConfig = Config({
-  jsEntry: "./app/game/index.js",
-  ejsEntry: "./app/game/game.ejs",
+  jsEntry: "./src/game/index.js",
+  ejsEntry: "./src/game/game.ejs",
   name: "game",
-  outputPath: "dist/game",
+  outputPath: "srv/dist/game",
   outputName: "game.html",
   inject: true,
 });

@@ -25,7 +25,7 @@ const plugins = ({
 
   if (!!isFavicon) pluginsArray.push(
     new FaviconsWebpackPlugin({
-      logo: path.resolve(__dirname, './app/logo.png'),
+      logo: path.resolve(__dirname, './src/logo.png'),
       favicons: {
         icons: {
           android: true,
