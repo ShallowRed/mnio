@@ -18,9 +18,7 @@ import Game from './Game';
 const socket = io('/game');
 
 socket.on("initGame", data => {
-  // console.log(data);
-  // Tutoriel.init();
-  // Tutoriel[isPlayerNew ? "init" : "end"]();
+  Tutoriel[data.Game.owned.length ? "init" : "end"]();
   new Game(data, socket);
   showAll();
 });

@@ -7,27 +7,25 @@ const { db } = require('../config');
 const { host, user, database } = db;
 const queries = require('./queries');
 
-console.log(db);
-
-const Database = Mysql.createPool(db);
-
-debug('Mysql connected : ');
+const pool = Mysql.createPool(db);
 
 module.exports = {
 
-  connection: Database,
+  connection: pool,
+
+  creds: { host, user, database },
 
   GameDate: Math.floor(Date.now() / 1000),
 
   query: (query, args, callback) => {
-    Database.query(queries[query], args, (err, res) => {
+    pool.query(queries[query], args, (err, res) => {
       if (!!err) throw err;
       if (!!callback) callback(res);
     });
   },
 
   sQuery: (query, args) => {
-    return promisify(Database.query)
-      .call(Database, queries[query], args);
+    return promisify(pool.query)
+      .call(pool, queries[query], args);
   }
 };

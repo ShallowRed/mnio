@@ -19,8 +19,7 @@ module.exports = () => {
   app.use('/', Router);
 
   server.listen(port, () => {
-    console.log("\n\r-----------------------------------------\n\r");
-    console.log(`Listening on port ${port}\n\r`)
+    console.log(`Server listening on port ${port}\n\r`)
   });
 
   return io;

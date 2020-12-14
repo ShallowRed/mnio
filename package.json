@@ -38,6 +38,7 @@
     "postcss-loader": "^3.0.0",
     "postcss-normalize": "^9.0.0",
     "postcss-preset-env": "^6.7.0",
+    "socket.io-client": "^2.3.0",
     "terser-webpack-plugin": "^2.3.7",
     "webpack": "^4.41.5",
     "webpack-cli": "^4.2.0",
