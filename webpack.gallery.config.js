@@ -4,7 +4,7 @@ const galleryConfig = Config({
   jsEntry: "./src/gallery/index.js",
   ejsEntry: "./src/gallery/index.ejs",
   name: "gallery",
-  outputPath: "srv/dist/gallery",
+  outputPath: "dist/gallery",
   outputName: "gallery.html"
 });
 
