@@ -1,0 +1,56 @@
+{
+  "name": "mnio-src",
+  "version": "0.0.2",
+  "description": "Un jeu de tapisserie en ligne",
+  "scripts": {
+    "dev:server": "pm2 start srv/ecosystem.config.js && pm2 logs",
+    "dev:login": "SET NODE_ENV=dev && webpack --config webpack.login.config.js",
+    "prod:login": "webpack --config webpack.login.config.js",
+    "dev:palette": "SET NODE_ENV=dev && webpack --config webpack.palette.config.js",
+    "prod:palette": "webpack --config webpack.palette.config.js",
+    "dev:game": "SET NODE_ENV=dev && webpack --config webpack.game.config.js",
+    "prod:game": "webpack --config webpack.game.config.js",
+    "dev:gallery": "SET NODE_ENV=dev && webpack --config webpack.gallery.config.js",
+    "prod:gallery": "webpack --config webpack.gallery.config.js",
+    "prod:all": "npm run prod:login && npm run prod:palette && npm run prod:game"
+  },
+  "browserslist": [
+    "last 3 version, > 2%, not dead, not ie <= 11"
+  ],
+  "dependencies": {
+    "core-js": "^3.6.5"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.11.1",
+    "@babel/preset-env": "^7.11.0",
+    "babel-loader": "^8.1.0",
+    "css-loader": "^3.6.0",
+    "d3": "^5.16.0",
+    "ejs-loader": "^0.3.7",
+    "eslint": "^7.9.0",
+    "eslint-loader": "^4.0.2",
+    "favicons-webpack-plugin": "^3.0.1",
+    "hex-to-hsl": "^1.0.2",
+    "html-webpack-plugin": "^4.3.0",
+    "mini-css-extract-plugin": "^0.9.0",
+    "optimize-css-assets-webpack-plugin": "^5.0.3",
+    "postcss-loader": "^3.0.0",
+    "postcss-normalize": "^9.0.0",
+    "postcss-preset-env": "^6.7.0",
+    "terser-webpack-plugin": "^2.3.7",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^4.2.0",
+    "webpack-remove-debug": "^0.1.0"
+  },
+  "author": "Lucas Poulain (ShallowRed)",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShallowRed/mnio.git"
+  },
+  "homepage": "https://github.com/ShallowRed/mnio#readme",
+  "bugs": {
+    "url": "https://github.com/ShallowRed/mnio/issues"
+  }
+}

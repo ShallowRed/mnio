@@ -1,0 +1,32 @@
+.installation,
+.message-install-ios,
+.install-btn,
+.message-installed {
+  display: none;
+}
+
+.message-install p,
+.message-installed p {
+  font-size: 1.2em;
+}
+
+.message-install-ios {
+  & p {
+    margin: 1vh 0;
+    line-height: 1.2em;
+    font-size: 1em;
+  }
+
+  & img {
+    height: 30px;
+    width: 30px;
+
+    &:first-of-type {
+      transform: translateY(5px);
+    }
+
+    &:last-of-type {
+      transform: translateY(9px);
+    }
+  }
+}

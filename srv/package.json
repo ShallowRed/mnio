@@ -1,0 +1,24 @@
+{
+  "name": "mnio-srv",
+  "version": "0.0.2",
+  "engines": {
+    "node": ">=12.0.0",
+    "npm": ">=6.0.0"
+  },
+  "description": "Un jeu de tapisserie en ligne",
+  "scripts": {
+    "start": "node lib/index"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
+    "debug": "^4.3.1",
+    "express": "^4.17.1",
+    "express-mysql-session": "^2.1.4",
+    "express-session": "^1.17.1",
+    "mysql": "^2.18.1",
+    "socket.io": "^2.3.0"
+  },
+  "author": "Lucas Poulain (ShallowRed)",
+  "license": "ISC"
+}

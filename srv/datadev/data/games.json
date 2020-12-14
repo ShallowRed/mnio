@@ -1,0 +1,37 @@
+[{
+    "type": "header",
+    "version": "4.9.2",
+    "comment": "Export to JSON plugin for PHPMyAdmin"
+  },
+  {
+    "type": "database",
+    "name": "mniosql"
+  },
+  {
+    "type": "table",
+    "name": "games",
+    "database": "mniosql",
+    "data": [{
+        "gameid": "1",
+        "usedrows": "150",
+        "usedcols": "150",
+        "gridid": "1589921501",
+        "flag": "1"
+      },
+      {
+        "gameid": "2",
+        "usedrows": "200",
+        "usedcols": "200",
+        "gridid": "1590569337",
+        "flag": "1"
+      },
+      {
+        "gameid": "3",
+        "usedrows": "100",
+        "usedcols": "100",
+        "gridid": "000000005",
+        "flag": "1"
+      }
+    ]
+  }
+]
