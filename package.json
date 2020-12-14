@@ -23,7 +23,6 @@
     "@babel/cli": "^7.10.5",
     "@babel/core": "^7.11.1",
     "@babel/preset-env": "^7.11.0",
-    "@webpack-cli/serve": "^1.1.0",
     "babel-loader": "^8.1.0",
     "css-loader": "^3.6.0",
     "d3": "^5.16.0",
@@ -41,7 +40,6 @@
     "terser-webpack-plugin": "^2.3.7",
     "webpack": "^4.41.5",
     "webpack-cli": "^4.2.0",
-    "webpack-dev-server": "^3.11.0",
     "webpack-remove-debug": "^0.1.0"
   },
   "author": "Lucas Poulain (ShallowRed)",
