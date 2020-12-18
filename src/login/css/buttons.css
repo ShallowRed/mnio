@@ -1,0 +1,31 @@
+.btn {
+  width: 100%;
+  font-size: 1.2em;
+  letter-spacing: 0.1em;
+  padding: 2vh 10%;
+  border-radius: 5px;
+  color: white;
+  display: inline-block;
+}
+
+.high {
+  margin-top: 7vh;
+  background: blue;
+  border: 1px solid blue;
+}
+
+.high:hover {
+  background: white;
+  color: blue;
+}
+
+.low {
+  margin-top: 2vh;
+  color: #666;
+  background: var(--grey);
+  border: none;
+}
+
+.low:hover {
+  color: blue;
+}

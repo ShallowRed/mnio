@@ -1,0 +1,15 @@
+#info {
+  display: none;
+  position: absolute;
+  z-index: 800;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.info-block {
+  display: none;
+  position: absolute;
+  border: solid 1px red;
+  background: var(--grey);
+}

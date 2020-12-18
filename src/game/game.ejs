@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<link href="https://fonts.googleapis.com/css?family=Inconsolata&display=swap" rel="stylesheet">
+	<title>MN.io : Un jeu multijoueur du Mobilier National</title>
+	<link rel="license" href="/dist/main.js.LICENSE.txt">
+	<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+</head>
+
+<body>
+	<a style="display:none;" href='/login'><img id="logo" src="dist/img/icons/logo-full.png" alt="sorry"></a>
+
+	<section id="game">
+		<div id="view" style="position: relative;">
+			<canvas></canvas>
+			<canvas></canvas>
+			<canvas></canvas>
+
+			<div id="player"></div>
+			<div id="shadow"></div>
+		</div>
+
+		<div id="buttons">
+			<button type="button" class="zoom" id="zoomin"><img src="dist/img/icons/plus.png" alt=""></button>
+			<button type="button" class="zoom" id="zoomout"><img src="dist/img/icons/minus.png" alt=""></button>
+			<button type="button" class="color"></button>
+			<button type="button" class="color"></button>
+			<button type="button" class="color"></button>
+			<button type="button" class="color"></button>
+			<button type="button" class="color"></button>
+		</div>
+	</section>
+
+	<div id="menu">
+		<button type="button" onclick="location.href = '/'">
+			<img src="dist/img/icons/home.png" alt="">
+			<p>Retour au menu</p>
+		</button>
+		<button type="button" onclick="window.location.reload()">
+			<img src="dist/img/icons/refresh.png" alt="">
+			<p>En cas de bug</p>
+		</button>
+		<button type="button" id="help">
+			<img src="dist/img/icons/help.png" alt="">
+			<p>Aide</p>
+		</button>
+	</div>
+
+	<%= require('./tutoriel/tutoriel.ejs')() %>
+
+</body>
+
+</html>

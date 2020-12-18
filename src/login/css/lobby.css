@@ -1,0 +1,34 @@
+.message-welcome {
+  font-size: 1.1rem;
+  color: blue;
+  line-height: 1.4rem;
+  margin: 0 auto;
+}
+
+#galerie {
+  text-decoration: none;
+  margin-top: 5vh;
+  border: 1px solid darkgrey;
+  background: white;
+  padding: 0;
+
+  &:hover {
+    border: 1px solid blue;
+    color: blue;
+  }
+
+  & a {
+    padding: 2vh 0;
+
+    & p {
+      margin: 0;
+    }
+  }
+}
+
+#jeu,
+#galerie {
+  font-size: 1.4em;
+  letter-spacing: 0.07em;
+  width: 100%;
+}

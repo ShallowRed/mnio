@@ -1,0 +1,29 @@
+#menu {
+  position: absolute;
+  z-index: 980;
+  display: flex;
+  flex-direction: column;
+  background: #f2f2f2;
+  top: 0;
+  left: 0;
+
+  & button {
+    border: none;
+    display: flex;
+    padding: 0.3rem;
+    filter: saturate(0) brightness(1);
+
+    &:hover {
+      filter: saturate(1) brightness(0.95);
+    }
+
+    &:active {
+      filter: saturate(1) brightness(0.75);
+    }
+
+    & p {
+      margin: 0 0.5rem 0 1rem;
+      display: none;
+    }
+  }
+}

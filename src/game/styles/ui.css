@@ -1,0 +1,30 @@
+#buttons {
+  /* z-index: 950; */
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
+  flex-wrap: wrap;
+
+  & button {
+    box-sizing: border-box;
+    max-height: 55px;
+    max-width: 55px;
+    border-radius: 5px;
+    box-shadow: #aaa 5px 5px;
+
+    &.zoom {
+      min-height: 22px;
+      min-width: 22px;
+      transition: all 0.1s ease;
+      transform: scale(0.9);
+      border: solid 1px black;
+    }
+
+    &:not(.zoom) {
+      transform-origin: bottom right;
+      min-height: 30px;
+      min-width: 30px;
+      border: solid 1px black;
+    }
+  }
+}

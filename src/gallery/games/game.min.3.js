@@ -1,0 +1,1 @@
+const GAME={"id":"3","rows":"100","cols":"100"}; export default GAME
