@@ -22,10 +22,12 @@ const helpBlocks = {
       `
     },
     style: {
-      width: ["35%", "40%"],
-      height: ["35%", "25%"],
-      top: ["40%", "60%"],
-      left: ["50%", "40%"]
+      // width: ["35%", "40%"],
+      // height: ["35%", "25%"],
+      // top: ["40%", "60%"],
+      // bottom: ["25%", "15%"],
+      // right: ["15%", "5%"]
+      // left: ["50%", "40%"]
     }
   },
 
@@ -42,10 +44,10 @@ const helpBlocks = {
       `
     },
     style: {
-      width: ["35%", "40%"],
-      height: ["35%", "40%"],
-      top: ["40%", "10%"],
-      left: ["5%", "40%"]
+      // width: ["35%", "40%"],
+      // height: ["35%", "40%"],
+      // top: ["40%", "10%"],
+      // left: ["5%", "40%"]
     }
   },
 
@@ -63,12 +65,37 @@ const helpBlocks = {
       `
     },
     style: {
-      width: ["35%", "30%"],
-      height: ["25%", "25%"],
-      top: ["10%", "60%"],
-      left: ["50%", "5%"]
+      // bottom: ["60%", "15%"],
+      // right: ["15%", "5%"]
+      // width: ["35%", "30%"],
+      // height: ["25%", "25%"],
+      // top: ["10%", "60%"],
+      // left: ["50%", "5%"]
     }
   }
+};
+
+const blocks = document.querySelectorAll("#info>div");
+
+const styles = [{
+  top: ["50%", "50%"],
+  left: ["50%", "50%"],
+  transform: ["translate(-50%, -50%)", "translate(-50%, -50%)"],
+}, {
+  width: ["auto", "100%"],
+  right: ["15%", "auto"],
+  top: ["50%", "75%"],
+  flexDirection: ["column", "row"],
+  transform: ["translateY(-50%)", "translate(0)"],
+}]
+
+const setStyle = () => {
+  console.log(blocks);
+  styles.forEach((blockStyle, i) => {
+    for (const [key, value] of Object.entries(blockStyle)) {
+      blocks[i].style[key] = value[ratio ? 0 : 1];
+    }
+  });
 };
 
 const Tutoriel = {
@@ -77,7 +104,8 @@ const Tutoriel = {
     for (const [key, helpBlock] of Object.entries(helpBlocks)) {
       helpBlock.domEl.innerHTML =
         helpBlock.message[isMobile ? "mobile" : "desktop"];
-      this.setStyle(helpBlock);
+      // this.setStyle(helpBlock);
+      setStyle();
     }
   },
 
@@ -134,13 +162,15 @@ function firstMove() {
 
 const hide = (args) => {
   [...args].forEach(p => {
-    p.style.display = "none";
+    p.style.visibility = "hidden";
+    // p.style.display = "none";
   });
 };
 
 const show = (args) => {
   [...args].forEach(p => {
-    p.style.display = "block";
+    p.style.visibility = "visible";
+    // p.style.display = "block";
   });
 };
 

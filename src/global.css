@@ -6,16 +6,9 @@ html {
   --grey: #f2f2f2;
 }
 
-@media screen and (min-width: 650px) {
-  html {
-    font-size: 2vh;
-  }
-}
-
-@media screen and (max-width: 650px) {
-  html {
-    font-size: 2.5vh;
-  }
+html {
+  font-family: 'Inconsolata', monospace;
+  font-size: 2vh;
 }
 
 body {
@@ -23,20 +16,10 @@ body {
   margin: 0;
 }
 
-p,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: 'Inconsolata', monospace;
-}
-
-a {
+/* a {
   text-decoration: none;
   display: block;
-}
-
+} */
 body {
   position: absolute;
   overflow: hidden;
@@ -56,26 +39,16 @@ body {
 }
 
 button {
-  font-size: 2em;
-  transition: all 0.2s ease;
-  padding: 0;
-
   &:hover {
     cursor: pointer;
-    transition: all 0.2s ease;
   }
 
   &:active {
-    opacity: 0.8;
+    /* opacity: 0.8; */
   }
 
   &:focus {
     outline: none;
-  }
-
-  & img {
-    width: 100%;
-    height: 100%;
   }
 }
 

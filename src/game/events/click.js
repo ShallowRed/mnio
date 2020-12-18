@@ -30,13 +30,3 @@ export default (Game) => {
         document.activeElement.blur();
     });
 };
-
-const hide = (elem) => {
-  elem.style.opacity = "0";
-  setTimeout(() => elem.style.display = "none", 300);
-};
-
-const show = (elem) => {
-  elem.style.display = "block";
-  setTimeout(() => elem.style.opacity = "1", 50);
-};
