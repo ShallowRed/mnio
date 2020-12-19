@@ -52,18 +52,37 @@ const messages = {
 
 const blocks = document.querySelectorAll("#help>div");
 
-const styles = [{
-  top: ["50%", "50%"],
-  left: ["50%", "50%"],
-  transform: ["translate(-50%, -50%)", "translate(-50%, -50%)"],
+const styleAccordingToRatio = [{
+  domEl: blocks[0],
+  styles: {
+    top: ["50%", "50%"],
+    left: ["50%", "50%"],
+    transform: ["translate(-50%, -50%)", "translate(-50%, -50%)"],
+  }
 }, {
-  width: ["auto", "100%"],
-  right: ["15%", "auto"],
-  top: ["50%", "auto"],
-  bottom: ["auto", "15%"],
-  flexDirection: ["column", "row"],
-  transform: ["translateY(-50%)", "translate(0)"],
+  domEl: blocks[1],
+  styles: {
+    width: ["auto", "100%"],
+    right: ["15%", "auto"],
+    top: ["50%", "auto"],
+    bottom: ["auto", "15%"],
+    flexDirection: ["column", "row"],
+    transform: ["translateY(-50%)", "translate(0)"],
+  }
 }]
+
+// const styles = [{
+//   top: ["50%", "50%"],
+//   left: ["50%", "50%"],
+//   transform: ["translate(-50%, -50%)", "translate(-50%, -50%)"],
+// }, {
+//   width: ["auto", "100%"],
+//   right: ["15%", "auto"],
+//   top: ["50%", "auto"],
+//   bottom: ["auto", "15%"],
+//   flexDirection: ["column", "row"],
+//   transform: ["translateY(-50%)", "translate(0)"],
+// }]
 
 const Help = {
 
@@ -75,12 +94,23 @@ const Help = {
 
   render() {
     const ratio = isWidthLarger();
-    styles.forEach((blockStyle, i) => {
-      for (const [key, value] of Object.entries(blockStyle)) {
-        blocks[i].style[key] = value[ratio ? 0 : 1];
+    styleAccordingToRatio.forEach(({ domEl, styles }) => {
+      for (const [key, value] of Object.entries(styles)) {
+        domEl.style[key] = value[ratio ? 0 : 1];
       }
     });
+
+
   },
+  //
+  // render() {
+  //   const ratio = isWidthLarger();
+  //   styles.forEach((blockStyle, i) => {
+  //     for (const [key, value] of Object.entries(blockStyle)) {
+  //       blocks[i].style[key] = value[ratio ? 0 : 1];
+  //     }
+  //   });
+  // },
 
   listenBtn() {
     const helpBtn = document.getElementById('help-btn');

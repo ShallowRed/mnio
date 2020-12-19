@@ -22,8 +22,8 @@
 
 .help-block {
   visibility: hidden;
-  border-radius: 10px;
-  box-shadow: 3px 3px 10px black;
+  /* border-radius: 10px; */
+  /* box-shadow: 3px 3px 10px black; */
   background: var(--grey);
   padding: 0 2em;
 
