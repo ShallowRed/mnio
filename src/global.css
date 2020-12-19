@@ -8,7 +8,7 @@ html {
 
 html {
   font-family: 'Inconsolata', monospace;
-  font-size: 2vh;
+  font-size: max(11px, 2vh);
 }
 
 body {

@@ -35,7 +35,7 @@ const Tutoriel = {
       showBlock("zoom");
       setTimeout(Tutoriel.end, 3000);
     };
-    
+
     helpContainer.style.display = "block";
     setTimeout(showHowToFill, 1000);
   },
@@ -49,13 +49,13 @@ const Tutoriel = {
 
 const hideBlock = (...args) => {
   args.forEach(key => {
-    helpBlocks[key].domEl.style.visibility = "hidden";
+    helpBlocks[key].style.visibility = "hidden";
   });
 };
 
 const showBlock = (...args) => {
   args.forEach(key => {
-    helpBlocks[key].domEl.style.visibility = "visible";
+    helpBlocks[key].style.visibility = "visible";
   });
 };
 

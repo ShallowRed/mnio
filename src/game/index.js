@@ -19,8 +19,8 @@ const socket = io('/game');
 socket.on("initGame", data => {
   new Game(data, socket);
   const hasAlreadyPlayed = !!data.Game.owned.length;
-  // Tutoriel[data.Game.owned.length ? "end" : "init"](socket);
-  Tutoriel[hasAlreadyPlayed ? "init" : "end"](socket);
+  // Tutoriel[hasAlreadyPlayed ? "init" : "end"](socket);
+  Tutoriel[hasAlreadyPlayed ? "end" : "init"](socket);
   showAll();
 });
 

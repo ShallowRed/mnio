@@ -1,75 +1,56 @@
 const menuCaptions = document.querySelectorAll('#menu p');
 
-const helpContainer = document.getElementById('info');
+const helpContainer = document.getElementById('help');
 
 const helpBlocks = {
+  fill: document.getElementById('help-block-fill'),
+  move: document.getElementById('help-block-move'),
+  zoom: document.getElementById('help-block-zoom'),
+};
+
+const helpIcon = document.querySelector('#help-btn img');
+
+const messages = {
 
   fill: {
-    domEl: document.getElementById('info-block-fill'),
-    message: {
-      mobile: `<h3>Colorier</h3>`,
-      desktop: `
+    mobile: `<h2>Colorier</h2>`,
+    desktop: `
       <h3>Colorier</h3>
+      <hr>
       <p>ou <img src="dist/img/icons/key-space.png" alt=""></p>
-      <p><img src="dist/img/icons/key-ctrl.png" alt=""> Couleur up</p>
-      <p><img src="dist/img/icons/key-shift.png" alt=""> Couleur down</p>
+      <p><img src="dist/img/icons/key-shift.png" alt=""> Couleur &#8593;</p>
+      <p><img src="dist/img/icons/key-ctrl.png" alt=""> Couleur &#8595;</p>
       `
-    },
-    style: {
-      // width: ["35%", "40%"],
-      // height: ["35%", "25%"],
-      // top: ["40%", "60%"],
-      // bottom: ["25%", "15%"],
-      // right: ["15%", "5%"]
-      // left: ["50%", "40%"]
-    }
   },
 
   move: {
-    domEl: document.getElementById('info-block-move'),
-    message: {
-      mobile: `
-      <h3>Se déplacer</h3>
+    mobile: `
+      <h2>Se déplacer</h2>
       <p><img src="dist/img/icons/swipe.png" alt=""></p>
       `,
-      desktop: `
+    desktop: `
       <h3>Se déplacer</h3>
+      <hr>
       <p><img src="dist/img/icons/pcmove.png" alt=""></p>
       `
-    },
-    style: {
-      // width: ["35%", "40%"],
-      // height: ["35%", "40%"],
-      // top: ["40%", "10%"],
-      // left: ["5%", "40%"]
-    }
   },
 
   zoom: {
-    domEl: document.getElementById('info-block-zoom'),
-    message: {
-      mobile: `<h3>Zoomer / Dézoomer</h3>`,
-      desktop: `
+    mobile: `<h2>Zoomer / Dézoomer</h2>`,
+    desktop: `
       <h3>Zoomer</h3>
+      <hr>
       <p>ou <img src="dist/img/icons/key-alt.png" alt=""> +
       <img src="dist/img/icons/key-z.png" alt=""></p>
       <h3>Dézoomer</h3>
+      <hr>
       <p>ou <img src="dist/img/icons/key-alt.png" alt=""> +
       <img src="dist/img/icons/key-s.png" alt=""></p>
       `
-    },
-    style: {
-      // bottom: ["60%", "15%"],
-      // right: ["15%", "5%"]
-      // width: ["35%", "30%"],
-      // height: ["25%", "25%"],
-      // top: ["10%", "60%"],
-      // left: ["50%", "5%"]
-    }
   }
 };
 
-const blocks = document.querySelectorAll("#info>div");
+const blocks = document.querySelectorAll("#help>div");
 
 const styles = [{
   top: ["50%", "50%"],
@@ -78,7 +59,8 @@ const styles = [{
 }, {
   width: ["auto", "100%"],
   right: ["15%", "auto"],
-  top: ["50%", "75%"],
+  top: ["50%", "auto"],
+  bottom: ["auto", "15%"],
   flexDirection: ["column", "row"],
   transform: ["translateY(-50%)", "translate(0)"],
 }]
@@ -86,8 +68,8 @@ const styles = [{
 const Help = {
 
   init() {
-    for (const { domEl, message } of Object.values(helpBlocks)) {
-      domEl.innerHTML = message[isMobile ? "mobile" : "desktop"];
+    for (const [key, domEl] of Object.entries(helpBlocks)) {
+      domEl.innerHTML = messages[key][isMobile ? "mobile" : "desktop"];
     }
   },
 
@@ -101,23 +83,24 @@ const Help = {
   },
 
   listenBtn() {
-    const helpBtn = document.getElementById('help');
+    const helpBtn = document.getElementById('help-btn');
     helpBtn.addEventListener("click", () => {
-      if (helpContainer.style.display !== "none") {
-        this.hide();
-      } else {
-        this.show();
-      }
+      const toggleVisibility =
+        helpContainer.style.display !== "none" ?
+        "hide" : "show";
+      this[toggleVisibility]();
     })
   },
 
   hide() {
+    helpIcon.src = `dist/img/icons/help.png`;
     [helpContainer, ...menuCaptions].forEach(el => {
       el.style.display = "none";
     });
   },
 
   show() {
+    helpIcon.src = `dist/img/icons/close.png`;
     [helpContainer, ...menuCaptions].forEach(el => {
       el.style.display = "block";
     });

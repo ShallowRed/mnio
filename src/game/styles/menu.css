@@ -3,15 +3,19 @@
   z-index: 980;
   display: flex;
   flex-direction: column;
-  background: var(--grey);
   top: 0;
   left: 0;
 
   & button {
+    background: var(--grey);
     border: none;
     display: flex;
     padding: 0.3rem;
     filter: saturate(0) brightness(1);
+
+    &#help-btn {
+      border-radius: 0 0 min(50%, 25px) 0;
+    }
 
     &:hover {
       color: blue;

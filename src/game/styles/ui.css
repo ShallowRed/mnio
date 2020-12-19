@@ -10,7 +10,8 @@
     max-height: 55px;
     max-width: 55px;
     border-radius: 5px;
-    box-shadow: #aaa 5px 5px;
+    box-shadow: #bbb 5px 5px;
+    transition: all .15s ease;
 
     &.zoom {
       min-height: 22px;

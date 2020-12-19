@@ -43,9 +43,14 @@ export default class Ui {
 
   focusColorBtn(selectedIndex) {
     this.colorBtns.forEach((btn, index) => {
-      const borderWidth = index == selectedIndex ? 2 : 1;
+      // const borderWidth = index == selectedIndex ? 2 : 1;
+      const bS = index == selectedIndex ? 8 : 5;
+      const bSC = index == selectedIndex ? "#ddd" : "#bbb";
+      const bSB = index == selectedIndex ? "0" : "0";
       const scale = index == selectedIndex ? 1 : 0.9;
-      btn.style.borderWidth = `${borderWidth}px`;
+      // btn.style.borderWidth = `${borderWidth}px`;
+      btn.style.boxShadow = `${bSC} ${bS}px ${bS}px ${bSB}`;
+
       btn.style.transform = `scale(${scale})`;
     });
   }
