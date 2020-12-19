@@ -2,6 +2,7 @@ import Player from './components/Player';
 import Map from './components/Map';
 import Ui from './components/Ui';
 import Cell from './components/cell/Cell';
+import { Help } from './components/help';
 
 import listenServerEvents from './events/server';
 import listenClickEvents from './events/click';
@@ -25,6 +26,8 @@ export default class Game {
     this.flag = {};
     this.selectColor(0);
     this.render();
+    Help.init();
+    Help.render();
 
     this.listenWindowEvents();
     listenClickEvents(this);
@@ -34,7 +37,10 @@ export default class Game {
   }
 
   listenWindowEvents() {
-    const render = () => this.render();
+    const render = () => {
+      Help.render();
+      this.render();
+    };
     window.addEventListener('resize', render);
     window.addEventListener("orientationchange", () =>
       setTimeout(render, 500)

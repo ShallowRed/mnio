@@ -11,8 +11,6 @@ export default class Ui {
       out: document.getElementById('zoomout')
     };
 
-    document.getElementById('logo')
-      .style.display = "block";
   }
 
   render(Map = this.Map()) {
