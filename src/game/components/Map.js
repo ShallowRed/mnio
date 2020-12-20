@@ -27,9 +27,9 @@ export default class Map {
   }
 
   getMainDimension() {
-    this.ratio = (window.innerWidth >= window.innerHeight);
-    this.mainDimension = this.ratio ? 0 : 1;
-    this.secDimension = this.ratio ? 1 : 0;
+    const isWidthLarger = window.innerWidth >= window.innerHeight;
+    this.mainDimension = isWidthLarger ? 0 : 1;
+    this.secDimension = isWidthLarger ? 1 : 0;
   }
 
   setViewPosition() {

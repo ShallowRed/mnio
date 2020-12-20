@@ -1,7 +1,8 @@
+import styleAccordingToRatio from '../utils/styleAccordingToRatio'
+
 export default class Ui {
 
-  constructor(Map) {
-    this.Map = () => Map;
+  constructor() {
     this.section = document.querySelector('section');
     this.btns = document.querySelectorAll('#buttons button');
     this.btnsBar = document.getElementById('buttons');
@@ -10,35 +11,46 @@ export default class Ui {
       in: document.getElementById('zoomin'),
       out: document.getElementById('zoomout')
     };
-
   }
 
-  render(Map = this.Map()) {
+  render() {
 
-    this.section.style.flexDirection = Map.ratio ? "row" : "column";
+    styleAccordingToRatio({
+      domEl: this.section,
+      styles: {
+        flexDirection: ["row", "column"],
+      }
+    });
 
-    for (const [key, value] of Object.entries({
+    styleAccordingToRatio({
+      domEl: this.btnsBar,
+      styles: {
         flexFlow: ["column", "row"],
         height: ["auto", "11%"],
         width: ["11%", "100%"],
         float: ["right", "none"],
         margin: ["auto 0 auto auto", "auto auto 0"],
-      })) {
-      this.btnsBar.style[key] = value[Map.ratio ? 0 : 1];
-    }
+      }
+    });
 
-    for (const [key, value] of Object.entries({
-        height: ["10vh", "10vw"],
-        width: ["10vh", "10vw"],
-        margin: [".8vh 0", "0 .8vw"]
-      })) {
-      this.btns.forEach(btn =>
-        btn.style[key] = value[Map.ratio ? 0 : 1]
-      );
-    }
+    this.btns.forEach(btn => {
+      styleAccordingToRatio({
+        domEl: btn,
+        styles: {
+          height: ["10vh", "10vw"],
+          width: ["10vh", "10vw"],
+          margin: [".8vh 0", "0 .8vw"]
+        }
+      })
+    })
 
-    this.btns[2].style.marginTop = Map.ratio ? "3vh" : "0";
-    this.btns[2].style.marginLeft = Map.ratio ? "0" : "5vw";
+    styleAccordingToRatio({
+      domEl: this.btns[2],
+      styles: {
+        marginTop: ["3vh", "0"],
+        marginLeft: ["0", "5vw"],
+      }
+    });
   }
 
   focusColorBtn(selectedIndex) {

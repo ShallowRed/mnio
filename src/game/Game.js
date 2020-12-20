@@ -21,7 +21,7 @@ export default class Game {
     Object.assign(this, data.Game);
     this.Map = new Map(this);
     this.Player = new Player(data.Player, this);
-    this.Ui = new Ui(this.Map);
+    this.Ui = new Ui();
     this.Cell = new Cell(this);
     this.flag = {};
     this.selectColor(0);
