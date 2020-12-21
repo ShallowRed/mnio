@@ -49,10 +49,8 @@ export default class Ui {
     this.colorBtns.forEach((btn, index) => {
       const bS = index == selectedIndex ? 8 : 5;
       const bSC = index == selectedIndex ? "#ddd" : "#bbb";
-      const bSB = index == selectedIndex ? "0" : "0";
       const scale = index == selectedIndex ? 1 : 0.9;
-      btn.style.boxShadow = `${bSC} ${bS}px ${bS}px ${bSB}`;
-
+      btn.style.boxShadow = `${bSC} ${bS}px ${bS}px 0`;
       btn.style.transform = `scale(${scale})`;
     });
   }

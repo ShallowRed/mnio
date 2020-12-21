@@ -27,6 +27,8 @@ export default class Game {
     this.flag = {};
 
     this.selectColor(0);
+    this.Ui.focusColorBtn(0);
+
     Help.init(this.Ui);
     this.render();
 
@@ -120,7 +122,7 @@ export default class Game {
       index = (palette.indexOf(sColor) + next) % palette.length;
 
     this.Player.setColor(index);
-    this.Ui.focusColorBtn(index);
+    // this.Ui.focusColorBtn(index);
   }
 
   fill() {

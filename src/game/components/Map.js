@@ -14,7 +14,9 @@ export default class Map {
     this.canvasOrigin = [0, 0];
     this.view = document.getElementById('view');
     this.canvas = document.querySelectorAll('canvas');
-    this.ctx = [...this.canvas].map(canvas => canvas.getContext('2d'));
+    this.ctx = [...this.canvas].map(canvas => {
+      return canvas.getContext('2d')
+    });
   }
 
   ////////////////////////////////////////////////////
@@ -92,7 +94,7 @@ export default class Map {
   render() {
     const { isTranslating } = this.Game();
     !isTranslating && this.setCanvasSizeAndPos();
-    this.translateCanvas({ duration: 0 })
+    this.translateCanvas({ duration: 0 });
     this.renderCells();
   }
 
@@ -106,6 +108,10 @@ export default class Map {
       canvas.style.left =
         `-${Math.round(numOffscreen * cellSize)}px`;
     });
+    this.ctx.forEach(ctx => {
+      ctx.imageSmoothingEnabled = false;
+    });
+
   }
 
   renderCells(Game = this.Game()) {

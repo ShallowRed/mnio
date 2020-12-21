@@ -97,7 +97,7 @@ export default class Player {
 
     sprite[1].style.width =
       sprite[1].style.height =
-      `${cellSize - this.shift * 2 - 2}px`;
+      `${cellSize - this.shift * 2 - 1}px`;
 
     sprite.forEach(c =>
       c.style.borderRadius = `${this.shift}px`
