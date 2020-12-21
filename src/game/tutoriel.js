@@ -1,8 +1,14 @@
 import {
   Help,
   helpBlocks,
-  helpContainer
+  helpContainer,
+  arrows
 } from './components/help';
+
+const blockArrows = {
+  zoom: arrows[0],
+  fill: arrows[1]
+}
 
 const Tutoriel = {
 
@@ -50,12 +56,18 @@ const Tutoriel = {
 const hideBlock = (...args) => {
   args.forEach(key => {
     helpBlocks[key].style.visibility = "hidden";
+    if (blockArrows[key]) {
+      blockArrows[key].style.visibility = "hidden";
+    }
   });
 };
 
 const showBlock = (...args) => {
   args.forEach(key => {
     helpBlocks[key].style.visibility = "visible";
+    if (blockArrows[key]) {
+      blockArrows[key].style.visibility = "visible";
+    }
   });
 };
 

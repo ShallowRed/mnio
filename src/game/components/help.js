@@ -1,16 +1,15 @@
-import styleAccordingToRatio from '../utils/styleAccordingToRatio'
+import ScreenRatio from '../utils/styleAccordingToRatio'
 
 const menuCaptions = document.querySelectorAll('#menu p');
-
 const helpContainer = document.getElementById('help');
-
+const blocks = document.querySelectorAll("#help>div");
+const helpIcon = document.querySelector('#help-btn img');
 const helpBlocks = {
   fill: document.getElementById('help-block-fill'),
   move: document.getElementById('help-block-move'),
   zoom: document.getElementById('help-block-zoom'),
 };
-
-const helpIcon = document.querySelector('#help-btn img');
+const arrows = document.querySelectorAll("#help svg");
 
 const messages = {
 
@@ -38,7 +37,9 @@ const messages = {
   },
 
   zoom: {
-    mobile: `<h2>Zoomer / Dézoomer</h2>`,
+    mobile: `
+    <h2>(dé)Zoomer</h2>
+    `,
     desktop: `
       <h3>Zoomer</h3>
       <hr>
@@ -52,38 +53,64 @@ const messages = {
   }
 };
 
-const blocks = document.querySelectorAll("#help>div");
-
 const Help = {
 
-  init() {
+  init(Ui) {
+    this.Ui = () => Ui;
     for (const [key, domEl] of Object.entries(helpBlocks)) {
       domEl.innerHTML = messages[key][isMobile ? "mobile" : "desktop"];
     }
   },
 
-  render() {
+  render(Ui = this.Ui()) {
 
-    styleAccordingToRatio({
-      domEl: blocks[0],
+    ScreenRatio.applyStyles({
+      domEl: helpBlocks.move,
       styles: {
-        top: ["50%", "50%"],
-        left: ["50%", "50%"],
+        top: ["73%", "19%"],
+        left: ["22%", "75%"],
         transform: ["translate(-50%, -50%)", "translate(-50%, -50%)"],
       }
-    });
-    
-    styleAccordingToRatio({
+    }, {
       domEl: blocks[1],
       styles: {
         width: ["auto", "100%"],
-        right: ["15%", "auto"],
+        right: ["13%", "auto"],
         top: ["50%", "auto"],
-        bottom: ["auto", "15%"],
+        bottom: ["auto", "13%"],
         flexDirection: ["column", "row"],
         transform: ["translateY(-50%)", "translate(0)"],
       }
-    });
+    }, ...[helpBlocks.zoom, helpBlocks.fill].map(block => ({
+      domEl: block,
+      styles: {
+        width: ["auto", "30%"],
+        marginBottom: [isMobile ? "20vh" : "3vh", "4.5px"],
+        marginTop: ["5px", "auto"],
+        height: ["auto", "100%"],
+      }
+    })), ...[...arrows].map(arrow => ({
+      domEl: arrow,
+      styles: {
+        right: ["8px", "auto"],
+        bottom: ["auto", "-5px"],
+        transform: ["translateX(100%) scale(1.5)",
+          "scale(1.5) rotate(90deg) "
+        ]
+      }
+    })), {
+      domEl: arrows[0],
+      styles: {
+        top: [isMobile ? "6%" : "20%", "auto"],
+        left: ["auto", "22%"],
+      }
+    }, {
+      domEl: arrows[1],
+      styles: {
+        top: [isMobile ? "56%" : "60%", "auto"],
+        left: ["auto", "62%"],
+      }
+    })
   },
 
   listenBtn() {
@@ -119,5 +146,6 @@ export {
   Help,
   helpBlocks,
   helpContainer,
-  menuCaptions
+  menuCaptions,
+  arrows
 }

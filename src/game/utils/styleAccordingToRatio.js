@@ -1,12 +1,16 @@
-export default function styleAccordingToRatio({ domEl, styles }) {
+const ScreenRatio = {
 
-  const ratio = isWidthLarger();
+  update() {
+    this.widthIsLarger = window.innerWidth >= window.innerHeight;
+  },
 
-  for (const [key, value] of Object.entries(styles)) {
-    domEl.style[key] = value[ratio ? 0 : 1];
+  applyStyles(...args) {
+    [...args].forEach(({ domEl, styles }) => {
+      for (const [key, value] of Object.entries(styles)) {
+        domEl.style[key] = value[this.widthIsLarger ? 0 : 1];
+      }
+    });
   }
 }
 
-const isWidthLarger = () => {
-  return window.innerWidth >= window.innerHeight;
-};
+export default ScreenRatio;

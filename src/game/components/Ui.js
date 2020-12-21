@@ -1,4 +1,4 @@
-import styleAccordingToRatio from '../utils/styleAccordingToRatio'
+import ScreenRatio from '../utils/styleAccordingToRatio'
 
 export default class Ui {
 
@@ -15,14 +15,12 @@ export default class Ui {
 
   render() {
 
-    styleAccordingToRatio({
+    ScreenRatio.applyStyles({
       domEl: this.section,
       styles: {
         flexDirection: ["row", "column"],
       }
-    });
-
-    styleAccordingToRatio({
+    }, {
       domEl: this.btnsBar,
       styles: {
         flexFlow: ["column", "row"],
@@ -31,26 +29,20 @@ export default class Ui {
         float: ["right", "none"],
         margin: ["auto 0 auto auto", "auto auto 0"],
       }
-    });
-
-    this.btns.forEach(btn => {
-      styleAccordingToRatio({
-        domEl: btn,
-        styles: {
-          height: ["10vh", "10vw"],
-          width: ["10vh", "10vw"],
-          margin: [".8vh 0", "0 .8vw"]
-        }
-      })
-    })
-
-    styleAccordingToRatio({
+    }, {
       domEl: this.btns[2],
       styles: {
         marginTop: ["3vh", "0"],
         marginLeft: ["0", "5vw"],
       }
-    });
+    }, ...[...this.btns].map(btn => ({
+      domEl: btn,
+      styles: {
+        height: ["10vh", "10vw"],
+        width: ["10vh", "10vw"],
+        margin: [".8vh 0", "0 .8vw"]
+      }
+    })));
   }
 
   focusColorBtn(selectedIndex) {

@@ -11,6 +11,11 @@ html {
   font-size: max(11px, 2vh);
 }
 
+button {
+  font-family: 'Inconsolata', monospace;
+  font-size: max(11px, 2vh);
+}
+
 body {
   touch-action: none;
   margin: 0;
