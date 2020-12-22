@@ -25,15 +25,21 @@ const onKeyDown = (event, Game) => {
   switch (event.code) {
 
     case "Space":
+      document.querySelector(".pressed")
+      focusBtn(".pressed");
       Game.fill();
       break;
 
     case "KeyW":
+      focusBtn(Game.Ui.zoomBtns.in);
       Game.zoom("in");
       break;
 
     case "KeyS":
-      if (isAltPressed) Game.zoom("out");
+      if (isAltPressed) {
+        focusBtn(Game.Ui.zoomBtns.out);
+        Game.zoom("out");
+      }
       break;
 
     case "ControlLeft":
@@ -60,4 +66,13 @@ const onKeyDown = (event, Game) => {
       Game.moveAttempt("down");
       break;
   }
+};
+
+const focusBtn = (btn) => {
+  if (typeof btn == "string")
+    btn = document.querySelector(btn);
+  btn.focus();
+  setTimeout(() => {
+    document.activeElement.blur();
+  }, 200);
 };

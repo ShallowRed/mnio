@@ -55,14 +55,13 @@ const messages = {
 
 const Help = {
 
-  init(Ui) {
-    this.Ui = () => Ui;
+  init() {
     for (const [key, domEl] of Object.entries(helpBlocks)) {
       domEl.innerHTML = messages[key][isMobile ? "mobile" : "desktop"];
     }
   },
 
-  render(Ui = this.Ui()) {
+  render() {
 
     ScreenRatio.applyStyles({
       domEl: helpBlocks.move,

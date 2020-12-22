@@ -29,7 +29,7 @@ export default class Game {
     this.selectColor(0);
     this.Ui.focusColorBtn(0);
 
-    Help.init(this.Ui);
+    Help.init();
     this.render();
 
     this.listenWindowEvents();
@@ -95,7 +95,6 @@ export default class Game {
 
   zoom(direction) {
     if (this.flag.isZooming || this.flag.isTranslating) return;
-    this.Ui.focusZoomBtn(direction);
     const isZoomable = this.Map.incrementMainNumCells(direction);
     if (!isZoomable) return;
     this.flag.isZooming = true;
@@ -122,7 +121,7 @@ export default class Game {
       index = (palette.indexOf(sColor) + next) % palette.length;
 
     this.Player.setColor(index);
-    // this.Ui.focusColorBtn(index);
+    this.Ui.focusColorBtn(index);
   }
 
   fill() {

@@ -93,17 +93,18 @@ export default class Player {
 
     sprite[0].style.width =
       sprite[0].style.height =
-      `${cellSize - this.shift * 4 }px`;
+      `${cellSize - this.shift * 2}px`;
 
     sprite[1].style.width =
       sprite[1].style.height =
-      `${cellSize - this.shift * 2 - 1}px`;
+      `${cellSize - this.shift * 2}px`;
 
     sprite.forEach(c =>
       c.style.borderRadius = `${this.shift}px`
     );
 
     sprite[0].style.borderWidth = `${this.shift}px`;
+    sprite[1].style.borderWidth = `${this.shift / 4}px`;
   }
 
   setColor(i) {
@@ -118,11 +119,11 @@ export default class Player {
     player.style.transitionDuration =
       shadow.style.transitionDuration = "0.1s";
 
-    player.style.transform =
+      player.style.transform =
       shadow.style.transform =
       `translate(${this.translateVector}) scale(0.9)`;
 
-    shadow.style.boxShadow = "0px 0px 0px 0px #777";
+    shadow.style.boxShadow = "0 0 0 #555";
 
     setTimeout(() => {
 
@@ -130,7 +131,7 @@ export default class Player {
         shadow.style.transform =
         `translate(${this.translateVector}) scale(1)`;
 
-      shadow.style.boxShadow = "3px 3px 5px 0px #777";
+      shadow.style.boxShadow = "3px 3px 5px #777";
 
       player.style.transitionDuration =
         shadow.style.transitionDuration =

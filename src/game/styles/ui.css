@@ -10,19 +10,39 @@
     max-height: 55px;
     max-width: 55px;
     border-radius: 5px;
-    box-shadow: #bbb 5px 5px;
     transition: all .15s ease;
+    transform: scale(0.9);
+    transform-origin: bottom right;
+    box-shadow: #bbb 5px 5px;
+    border: solid 1px black;
+
+    &.pressed {
+      transform: scale(1);
+      box-shadow: #ddd 8px 8px;
+    }
+
+    /* &:focus {
+      transform: scale(0.8);
+      box-shadow: #777 2px 2px;
+    } */
+    &:active {
+      transform: scale(0.8);
+      box-shadow: #777 2px 2px;
+    }
 
     &.zoom {
       min-height: 22px;
       min-width: 22px;
-      transition: all 0.1s ease;
-      transform: scale(0.9);
-      border: solid 1px black;
       padding: 0;
       filter: saturate(0);
+      transition: all .1s ease;
 
+      /* &:focus {
+        border-color: blue;
+        filter: saturate(1);
+      } */
       &:active {
+        border-color: blue;
         filter: saturate(1);
       }
 
@@ -33,10 +53,8 @@
     }
 
     &:not(.zoom) {
-      transform-origin: bottom right;
       min-height: 36px;
       min-width: 26px;
-      border: solid 1px black;
 
       &:active {
         opacity: 0.8;

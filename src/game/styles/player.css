@@ -2,6 +2,7 @@
 #shadow {
   position: absolute;
   transition-timing-function: linear;
+  box-sizing: border-box;
 }
 
 #player {
@@ -9,7 +10,7 @@
 }
 
 #shadow {
-  border: solid 1px #777;
-  box-shadow: 3px 3px 5px 0px #777;
+  border: solid 1px black;
+  box-shadow: 3px 3px 5px #777;
   mix-blend-mode: multiply;
 }

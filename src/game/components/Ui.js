@@ -1,13 +1,14 @@
 import ScreenRatio from '../utils/styleAccordingToRatio'
 
+const section = document.querySelector('section');
+
 export default class Ui {
 
   constructor() {
-    this.section = document.querySelector('section');
     this.btns = document.querySelectorAll('#buttons button');
     this.btnsBar = document.getElementById('buttons');
     this.colorBtns = document.querySelectorAll('.color');
-    this.zoom = {
+    this.zoomBtns = {
       in: document.getElementById('zoomin'),
       out: document.getElementById('zoomout')
     };
@@ -16,7 +17,7 @@ export default class Ui {
   render() {
 
     ScreenRatio.applyStyles({
-      domEl: this.section,
+      domEl: section,
       styles: {
         flexDirection: ["row", "column"],
       }
@@ -29,42 +30,28 @@ export default class Ui {
         float: ["right", "none"],
         margin: ["auto 0 auto auto", "auto auto 0"],
       }
-    }, {
-      domEl: this.btns[2],
-      styles: {
-        marginTop: ["3vh", "0"],
-        marginLeft: ["0", "5vw"],
-      }
     }, ...[...this.btns].map(btn => ({
       domEl: btn,
       styles: {
         height: ["10vh", "10vw"],
         width: ["10vh", "10vw"],
-        margin: [".8vh 0", "0 .8vw"]
+        margin: [".5vh 0", "0 .5vw"]
       }
-    })));
+    })), {
+      domEl: this.btns[2],
+      styles: {
+        background: "red",
+        marginTop: ["3vh", "0"],
+        marginLeft: ["0", "5vw"],
+      }
+    })
   }
 
   focusColorBtn(selectedIndex) {
     this.colorBtns.forEach((btn, index) => {
-      const bS = index == selectedIndex ? 8 : 5;
-      const bSC = index == selectedIndex ? "#ddd" : "#bbb";
-      const scale = index == selectedIndex ? 1 : 0.9;
-      btn.style.boxShadow = `${bSC} ${bS}px ${bS}px 0`;
-      btn.style.transform = `scale(${scale})`;
+      this.colorBtns[index].className =
+        index == selectedIndex ?
+        "pressed" : '';
     });
-  }
-
-  focusZoomBtn(direction) {
-    this.setZoomBtn(direction, true);
-    setTimeout(() =>
-      this.setZoomBtn(direction, false),
-      200);
-  }
-
-  setZoomBtn(direction, bool) {
-    const btn = this.zoom[direction];
-    btn.style.color = btn.style.borderColor = bool ? "blue" : "black";
-    btn.style.transform = `scale(${bool ? 1 : 0.8})`;
   }
 }
