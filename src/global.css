@@ -8,12 +8,12 @@ html {
 
 html {
   font-family: 'Inconsolata', monospace;
-  font-size: max(11px, 2vh);
+  font-size: max(12px, 2vh);
 }
 
 button {
   font-family: 'Inconsolata', monospace;
-  font-size: max(11px, 2vh);
+  font-size: max(12px, 2vh);
 }
 
 body {

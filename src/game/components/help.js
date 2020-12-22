@@ -18,21 +18,21 @@ const messages = {
     desktop: `
       <h3>Colorier</h3>
       <hr>
-      <p>ou <img src="dist/img/icons/key-space.png" alt=""></p>
-      <p><img src="dist/img/icons/key-shift.png" alt=""> Couleur &#8593;</p>
-      <p><img src="dist/img/icons/key-ctrl.png" alt=""> Couleur &#8595;</p>
+      <p>ou <img src="dist/img/icons/key-space.svg" alt=""></p>
+      <p><img src="dist/img/icons/key-shift.svg" alt=""> Couleur &#8593;</p>
+      <p><img src="dist/img/icons/key-ctrl.svg" alt=""> Couleur &#8595;</p>
       `
   },
 
   move: {
     mobile: `
       <h2>Se déplacer</h2>
-      <p><img src="dist/img/icons/swipe.png" alt=""></p>
+      <p><img src="dist/img/icons/swipe.svg" alt=""></p>
       `,
     desktop: `
       <h3>Se déplacer</h3>
       <hr>
-      <p><img src="dist/img/icons/pcmove.png" alt=""></p>
+      <p><img src="dist/img/icons/pcmove.svg" alt=""></p>
       `
   },
 
@@ -43,12 +43,12 @@ const messages = {
     desktop: `
       <h3>Zoomer</h3>
       <hr>
-      <p>ou <img src="dist/img/icons/key-alt.png" alt=""> +
-      <img src="dist/img/icons/key-z.png" alt=""></p>
+      <p>ou <img src="dist/img/icons/key-alt.svg" alt=""> +
+      <img src="dist/img/icons/key-z.svg" alt=""></p>
       <h3>Dézoomer</h3>
       <hr>
-      <p>ou <img src="dist/img/icons/key-alt.png" alt=""> +
-      <img src="dist/img/icons/key-s.png" alt=""></p>
+      <p>ou <img src="dist/img/icons/key-alt.svg" alt=""> +
+      <img src="dist/img/icons/key-s.svg" alt=""></p>
       `
   }
 };
@@ -123,14 +123,14 @@ const Help = {
   },
 
   hide() {
-    helpIcon.src = `dist/img/icons/help.png`;
+    helpIcon.src = `dist/img/icons/help.svg`;
     [helpContainer, ...menuCaptions].forEach(el => {
       el.style.display = "none";
     });
   },
 
   show() {
-    helpIcon.src = `dist/img/icons/close.png`;
+    helpIcon.src = `dist/img/icons/close.svg`;
     [helpContainer, ...menuCaptions].forEach(el => {
       el.style.display = "block";
     });

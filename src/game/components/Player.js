@@ -79,7 +79,7 @@ export default class Player {
   }
 
   updateTranslateVector(Map = this.Map()) {
-      this.shift = Math.round(Map.cellSize / 8);
+    this.shift = Math.round(Map.cellSize / 8);
     this.translateVector = this.posInView.map((posInView, i) => {
         return `${posInView * Map.cellSize + Map.canvasOrigin[i] + this.shift}px`;
       })
@@ -104,7 +104,7 @@ export default class Player {
     );
 
     sprite[0].style.borderWidth = `${this.shift}px`;
-    sprite[1].style.borderWidth = `${this.shift / 4}px`;
+    sprite[1].style.borderWidth = `min(3px,${this.shift / 4}px)`;
   }
 
   setColor(i) {
@@ -119,7 +119,7 @@ export default class Player {
     player.style.transitionDuration =
       shadow.style.transitionDuration = "0.1s";
 
-      player.style.transform =
+    player.style.transform =
       shadow.style.transform =
       `translate(${this.translateVector}) scale(0.9)`;
 

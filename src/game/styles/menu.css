@@ -5,12 +5,14 @@
   flex-direction: column;
   top: 0;
   left: 0;
+  background: var(--grey);
+  border-radius: 0 0 min(50%, 25px);
 
   & button {
     background: var(--grey);
     border: none;
     display: flex;
-    padding: 0.3rem;
+    padding: 3px;
     filter: saturate(0) brightness(1);
 
     &#help-btn {
@@ -32,9 +34,9 @@
     }
 
     & img {
-      min-height: 30px;
+      min-height: 32px;
       height: 6vh;
-      max-height: 40px;
+      max-height: 48px;
     }
   }
 }

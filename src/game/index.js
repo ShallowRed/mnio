@@ -33,3 +33,8 @@ const showAll = () => {
     el.style.opacity = 1;
   });
 }
+
+document.querySelector('#menu button')
+  .addEventListener("click", () => {
+    window.location.href = '/';
+  });

@@ -54,7 +54,7 @@
 
     &:not(.zoom) {
       min-height: 36px;
-      min-width: 26px;
+      min-width: 32px;
 
       &:active {
         opacity: 0.8;

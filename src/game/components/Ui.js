@@ -35,7 +35,7 @@ export default class Ui {
       styles: {
         height: ["10vh", "10vw"],
         width: ["10vh", "10vw"],
-        margin: [".5vh 0", "0 .5vw"]
+        margin: [".5vh 0", "0 1vw"]
       }
     })), {
       domEl: this.btns[2],
