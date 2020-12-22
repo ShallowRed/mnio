@@ -28,6 +28,15 @@
       filter: saturate(1) brightness(0.75);
     }
 
+    & a {
+      display: flex;
+      text-decoration: none;
+
+      &:active {
+        color: blue;
+      }
+    }
+
     & p {
       margin: auto 0.5rem;
       display: none;

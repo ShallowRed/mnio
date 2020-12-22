@@ -4,11 +4,13 @@ html {
 
 :root {
   --grey: #f2f2f2;
+  --dark: #222;
 }
 
 html {
   font-family: 'Inconsolata', monospace;
-  font-size: max(12px, 2vh);
+  font-size: max(13px, 2.4vh);
+  color: var(--dark);
 }
 
 button {

@@ -71,10 +71,10 @@ export default class Player {
 
   setSpritePosition({ duration }) {
     this.updateTranslateVector();
-    this.sprite.forEach(sprite => {
+    this.sprite.forEach((sprite, i) => {
       sprite.style.transitionDuration = `${duration}s`;
       sprite.style.transform =
-        `translate(${this.translateVector})`;
+        `translate(${this.translateVector}) translate(-${i}px, -${i}px)`;
     });
   }
 
@@ -97,7 +97,7 @@ export default class Player {
 
     sprite[1].style.width =
       sprite[1].style.height =
-      `${cellSize - this.shift * 2}px`;
+      `${cellSize - this.shift * 2 + 2}px`;
 
     sprite.forEach(c =>
       c.style.borderRadius = `${this.shift}px`
@@ -128,8 +128,9 @@ export default class Player {
     setTimeout(() => {
 
       player.style.transform =
-        shadow.style.transform =
         `translate(${this.translateVector}) scale(1)`;
+      shadow.style.transform =
+        `translate(${this.translateVector}) translate(-1px, -1px) scale(1)`;
 
       shadow.style.boxShadow = "3px 3px 5px #777";
 
@@ -161,21 +162,26 @@ export default class Player {
       "0.07s";
 
     player.style.transform =
-      shadow.style.transform =
       `translate(${this.translateVector}) translate(${bumpTranslation}) scale(${bumpScale})`;
+
+    shadow.style.transform =
+      `translate(${this.translateVector}) translate(${bumpTranslation}) translate(-1px, -1px) scale(${bumpScale})`;
 
     setTimeout(() => {
 
       player.style.transform =
-        shadow.style.transform =
         `translate(${this.translateVector})`;
+        
+      shadow.style.transform =
+        `translate(${this.translateVector}) translate(-1px, -1px)`;
 
       player.style.transitionDuration =
         shadow.style.transitionDuration =
         "0.2s";
+
       setTimeout(() => {
         Game.flag.isBumping = false;
-      }, 250)
+      }, 250);
 
     }, 70)
   }

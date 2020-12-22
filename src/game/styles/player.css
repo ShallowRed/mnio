@@ -10,7 +10,7 @@
 }
 
 #shadow {
-  border: solid 1px black;
+  border: solid 1px var(--dark);
   box-shadow: 3px 3px 5px #777;
   mix-blend-mode: multiply;
 }

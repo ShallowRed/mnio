@@ -40,8 +40,7 @@ export default class Ui {
     })), {
       domEl: this.btns[2],
       styles: {
-        background: "red",
-        marginTop: ["3vh", "0"],
+         marginTop: ["3vh", "0"],
         marginLeft: ["0", "5vw"],
       }
     })

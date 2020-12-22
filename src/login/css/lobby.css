@@ -1,16 +1,15 @@
 .message-welcome {
-  font-size: 1.1rem;
+  font-size: max(1.1rem, 17px);
   color: blue;
-  line-height: 1.4rem;
+  line-height: 1.8rem;
   margin: 0 auto;
 }
 
 #galerie {
-  text-decoration: none;
   margin-top: 5vh;
+  padding: 0;
   border: 1px solid darkgrey;
   background: white;
-  padding: 0;
 
   &:hover {
     border: 1px solid blue;
@@ -18,7 +17,14 @@
   }
 
   & a {
+    display: inline-block;
+    width: 100%;
     padding: 2vh 0;
+    text-decoration: none;
+
+    &:active {
+      color: blue;
+    }
 
     & p {
       margin: 0;
@@ -26,9 +32,8 @@
   }
 }
 
-#jeu,
+/* #jeu,
 #galerie {
-  font-size: 1.4em;
   letter-spacing: 0.07em;
   width: 100%;
-}
+} */

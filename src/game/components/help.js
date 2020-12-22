@@ -26,7 +26,7 @@ const messages = {
 
   move: {
     mobile: `
-      <h2>Se déplacer</h2>
+      <h3>Se déplacer</h3>
       <p><img src="dist/img/icons/swipe.svg" alt=""></p>
       `,
     desktop: `

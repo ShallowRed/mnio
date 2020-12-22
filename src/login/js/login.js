@@ -62,7 +62,7 @@ const showPasswordBox = () => {
 
 const showConfirmPasswordBox = () => {
   const passwordConfirmBox = document.querySelector(".login-confirmation");
-  document.querySelector('.login-password h4')
+  document.querySelector('.login-password h3')
     .innerHTML = "Créer un mot de passe";
   passwordConfirmBox.style.display = "block";
 };
