@@ -27,6 +27,7 @@ const plugins = ({
     new FaviconsWebpackPlugin({
       logo: path.resolve(__dirname, './src/logo.png'),
       favicons: {
+        appName: "MN.io",
         icons: {
           android: true,
           appleIcon: true,
