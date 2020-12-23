@@ -13,16 +13,16 @@ export default function listenClickEvents(Game) {
       Game.fill();
     });
 
-    // colorBtn.addEventListener("touchstart", (event) => {
-    //   event.preventDefault();
-    //   Game.selectColor(i);
-    // });
-    //
-    // colorBtn.addEventListener("touchend", (event) => {
-    //   event.preventDefault();
-    //   if (flag.isTranslating || flag.isZooming) return;
-    //   Game.fill();
-    // });
+    colorBtn.addEventListener("touchstart", (event) => {
+      event.preventDefault();
+      Game.selectColor(i);
+    });
+
+    colorBtn.addEventListener("touchend", (event) => {
+      event.preventDefault();
+      if (flag.isTranslating || flag.isZooming) return;
+      Game.fill();
+    });
   });
 
   for (const [direction, btn] of Object.entries(Ui.zoomBtns)) {

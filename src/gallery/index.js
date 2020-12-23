@@ -9,9 +9,9 @@ import './css/dataviz.css';
 
 import APP from './js/components/gallery';
 
-import game1 from '../../srv/datadev/games.min/game.min.1';
-import game2 from '../../srv/datadev/games.min/game.min.2';
-import game3 from '../../srv/datadev/games.min/game.min.3';
+import * as game1 from '../../srv/data/games.min/game.min.1.json';
+import * as game2 from '../../srv/data/games.min/game.min.2.json';
+import * as game3 from '../../srv/data/games.min/game.min.3.json';
 
 [game1, game2, game3].forEach(g => {
 
@@ -76,7 +76,8 @@ import game3 from '../../srv/datadev/games.min/game.min.3';
     );
   });
 
-  document.getElementById("logo").addEventListener("click", () =>
-  window.location.replace("../")
-  )
+  document.getElementById("logo")
+    .addEventListener("click", () =>
+      window.location.replace("../")
+    )
 })();
