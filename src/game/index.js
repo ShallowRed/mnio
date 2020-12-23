@@ -19,7 +19,6 @@ const socket = io('/game');
 socket.on("initGame", data => {
   new Game(data, socket);
   const hasAlreadyPlayed = !!data.Game.owned.length;
-  // Tutoriel[hasAlreadyPlayed ? "init" : "end"](socket);
   Tutoriel[hasAlreadyPlayed ? "end" : "init"](socket);
   showAll();
 });
@@ -32,9 +31,10 @@ const showAll = () => {
   [...document.querySelectorAll('body>*')].forEach(el => {
     el.style.opacity = 1;
   });
-}
+};
 
-document.querySelector('#menu button')
-  .addEventListener("click", () => {
-    window.location.href = '/';
-  });
+// document.querySelector("#menu>div")
+//   .addEventListener("click", (event) => {
+//     event.preventDefault();
+//     window.location.replace('/');
+//   });

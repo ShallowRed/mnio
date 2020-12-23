@@ -5,12 +5,12 @@
   "scripts": {
     "dev:server": "pm2 start srv/ecosystem.config.js && pm2 logs",
     "dev:login": "SET NODE_ENV=dev && webpack --config webpack.login.config.js",
-    "prod:login": "webpack --config webpack.login.config.js",
     "dev:palette": "SET NODE_ENV=dev && webpack --config webpack.palette.config.js",
-    "prod:palette": "webpack --config webpack.palette.config.js",
     "dev:game": "SET NODE_ENV=dev && webpack --config webpack.game.config.js",
-    "prod:game": "webpack --config webpack.game.config.js",
     "dev:gallery": "SET NODE_ENV=dev && webpack --config webpack.gallery.config.js",
+    "prod:login": "webpack --config webpack.login.config.js",
+    "prod:palette": "webpack --config webpack.palette.config.js",
+    "prod:game": "webpack --config webpack.game.config.js",
     "prod:gallery": "webpack --config webpack.gallery.config.js",
     "prod:all": "npm run prod:login && npm run prod:palette && npm run prod:game"
   },

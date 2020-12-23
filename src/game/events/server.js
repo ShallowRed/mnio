@@ -43,13 +43,15 @@ const serverEvents = Object.entries({
     flag.waitingServerConfirmFill = false;
   },
 
-  error: () =>
-    window.location.reload(true),
+  reconnect_attempt: () => {
+    window.location.reload(true);
+  },
 
-  reconnect_attempt: () =>
-    window.location.reload(true),
+  error: () => {
+    if (!window.isReloading)
+      window.location.reload(true);
+  },
 
   alert: message =>
     alert(message)
-
 });
