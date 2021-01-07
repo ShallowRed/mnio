@@ -6,8 +6,8 @@ export default class Map {
     this.mincells = 7;
     this.startcells = 13;
     this.maxcells = 24;
-    this.numOffscreen = 2;
-    this.numCells = [0, 0];
+    this.offScreenCells = 2;
+    this.numCellsInView = [0, 0];
     this.viewSize = [0, 0];
     this.scale = {};
     this.translateCoef = [0, 0];
@@ -63,23 +63,23 @@ export default class Map {
 
   updateCellSize() {
     const { mainDimension: mD } = this;
-    if (!this.numCells[mD])
-      this.numCells[mD] = this.startcells;
+    if (!this.numCellsInView[mD])
+      this.numCellsInView[mD] = this.startcells;
     if (this.cellSize) {
       const { cellSize } = this;
       this.lastCellSize = cellSize
     }
-    this.cellSize = Math.round(this.viewSize[mD] / this.numCells[mD]);
+    this.cellSize = Math.round(this.viewSize[mD] / this.numCellsInView[mD]);
   }
 
   updateSecDimensionNumCells() {
     const { secDimension: sD } = this;
-    this.numCells[sD] = Math.round(this.viewSize[sD] / this.cellSize);
+    this.numCellsInView[sD] = Math.round(this.viewSize[sD] / this.cellSize);
   }
 
   updateViewCanvasDeltaSize() {
     this.viewCanvasDelta = [0, 1].map(i =>
-      this.viewSize[i] - this.numCells[i] * this.cellSize
+      this.viewSize[i] - this.numCellsInView[i] * this.cellSize
     )
   }
 
@@ -99,14 +99,14 @@ export default class Map {
   }
 
   setCanvasSizeAndPos() {
-    const { cellSize, numCells, numOffscreen } = this;
+    const { cellSize, numCellsInView, offScreenCells } = this;
     this.canvas.forEach(canvas => {
-      canvas.width = cellSize * (numCells[0] + numOffscreen * 2);
-      canvas.height = cellSize * (numCells[1] + numOffscreen * 2);
+      canvas.width = cellSize * (numCellsInView[0] + offScreenCells * 2);
+      canvas.height = cellSize * (numCellsInView[1] + offScreenCells * 2);
       canvas.style.top =
-        `-${Math.round(numOffscreen * cellSize)}px`;
+        `-${Math.round(offScreenCells * cellSize)}px`;
       canvas.style.left =
-        `-${Math.round(numOffscreen * cellSize)}px`;
+        `-${Math.round(offScreenCells * cellSize)}px`;
     });
     this.ctx.forEach(ctx => {
       ctx.imageSmoothingEnabled = false;
@@ -177,11 +177,11 @@ export default class Map {
     const { mainDimension: mD } = this;
 
     if (
-      (direction == "in" && this.numCells[mD] <= this.mincells) ||
-      (direction == "out" && this.numCells[mD] >= this.maxcells)
+      (direction == "in" && this.numCellsInView[mD] <= this.mincells) ||
+      (direction == "out" && this.numCellsInView[mD] >= this.maxcells)
     ) return;
 
-    this.numCells[mD] += increment * sense;
+    this.numCellsInView[mD] += increment * sense;
     return true;
   }
 
@@ -197,7 +197,7 @@ export default class Map {
   updateScaleVector() {
     const cS1 = this.lastCellSize;
     const cS2 = this.cellSize;
-    const dCs = (cS1 - cS2) * this.numOffscreen;
+    const dCs = (cS1 - cS2) * this.offScreenCells;
 
     this.scale.factor = Math.round(1000 * cS2 / cS1) / 1000;
 

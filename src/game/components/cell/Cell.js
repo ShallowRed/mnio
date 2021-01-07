@@ -1,5 +1,5 @@
 import { fillCell, roundSquare } from './drawCanvas';
-import { check } from './checkPosInView';
+import { getCoordInView } from './checkPosInView';
 import { fillAnimation } from './fillAnimation';
 
 export default class Cell {
@@ -20,28 +20,28 @@ export default class Cell {
 const renderCell = Object.entries({
 
   clear: (position, Game) => {
-    const coord = check(position, Game);
+    const coord = getCoordInView(position, Game);
     if (!coord) return;
     const { ctx, cellSize } = Game.Map;
     fillCell(coord, cellSize, ctx[2], null);
   },
 
   color: (position, Game) => {
-    const coord = check(position, Game);
+    const coord = getCoordInView(position, Game);
     if (!coord) return;
     const { colors, Map: { ctx, cellSize } } = Game;
     fillCell(coord, cellSize, ctx[1], `#${colors[position]}`);
   },
 
   allowed: (position, Game) => {
-    const coord = check(position, Game);
+    const coord = getCoordInView(position, Game);
     if (!coord) return;
     const { ctx, cellSize } = Game.Map;
     fillCell(coord, cellSize, ctx[0], '#e9e9e9');
   },
 
   position: (position, Game) => {
-    const coord = check(position, Game);
+    const coord = getCoordInView(position, Game);
     if (!coord) return;
     const { ctx, cellSize } = Game.Map;
     const shift = Math.round(cellSize / 8);

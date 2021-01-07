@@ -36,7 +36,7 @@ export default class Player {
     for (let i = 0; i <= 1; i++) {
       const pX = this.coord[i];
       const gX = [Game.cols, Game.rows][i];
-      const mX = Game.Map.numCells[i];
+      const mX = Game.Map.numCellsInView[i];
       const hX = (mX - 1) / 2;
 
       this.posInView[i] = this.getPosInView(gX, mX, hX, pX);
