@@ -51,6 +51,7 @@ const fillFrame = (flag, { x, y, divx, divy }, {
     divx += Math.round(cellSize / 8);
   }
 
+
   if (isNearEndOfHeight) { // fill what's left
     lineWidth = cellSize - divy;
     ctx.lineWidth = lineWidth;
@@ -86,6 +87,7 @@ const fillDiv = ({ x, y, divx, divy }, { ctx, lineWidth, sColor }, start,
   ctx.moveTo(x, y - divy - lineWidth / 2);
   ctx.lineTo(x + divx, y - divy - lineWidth / 2);
   ctx.stroke();
+  console.log(Date.now() - start);
   const nextStep = Date.now() - start;
   steps.push(Math.round(nextStep * 100) / 100)
 };

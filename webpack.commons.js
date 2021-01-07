@@ -23,7 +23,7 @@ const config = ({
   entry: jsEntry,
   output: {
     filename: `${name}.js`,
-    path: path.resolve(__dirname, `./srv/${outputPath}`),
+    path: path.resolve(__dirname, `./serve/${outputPath}`),
     publicPath: `/${outputPath}/`
   },
   optimization: {

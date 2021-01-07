@@ -1,7 +1,7 @@
 import './paletteSelection.css'
 import '../global.css';
 
-import Pokedex from '../../srv/data/pokedex/pokedex-2.json';
+import Pokedex from '../../serve/data/pokedex/pokedex-2.json';
 
 import io from 'socket.io-client';
 
