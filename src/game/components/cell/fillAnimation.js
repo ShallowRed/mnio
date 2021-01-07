@@ -1,5 +1,8 @@
 import { getCoordInView } from './checkPosInView';
 
+const TIME_LIMIT = 400;
+const N_STRIPES = 8;
+
 export const fillAnimation = (position, Game) => {
   const [x, y] = getCoordInView(position, Game);
 
@@ -9,7 +12,7 @@ export const fillAnimation = (position, Game) => {
     Map: { cellSize, ctx: [, ctx] }
   } = Game;
 
-  const lineWidth = Math.floor(cellSize / N_STRIPES);
+  const lineWidth = Math.round(cellSize / N_STRIPES);
 
   flag.fill = true;
   ctx.lineWidth = lineWidth;
@@ -26,16 +29,6 @@ export const fillAnimation = (position, Game) => {
   fillFrame(flag, initCoord, { ctx, lineWidth, cellSize, sColor });
 };
 
-const TIME_LIMIT = 640;
-const N_STRIPES = 8;
-
-[
-  document.getElementById('player'),
-  document.getElementById('shadow')
-].forEach((item, i) => {
-  item.style.display = "none";
-});
-
 const fillFrame = (flag, { x, y, divx, divy, lastdivx, lastdivy }, props,
   start = Date.now()) => {
 
@@ -48,20 +41,12 @@ const fillFrame = (flag, { x, y, divx, divy, lastdivx, lastdivy }, props,
   divx = Math.round((progress - divy) * props.cellSize);
 
   if (lastdivy !== divy) {
-    // console.log("lastdivy :", lastdivy);
-    // console.log("divy :", divy);
-    // drawLine({ x, y }, { divy: lastdivy, from: lastdivx, to: props.cellSize },
-      // props);
-    // drawLine({ x, y }, { divy, from: 0, to: divx }, props);
+    drawLine({ x, y }, { divy: lastdivy, from: lastdivx, to: props.cellSize },
+      props);
+    drawLine({ x, y }, { divy, from: 0, to: divx }, props);
   } else {
     drawLine({ x, y }, { divy, from: lastdivx, to: divx }, props);
   }
-
-  console.log("-----------------------------------------");
-  console.log("delay :", delay);
-  console.log("progress :", progress);
-  console.log("divy :", divy);
-  console.log("divx :", divx);
 
   if (delay > TIME_LIMIT) {
     flag.fill = false;
@@ -80,13 +65,15 @@ const drawLine = ({ x, y }, { divy, from, to }, {
   cellSize
 }) => {
 
-  if (divy == N_STRIPES) {
+  let posy = y - ((divy + 0.5) * lineWidth);
+
+  if (divy == N_STRIPES - 1) {
+    lineWidth = cellSize - (N_STRIPES - 1) * lineWidth;
+    ctx.lineWidth = lineWidth;
+    posy = y - cellSize + (0.5 * lineWidth);
+  } else if (divy == N_STRIPES) {
     return;
   }
-
-  const posy = divy !== N_STRIPES - 1 ?
-    y - ((divy + 0.5) * lineWidth) :
-    y - cellSize + (0.5 * lineWidth);
 
   ctx.strokeStyle = sColor;
   ctx.beginPath();
