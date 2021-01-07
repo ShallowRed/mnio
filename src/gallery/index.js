@@ -9,51 +9,54 @@ import './css/dataviz.css';
 
 import APP from './js/components/gallery';
 
-import * as game1 from '../../srv/data/games.min/game.min.1.json';
-import * as game2 from '../../srv/data/games.min/game.min.2.json';
-import * as game3 from '../../srv/data/games.min/game.min.3.json';
+const list = document.getElementById('list');
 
-[game1, game2, game3].forEach(g => {
+const N_GAMES = 3;
 
-  const li = document.createElement('li');
-  APP.list.appendChild(li);
+for (var i = 0; i <= N_GAMES; i++) {
+  createGameButton(++i);
+}
 
+function createGameButton(number) {
+  const gameData = require(
+    `../../srv/data/games.min/game.min.${number}.json`)
+  const button = createButton(gameData);
+  button.addEventListener("click", () =>
+    requestGame(gameData.id)
+  );
+}
+
+function createButton({ id, rows, cols }) {
   const button = document.createElement('button');
   button.type = "submit";
-  button.innerHtml = `mnio.00${g.id}, ${g.rows} x ${g.cols} px`;
-  li.appendChild(button);
+  button.innerHTML = `mnio.00${id}, ${rows} x ${cols} px`;
+  list.appendChild(button);
+  button.id = `game${id}`;
+  return button;
+}
 
-  const h2 = document.createElement('h2');
-  h2.innerHTML = `mnio.00${g.id}, ${g.rows} x ${g.cols} px`;
-  button.appendChild(h2);
+function requestGame(id) {
+  const requestGameData = new XMLHttpRequest();
+  requestGameData.open('PUT', '/game');
+  requestGameData.setRequestHeader('Content-Type', 'application/json');
+  requestGameData.onload = () => onJsonLoad(requestGameData);
 
-  button.id = `game${g.id}`;
+  window.addEventListener('popstate', function(event) {
+    window.location.replace("../gallery")
+  }, false);
 
-  button.addEventListener("click", () => {
+  requestGameData.send(JSON.stringify({ id }));
+}
 
-    const xhr = new XMLHttpRequest();
-    xhr.open('PUT', '/game');
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.onload = function() {
-      if (xhr.status === 200) {
-        const res = JSON.parse(xhr.responseText);
-        APP.init(res)
-        window.history.pushState({
-          "pageTitle": res.id
-        }, "", "/gallery/mnio" + res.id);
-      }
-    };
-
-    window.addEventListener('popstate', function(event) {
-      window.location.replace("../gallery")
-    }, false);
-
-    xhr.send(JSON.stringify({
-      id: g.id
-    }));
-  });
-});
-
+function onJsonLoad(requestGameData) {
+  if (requestGameData.status === 200) {
+    const res = JSON.parse(requestGameData.responseText);
+    APP.init(res);
+    window.history.pushState({
+      "pageTitle": res.id
+    }, "", "/gallery/mnio" + res.id);
+  }
+};
 
 (() => {
 

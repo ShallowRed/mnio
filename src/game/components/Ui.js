@@ -1,12 +1,8 @@
 import ScreenRatio from '../utils/styleAccordingToRatio'
 
-const section = document.querySelector('section');
-
 export default class Ui {
 
   constructor() {
-    this.btns = document.querySelectorAll('#buttons button');
-    this.btnsBar = document.getElementById('buttons');
     this.colorBtns = document.querySelectorAll('.color');
     this.zoomBtns = {
       in: document.getElementById('zoomin'),
@@ -15,6 +11,9 @@ export default class Ui {
   }
 
   render() {
+    const section = document.querySelector('section');
+    const btnBar = document.getElementById('buttons');
+    const buttons = document.querySelectorAll('#buttons button');
 
     ScreenRatio.applyStyles({
       domEl: section,
@@ -22,7 +21,7 @@ export default class Ui {
         flexDirection: ["row", "column"],
       }
     }, {
-      domEl: this.btnsBar,
+      domEl: btnBar,
       styles: {
         flexFlow: ["column", "row"],
         height: ["auto", "11%"],
@@ -30,17 +29,14 @@ export default class Ui {
         float: ["right", "none"],
         margin: ["auto 0 auto auto", "auto auto 0"],
       }
-    }, ...[...this.btns].map(btn => ({
-      domEl: btn,
+    }, ...ScreenRatio.mapStyles(buttons, {
+      height: ["10vh", "10vw"],
+      width: ["10vh", "10vw"],
+      margin: [".5vh 0", "0 1vw"]
+    }), {
+      domEl: buttons[2],
       styles: {
-        height: ["10vh", "10vw"],
-        width: ["10vh", "10vw"],
-        margin: [".5vh 0", "0 1vw"]
-      }
-    })), {
-      domEl: this.btns[2],
-      styles: {
-         marginTop: ["3vh", "0"],
+        marginTop: ["3vh", "0"],
         marginLeft: ["0", "5vw"],
       }
     })

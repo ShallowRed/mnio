@@ -25,8 +25,14 @@ export default function listenClickEvents(Game) {
     });
   });
 
-  for (const [direction, btn] of Object.entries(Ui.zoomBtns)) {
-    btn.addEventListener("click", () => {
+  for (const [direction, zoomBtn] of Object.entries(Ui.zoomBtns)) {
+
+    zoomBtn.addEventListener("click", () => {
+      Game.zoom(direction);
+    });
+
+    zoomBtn.addEventListener("touchstart", (event) => {
+      event.preventDefault();
       Game.zoom(direction);
     });
   }

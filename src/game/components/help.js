@@ -80,24 +80,19 @@ const Help = {
         flexDirection: ["column", "row"],
         transform: ["translateY(-50%)", "translate(0)"],
       }
-    }, ...[helpBlocks.zoom, helpBlocks.fill].map(block => ({
-      domEl: block,
-      styles: {
-        width: ["auto", "30%"],
-        marginBottom: [isMobile ? "20vh" : "3vh", "4.5px"],
-        marginTop: ["5px", "auto"],
-        height: ["auto", "100%"],
-      }
-    })), ...[...arrows].map(arrow => ({
-      domEl: arrow,
-      styles: {
-        right: ["8px", "auto"],
-        bottom: ["auto", "-5px"],
-        transform: ["translateX(100%) scale(1.5)",
-          "scale(1.5) rotate(90deg) "
-        ]
-      }
-    })), {
+    }, ...ScreenRatio.mapStyles([helpBlocks.zoom, helpBlocks.fill], {
+      width: ["auto", "30%"],
+      marginBottom: [isMobile ? "20vh" : "3vh", "4.5px"],
+      marginTop: ["5px", "auto"],
+      height: ["auto", "100%"],
+    }), ...ScreenRatio.mapStyles(arrows, {
+      right: ["8px", "auto"],
+      bottom: ["auto", "-5px"],
+      transform: [
+        "translateX(100%) scale(1.5)",
+        "scale(1.5) rotate(90deg)"
+      ]
+    }), {
       domEl: arrows[0],
       styles: {
         top: [isMobile ? "6%" : "20%", "auto"],
@@ -137,9 +132,13 @@ const Help = {
   }
 }
 
+const isIpad = /Macintosh/i.test(navigator.userAgent) &&
+  navigator.maxTouchPoints &&
+  navigator.maxTouchPoints > 1;
+
 const isMobile =
   /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    navigator.userAgent);
+    navigator.userAgent) || isIpad;
 
 export {
   Help,

@@ -10,7 +10,14 @@ const ScreenRatio = {
         domEl.style[key] = value[this.widthIsLarger ? 0 : 1];
       }
     });
+  },
+
+  mapStyles(list, styles) {
+    return [...list].map(item => ({
+      domEl: item,
+      styles
+    }))
   }
-}
+};
 
 export default ScreenRatio;

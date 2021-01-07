@@ -10,7 +10,6 @@ const APP = {
   descbox: document.getElementById("descbox"),
   gallery: document.getElementById("gallery"),
   gameList: document.getElementById("gameList"),
-  list: document.getElementById('list'),
   playBar: document.getElementById("playBar"),
   graphs: document.getElementById("graphs"),
   globalSwitches: document.getElementById("globalSwitches"),
@@ -26,7 +25,8 @@ const APP = {
     timelapse: () => APP.switch.timelapse.checked,
     dataviz: () => APP.switch.dataviz.checked
   },
-  isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+  isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i
+    .test(navigator.userAgent)
 };
 
 APP.init = Game => {
@@ -42,12 +42,14 @@ APP.init = Game => {
   APP.ctx.imageSmoothingEnabled = false;
   APP.ctx2.imageSmoothingEnabled = false;
 
-  Object.keys(Game).forEach(p => APP[p] = Game[p]);
+  Object.keys(Game)
+    .forEach(p => APP[p] = Game[p]);
 
-  Object.keys(toggle).forEach(prop => {
-    const switchBtn = APP.switch[prop];
-    switchBtn.addEventListener("click", () => toggle[prop](APP))
-  });
+  Object.keys(toggle)
+    .forEach(prop => {
+      const switchBtn = APP.switch[prop];
+      switchBtn.addEventListener("click", () => toggle[prop](APP))
+    });
 
   update(APP)
   TL.init(APP);
@@ -143,9 +145,11 @@ const cartonImages = {
 let isCartonLoaded = false;
 
 const loadCartonImages = () => {
-  Object.entries(cartonImages).forEach(([id, name]) =>
-    document.getElementById(id).src = `/dist/gallery/img/${name}.png`
-  );
+  Object.entries(cartonImages)
+    .forEach(([id, name]) =>
+      document.getElementById(id)
+      .src = `/dist/gallery/img/${name}.png`
+    );
   isCartonLoaded = true;
 }
 
