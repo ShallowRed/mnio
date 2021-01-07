@@ -1,7 +1,7 @@
 node_modules/
 .ftpconfig
 TODO.md
-serve/node_modules/
-serve/lib/config.js
-serve/data/
-serve/dist/
+srv/node_modules/
+srv/lib/config.js
+srv/data/
+srv/dist/

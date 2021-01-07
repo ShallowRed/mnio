@@ -3,7 +3,7 @@
   "version": "0.0.2",
   "description": "Un jeu de tapisserie en ligne",
   "scripts": {
-    "dev:server": "pm2 start serve/ecosystem.config.js && pm2 logs",
+    "dev:server": "pm2 start srv/ecosystem.config.js && pm2 logs",
     "dev:login": "SET NODE_ENV=dev && webpack --config webpack.login.config.js",
     "dev:palette": "SET NODE_ENV=dev && webpack --config webpack.palette.config.js",
     "dev:game": "SET NODE_ENV=dev && webpack --config webpack.game.config.js",

@@ -1,13 +1,13 @@
 module.exports = {
   apps: {
-    script: './serve/app.js',
+    script: './srv/app.js',
     watch: true,
     ignore_watch: [
       "src",
       "node_modules",
-      "serve/node_modules",
-      "serve/dist",
-      "serve/datadev",
+      "srv/node_modules",
+      "srv/dist",
+      "srv/datadev",
       ".gitignore",
       ".gitattributes",
       ".git"

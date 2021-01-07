@@ -9,85 +9,88 @@ export const fillAnimation = (position, Game) => {
     Map: { cellSize, ctx: [, ctx] }
   } = Game;
 
-  const lineWidth = Math.round(cellSize / 6);
+  const lineWidth = Math.floor(cellSize / N_STRIPES);
 
   flag.fill = true;
   ctx.lineWidth = lineWidth;
-  ctx.strokeStyle = sColor;
 
   const initCoord = {
     divx: 0,
     divy: 0,
+    lastdivx: 0,
+    lastdivy: 0,
     x: Math.round(cellSize * x),
     y: Math.round(cellSize * (y + 1))
   };
 
-  // TESTING
-  const start = Date.now();
-  const steps = [];
-  //
-
-  fillFrame(flag, initCoord, { ctx, lineWidth, cellSize, sColor }, start,
-    steps);
+  fillFrame(flag, initCoord, { ctx, lineWidth, cellSize, sColor });
 };
 
-const fillFrame = (flag, { x, y, divx, divy }, {
-  ctx,
-  lineWidth,
-  cellSize,
-  sColor
-}, start, steps) => {
+const TIME_LIMIT = 640;
+const N_STRIPES = 8;
 
-  const isAtEndOfWidth = divx == cellSize;
-  const isNearEndOfWidth = divx >= cellSize * 0.65;
-  const isNearEndOfHeight = divy > cellSize * 4.5 / 6;
+[
+  document.getElementById('player'),
+  document.getElementById('shadow')
+].forEach((item, i) => {
+  item.style.display = "none";
+});
 
-  if (isAtEndOfWidth) { // go to beginning of upper line
-    divy += lineWidth;
-    divx = 0;
-  } else if (isNearEndOfWidth) { // go to the end of current line
-    divx = cellSize;
+const fillFrame = (flag, { x, y, divx, divy, lastdivx, lastdivy }, props,
+  start = Date.now()) => {
+
+  lastdivx = divx;
+  lastdivy = divy;
+
+  const delay = Date.now() - start;
+  const progress = delay * N_STRIPES / TIME_LIMIT;
+  divy = Math.trunc(progress);
+  divx = Math.round((progress - divy) * props.cellSize);
+
+  if (lastdivy !== divy) {
+    // console.log("lastdivy :", lastdivy);
+    // console.log("divy :", divy);
+    // drawLine({ x, y }, { divy: lastdivy, from: lastdivx, to: props.cellSize },
+      // props);
+    // drawLine({ x, y }, { divy, from: 0, to: divx }, props);
   } else {
-    divx += Math.round(cellSize / 8);
+    drawLine({ x, y }, { divy, from: lastdivx, to: divx }, props);
   }
 
+  console.log("-----------------------------------------");
+  console.log("delay :", delay);
+  console.log("progress :", progress);
+  console.log("divy :", divy);
+  console.log("divx :", divx);
 
-  if (isNearEndOfHeight) { // fill what's left
-    lineWidth = cellSize - divy;
-    ctx.lineWidth = lineWidth;
-  }
-
-  fillDiv({ divx, divy, x, y }, { ctx, lineWidth, sColor }, start, steps);
-
-  if (isNearEndOfHeight && isAtEndOfWidth) {
+  if (delay > TIME_LIMIT) {
     flag.fill = false;
-
-    // TESTING
-    const output = steps.map((e, i) => {
-      return steps[i - 1] ? e - steps[i - 1] : 0;
-    });
-    console.log({end: steps[steps.length - 1], steps: output});
-
   } else {
     window.requestAnimationFrame(() =>
-      fillFrame(flag, { x, y, divx, divy }, {
-        ctx,
-        lineWidth,
-        cellSize,
-        sColor
-      }, start, steps)
+      fillFrame(flag, { x, y, divx, divy, lastdivx, lastdivy }, props,
+        start)
     );
   }
 };
 
-const fillDiv = ({ x, y, divx, divy }, { ctx, lineWidth, sColor }, start,
-  steps) => {
+const drawLine = ({ x, y }, { divy, from, to }, {
+  ctx,
+  sColor,
+  lineWidth,
+  cellSize
+}) => {
+
+  if (divy == N_STRIPES) {
+    return;
+  }
+
+  const posy = divy !== N_STRIPES - 1 ?
+    y - ((divy + 0.5) * lineWidth) :
+    y - cellSize + (0.5 * lineWidth);
+
   ctx.strokeStyle = sColor;
   ctx.beginPath();
-  ctx.moveTo(x, y - divy - lineWidth / 2);
-  ctx.lineTo(x + divx, y - divy - lineWidth / 2);
+  ctx.moveTo(x + from, posy);
+  ctx.lineTo(x + to, posy);
   ctx.stroke();
-  console.log(Date.now() - start);
-  const nextStep = Date.now() - start;
-  steps.push(Math.round(nextStep * 100) / 100)
 };

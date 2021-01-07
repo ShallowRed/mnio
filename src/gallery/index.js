@@ -19,7 +19,7 @@ for (var i = 0; i <= N_GAMES; i++) {
 
 function createGameButton(number) {
   const gameData = require(
-    `../../serve/data/games.min/game.min.${number}.json`)
+    `../../srv/data/games.min/game.min.${number}.json`)
   const button = createButton(gameData);
   button.addEventListener("click", () =>
     requestGame(gameData.id)
