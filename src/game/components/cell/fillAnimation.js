@@ -12,8 +12,10 @@ export const fillAnimation = (position, Game) => {
     Map: { cellSize, ctx: [, ctx] }
   } = Game;
 
-  const lineWidth = Math.round(cellSize / N_STRIPES);
-
+  const lineWidth = cellSize > 30 ?
+  Math.round(cellSize / N_STRIPES):
+  Math.floor(cellSize / N_STRIPES);
+  console.log("cellSize :", cellSize);
   flag.fill = true;
   ctx.lineWidth = lineWidth;
 
@@ -43,7 +45,9 @@ const fillFrame = (flag, { x, y, divx, divy, lastdivx, lastdivy }, props,
   if (lastdivy !== divy) {
     drawLine({ x, y }, { divy: lastdivy, from: lastdivx, to: props.cellSize },
       props);
-    drawLine({ x, y }, { divy, from: 0, to: divx }, props);
+    if (divy < N_STRIPES) {
+        drawLine({ x, y }, { divy, from: 0, to: divx }, props);
+      }
   } else {
     drawLine({ x, y }, { divy, from: lastdivx, to: divx }, props);
   }
@@ -71,8 +75,6 @@ const drawLine = ({ x, y }, { divy, from, to }, {
     lineWidth = cellSize - (N_STRIPES - 1) * lineWidth;
     ctx.lineWidth = lineWidth;
     posy = y - cellSize + (0.5 * lineWidth);
-  } else if (divy == N_STRIPES) {
-    return;
   }
 
   ctx.strokeStyle = sColor;
