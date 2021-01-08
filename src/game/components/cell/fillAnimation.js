@@ -13,9 +13,9 @@ export const fillAnimation = (position, Game) => {
   } = Game;
 
   const lineWidth = cellSize > 30 ?
-  Math.round(cellSize / N_STRIPES):
-  Math.floor(cellSize / N_STRIPES);
-  console.log("cellSize :", cellSize);
+    Math.round(cellSize / N_STRIPES) :
+    Math.floor(cellSize / N_STRIPES);
+
   flag.fill = true;
   ctx.lineWidth = lineWidth;
 
@@ -46,8 +46,8 @@ const fillFrame = (flag, { x, y, divx, divy, lastdivx, lastdivy }, props,
     drawLine({ x, y }, { divy: lastdivy, from: lastdivx, to: props.cellSize },
       props);
     if (divy < N_STRIPES) {
-        drawLine({ x, y }, { divy, from: 0, to: divx }, props);
-      }
+      drawLine({ x, y }, { divy, from: 0, to: divx }, props);
+    }
   } else {
     drawLine({ x, y }, { divy, from: lastdivx, to: divx }, props);
   }
