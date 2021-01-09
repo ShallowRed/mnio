@@ -26,11 +26,12 @@ export const fillAnimation = (position, Game) => {
   const lineWidth = Math.round(cellSize / N_STRIPES);
   const numSmallStripes = N_STRIPES - cellSize % N_STRIPES;
 
-console.log("-----------------------------------------");
+  console.log("-----------------------------------------");
   console.log("lineWidth :", lineWidth);
   console.log("numSmallStripes :", numSmallStripes);
   console.log("cellSize :", cellSize);
-  console.log("result :", lineWidth * numSmallStripes + (lineWidth + 1) * (N_STRIPES - numSmallStripes));
+  console.log("result :", lineWidth * numSmallStripes + (lineWidth + 1) * (
+    N_STRIPES - numSmallStripes));
 
   fillFrame(flag, initCoord, {
     ctx,
