@@ -12,12 +12,7 @@ export const fillAnimation = (position, Game) => {
     Map: { cellSize, ctx: [, ctx] }
   } = Game;
 
-  const lineWidth = cellSize > 30 ?
-    Math.round(cellSize / N_STRIPES) :
-    Math.floor(cellSize / N_STRIPES);
-
   flag.fill = true;
-  ctx.lineWidth = lineWidth;
 
   const initCoord = {
     divx: 0,
@@ -28,7 +23,22 @@ export const fillAnimation = (position, Game) => {
     y: Math.round(cellSize * (y + 1))
   };
 
-  fillFrame(flag, initCoord, { ctx, lineWidth, cellSize, sColor });
+  const lineWidth = Math.round(cellSize / N_STRIPES);
+  const numSmallStripes = N_STRIPES - cellSize % N_STRIPES;
+
+console.log("-----------------------------------------");
+  console.log("lineWidth :", lineWidth);
+  console.log("numSmallStripes :", numSmallStripes);
+  console.log("cellSize :", cellSize);
+  console.log("result :", lineWidth * numSmallStripes + (lineWidth + 1) * (N_STRIPES - numSmallStripes));
+
+  fillFrame(flag, initCoord, {
+    ctx,
+    cellSize,
+    sColor,
+    lineWidth,
+    numSmallStripes
+  });
 };
 
 const fillFrame = (flag, { x, y, divx, divy, lastdivx, lastdivy }, props,
@@ -39,6 +49,7 @@ const fillFrame = (flag, { x, y, divx, divy, lastdivx, lastdivy }, props,
 
   const delay = Date.now() - start;
   const progress = delay * N_STRIPES / TIME_LIMIT;
+
   divy = Math.trunc(progress);
   divx = Math.round((progress - divy) * props.cellSize);
 
@@ -65,21 +76,24 @@ const fillFrame = (flag, { x, y, divx, divy, lastdivx, lastdivy }, props,
 const drawLine = ({ x, y }, { divy, from, to }, {
   ctx,
   sColor,
+  cellSize,
   lineWidth,
-  cellSize
+  numSmallStripes
 }) => {
 
-  let posy = y - ((divy + 0.5) * lineWidth);
-
-  if (divy == N_STRIPES - 1) {
-    lineWidth = cellSize - (N_STRIPES - 1) * lineWidth;
-    ctx.lineWidth = lineWidth;
-    posy = y - cellSize + (0.5 * lineWidth);
+  if (divy >= numSmallStripes) {
+    ++lineWidth;
   }
+
+  const posy = divy < numSmallStripes ?
+    ((divy + 0.5) * lineWidth) :
+    cellSize - ((N_STRIPES - divy - 0.5) * lineWidth);
+
+  ctx.lineWidth = lineWidth;
 
   ctx.strokeStyle = sColor;
   ctx.beginPath();
-  ctx.moveTo(x + from, posy);
-  ctx.lineTo(x + to, posy);
+  ctx.moveTo(x + from, y - posy);
+  ctx.lineTo(x + to, y - posy);
   ctx.stroke();
 };
