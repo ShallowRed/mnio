@@ -1,6 +1,6 @@
 import { getCoordInView } from './checkPosInView';
 
-const TIME_LIMIT = 400;
+const TIME_LIMIT = 600;
 const N_STRIPES = 8;
 
 export const fillAnimation = (position, Game) => {
@@ -23,15 +23,8 @@ export const fillAnimation = (position, Game) => {
     y: Math.round(cellSize * (y + 1))
   };
 
-  const lineWidth = Math.round(cellSize / N_STRIPES);
+  const lineWidth = Math.floor(cellSize / N_STRIPES);
   const numSmallStripes = N_STRIPES - cellSize % N_STRIPES;
-
-  console.log("-----------------------------------------");
-  console.log("lineWidth :", lineWidth);
-  console.log("numSmallStripes :", numSmallStripes);
-  console.log("cellSize :", cellSize);
-  console.log("result :", lineWidth * numSmallStripes + (lineWidth + 1) * (
-    N_STRIPES - numSmallStripes));
 
   fillFrame(flag, initCoord, {
     ctx,
@@ -54,12 +47,13 @@ const fillFrame = (flag, { x, y, divx, divy, lastdivx, lastdivy }, props,
   divy = Math.trunc(progress);
   divx = Math.round((progress - divy) * props.cellSize);
 
-  if (lastdivy !== divy) {
+  if (divy !== lastdivy) {
     drawLine({ x, y }, { divy: lastdivy, from: lastdivx, to: props.cellSize },
       props);
-    if (divy < N_STRIPES) {
-      drawLine({ x, y }, { divy, from: 0, to: divx }, props);
+    for (let i = lastdivy + 1; i < divy; i++) {
+      drawLine({ x, y }, { divy: i, from: 0, to: props.cellSize }, props);
     }
+    drawLine({ x, y }, { divy, from: 0, to: divx }, props);
   } else {
     drawLine({ x, y }, { divy, from: lastdivx, to: divx }, props);
   }
@@ -82,7 +76,9 @@ const drawLine = ({ x, y }, { divy, from, to }, {
   numSmallStripes
 }) => {
 
-  if (divy >= numSmallStripes) {
+  if (divy >= N_STRIPES) {
+    return;
+  } else if (divy >= numSmallStripes) {
     ++lineWidth;
   }
 
