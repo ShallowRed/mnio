@@ -14,29 +14,27 @@ export const fillAnimation = (position, Game) => {
 
   flag.fill = true;
 
-  const initCoord = {
+  fillFrame({
+    x: Math.round(cellSize * x),
+    y: Math.round(cellSize * (y + 1)),
+    lineWidth: Math.floor(cellSize / N_STRIPES),
+    numSmallStripes: N_STRIPES - cellSize % N_STRIPES,
+    flag,
+    ctx,
+    cellSize,
+    sColor
+  }, {
     divx: 0,
     divy: 0,
     lastdivx: 0,
-    lastdivy: 0,
-    x: Math.round(cellSize * x),
-    y: Math.round(cellSize * (y + 1))
-  };
-
-  const lineWidth = Math.floor(cellSize / N_STRIPES);
-  const numSmallStripes = N_STRIPES - cellSize % N_STRIPES;
-
-  fillFrame(flag, initCoord, {
-    ctx,
-    cellSize,
-    sColor,
-    lineWidth,
-    numSmallStripes
+    lastdivy: 0
   });
 };
 
-const fillFrame = (flag, { x, y, divx, divy, lastdivx, lastdivy }, props,
+const fillFrame = (props, { divx, divy, lastdivx, lastdivy },
   start = Date.now()) => {
+
+  const { flag, cellSize } = props;
 
   lastdivx = divx;
   lastdivy = divy;
@@ -45,52 +43,52 @@ const fillFrame = (flag, { x, y, divx, divy, lastdivx, lastdivy }, props,
   const progress = delay * N_STRIPES / TIME_LIMIT;
 
   divy = Math.trunc(progress);
-  divx = Math.round((progress - divy) * props.cellSize);
+  divx = Math.round((progress - divy) * cellSize);
 
   if (divy !== lastdivy) {
-    drawLine({ x, y }, { divy: lastdivy, from: lastdivx, to: props.cellSize },
-      props);
+
+    drawLine(props, { divy: lastdivy, fromX: lastdivx, toX: cellSize });
+
     for (let i = lastdivy + 1; i < divy; i++) {
-      drawLine({ x, y }, { divy: i, from: 0, to: props.cellSize }, props);
+      drawLine(props, { divy: i, fromX: 0, toX: cellSize });
     }
-    drawLine({ x, y }, { divy, from: 0, to: divx }, props);
+
+    drawLine(props, { divy, fromX: 0, toX: divx });
+
   } else {
-    drawLine({ x, y }, { divy, from: lastdivx, to: divx }, props);
+    drawLine(props, { divy, fromX: lastdivx, toX: divx });
   }
 
-  if (delay > TIME_LIMIT) {
-    flag.fill = false;
+  if (delay < TIME_LIMIT) {
+    window.requestAnimationFrame(() => {
+      fillFrame(props, { divx, divy, lastdivx, lastdivy }, start);
+    });
   } else {
-    window.requestAnimationFrame(() =>
-      fillFrame(flag, { x, y, divx, divy, lastdivx, lastdivy }, props,
-        start)
-    );
+    flag.fill = false;
   }
 };
 
-const drawLine = ({ x, y }, { divy, from, to }, {
+const drawLine = ({
+  x,
+  y,
   ctx,
   sColor,
   cellSize,
   lineWidth,
   numSmallStripes
-}) => {
+}, { divy, fromX, toX }, posy) => {
 
-  if (divy >= N_STRIPES) {
-    return;
-  } else if (divy >= numSmallStripes) {
+  if (divy < numSmallStripes) {
+    posy = ((divy + 0.5) * lineWidth);
+  } else if (divy < N_STRIPES) {
     ++lineWidth;
-  }
-
-  const posy = divy < numSmallStripes ?
-    ((divy + 0.5) * lineWidth) :
-    cellSize - ((N_STRIPES - divy - 0.5) * lineWidth);
+    posy = cellSize - ((N_STRIPES - divy - 0.5) * lineWidth);
+  } else return;
 
   ctx.lineWidth = lineWidth;
-
   ctx.strokeStyle = sColor;
   ctx.beginPath();
-  ctx.moveTo(x + from, y - posy);
-  ctx.lineTo(x + to, y - posy);
+  ctx.moveTo(x + fromX, y - posy);
+  ctx.lineTo(x + toX, y - posy);
   ctx.stroke();
 };

@@ -4,8 +4,8 @@ export default class Map {
     this.Game = () => Game;
     this.Player = () => Game.Player;
     this.mincells = 7;
-    this.startcells = 13;
-    this.maxcells = 28;
+    this.startcells = 15;
+    this.maxcells = 36;
     this.offScreenCells = 2;
     this.numCellsInView = [0, 0];
     this.viewSize = [0, 0];
