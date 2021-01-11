@@ -1,6 +1,6 @@
 import { getCoordInView } from './checkPosInView';
 
-const TIME_LIMIT = 600;
+const ANIMATION_DURATION = 600;
 const N_STRIPES = 8;
 
 export const fillAnimation = (position, Game) => {
@@ -34,7 +34,7 @@ const fillFrame = (props,
   const { flag, cellSize } = props;
 
   const delay = Date.now() - startDate;
-  const progress = delay * N_STRIPES / TIME_LIMIT;
+  const progress = delay * N_STRIPES / ANIMATION_DURATION;
 
   const stripeIndex = Math.trunc(progress);
   const stripePortion = Math.round((progress - stripeIndex) * cellSize);
@@ -42,7 +42,7 @@ const fillFrame = (props,
   drawFrameStripes(props, stripeIndex, lastStripeIndex, stripePortion,
     lastStripePortion, cellSize);
 
-  if (delay < TIME_LIMIT) {
+  if (delay < ANIMATION_DURATION) {
 
     window.requestAnimationFrame(() => {
       fillFrame(props, stripeIndex, stripePortion, startDate);
@@ -58,21 +58,21 @@ const drawFrameStripes = (props, stripeIndex, lastStripeIndex, stripePortion,
 
   if (stripeIndex === lastStripeIndex) {
 
-    drawStripe(props, stripeIndex, [lastStripePortion, stripePortion]);
+    drawStripe(stripeIndex, [lastStripePortion, stripePortion], props);
 
   } else {
 
-    drawStripe(props, lastStripeIndex, [lastStripePortion, cellSize]);
+    drawStripe(lastStripeIndex, [lastStripePortion, cellSize], props);
 
     for (let i = lastStripeIndex + 1; i < stripeIndex; i++) {
-      drawStripe(props, i, [0, cellSize]);
+      drawStripe(i, [0, cellSize], props);
     }
 
-    drawStripe(props, stripeIndex, [0, stripePortion]);
+    drawStripe(stripeIndex, [0, stripePortion], props);
   }
 }
 
-const drawStripe = ({
+const drawStripe = (stripeIndex, [startX, endX], {
   x,
   y,
   ctx,
@@ -80,7 +80,7 @@ const drawStripe = ({
   cellSize,
   lineWidth,
   numSmallStripes
-}, stripeIndex, [startX, endX]) => {
+}) => {
 
   let posY;
 
