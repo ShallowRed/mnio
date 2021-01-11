@@ -24,44 +24,44 @@ export const fillAnimation = (position, Game) => {
     cellSize,
     sColor
   }, {
-    divx: 0,
-    divy: 0,
-    lastdivx: 0,
-    lastdivy: 0
+    divX: 0,
+    divY: 0,
+    lastDivX: 0,
+    lastDivY: 0
   });
 };
 
-const fillFrame = (props, { divx, divy, lastdivx, lastdivy },
+const fillFrame = (props, { divX, divY, lastDivX, lastDivY },
   start = Date.now()) => {
 
   const { flag, cellSize } = props;
 
-  lastdivx = divx;
-  lastdivy = divy;
+  lastDivX = divX;
+  lastDivY = divY;
 
   const delay = Date.now() - start;
   const progress = delay * N_STRIPES / TIME_LIMIT;
 
-  divy = Math.trunc(progress);
-  divx = Math.round((progress - divy) * cellSize);
+  divY = Math.trunc(progress);
+  divX = Math.round((progress - divY) * cellSize);
 
-  if (divy !== lastdivy) {
+  if (divY !== lastDivY) {
 
-    drawLine(props, { divy: lastdivy, fromX: lastdivx, toX: cellSize });
+    drawLine(props, { divY: lastDivY, fromX: lastDivX, toX: cellSize });
 
-    for (let i = lastdivy + 1; i < divy; i++) {
-      drawLine(props, { divy: i, fromX: 0, toX: cellSize });
+    for (let i = lastDivY + 1; i < divY; i++) {
+      drawLine(props, { divY: i, fromX: 0, toX: cellSize });
     }
 
-    drawLine(props, { divy, fromX: 0, toX: divx });
+    drawLine(props, { divY, fromX: 0, toX: divX });
 
   } else {
-    drawLine(props, { divy, fromX: lastdivx, toX: divx });
+    drawLine(props, { divY, fromX: lastDivX, toX: divX });
   }
 
   if (delay < TIME_LIMIT) {
     window.requestAnimationFrame(() => {
-      fillFrame(props, { divx, divy, lastdivx, lastdivy }, start);
+      fillFrame(props, { divX, divY, lastDivX, lastDivY }, start);
     });
   } else {
     flag.fill = false;
@@ -76,19 +76,19 @@ const drawLine = ({
   cellSize,
   lineWidth,
   numSmallStripes
-}, { divy, fromX, toX }, posy) => {
+}, { divY, fromX, toX }, posY) => {
 
-  if (divy < numSmallStripes) {
-    posy = ((divy + 0.5) * lineWidth);
-  } else if (divy < N_STRIPES) {
+  if (divY < numSmallStripes) {
+    posY = (divY + 0.5) * lineWidth;
+  } else if (divY < N_STRIPES) {
     ++lineWidth;
-    posy = cellSize - ((N_STRIPES - divy - 0.5) * lineWidth);
+    posY = cellSize - (N_STRIPES - divY - 0.5) * lineWidth;
   } else return;
 
   ctx.lineWidth = lineWidth;
   ctx.strokeStyle = sColor;
   ctx.beginPath();
-  ctx.moveTo(x + fromX, y - posy);
-  ctx.lineTo(x + toX, y - posy);
+  ctx.moveTo(x + fromX, y - posY);
+  ctx.lineTo(x + toX, y - posY);
   ctx.stroke();
 };
