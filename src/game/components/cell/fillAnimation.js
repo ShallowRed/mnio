@@ -16,59 +16,53 @@ export const fillAnimation = (position, Game) => {
 
   fillFrame({
     x: Math.round(cellSize * x),
-    y: Math.round(cellSize * (y + 1)),
+    y: Math.round(cellSize * y),
     lineWidth: Math.floor(cellSize / N_STRIPES),
     numSmallStripes: N_STRIPES - cellSize % N_STRIPES,
     flag,
     ctx,
     cellSize,
     sColor
-  }, {
-    divX: 0,
-    divY: 0,
-    lastDivX: 0,
-    lastDivY: 0
   });
 };
 
-const fillFrame = (props, { divX, divY, lastDivX, lastDivY },
-  start = Date.now()) => {
+const fillFrame = (props,
+  lastStripeIndex = 0,
+  lastStripePortion = 0,
+  startDate = Date.now()) => {
 
   const { flag, cellSize } = props;
 
-  lastDivX = divX;
-  lastDivY = divY;
-
-  const delay = Date.now() - start;
+  const delay = Date.now() - startDate;
   const progress = delay * N_STRIPES / TIME_LIMIT;
 
-  divY = Math.trunc(progress);
-  divX = Math.round((progress - divY) * cellSize);
+  const stripeIndex = Math.trunc(progress);
+  const stripePortion = Math.round((progress - stripeIndex) * cellSize);
 
-  if (divY !== lastDivY) {
+  if (stripeIndex === lastStripeIndex) {
 
-    drawLine(props, { divY: lastDivY, fromX: lastDivX, toX: cellSize });
-
-    for (let i = lastDivY + 1; i < divY; i++) {
-      drawLine(props, { divY: i, fromX: 0, toX: cellSize });
-    }
-
-    drawLine(props, { divY, fromX: 0, toX: divX });
+    drawStripe(props, stripeIndex, [lastStripePortion, stripePortion]);
 
   } else {
-    drawLine(props, { divY, fromX: lastDivX, toX: divX });
+    drawStripe(props, lastStripeIndex, [lastStripePortion, cellSize]);
+
+    for (let i = lastStripeIndex + 1; i < stripeIndex; i++) {
+      drawStripe(props, i, [0, cellSize]);
+    }
+
+    drawStripe(props, stripeIndex, [0, stripePortion]);
   }
 
   if (delay < TIME_LIMIT) {
     window.requestAnimationFrame(() => {
-      fillFrame(props, { divX, divY, lastDivX, lastDivY }, start);
+      fillFrame(props, stripeIndex, stripePortion, startDate);
     });
   } else {
     flag.fill = false;
   }
 };
 
-const drawLine = ({
+const drawStripe = ({
   x,
   y,
   ctx,
@@ -76,19 +70,21 @@ const drawLine = ({
   cellSize,
   lineWidth,
   numSmallStripes
-}, { divY, fromX, toX }, posY) => {
+}, stripeIndex, [startX, endX]) => {
 
-  if (divY < numSmallStripes) {
-    posY = (divY + 0.5) * lineWidth;
-  } else if (divY < N_STRIPES) {
+  let posY;
+
+  if (stripeIndex < numSmallStripes) {
+    posY = cellSize - lineWidth * (stripeIndex + 0.5) ;
+  } else if (stripeIndex < N_STRIPES) {
     ++lineWidth;
-    posY = cellSize - (N_STRIPES - divY - 0.5) * lineWidth;
+    posY = lineWidth * (N_STRIPES - stripeIndex - 0.5);
   } else return;
 
   ctx.lineWidth = lineWidth;
   ctx.strokeStyle = sColor;
   ctx.beginPath();
-  ctx.moveTo(x + fromX, y - posY);
-  ctx.lineTo(x + toX, y - posY);
+  ctx.moveTo(x + startX, y + posY);
+  ctx.lineTo(x + endX, y + posY);
   ctx.stroke();
 };
