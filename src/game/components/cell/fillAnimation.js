@@ -39,11 +39,29 @@ const fillFrame = (props,
   const stripeIndex = Math.trunc(progress);
   const stripePortion = Math.round((progress - stripeIndex) * cellSize);
 
+  drawFrameStripes(props, stripeIndex, lastStripeIndex, stripePortion,
+    lastStripePortion, cellSize);
+
+  if (delay < TIME_LIMIT) {
+
+    window.requestAnimationFrame(() => {
+      fillFrame(props, stripeIndex, stripePortion, startDate);
+    });
+
+  } else {
+    flag.fill = false;
+  }
+};
+
+const drawFrameStripes = (props, stripeIndex, lastStripeIndex, stripePortion,
+  lastStripePortion, cellSize) => {
+
   if (stripeIndex === lastStripeIndex) {
 
     drawStripe(props, stripeIndex, [lastStripePortion, stripePortion]);
 
   } else {
+
     drawStripe(props, lastStripeIndex, [lastStripePortion, cellSize]);
 
     for (let i = lastStripeIndex + 1; i < stripeIndex; i++) {
@@ -52,15 +70,7 @@ const fillFrame = (props,
 
     drawStripe(props, stripeIndex, [0, stripePortion]);
   }
-
-  if (delay < TIME_LIMIT) {
-    window.requestAnimationFrame(() => {
-      fillFrame(props, stripeIndex, stripePortion, startDate);
-    });
-  } else {
-    flag.fill = false;
-  }
-};
+}
 
 const drawStripe = ({
   x,
@@ -75,7 +85,7 @@ const drawStripe = ({
   let posY;
 
   if (stripeIndex < numSmallStripes) {
-    posY = cellSize - lineWidth * (stripeIndex + 0.5) ;
+    posY = cellSize - lineWidth * (stripeIndex + 0.5);
   } else if (stripeIndex < N_STRIPES) {
     ++lineWidth;
     posY = lineWidth * (N_STRIPES - stripeIndex - 0.5);
