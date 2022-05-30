@@ -1,5 +1,5 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const dev = process.env.NODE_ENV !== "production"
+const dev = false;
 console.log("Dev mode :", dev);
 
 const esLintRules = {

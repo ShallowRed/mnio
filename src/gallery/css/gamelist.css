@@ -31,8 +31,10 @@
 		text-align: center;
 		transition: all 0.3s ease;
 		height: 2.5em;
-  
+		color: black;
+		
 		&:hover {
+			color: blue;
 		  border-color: blue;
 		  cursor: pointer;
 		  transition: all 0.3s ease;
