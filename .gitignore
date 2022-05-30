@@ -1,4 +1,5 @@
 node_modules/
+.vscode/
 .ftpconfig
 TODO.md
 srv/node_modules/
