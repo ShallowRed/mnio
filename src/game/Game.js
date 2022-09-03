@@ -36,7 +36,7 @@ export default class Game {
     listenClickEvents(this);
     listenKeyboardEvents(this)
     listenTouchEvents(this);
-    listenServerEvents(this);
+    listenServerEvents(this);	
   }
 
   listenWindowEvents() {

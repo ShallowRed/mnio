@@ -27,7 +27,7 @@ module.exports = {
   fillPokedex: "INSERT INTO pokedex_2 (" + colorKeys + ") VALUES(" + colorValues + ")",
 
   getLastGame: "SELECT * FROM games ORDER BY gameid DESC LIMIT 1",
-  saveGame: "INSERT INTO games (`usedrows`, `usedcols`, `gridid` ,`flag`) VALUES(?, ?, ?, 0)",
+  saveGame: "INSERT INTO games (`usedrows`, `usedcols`, `gridid` ,`flag`, `pokedexid`) VALUES(?, ?, ?, 0, 0)",
   getGridState: "SELECT * FROM game_?__grid",
 
   isUserNameInDb: "SELECT * FROM game_?__creds WHERE Username=?",

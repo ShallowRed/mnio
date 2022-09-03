@@ -1,50 +1,114 @@
 const { query, sQuery } = require('./mysql');
-const Pokedex = require('../../data/pokedex/pokedex-2.min.json');
-const debug = console.log;
+const Pokedex = require('./pokedex.js');
 
-module.exports = class DatabaseConnector {
-  constructor(gameid) {
-    queries.forEach(([key, fn]) => {
-        this[key] = async (...args) =>
-          await fn(...args, gameid) 
-      });
-  }
+// class PlayerDatabase {
+
+// 	constructor(gameid, playerid) {
+
+// 		this.gameid = gameid;
+
+// 		this.playerid = playerid;
+// 	}
+
+// 	async savePlayerPalette(index) {
+
+// 		query("savePlayerPalette", [this.gameid, this.playerid, index]);
+
+// 		return Pokedex[index];
+// 	}
+
+// 	async getPlayerPalette() {
+
+// 		const index = await sQuery("getPlayerPalette", [this.gameid, this.playerid]);
+
+// 		return Pokedex[index[0].paletteid]
+// 	}
+
+// 	async getPlayerOwnCells() {
+
+// 		const ownCells = await sQuery("getPlayerOwnCells", [this.gameid, this.playerid]);
+
+// 		if (ownCells && ownCells.length) {
+
+// 			return ownCells.map(({ cellid }) => cellid);
+// 		}
+// 	}
+
+// 	async saveFill({ position, color }) {
+
+// 		console.log('Player fill :', this.playerid);
+
+// 		query("saveFill", [this.gameid, this.playerid, position, color]);
+
+// 		return;
+// 	}
+// };
+
+class GameDatabase {
+
+	constructor(gameid) {
+
+		this.gameid = gameid;
+
+		// this.playerDatabase = class extends PlayerDatabase {
+
+		// 	constructor(playerid) {
+
+		// 		super(gameid, playerid);
+		// 	}
+		// }
+	}
+
+	async isUserNameInDb(userName) {
+
+		const userInDb = await sQuery("isUserNameInDb", [this.gameid, userName]);
+
+		const exists = !!userInDb.length;
+
+		return { exists, creds: exists ? userInDb[0] : null }
+	}
+
+	async saveCredentials({ userName, password }) {
+
+		const { insertId } = await sQuery("saveCredentials", [this.gameid, userName, password]);
+
+		return insertId;
+	}
+
+	async savePlayerPalette(playerid, index) {
+
+		query("savePlayerPalette", [this.gameid, playerid, index]);
+
+		return Pokedex[index];
+	}
+
+	async getPlayerPalette(playerid) {
+
+		const index = await sQuery("getPlayerPalette", [this.gameid, playerid]);
+
+		return Pokedex[index[0].paletteid]
+	}
+
+	async getPlayerOwnCells(playerid) {
+
+		const ownCells = await sQuery("getPlayerOwnCells", [this.gameid, playerid]);
+
+		if (ownCells && ownCells.length) {
+
+			return ownCells.map(({ cellid }) => cellid);
+		}
+	}
+
+	async saveFill(playerid, { position, color }) {
+
+		console.log('Player fill :', playerid);
+
+		query("saveFill", [this.gameid, playerid, position, color]);
+
+		return;
+	}
+};
+
+module.exports = {
+	GameDatabase,
 }
-
-const queries = Object.entries({
-
-  isUserNameInDb: async function(userName, gameid) {
-    const userInDb = await sQuery("isUserNameInDb", [gameid, userName]);
-    const exists = !!userInDb.length;
-    return { exists, creds: exists ? userInDb[0] : null }
-  },
-
-  saveCredentials: async function({ userName, password }, gameid) {
-    const { insertId } = await sQuery("saveCredentials", [gameid, userName,
-      password
-    ]);
-    return insertId;
-  },
-
-  savePlayerPalette: async function(playerid, index, gameid) {
-    query("savePlayerPalette", [gameid, playerid, index]);
-    return Pokedex[index];
-  },
-
-  getPlayerPalette: async function(playerid, gameid) {
-    const index = await sQuery("getPlayerPalette", [gameid, playerid]);
-    return Pokedex[index[0].paletteid]
-  },
-
-  getPlayerOwnCells: async function(playerid, gameid) {
-    const ownCells = await sQuery("getPlayerOwnCells", [gameid, playerid]);
-    if (!ownCells || !ownCells.length) return;
-    return ownCells.map(({ cellid }) => cellid);
-  },
-
-  saveFill: async function(playerid, { position, color }, gameid) {
-    debug('Player fill :', playerid);
-    query("saveFill", [gameid, playerid, position, color]);
-    return;
-  }
-});

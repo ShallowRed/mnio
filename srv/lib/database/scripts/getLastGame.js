@@ -1,6 +1,9 @@
 const { query, sQuery, GameDate } = require('../mysql');
 const { rows, cols } = require('../../config');
-const Pokedex = require('../../../data/pokedex/pokedex-2.min.json');
+// const Pokedex = require('../../../data/pokedex/pokedex-2.min.json');
+
+const Pokedex = require('../pokedex.js');
+
 // const debug = require('debug')('mnio');
 const debug = console.log;
 
@@ -12,9 +15,14 @@ module.exports = async () => {
 };
 
 const getLastGame = async () => {
-  const lastGame = await sQuery("getLastGame");
-  if (lastGame.length && !lastGame[0].flag)
-    return lastGame[0];
+	try {
+
+		const lastGame = await sQuery("getLastGame");
+		if (lastGame.length && !lastGame[0].flag)
+		return lastGame[0];
+	} catch {
+		return null;
+	}
 };
 
 // Fetch last game
@@ -52,6 +60,7 @@ const initNewGame = async () => {
 
 const saveGameNGetId = async () => {
   await sQuery("saveGame", [rows, cols, GameDate]);
+  return 1;
   const gameid = await getLastGameId();
   debug(`Game n°${gameid} created`);
   return gameid;

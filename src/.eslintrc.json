@@ -1,0 +1,11 @@
+{
+  "extends": "eslint:recommended",
+  "env": {
+    "es2021": true,
+    "browser": true,
+    "commonjs": true
+  },
+  "parserOptions": {
+    "sourceType": "module"
+  }
+}

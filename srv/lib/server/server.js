@@ -14,7 +14,7 @@ module.exports = () => {
   const server = http.Server(app);
   const io = socketIo(server);
 
-  initSession(app, io);
+//   initSession(app, io);
 
   app.use('/', Router);
 

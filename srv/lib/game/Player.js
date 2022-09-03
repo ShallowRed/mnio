@@ -1,47 +1,82 @@
-const allowCells = require('./utils/allowCells');
-const randomPosition = require('./utils/randomPosition');
+module.exports = class PlayersFactory {
 
-module.exports = class PlayerConnector {
+	constructor(database, map) {
+		this.map = map;
+		this.database = database;
+	}
 
-  constructor(Database, Map) {
-    this.Map = () => Map;
-    this.Database =  () => Database;
-  }
+	async createExisting({ position, playerid }) {
 
-  async getExisting({ position, playerid }) {
-    const palette = await this.Database().getPlayerPalette(playerid);
-    const ownCells = await this.Database().getPlayerOwnCells(playerid);
-    return new Player({ playerid, palette, position, ownCells }, this.Map());
-  }
+		console.log("Creating existing player:", playerid);
 
-  async createNew(index, creds) {
-    const playerid = await this.Database().saveCredentials(creds);
-    const palette = await this.Database().savePlayerPalette(playerid, index);
-    return new Player({ playerid, palette }, this.Map());
-  }
+		const palette = await this.database.getPlayerPalette(playerid);
+
+		const ownCells = await this.database.getPlayerOwnCells(playerid);
+
+		return new Player({ playerid, palette, position, ownCells }, this.map, this.database);
+	}
+
+	async createNew(index, creds) {
+
+		const playerid = await this.database.saveCredentials(creds);
+
+		console.log("Creating new player:", playerid);
+
+		const palette = await this.database.savePlayerPalette(playerid, index);
+
+		const player = new Player({ playerid, palette }, this.map, this.database);
+
+		return player;
+	}
 }
 
 class Player {
 
-  constructor(params, Map) {
-    const { playerid, position, palette, ownCells } = params;
-    this.Map = () => Map;
-    console.log(!ownCells ? "New player  :" : "Player back :", playerid);
-    this.playerid = playerid;
-    this.palette = palette;
-    this.ownCells = ownCells || [];
-    this.position = position || this.ownCells[0] || this.Map().randomPosition()
-    this.updateAllowedCells();
-  }
+	constructor(params, map, database) {
 
-  updateOwnedCells(position) {
-    if (!this.ownCells.includes(position)) {
-      this.ownCells.push(position);
-      return true;
-    }
-  }
+		const { playerid, position, palette, ownCells } = params;
 
-  updateAllowedCells() {
-    this.allowedCells = allowCells(this.ownCells, this.Map());
-  }
+		this.map = map;
+
+		// this.database = new database.playerDatabase(playerid);
+
+		this.playerid = playerid;
+		this.palette = palette;
+		this.ownCells = ownCells || [];
+		this.position = position || this.ownCells[0] || this.map.randomPosition()
+
+		this.updateOwnedCells(this.position);
+		this.updateAllowedCells();
+	}
+
+	updateOwnedCells(position) {
+
+		if (!this.ownCells.includes(position)) {
+
+			this.ownCells.push(position);
+
+			return true;
+		}
+	}
+
+	updateAllowedCells() {
+
+		return this.ownCells.reduce((cells, position) => {
+
+			console.log(cells);
+
+			const coords = this.map.indexToCoords(position);
+
+			const newNeighbours = this.map.getNeighboursCoords(coords)
+				.filter(coords => this.map.areCoordsInBounds(coords))
+				.map(coords => this.map.coordsToIndex(coords))
+				.filter(position => !this.ownCells.includes(position))
+
+
+			cells.push(...newNeighbours);
+
+			return cells;
+
+		}, []);
+	}
 }

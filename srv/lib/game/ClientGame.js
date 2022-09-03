@@ -2,23 +2,23 @@ const checkMove = require('./utils/checkMove');
 
 module.exports = class ClientGameConnector {
 
-  constructor(Database, Map) {
-    this.Map = () => Map;
-    this.Database = () => Database;
+  constructor(database, map) {
+    this.map = map;
+    this.database = database;
   }
 
   init(socket, player) {
-    new ClientGame(socket, player, this.Map(), this.Database());
+    new ClientGame(socket, player, this.map, this.database);
   }
 }
 
 class ClientGame {
 
-  constructor(socket, player, Map, Database) {
+  constructor(socket, player, map, database) {
     this.socket = socket;
     this.player = player;
-    this.Map = () => Map;
-    this.Database = () => Database;
+    this.map = map;
+    this.database = database;
     this.spawnPlayer();
     this.listenGameEvents();
   }
@@ -26,7 +26,7 @@ class ClientGame {
   spawnPlayer() {
     this.socket.emit('initGame', this.getInitData());
     this.socket.broadcast.emit("newPosition", [null, this.player.position]);
-    this.Map().newPosition([null, this.player.position]);
+    this.map.newPosition([null, this.player.position]);
   }
 
   listenGameEvents() {
@@ -45,18 +45,18 @@ class ClientGame {
   }
 
   movePlayer(direction) {
-    const newPos = checkMove(direction, this.player, this.Map());
+    const newPos = checkMove(direction, this.player, this.map);
     newPos && (
       this.socket.emit("newPlayerPos", newPos),
       this.socket.broadcast.emit("newPosition", [this.player.position, newPos]),
-      this.Map().newPosition([this.player.position, newPos]),
+      this.map.newPosition([this.player.position, newPos]),
       this.player.position = newPos
     )
   }
 
   saveFill(cell) {
-    this.Database().saveFill(this.player.playerid, cell);
-    this.Map().saveFill(cell);
+    this.database.saveFill(this.player.playerid, cell);
+    this.map.saveFill(cell);
     this.socket.broadcast.emit('newFill', cell);
     this.player.updateOwnedCells(cell.position) && (
       this.player.updateAllowedCells(),
@@ -68,7 +68,7 @@ class ClientGame {
   disconnect(socket) {
     console.log('Player left :', this.player.playerid);
     this.player.position && (
-      this.Map().newPosition([this.player.position, null]),
+      this.map.newPosition([this.player.position, null]),
       this.socket.broadcast.emit("newPosition", [this.player.position, null])
     )
   }
@@ -76,10 +76,10 @@ class ClientGame {
   getInitData() {
     return {
       Game: {
-        colors: this.Map().gridState,
-        positions: this.Map().playersPositions,
-        rows: this.Map().rows,
-        cols: this.Map().cols,
+        colors: this.map.gridState,
+        positions: this.map.playersPositions,
+        rows: this.map.rows,
+        cols: this.map.cols,
         owned: this.player.ownCells,
         allowed: this.player.allowedCells
       },

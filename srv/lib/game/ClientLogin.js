@@ -12,6 +12,7 @@ module.exports = class ClientLoginConnector {
 class ClientLogin {
 
   constructor(socket, Database, loginSuccess) {
+
     this.socket = socket;
     this.Database = () => Database;
     this.loginSuccess = loginSuccess;

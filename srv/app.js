@@ -4,7 +4,6 @@ const fetchGame = require('./lib/database/scripts/getLastGame');
 const Game = require('./lib/game/Game');
 
 const app = async () => {
-  console.log("\n\r-----------------------------------------\n\r");
 
   initDatabase();
 
@@ -12,8 +11,7 @@ const app = async () => {
 
   new Game(mapState, server());
 
-  console.log("\n\r");
-  console.log("Game is up !\n\r");
+  console.log("Game is up !");
 }
 
 app();

@@ -6,3 +6,4 @@ srv/node_modules/
 srv/lib/config.js
 srv/data/
 srv/dist/
+old-bundler/

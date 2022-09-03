@@ -1,13 +1,17 @@
 const express = require('express');
 const path = require('path');
 const router = express.Router();
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 
-router.use(bodyParser.json());
-
-router.use(bodyParser.urlencoded({
+router.use(express.json());
+router.use(express.urlencoded({
   extended: true
 }));
+
+// router.use(bodyParser.json());
+// router.use(bodyParser.urlencoded({
+//   extended: true
+// }));
 
 const isPassenger = typeof(PhusionPassenger) !== 'undefined';
 
@@ -49,11 +53,11 @@ router.get("/gallery/mnio3", (req, res) =>
   res.sendFile(Dist + '/gallery/gallery.html')
 );
 
-const data = [
-  require(path.resolve(__dirname, '../../data/games/game1.json')),
-  require(path.resolve(__dirname, '../../data/games/game2.json')),
-  require(path.resolve(__dirname, '../../data/games/game3.json'))
-];
+// const data = [
+//   require(path.resolve(__dirname, '../../data/games/game1.json')),
+//   require(path.resolve(__dirname, '../../data/games/game2.json')),
+//   require(path.resolve(__dirname, '../../data/games/game3.json'))
+// ];
 
 router.put('/game', (req, res) => {
   const gameId = parseInt(req.body.id) - 1;
