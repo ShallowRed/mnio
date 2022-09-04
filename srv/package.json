@@ -3,7 +3,8 @@
 	"version": "0.0.3",
 	"scripts": {
 		"start": "node app.js",
-		"dev": "pm2 start ecosystem.config.js && pm2 logs"
+		"dev": "pm2 start ecosystem.dev.config.js && pm2 logs",
+		"prod": "pm2 start ecosystem.prod.config.js && pm2 logs"
 	},
 	"dependencies": {
 		"cookie-parser": "^1.4.5",
@@ -13,6 +14,7 @@
 		"express-session": "^1.17.3",
 		"module-alias": "^2.2.2",
 		"mysql": "^2.18.1",
+		"serve-static": "^1.15.0",
 		"socket.io": "^4.5.2"
 	},
 	"_moduleAliases": {
@@ -20,6 +22,7 @@
 		"@database": "lib/database",
 		"@game": "lib/game",
 		"@server": "lib/server",
+		"@dist": "dist",
 		"@debug": "debug"
 	}
 }

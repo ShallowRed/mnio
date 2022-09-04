@@ -33,7 +33,7 @@ module.exports = (isDevMode, page) => {
 			}),
 
 			new HtmlWebpackPlugin({
-				filename: `${page.name}.html`,
+				filename: `index.html`,
 				inject: 'body',
 				template: page.template
 			}),

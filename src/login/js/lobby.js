@@ -3,7 +3,7 @@ import { hide, show } from './utils';
 
 export default function initListeners(socket) {
   const lobbyWindow = document.querySelector('.lobby');
-  const btnToGame = document.querySelectorAll('.lobby button')[1];
+  const btnToGame = document.querySelector('.lobby button');
 
   window.addEventListener("load", () => {
     const logo = document.querySelector('#mnio-logo');

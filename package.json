@@ -25,7 +25,7 @@
 	  "open": "open-cli http://localhost:3000",
 	  "install:dev": "npm install && npm install --prefix srv && npm install --prefix src",
 	  "install:prod": "npm install --omit=dev --prefix srv",
-	  "start": "npm run start --prefix srv"
+	  "start": "npm run prod --prefix srv"
 	},
 	"devDependencies": {
 		"concurrently": "^7.1.0",

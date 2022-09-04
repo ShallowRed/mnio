@@ -30,9 +30,9 @@ const webpackConfig = (isDevMode, page, outputPath) => ({
 	entry: page.entry,
 
 	output: {
-		path: resolve(__dirname, '../srv/dist') +  `/${page.name}`,
+		path: resolve(__dirname, '../dist') +  `/${page.name}`,
 		filename: `${page.name}.js`,
-		publicPath: `/dist/` +  `${page.name}`,
+		// publicPath: `/dist/` +  `${page.name}`,
 	},
 
 	resolve: {

@@ -16,7 +16,7 @@ registerServiceWorker();
 listenLogin(socket);
 
 socket.on('loginSuccess', isPlayerNew => {
-  window.location = isPlayerNew ? "./palette" : "./game";
+  window.location = isPlayerNew ? "/palette" : "/game";
 });
 
 socket.on('redirect', path => {

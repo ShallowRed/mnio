@@ -47,7 +47,7 @@ socket.on('chosePalette', palettesData => {
 
 		socket.emit("paletteSelected", currentPalette.id);
 
-		window.location = "./game";
+		window.location = "/game";
 	}
 });
 

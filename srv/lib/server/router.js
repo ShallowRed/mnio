@@ -1,64 +1,48 @@
 const express = require('express');
 const path = require('path');
-const router = express.Router();
-// const bodyParser = require('body-parser');
+const serveStatic = require('serve-static');
 
-router.use(express.json());
-router.use(express.urlencoded({
-  extended: true
-}));
+const Debug = require('@debug');
+const debug = Debug('app:router');
 
-// const Debug = require('debug');
-// const debug = Debug('app:router');
-
-// router.use(bodyParser.json());
-// router.use(bodyParser.urlencoded({
-//   extended: true
-// }));
-
-const isPassenger = typeof(PhusionPassenger) !== 'undefined';
+const isPassenger = typeof (PhusionPassenger) !== 'undefined';
 
 const options = isPassenger ? {} : {
-  setHeaders: function(res, path, stat) {
-    res.set('Service-Worker-Allowed', '/');
-  }
+	setHeaders: function (res, path, stat) {
+		res.set('Service-Worker-Allowed', '/');
+	}
 };
 
-const Dist = path.join(__dirname, '../../dist');
+const PUBLIC_FOLDER = path.resolve('../dist');
 
-router.use('/dist', express.static(Dist, options));
+const router = express.Router();
 
-router.get("/", (req, res) => {
-  res.sendFile(Dist + '/login/login.html')
-});
+router.use(express.json());
 
-router.get("/palette", (req, res) =>
-  res.sendFile(Dist + '/palette/palette.html')
-);
+router.use(express.urlencoded({
+	extended: true
+}));
 
-router.get("/game", (req, res) =>
-  res.sendFile(Dist + '/game/game.html')
-);
+router.use(serveStatic(PUBLIC_FOLDER, { extensions: ['html'] }));
 
-router.get("/gallery", (req, res) =>
-  res.sendFile(Dist + '/gallery/gallery.html')
-);
+debug('Serving static files from', PUBLIC_FOLDER);
 
-router.get("/gallery/mnio1", (req, res) =>
-  res.sendFile(Dist + '/gallery/gallery.html')
-);
+router.route('/')
+	.get((req, res, next) => {
+		res.redirect('/login/');
+		next();
+	});
 
-router.get("/gallery/mnio2", (req, res) =>
-  res.sendFile(Dist + '/gallery/gallery.html')
-);
+router.route('/palette')
+	.get((req, res, next) => {
+		res.redirect('/palette/');
+		next();
+	});
 
-router.get("/gallery/mnio3", (req, res) =>
-  res.sendFile(Dist + '/gallery/gallery.html')
-);
-
-router.put('/game', (req, res) => {
-  const gameId = parseInt(req.body.id) - 1;
-  res.send(data[gameId]);
-});
+router.route('/game')
+	.get((req, res, next) => {
+		res.redirect('/game/');
+		next();
+	});
 
 module.exports = router;

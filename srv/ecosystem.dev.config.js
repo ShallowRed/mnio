@@ -8,6 +8,9 @@ module.exports = {
 	env: {
 		"DEBUG": "app:*",
 		"DEBUG_HIDE_DATE": "true",
+		"DB_HOST": "localhost",
+		"DB_USER": "root",
+		"DEPLOY_PASSWORD": "",
 	  }
   }
 };
