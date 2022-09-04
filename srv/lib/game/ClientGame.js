@@ -1,93 +1,129 @@
-const checkMove = require('./utils/checkMove');
+const debug = require('@debug')('clientGame');
 
-module.exports = class ClientGameConnector {
+module.exports = class ClientGame {
 
-  constructor(database, map) {
-    this.map = map;
-    this.database = database;
-  }
+	constructor(socket, player, map, database) {
 
-  init(socket, player) {
-    new ClientGame(socket, player, this.map, this.database);
-  }
-}
+		this.socket = socket;
+		this.player = player;
+		this.map = map;
+		this.database = database;
 
-class ClientGame {
+		this.spawnPlayer();
+		this.listenGameEvents();
+	}
 
-  constructor(socket, player, map, database) {
-    this.socket = socket;
-    this.player = player;
-    this.map = map;
-    this.database = database;
-    this.spawnPlayer();
-    this.listenGameEvents();
-  }
+	spawnPlayer() {
 
-  spawnPlayer() {
-    this.socket.emit('initGame', this.getInitData());
-    this.socket.broadcast.emit("newPosition", [null, this.player.position]);
-    this.map.newPosition([null, this.player.position]);
-  }
+		this.socket.emit('initGame', this.initialData);
 
-  listenGameEvents() {
+		this.socket.broadcast.emit("newPosition", [null, this.player.position]);
 
-    this.socket.on('move', direction =>
-      this.movePlayer(direction)
-    );
+		this.map.newPosition([null, this.player.position]);
+	}
 
-    this.socket.on('fill', cell =>
-      this.saveFill(cell)
-    );
+	get initialData() {
+		
+		return {
+			Game: {
+				colors: this.map.gridState,
+				positions: this.map.playersPositions,
+				rows: this.map.rows,
+				cols: this.map.cols,
+				owned: this.player.ownCells,
+				allowed: this.player.allowedCells
+			},
+			Player: {
+				position: this.player.position,
+				palette: this.player.palette,
+				admin: this.player.name == "a"
+			}
+		}
+	}
+	
+	listenGameEvents() {
 
-    this.socket.on('disconnect', () =>
-      this.disconnect()
-    );
-  }
+		this.socket.on('move', direction => {
 
-  movePlayer(direction) {
-    const newPos = checkMove(direction, this.player, this.map);
-    newPos && (
-      this.socket.emit("newPlayerPos", newPos),
-      this.socket.broadcast.emit("newPosition", [this.player.position, newPos]),
-      this.map.newPosition([this.player.position, newPos]),
-      this.player.position = newPos
-    )
-  }
+			const newPosition = this.checkMove(direction, this.player, this.map);
 
-  saveFill(cell) {
-    this.database.saveFill(this.player.playerid, cell);
-    this.map.saveFill(cell);
-    this.socket.broadcast.emit('newFill', cell);
-    this.player.updateOwnedCells(cell.position) && (
-      this.player.updateAllowedCells(),
-      this.socket.emit('allowedCells', this.player.allowedCells)
-    );
-    this.socket.emit('confirmFill');
-  }
+			if (newPosition) {
 
-  disconnect(socket) {
-    console.log('Player left :', this.player.playerid);
-    this.player.position && (
-      this.map.newPosition([this.player.position, null]),
-      this.socket.broadcast.emit("newPosition", [this.player.position, null])
-    )
-  }
+				this.socket.emit("newPlayerPos", newPosition);
 
-  getInitData() {
-    return {
-      Game: {
-        colors: this.map.gridState,
-        positions: this.map.playersPositions,
-        rows: this.map.rows,
-        cols: this.map.cols,
-        owned: this.player.ownCells,
-        allowed: this.player.allowedCells
-      },
-      Player: {
-        position: this.player.position,
-        palette: this.player.palette,
-        admin: this.player.name == "a"
-      }
-    }
-  }
-}
+				this.socket.broadcast.emit("newPosition", [this.player.position, newPosition]);
+
+				this.map.newPosition([this.player.position, newPosition]);
+
+				this.player.position = newPosition;
+			}
+		});
+
+		this.socket.on('fill', cell => {
+
+			this.database.saveFill(this.player.playerid, cell);
+
+			this.map.saveFill(cell);
+	
+			this.socket.broadcast.emit('newFill', cell);
+	
+			const hasOwnedCellsBeenUpdated = this.player.updateOwnedCells(cell.position);
+	
+			if (hasOwnedCellsBeenUpdated) {
+				this.player.updateAllowedCells();
+				this.socket.emit('allowedCells', this.player.allowedCells);
+			}
+	
+			this.socket.emit('confirmFill');
+		});
+
+		this.socket.on('disconnect', () => {
+
+			debug('Player left:', this.player.playerid);
+
+			if (this.player.position) {
+	
+				this.map.newPosition([this.player.position, null]);
+	
+				this.socket.broadcast.emit("newPosition", [this.player.position, null])
+			}
+		});
+	}
+
+	checkMove(direction) {
+
+		let [x, y] = this.map.indexToCoords(this.player.position);
+
+		if (direction == "left" && x !== 0) {
+
+			x--;
+
+		} else if (direction == "right" && x !== this.map.cols - 1) {
+
+			x++;
+
+		} else if (direction == "up" && y !== 0) {
+
+			y--;
+
+		} else if (direction == "down" && y !== this.map.rows - 1) {
+
+			y++;
+
+		} else {
+
+			return;
+		}
+
+		const targetPosition = this.map.coordsToIndex([x, y]);
+
+		if (this.player.ownCells.includes(targetPosition) || (
+			this.player.allowedCells.includes(targetPosition) &&
+			!this.map.playersPositions.includes(targetPosition) &&
+			!this.map.gridState[targetPosition]
+		)) {
+
+			return targetPosition;
+		}
+	}
+};

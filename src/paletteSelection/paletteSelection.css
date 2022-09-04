@@ -1,177 +1,96 @@
-body>div {
-  z-index: 70;
-  display: flex;
-  justify-content: center;
-  position: absolute;
-  overflow: hidden;
-  height: 100%;
-  width: 100%;
-  top: 0;
-  left: 0;
-  background: var(--grey);
-  opacity: 0;
-  transition: opacity 0.2s ease;
+:root {
+	font-size: 16px;
 }
 
-section:first-of-type {
-  max-width: 600px;
-  min-width: 200px;
+@media screen and (max-width: 700px) {
+	:root {
+		font-size: 14px;
+	}
 }
 
-section>div {
-  height: auto;
-  display: flex;
-  justify-content: space-around;
+body {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: var(--grey);
+	height: 100%;
+	width: 100%;
+}
+main {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 90%;
+	max-width: 700px;
+	opacity: 0;
+	transition: opacity 0.2s ease;
 }
 
-.palette>div {
-  box-sizing: border-box;
-  border-radius: 5px;
-  border: solid 1px var(--dark);
-  box-shadow: #aaa 5px 5px;
-  width: 50px;
-  height: 50px;
-  transition: background 0.2s ease;
+.palette {
+	width: 100%;
+	max-width: 400px;
+	display: flex;
+	justify-content: space-around;
 }
 
-img {
-  float: right;
-  object-fit: contain;
+.palette > div {
+	box-sizing: border-box;
+	border-radius: 5px;
+	border: solid 1px var(--dark);
+	box-shadow: #aaa 5px 5px;
+	width: 3rem;
+	height: 3rem;
+	transition: background 0.2s ease;
 }
 
-h3 {
-  font-size: 1em;
-  line-height: 1.3em;
-  max-width: 500px;
-  margin: 5vh auto 0;
+section.buttons {
+	margin-top: 4rem;
+	width: 100%;
+	display: flex;
+	justify-content: center;
 }
 
-@media screen and (min-width: 650px) {
-  section:first-of-type {
-    width: 50%;
-  }
-
-  p {
-    position: absolute;
-    box-sizing: border-box;
-    top: 5vh;
-    font-size: 1.2em;
-    line-height: 2rem;
-    max-width: 53%;
-  }
-
-  section>div {
-    margin: 15vh 0 5vh;
-    margin: 25vh 0 5vh;
-  }
-
-  .palette {
-    padding-top: 5vh;
-    border-top: solid 1px;
-  }
-
-  img {
-    width: 100%;
-    max-height: 600px;
-    height: 50vh;
-    float: right;
-  }
-
-  section:last-of-type {
-    width: 30%;
-    max-width: 350px;
-    margin-left: 60px;
-  }
-
-  h3 {
-    font-size: 1em;
-    line-height: 1.3em;
-    max-width: 500px;
-    margin: 5vh auto 0;
-    padding-top: 15vh;
-  }
+@media screen and (max-width: 700px) {
+	section.buttons {
+		flex-direction: column;
+	}
+	.tap-select {
+		margin-top: 1rem;
+	}
 }
-
-@media screen and (max-width: 650px) {
-  body>div {
-    box-sizing: border-box;
-    padding: 5%;
-    flex-flow: wrap;
-  }
-
-  section:first-of-type {
-    height: 60%;
-  }
-
-  section>div,
-  h3,
-  img {
-    position: absolute;
-    left: 0;
-  }
-
-  h3 {
-    padding: 7%;
-    bottom: 23%;
-  }
-
-  .palette {
-    width: 90%;
-    bottom: 15%;
-    margin: 0 5%;
-
-    &>div {
-      transform: scale(0.8);
-    }
-  }
-
-  img {
-    max-height: 250px;
-    max-height: 44vh;
-    bottom: 37%;
-    width: 95%;
-    margin: 0 2.5%;
-    transform-origin: 50% 10%;
-    transform: scale(0.9);
-  }
-
-  .buttons {
-    bottom: 3%;
-    width: 100%;
-  }
-
-  h3 {
-    font-size: 0.9em;
-    line-height: 1.1em;
-    margin: 0;
-  }
+@media screen and (min-width: 700px) {
+	.tap-select {
+		margin-left: 1rem;
+	}
+	.tap-change {
+		margin-right: 1rem;
+	}
 }
-
 .tap-change,
 .tap-select {
-  font-size: 1.2em;
-  letter-spacing: 0.1em;
-  border-radius: 5px;
-  color: white;
-  padding: 0.5em 1em;
+	font-size: 2rem;
+	letter-spacing: 0.1rem;
+	border-radius: 5px;
+	color: white;
+	padding: 1rem 2rem;
 }
 
 .tap-select {
-  background: blue;
-  border: 1px solid blue;
+	background: blue;
+	border: 1px solid blue;
 }
 
 .tap-select :hover {
-  background: white;
-  color: blue;
+	background: white;
+	color: blue;
 }
 
 .tap-change {
-  color: #666;
-  background: white;
-  border: solid darkgrey 1px;
+	color: #666;
+	background: white;
+	border: solid darkgrey 1px;
 }
 
 .tap-change:hover {
-  color: blue;
+	color: blue;
 }

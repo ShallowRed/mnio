@@ -1,17 +1,19 @@
-const server = require('./lib/server/server');
-const initDatabase = require('./lib/database/scripts/initDatabase');
-const fetchGame = require('./lib/database/scripts/getLastGame');
-const Game = require('./lib/game/Game');
+require('module-alias/register');
+
+const server = require('@server/server');
+const initDatabase = require('@database/scripts/initDatabase');
+const fetchGame = require('@database/scripts/getLastGame');
+const Game = require('@game/Game');
 
 const app = async () => {
 
-  initDatabase();
+	await initDatabase();
 
-  const mapState = await fetchGame();
+	const mapState = await fetchGame();
 
-  new Game(mapState, server());
+	const io = server();
 
-  console.log("Game is up !");
+	new Game(mapState, io);
 }
 
 app();

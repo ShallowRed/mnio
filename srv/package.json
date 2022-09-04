@@ -1,17 +1,25 @@
 {
-  "name": "mnio-server",
-  "version": "0.0.3",
-  "scripts": {
-    "start": "node app.js",
-    "dev": "pm2 start ecosystem.config.js && pm2 logs"
-  },
-  "dependencies": {
-    "cookie-parser": "^1.4.5",
-    "debug": "^4.3.1",
-    "express": "^4.18.1",
-    "express-mysql-session": "^2.1.8",
-    "express-session": "^1.17.3",
-    "mysql": "^2.18.1", 
-    "socket.io": "^4.5.2" 
-  }
+	"name": "mnio-server",
+	"version": "0.0.3",
+	"scripts": {
+		"start": "node app.js",
+		"dev": "pm2 start ecosystem.config.js && pm2 logs"
+	},
+	"dependencies": {
+		"cookie-parser": "^1.4.5",
+		"debug": "^4.3.4",
+		"express": "^4.18.1",
+		"express-mysql-session": "^2.1.8",
+		"express-session": "^1.17.3",
+		"module-alias": "^2.2.2",
+		"mysql": "^2.18.1",
+		"socket.io": "^4.5.2"
+	},
+	"_moduleAliases": {
+		"@config": "config",
+		"@database": "lib/database",
+		"@game": "lib/game",
+		"@server": "lib/server",
+		"@debug": "debug"
+	}
 }

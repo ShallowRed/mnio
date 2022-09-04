@@ -1,184 +1,201 @@
-const Map = require('./Map');
-const {GameDatabase} = require('../database/ClientConnector');
-const PlayersFactory = require('./Player');
-const ClientLoginConnector = require('./ClientLogin');
-const ClientGameConnector = require('./ClientGame');
+const Map = require('@game/Map');
+const GameDatabase = require('@database/GameDatabase');
+const PlayersFactory = require('@game/Players');
+const ClientGame = require('@game/ClientGame');
+
+const debug = require('@debug')('game:game');
 
 module.exports = class Game {
 
 	constructor(mapState, io) {
 
+		this.io = io;
+
 		this.map = new Map(mapState);
 
 		this.database = new GameDatabase(this.map.gameid);
 
-		this.ClientLogin = new ClientLoginConnector(this.database);
-		
-		this.playersFactory = new PlayersFactory(this.database, this.map);
-		
-		this.ClientGame = new ClientGameConnector(this.database, this.map);
-
-		this.Players = {};
-
-		this.loginPage = io.of('/login');
-		this.palettePage = io.of('/palette');
-		this.gamePage = io.of('/game');
+		this.players = new PlayersFactory(this.database, this.map);
 
 		this.listenConnection();
 	}
 
 	listenConnection() {
 
-		this.loginPage.on('connection', socket =>
-			this.listenLogin(socket)
-		);
+		this.io.initNamespace("/login");
 
-		this.palettePage.on('connection', socket =>
-			this.listenPaletteSelection(socket)
-		);
+		this.io.initNamespace("/game");
 
-		this.gamePage.on('connection', socket =>
-			this.startClientGame(socket)
-		);
-	}
+		this.io.initNamespace("/palette");
 
-	listenLogin(socket) {
+		this.io.of('/login').on('connection', socket => {
 
-		socket.on('play', () => {
+			debug("New connection on login page");
+
+			socket.on('play', () => {
+
+				if (socket.request?.session?.isLogged) {
+
+					debug("Player on page login already logged in session store, redirecting to game");
+
+					socket.emit('redirect', '/game');
+
+				} else {
+
+					debug("Player on page login not logged in session store, waiting for username");
+
+					socket.on("username", async userName => {
+
+						debug("Player sent username");
+
+						const userNameData = await this.database.userNameData(userName);
+
+						if (userNameData.exists) {
+
+							debug("Username already in db, asking for corresponding password");
+
+						} else {
+
+							debug("Username not in db, asking for password creation");
+						}
+
+						socket.emit("askPass", !userNameData.exists);
+
+						socket.on("password", async password => {
+
+							debug("Player on page login sent password");
+
+							if (
+								userNameData.exists &&
+								userNameData.Password !== password
+							) {
+
+								debug("Player sent wrong password for existing username");
+
+								socket.emit("wrongPass");
+
+							} else {
+
+								socket.emit('loginSuccess', !userNameData.exists);
+
+								if (userNameData.exists) {
+
+									debug("Player sent correct password for existing username");
+
+									this.players.createExisting(socket, userNameData);
+
+								} else if (this.map.emptyCells.length) {
+
+									debug("Player sent password for new username, saving creds in players collection");
+
+									this.players.set(socket, { userName, password });
+
+								} else {
+
+									debug("No more empty cells, end of game");
+
+									socket.emit("alert", "Il n'y a plus de cases à colorier ! Rendez-vous dans quelques jours pour voir le résultat sur mnio.fr et jouer sur une nouvelle tapisserie !");
+								}
+							}
+						});
+					});
+				}
+			});
+		});
+
+		this.io.of('/palette').on('connection', async socket => {
+
+			debug("New connection on palette page");
 
 			if (socket.request?.session?.isLogged) {
+
+				debug("Player on page palette already logged in session store, redirecting to game");
 
 				socket.emit('redirect', '/game');
 
 			} else {
 
-				this.ClientLogin.init(socket, data => {
+				debug("Player on page palette not logged in session store");
 
-					return this.loginSuccess(data)
-				});
+				if (!this.players.get(socket)) {
+
+					debug("Player on page palette credentials not stored in players, redirecting to login");
+
+					socket.emit('redirect', '/');
+
+				} else {
+
+					debug("Player on page palette credentials stored in session store, waiting for palette choice");
+
+					const palettes = await this.database.getEveryPalettes();
+
+					socket.emit("chosePalette", palettes);
+
+					socket.on("paletteSelected", async paletteIndex => {
+
+						debug("Player selected palette");
+
+						this.players.createNew(socket, { paletteIndex });
+					});
+				}
 			}
-		})
-	}
+		});
 
-	async loginSuccess({ socket, userInDb, userName, password }) {
+		this.io.of('/game').on('connection', async socket => {
 
-		if (userInDb.exists) {
+			debug("New connection on game page");
 
-			const player = await this.playersFactory.createExisting(userInDb.creds);
+			let player = this.players.get(socket);
 
-			this.setSession(socket, player);
+			if (player) {
 
-		} else if (this.map.emptyCells.length) {
+				debug("Player already in game players collection");
 
-			this.setSession(socket, { userName, password });
+				if (!socket.request.session.isLogged) {
 
-		} else {
+					debug("Player session not stored, saving");
 
-			alertEnd(socket);
-		}
-	}
+					this.io.session.save(socket, {
+						isLogged: true,
+						playerid: player.playerid,
+						position: player.position
+					});
+				}
+			}
 
-	listenPaletteSelection(socket) {
+			else if (!player) {
 
-		if (socket.request?.session?.isLogged) {
+				debug("Player not in game players collection");
 
-			socket.emit('redirect', '/game');
+				if (socket.request.session.isLogged) {
 
-		} else {
+					debug("Player session stored, retrieving");
 
-			socket.on("paletteSelected", async index => {
+					const { playerid, position } = socket.request.session;
 
-				const credentials = this.getSession(socket);
+					this.players.createExisting(socket, { playerid, position });
+				}
+			}
 
-				const player = await this.playersFactory.createNew(index, credentials);
+			if (player) {
 
-				this.setSession(socket, player);
-			});
-		}
-	}
+				debug("Starting client game");
 
-	async startClientGame(socket) {
+				new ClientGame(socket, player, this.map, this.database);
 
-		let player = this.getSession(socket);
+			} else {
 
-		if (player && !socket.request?.session?.isLogged) {
+				debug("Player not found, redirecting to login page");
 
-			console.log("Player first log");
+				if (socket.request.session) {
 
-			this.saveClientSession(socket, player);
-		}
+					debug("Destroying session data");
 
-		else if (!player && socket.request?.session?.isLogged) {
+					this.io.session.remove(socket);
+				}
 
-			player = await this.sessionFromDb(socket);
-		}
-
-		if (player) {
-
-			this.ClientGame.init(socket, player);
-
-		} else {
-
-			this.deleteClientSession(socket);
-		}
-	}
-
-	setSession(socket, data) {
-		this.Players[socket.request.sessionId] = data;
-	}
-
-	getSession(socket) {
-		return this.Players[socket.request.sessionId];
-	}
-
-	deleteSession(socket) {
-		if (this.Players[socket.request.sessionId]) {
-			delete this.Players[socket.request.sessionId];
-		}
-	}
-
-	saveClientSession(socket, player) {
-		
-		if (socket.request?.session) {
-			console.log("Saving playerid in session");
-			socket.request.session.isLogged = true;
-			socket.request.session.playerid = player.playerid;
-			socket.request.session.position = player.position;
-			socket.request.session.save();
-		} else {
-			console.log("Session not found");
-		}
-	}
-
-	async sessionFromDb(socket) {
-
-		console.log("Player logged in but not in memory, fetching from db");
-
-		const { playerid, position } = socket.request.session;
-
-		const player = await this.playersFactory.createExisting({ playerid, position });
-
-		this.setSession(socket, player);
-		
-		return player;
-	}
-
-	deleteClientSession(socket) {
-
-		console.log('Unable to retrieve player, redirecting to login');
-
-		if (socket.request?.session) {
-			socket.request.session.isLogged = false;
-			socket.request.session.save();
-		}
-
-		socket.emit('redirect', '/');
+				socket.emit('redirect', '/');
+			}
+		});
 	}
 }
-
-// this can be put client side
-const alertEnd = socket => {
-	socket.emit("alert",
-		"Il n'y a plus de cases à colorier ! Rendez-vous dans quelques jours pour voir le résultat sur mnio.fr et jouer sur une nouvelle tapisserie !"
-	);
-};

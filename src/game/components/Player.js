@@ -5,7 +5,7 @@ export default class Player {
     this.Game = () => Game;
     this.Map = () => Game.Map;
     this.position = position;
-    this.palette = palette;
+    this.palette = palette.map(color => `#${color}`);
     this.sColor = palette[0];
     this.is = {};
     this.posInView = [0, 0];

@@ -2,25 +2,54 @@ const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 
-const Router = require("./router");
-const { port } = require('../config');
+const Router = require("@server/router");
+const { port, db, cookieSecret } = require('@config');
 
-const initSession = require('./session');
+const debug = require('@debug')('server');
+
+// const initSession = require('@server/session');
+
+const createSessionStore = require('@server/session-store');
 
 module.exports = () => {
-  const app = express();
-  app.set('port', port);
 
-  const server = http.Server(app);
-  const io = socketIo(server);
+	debug(`Creating server`);
 
-//   initSession(app, io);
+	const session = createSessionStore(cookieSecret, db);
 
-  app.use('/', Router);
+	const app = express()
+		.use(session.store);
 
-  server.listen(port, () => {
-    console.log(`Server listening on port ${port}\n\r`)
-  });
+	const httpServer = http
+		.createServer(app)
+		.listen(port, () =>
+			debug(`Server listening on port ${port}`)
+		);
 
-  return io;
+	const io = new socketIo.Server(httpServer);
+
+	io.use((socket, next) => {
+		return session.middleware(socket.request, {}, next)
+	});
+
+	io.session = session.socket;
+
+	io.initNamespace = function (name) {
+
+		if (this._nsps.has(name)) return;
+
+		debug(`Initializing socket.io namespace: ${name}`);
+
+		this.of(name)
+			.use((socket, next) =>
+				session.middleware(socket.request, {}, next)
+			);
+
+		this.of(name).session = session.socket;
+
+	};
+
+	app.use('/', Router);
+
+	return io;
 }

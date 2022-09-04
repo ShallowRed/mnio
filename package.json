@@ -24,7 +24,8 @@
 	  "bundle": "npm run prod --prefix src",
 	  "open": "open-cli http://localhost:3000",
 	  "install:dev": "npm install && npm install --prefix srv && npm install --prefix src",
-	  "install:prod": "npm install --only=prod --prefix srv"
+	  "install:prod": "npm install --omit=dev --prefix srv",
+	  "start": "npm run start --prefix srv"
 	},
 	"devDependencies": {
 		"concurrently": "^7.1.0",

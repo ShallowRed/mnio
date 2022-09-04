@@ -4,6 +4,10 @@ module.exports = {
     watch: ["lib", 'app.js'],
     watch_options: {
       followSymlinks: false
-    }
+    },
+	env: {
+		"DEBUG": "app:*",
+		"DEBUG_HIDE_DATE": "true",
+	  }
   }
 };

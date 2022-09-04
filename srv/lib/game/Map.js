@@ -1,5 +1,3 @@
-const { indexToCoord, coordToIndex } = require('./utils/converters');
-
 module.exports = class Map {
 
 	constructor(gameData) {
@@ -50,7 +48,7 @@ module.exports = class Map {
 
 	isPositionInBounds(position) {
 
-		const coords = indexToCoord(position);
+		const coords = this.indexToCoords(position);
 
 		return this.areCoordsInBounds(coords);
 	}

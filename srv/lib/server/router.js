@@ -8,6 +8,9 @@ router.use(express.urlencoded({
   extended: true
 }));
 
+// const Debug = require('debug');
+// const debug = Debug('app:router');
+
 // router.use(bodyParser.json());
 // router.use(bodyParser.urlencoded({
 //   extended: true
@@ -52,12 +55,6 @@ router.get("/gallery/mnio2", (req, res) =>
 router.get("/gallery/mnio3", (req, res) =>
   res.sendFile(Dist + '/gallery/gallery.html')
 );
-
-// const data = [
-//   require(path.resolve(__dirname, '../../data/games/game1.json')),
-//   require(path.resolve(__dirname, '../../data/games/game2.json')),
-//   require(path.resolve(__dirname, '../../data/games/game3.json'))
-// ];
 
 router.put('/game', (req, res) => {
   const gameId = parseInt(req.body.id) - 1;

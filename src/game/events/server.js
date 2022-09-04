@@ -48,8 +48,9 @@ const serverEvents = Object.entries({
   },
 
   error: () => {
-    if (!window.isReloading)
-      window.location.reload(true);
+    if (!window.isReloading) {
+		window.location.reload(true);
+	}
   },
 
   alert: message =>
