@@ -1,1 +1,0 @@
-const GAME={"id":"2","rows":"200","cols":"200"}; export default GAME

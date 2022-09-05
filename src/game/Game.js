@@ -19,6 +19,7 @@ export default class Game {
   constructor(data, socket) {
     this.duration = 0.2;
     this.socket = socket;
+	
     Object.assign(this, data.Game);
     this.Map = new Map(this);
     this.Player = new Player(data.Player, this);
@@ -37,6 +38,9 @@ export default class Game {
     listenKeyboardEvents(this)
     listenTouchEvents(this);
     listenServerEvents(this);	
+
+	console.log(this);
+	
   }
 
   listenWindowEvents() {

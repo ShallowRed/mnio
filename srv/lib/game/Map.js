@@ -1,4 +1,4 @@
-module.exports = class Map {
+export default class Map {
 
 	constructor(gameData) {
 

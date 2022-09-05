@@ -1,16 +1,17 @@
-const Mysql = require('mysql');
-const { promisify } = require('util');
+import { createConnection, createPool } from 'mysql';
+import { promisify } from 'util';
 
-const { db } = require('@config');
+import { db } from '#config';
 const { host, user, database } = db;
 
-const QUERIES = require('@database/queries');
+import QUERIES from '#database/queries';
 
-const debug = require('@debug')('database:connection');
+import Debug from '#debug';
+const debug = Debug('database:connection');
 
-async function makeSureDbExists() {
+export async function makeSureDbExists() {
 
-	const connection = Mysql.createConnection({
+	const connection = createConnection({
 		host: host,
 		user: user,
 		password: db.password
@@ -26,13 +27,9 @@ async function makeSureDbExists() {
 
 class Pool {
 
-	creds = { host, user, database };
-
-	GameDate = Math.floor(Date.now() / 1000);
-
 	constructor() {
 
-		this.connection = Mysql.createPool(db);
+		this.connection = createPool(db);
 	}
 
 	query(query, args) {
@@ -42,14 +39,17 @@ class Pool {
 	}
 }
 
-module.exports = {
 
-	makeSureDbExists,
+export const pool = {
 
-	get pool() {
+	creds: { host, user, database },
+
+	GameDate: Math.floor(Date.now() / 1000),
+
+	query(query, args) {
 
 		this._pool ??= new Pool();
 
-		return this._pool;
+		return this._pool.query(query, args);
 	}
 }

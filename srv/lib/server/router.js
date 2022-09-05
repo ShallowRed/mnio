@@ -1,8 +1,8 @@
-const express = require('express');
-const path = require('path');
-const serveStatic = require('serve-static');
+import { Router, json, urlencoded } from 'express';
+import { resolve } from 'path';
+import serveStatic from 'serve-static';
 
-const Debug = require('@debug');
+import Debug from '#debug';
 const debug = Debug('app:router');
 
 const isPassenger = typeof (PhusionPassenger) !== 'undefined';
@@ -13,13 +13,13 @@ const options = isPassenger ? {} : {
 	}
 };
 
-const PUBLIC_FOLDER = path.resolve('../dist');
+const PUBLIC_FOLDER = resolve('../dist');
 
-const router = express.Router();
+const router = Router();
 
-router.use(express.json());
+router.use(json());
 
-router.use(express.urlencoded({
+router.use(urlencoded({
 	extended: true
 }));
 
@@ -45,4 +45,4 @@ router.route('/game')
 		next();
 	});
 
-module.exports = router;
+export default router;

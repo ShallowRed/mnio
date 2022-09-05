@@ -4,7 +4,9 @@ export default class Player {
   constructor({ position, palette }, Game) {
     this.Game = () => Game;
     this.Map = () => Game.Map;
+	
     this.position = position;
+	
     this.palette = palette.map(color => `#${color}`);
     this.sColor = palette[0];
     this.is = {};

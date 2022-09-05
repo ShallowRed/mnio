@@ -1,10 +1,10 @@
-const Debug = require('debug');
+import Debug from 'debug';
 
-module.exports = function(key) {
+export default function(key) {
 
-	debug = Debug(`app:${key}`);
+	const debug = Debug(`app:${key}`);
 
 	debug.log = console.info.bind(console);
 
-	return debug
+	return debug;
 }

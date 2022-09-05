@@ -1,9 +1,10 @@
-const { pool } = require('@database/connection');
-const Pokedex = require('@database/pokedex.js');
+import { pool } from '#database/connection';
+import Pokedex from '#database/pokedex';
 
-const debug = require('@debug')('gameDatabase');
+import Debug from '#debug';
+const debug = Debug('game:gameDatabase');
 
-module.exports = class GameDatabase {
+export default class GameDatabase {
 
 	constructor(gameid) {
 
@@ -14,6 +15,8 @@ module.exports = class GameDatabase {
 
 		const userNameData = await pool.query("isUserNameInDb", [this.gameid, userName]);
 
+		debug('userNameData :', userNameData);
+		
 		return {
 			exists: Boolean(userNameData.length),
 			...userNameData?.[0]
@@ -45,18 +48,24 @@ module.exports = class GameDatabase {
 		return this._palettes;
 	}
 
-	async savePlayerPalette(playerid, index) {
+	async savePlayerPalette(playerid, paletteid) {
 
-		pool.query("savePlayerPalette", [this.gameid, playerid, index]);
+		debug('Saving player palette :', playerid, paletteid);
 
-		return Pokedex[index];
+		pool.query("savePlayerPalette", [this.gameid, playerid, paletteid]);
+
+		return Pokedex[paletteid - 1];
 	}
 
 	async getPlayerPalette(playerid) {
 
-		const index = await pool.query("getPlayerPalette", [this.gameid, playerid]);
+		const response = await pool.query("getPlayerPalette", [this.gameid, playerid]);
 
-		return Pokedex[index[0].paletteid]
+		const { paletteid } = response[0];
+
+		debug('Retrieved player palette:', playerid, paletteid);
+
+		return Pokedex[paletteid  - 1];
 	}
 
 	async getPlayerOwnCells(playerid) {

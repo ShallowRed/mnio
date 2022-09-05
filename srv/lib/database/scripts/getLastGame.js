@@ -1,11 +1,12 @@
-const { pool } = require('@database/connection');
-const { rows, cols } = require('@config');
+import { pool } from '#database/connection';
+import { rows, cols } from '#config';
 
-const Pokedex = require('@database/pokedex.js');
+import Pokedex from '#database/pokedex';
 
-const debug = require('@debug')('database');
+import Debug from '#debug';
+const debug = Debug('database');
 
-module.exports = async () => {
+export default async () => {
 
 	const lastGame = await getLastGame();
 	

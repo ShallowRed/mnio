@@ -16,7 +16,7 @@ import Game from './Game';
 
 const socket = io('/game');
 
-socket.on("initGame", data => {
+socket.once("initGame", data => {
 
 	console.log('initGame', data);
 	
@@ -29,7 +29,7 @@ socket.on("initGame", data => {
 	showAll();
 });
 
-socket.on('redirect', path => {
+socket.once('redirect', path => {
 	window.location.href = path;
 })
 

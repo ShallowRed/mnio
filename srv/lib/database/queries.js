@@ -19,7 +19,7 @@ const colorValues = new Array(N_COLORS)
 	.fill("?")
 	.join(", ");
 
-module.exports = {
+export default {
 	createGamesTableIfNotExist: "CREATE TABLE IF NOT EXISTS games (gameid INT PRIMARY KEY NOT NULL AUTO_INCREMENT, usedrows SMALLINT NOT NULL, usedcols SMALLINT NOT NULL, gridid INT NOT NULL, pokedexid INT NOT NULL, flag BOOLEAN)",
 	createGridTable: "CREATE TABLE IF NOT EXISTS game_?__grid (orderid INT PRIMARY KEY NOT NULL AUTO_INCREMENT, cellid MEDIUMINT, playerid SMALLINT NOT NULL, color VARCHAR(6) NOT NULL)",
 	createPalettesTable: "CREATE TABLE IF NOT EXISTS game_?__palettes (playerid SMALLINT PRIMARY KEY NOT NULL, paletteid SMALLINT NOT NULL)",

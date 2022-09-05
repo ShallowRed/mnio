@@ -1,7 +1,7 @@
 module.exports = {
   apps: {
-    script: './app.js',
-    watch: ["lib", 'app.js'],
+    script: './entry.cjs',
+    watch: ['lib', 'app.js', 'entry.cjs', 'debug.js', 'config.js'],
     watch_options: {
       followSymlinks: false
     },

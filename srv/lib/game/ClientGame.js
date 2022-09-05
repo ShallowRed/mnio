@@ -1,6 +1,7 @@
-const debug = require('@debug')('clientGame');
+import Debug from '#debug';
+const debug = Debug('game:clientGame');
 
-module.exports = class ClientGame {
+export default class ClientGame {
 
 	constructor(socket, player, map, database) {
 

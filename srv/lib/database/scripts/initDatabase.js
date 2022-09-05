@@ -1,9 +1,10 @@
-const { makeSureDbExists, pool } = require('@database/connection');
-const { db } = require('@config');
+import { makeSureDbExists, pool } from '#database/connection';
+import { db } from '#config';
 
-const debug = require('@debug')('database');
+import Debug from '#debug';
+const debug = Debug('database');
 
-module.exports = async () => {
+export default async () => {
 
 	await makeSureDbExists();
 

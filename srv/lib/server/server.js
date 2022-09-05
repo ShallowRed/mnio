@@ -1,17 +1,18 @@
-const express = require('express');
-const http = require('http');
-const socketIo = require('socket.io');
+import express from 'express';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
 
-const Router = require("@server/router");
-const { port, db, cookieSecret } = require('@config');
+import Router from "#server/router";
+import { port, db, cookieSecret } from '#config';
 
-const debug = require('@debug')('server');
+import Debug from '#debug';
+const debug = Debug('server');
 
-// const initSession = require('@server/session');
+// const initSession = require('#server/session');
 
-const createSessionStore = require('@server/session-store');
+import createSessionStore from '#server/session-store';
 
-module.exports = () => {
+export default () => {
 
 	debug(`Creating server`);
 
@@ -20,13 +21,12 @@ module.exports = () => {
 	const app = express()
 		.use(session.store);
 
-	const httpServer = http
-		.createServer(app)
+	const httpServer = createServer(app)
 		.listen(port, () =>
 			debug(`Server listening on port ${port}`)
 		);
 
-	const io = new socketIo.Server(httpServer);
+	const io = new Server(httpServer);
 
 	io.use((socket, next) => {
 		return session.middleware(socket.request, {}, next)

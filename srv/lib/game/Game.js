@@ -1,11 +1,12 @@
-const Map = require('@game/Map');
-const GameDatabase = require('@database/GameDatabase');
-const PlayersFactory = require('@game/Players');
-const ClientGame = require('@game/ClientGame');
+import Map from '#game/Map';
+import GameDatabase from '#database/GameDatabase';
+import PlayersFactory from '#game/Players';
+import ClientGame from '#game/ClientGame';
 
-const debug = require('@debug')('game:game');
+import Debug from '#debug';
+const debug = Debug('game:game');
 
-module.exports = class Game {
+export default class Game {
 
 	constructor(mapState, io) {
 

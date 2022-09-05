@@ -1,11 +1,9 @@
-require('module-alias/register');
+import server from '#server/server';
+import initDatabase from '#database/scripts/initDatabase';
+import fetchGame from '#database/scripts/getLastGame';
+import Game from '#game/Game';
 
-const server = require('@server/server');
-const initDatabase = require('@database/scripts/initDatabase');
-const fetchGame = require('@database/scripts/getLastGame');
-const Game = require('@game/Game');
-
-const app = async () => {
+export async function app() {
 
 	await initDatabase();
 
@@ -15,5 +13,3 @@ const app = async () => {
 
 	new Game(mapState, io);
 }
-
-app();

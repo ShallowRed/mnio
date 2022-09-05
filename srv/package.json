@@ -1,9 +1,10 @@
 {
 	"name": "mnio-server",
 	"version": "0.0.3",
+	"type": "module",
 	"scripts": {
 		"start": "node app.js",
-		"dev": "pm2 start ecosystem.dev.config.js && pm2 logs",
+		"dev": "pm2 start ecosystem.dev.config.cjs && pm2 logs",
 		"prod": "pm2 start ecosystem.prod.config.js && pm2 logs"
 	},
 	"dependencies": {
@@ -17,12 +18,12 @@
 		"serve-static": "^1.15.0",
 		"socket.io": "^4.5.2"
 	},
-	"_moduleAliases": {
-		"@config": "config",
-		"@database": "lib/database",
-		"@game": "lib/game",
-		"@server": "lib/server",
-		"@dist": "dist",
-		"@debug": "debug"
+	"imports": {
+		"#database/*": "./lib/database/*.js",
+		"#game/*": "./lib/game/*.js",
+		"#server/*": "./lib/server/*.js",
+		"#config":  "./config.js",
+		"#dist": "./dist",
+		"#debug": "./debug.js"
 	}
 }

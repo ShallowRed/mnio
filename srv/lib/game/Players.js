@@ -1,6 +1,7 @@
-const debug = require('@debug')('game:player');
+import Debug from '#debug';
+const debug = Debug('game:player');
 
-module.exports = class PlayersFactory {
+export default class PlayersFactory {
 
 	collection = {};
 
@@ -33,10 +34,10 @@ module.exports = class PlayersFactory {
 		}
 	}
 
-	async createExisting(socket,{ position, playerid }) {
+	async createExisting(socket, { position, playerid }) {
 
 		debug("Creating existing player:", playerid);
-
+		
 		const palette = await this.database.getPlayerPalette(playerid);
 
 		const ownCells = await this.database.getPlayerOwnCells(playerid);

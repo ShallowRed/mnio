@@ -15,10 +15,10 @@ initLobby(socket);
 registerServiceWorker();
 listenLogin(socket);
 
-socket.on('loginSuccess', isPlayerNew => {
+socket.once('loginSuccess', isPlayerNew => {
   window.location = isPlayerNew ? "/palette" : "/game";
 });
 
-socket.on('redirect', path => {
+socket.once('redirect', path => {
   window.location = path;
 });

@@ -1,16 +1,17 @@
-const expressSession = require('express-session');
-const cookieParser = require('cookie-parser');
+import expressSession, { MemoryStore } from 'express-session';
+import cookieParser from 'cookie-parser';
 
-const { createPool } = require('mysql');
+import { createPool } from 'mysql';
 // const mySQLStore = require('express-mysql-session');
 
-const debug = require('@debug')('session-store');
+import Debug from '#debug';
+const debug = Debug('session-store');
 
 debug.log = console.info.bind(console);
 
 const EXPRESS_SID_KEY = 'connect.sid';
 
-module.exports = function createSessionStore(COOKIE_SECRET, DB_CONFIG) {
+export default function createSessionStore(COOKIE_SECRET, DB_CONFIG) {
 
 	const isMysql = typeof mySQLStore !== 'undefined';
 
@@ -18,7 +19,7 @@ module.exports = function createSessionStore(COOKIE_SECRET, DB_CONFIG) {
 
 	const sessionStore = isMysql ?
 		new (mySQLStore(expressSession))({}, createPool(DB_CONFIG)) :
-		new expressSession.MemoryStore();
+		new MemoryStore();
 
 	const parseCookie = cookieParser(COOKIE_SECRET);
 
