@@ -1,79 +1,45 @@
-import { Tables } from '#database/tables';
-import database from '#database/client-events';
-
 import Debug from '#debug';
-const debug = Debug('game:player');
+const debug = Debug('game     |');
 
-export default class PlayersFactory {
+export default class Players {
 
 	collection = {};
 
-	constructor(map) {
-		this.map = map;
-	}
+	constructor() { }
 
 	set(socket, data) {
 
-		debug("Adding new player to game collection");
+		debug(`Saving data in game players collection for socketId '${socket.id}'`);
 
 		this.collection[socket.request.sessionId] = data;
 	}
 
 	get(socket) {
 
-		debug("Getting player from game collection");
+		debug(`Getting data from game players collection for socketId '${socket.id}'`);
 
 		return this.collection[socket.request.sessionId];
 	}
 
 	delete(socket) {
 
-		debug("Deleting player from game collection");
-
 		if (this.getSession(socket)) {
+
+			debug(`Deleting data from game players collection for socketId '${socket.id}'`);
 
 			delete this.collection[socket.request.sessionId];
 		}
 	}
 
-	async createExisting(socket, { position, playerid , palette, ownCells}) {
+	create(socket, { userId, palette, position, ownCells }, map) {
 
-		debug("Creating existing player:", playerid);
+		debug(`Creating new player with socketId '${socket.id}' and userId '${userId}'`);
 
-		const player = new Player({ playerid, palette, position, ownCells }, this.map);
+		const player = new Player({ userId, palette, position, ownCells });
 
-		this.set(socket, player);
-
-		return player;
-	}
-
-	async createNew(socket, { paletteid }) {
-
-		debug("Retrieving creds from players collection");
-
-		const creds = this.get(socket);
-
-		debug("Creating new player:", creds);
-
-		const playerid = await Tables.get("creds").insert({
-			username: creds.userName,
-			password: creds.password
-		});
-
-		debug("Saving player palette:", playerid, paletteid);
-
-		await Tables.get("palettes").insert({
-			playerid,
-			paletteid
-		});
-
-		const palette = await database.getColors(paletteid);
-
-		const player = new Player({ playerid, palette }, this.map);
+		player.updateAllowedCells(map);
 
 		this.set(socket, player);
-
-		socket.emit("redirect", "/game");
 
 		return player;
 	}
@@ -81,19 +47,15 @@ export default class PlayersFactory {
 
 class Player {
 
-	constructor(params, map) {
+	constructor({ userId, position, palette, ownCells }) {
 
-		const { playerid, position, palette, ownCells } = params;
+		this.userId = userId;
 
-		this.map = map;
-
-		this.playerid = playerid;
 		this.palette = palette;
-		this.ownCells = ownCells || [];
-		this.position = position || this.ownCells[0] || this.map.randomPosition()
 
-		this.updateOwnedCells(this.position);
-		this.updateAllowedCells();
+		this.ownCells = ownCells;
+
+		this.position = position;
 	}
 
 	updateOwnedCells(position) {
@@ -106,15 +68,11 @@ class Player {
 		}
 	}
 
-	updateAllowedCells() {
+	updateAllowedCells(map) {
 
 		this.allowedCells = this.ownCells.reduce((cells, position) => {
 
-			const coords = this.map.indexToCoords(position);
-
-			const newNeighbours = this.map.getNeighboursCoords(coords)
-				.filter(coords => this.map.areCoordsInBounds(coords))
-				.map(coords => this.map.coordsToIndex(coords))
+			const newNeighbours = map.getNeighbours(position)
 				.filter(position => !this.ownCells.includes(position))
 
 			cells.push(...newNeighbours);
@@ -122,7 +80,5 @@ class Player {
 			return cells;
 
 		}, []);
-
-		this.allowedCells.push(this.position);
 	}
 }

@@ -4,7 +4,7 @@ import { promisify } from 'util';
 import { db } from '#config';
 
 import Debug from '#debug';
-const debug = Debug('database:connection');
+const debug = Debug('database |');
 
 const { password, database, ...creds } = db;
 

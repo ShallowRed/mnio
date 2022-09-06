@@ -1,10 +1,14 @@
 export default class Map {
 
-	constructor(gameData) {
+	playersPositions = [];
 
-		this.playersPositions = [];
+	constructor({ gridState, rows, cols }) {
 
-		Object.assign(this, gameData);
+		this.gridState = gridState;
+
+		this.rows = rows;
+
+		this.cols = cols;
 	}
 
 	newPosition([lastPos, newPos]) {
@@ -30,7 +34,7 @@ export default class Map {
 		return this.gridState.filter(e => e === null);
 	}
 
-	randomPosition() {
+	getRandomPosition() {
 
 		if (!this.emptyCells.length) {
 
@@ -75,6 +79,15 @@ export default class Map {
 		return this.cols * y + x;
 	}
 
+	getNeighbours(position) {
+
+		const coords = this.indexToCoords(position);
+
+		return this.getNeighboursCoords(coords)
+			.filter(coords => this.areCoordsInBounds(coords))
+			.map(coords => this.coordsToIndex(coords));
+	}
+
 	getNeighboursCoords([x, y]) {
 
 		return [
@@ -85,6 +98,4 @@ export default class Map {
 			[x, y + 1]
 		];
 	};
-
-
 }

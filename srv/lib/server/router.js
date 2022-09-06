@@ -3,7 +3,7 @@ import { resolve } from 'path';
 import serveStatic from 'serve-static';
 
 import Debug from '#debug';
-const debug = Debug('app:router');
+const debug = Debug('game     |');
 
 const isPassenger = typeof (PhusionPassenger) !== 'undefined';
 

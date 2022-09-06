@@ -1,23 +1,31 @@
 import connection from '#database/connection';
-import GAME_TABLES from '#database/game-tables';
 
 import Debug from '#debug';
-const debug = Debug('database:tables');
+const debug = Debug('database |');
 
-export const Tables = {
+export default class Tables {
 
-	collection: {},
+	collection = {};
 
-	async create(name, id) {
+	constructor(tablesConfig) {
+		
+		this.tablesConfig = tablesConfig;
+	}
 
-		const table = new Table(name, id);
+	async create(key, id) {
+
+		const name = this.tablesConfig[key]['name'].replace(/\?/g, id);
+
+		const columns = this.tablesConfig[key]['columns'];
+
+		const table = new Table(this, key, id, name, columns);
 
 		await table.create();
 
-		this.collection[table.key] = table;
+		this.collection[key] = table;
 
 		return table;
-	},
+	}
 
 	get(key) {
 
@@ -25,19 +33,19 @@ export const Tables = {
 	}
 }
 
-export class Table {
+class Table {
 
-	constructor(name, id) {
+	constructor(tables, key, id, name, columns) {
 
-		this.name = name;
+		this.tables = tables;
+
+		this.key = key;
 
 		this.id = id;
 
-		this.columns = GAME_TABLES[name].columns;
+		this.name = name;
 
-		this.key = GAME_TABLES[name].key;
-
-		this.bindMethods(GAME_TABLES[name]?.methods);
+		this.columns = columns;
 
 		return this;
 	}
@@ -49,52 +57,120 @@ export class Table {
 			.join(", ");
 
 		const query = `CREATE TABLE IF NOT EXISTS ${this.name} (${columns})`;
-		
-		const result = await connection.query(query, this.id);
 
-		debug(`Making sure table ${this.name} exists`);
-		// debug("Table created:", result);
+		debug(`Making sure table ${this.key} exists`);
+
+		await connection.query(query);
 
 		return this;
 	}
 
 	async insert(entries) {
 
-		const keys = Object.keys(entries).map(key => '`' + key + '`').join(", ");
-		const values = Object.values(entries).map(value => `'${value}'`).join(", ");
+		const keys = Object.keys(entries)
+			.map(key => '`' + key + '`')
+			.join(", ");
+
+		const values = Object.values(entries)
+			.map(value => `'${value}'`)
+			.join(", ");
 
 		const query = `INSERT INTO ${this.name} (${keys}) VALUES(${values})`;
 
-		const result = await connection.query(query, this.id);
+		const results = await connection.query(query);
 
-		// debug(`Inserted into table ${this.name}`);
-
-		return result.insertId;
+		return results.insertId;
 	}
 
-	select(columns, { where } = {}) {
+	async select(columns, { where, orderBy, limit, join } = {}) {
 
 		let query = `SELECT ${columns} FROM ${this.name}`;
 
-		if (where) {
+		if (join) {
 
-			const [key, value] = Object.entries(where)[0];
-
-			query += ` WHERE ${key} = '${value}'`;
+			query += ` JOIN ${join}`;
 		}
 
-		return connection.query(query, this.id);
+		if (where) {
+
+			const entries = Object.entries(where)
+				.map(([key, value]) => `${key} = '${value}'`)
+				.join(" AND ");
+
+			query += ` WHERE ${entries}`;
+		}
+
+		if (orderBy) {
+
+			query += ` ORDER BY ${orderBy}`;
+		}
+
+		if (limit) {
+
+			query += ` LIMIT ${limit}`;
+
+		}
+
+		console.log(query);
+
+		const results = await connection.query(query);
+
+		if (limit === 1) {
+
+			if (results.length) {
+
+				return results[0];
+			}
+
+		} else {
+
+			return results;
+		}
 	}
 
-	bindMethods(methods) {
+	update(entries, { where } = {}) {
 
-		if (!methods) return;
+		const keys = Object.keys(entries)
+			.map(key => `${key} = '${entries[key]}'`)
+			.join(", ");
 
-		Object.entries(methods).forEach(([name, query]) => {
+		let query = `UPDATE ${this.name} SET ${keys}`;
 
-			this[name] = (...args) => {
-				return connection.query(query, ...args);
-			};
-		});
+		if (where) {
+
+			const entries = Object.entries(where)
+				.map(([key, value]) => `${key} = '${value}'`)
+				.join(" AND ");
+
+			query += ` WHERE ${entries}`;
+
+			return connection.query(query);
+
+		} else {
+
+			throw new Error("No where clause provided");
+
+		}
+	}
+
+	join(joinedTableKey, { on } = {}) {
+
+		const joinedTable = this.tables.get(joinedTableKey);
+
+		const entries = Object.entries(on)
+			.map(([thisColumn, joinedTableColumn]) =>
+				`${this.name}.${thisColumn} = ${joinedTable.name}.${joinedTableColumn}`
+			)
+			.join(" AND ");
+
+		const join = on && `${joinedTable.name} on ${entries}`;
+
+		return {
+
+			select: (columns, { ...args }) => {
+
+				return this.select(columns, { join, ...args });
+			}
+		}
 	}
 }

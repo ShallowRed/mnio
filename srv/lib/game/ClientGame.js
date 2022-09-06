@@ -1,16 +1,15 @@
 import Debug from '#debug';
-import { Tables } from '#database/tables';
 
-const debug = Debug('game:clientGame');
+const debug = Debug('game     |');
 
 export default class ClientGame {
 
-	constructor(socket, player, map, database) {
+	constructor(socket, player, map, tables) {
 
 		this.socket = socket;
 		this.player = player;
 		this.map = map;
-		this.database = database;
+		this.tables = tables;
 
 		this.spawnPlayer();
 		this.listenGameEvents();
@@ -64,8 +63,8 @@ export default class ClientGame {
 
 		this.socket.on('fill', cell => {
 
-			Tables.get("grid").insert({
-				playerid: this.player.playerid,
+			this.tables.get("gridEvents").insert({
+				userId: this.player.userId,
 				cellid: cell.position,
 				color: cell.color
 			});
@@ -77,7 +76,9 @@ export default class ClientGame {
 			const hasOwnedCellsBeenUpdated = this.player.updateOwnedCells(cell.position);
 
 			if (hasOwnedCellsBeenUpdated) {
-				this.player.updateAllowedCells();
+
+				this.player.updateAllowedCells(this.map);
+				
 				this.socket.emit('allowedCells', this.player.allowedCells);
 			}
 
@@ -86,7 +87,7 @@ export default class ClientGame {
 
 		this.socket.on('disconnect', () => {
 
-			debug('Player left:', this.player.playerid);
+			debug(`User with socketId '${this.socket.id}' and username ${this.player.name} disconnected`);
 
 			if (this.player.position) {
 

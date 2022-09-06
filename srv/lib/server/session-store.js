@@ -5,7 +5,7 @@ import cookieParser from 'cookie-parser';
 // import mySQLStore from 'express-mysql-session';
 
 import Debug from '#debug';
-const debug = Debug('session-store');
+const debug = Debug('server   |');
 
 const EXPRESS_SID_KEY = 'connect.sid';
 

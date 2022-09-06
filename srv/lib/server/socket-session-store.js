@@ -1,29 +1,56 @@
 import Debug from '#debug';
-const debug = Debug('server:socket-session-store');
+const debug = Debug('server   |');
 
 export default {
 
 	save(socket, sessionData) {
 
-		debug("Saving session for:", socket.id, sessionData);
+		debug(`Saving session data for socketId '${socket.id}'`);
 
 		Object.assign(socket.request.session, sessionData);
 
 		socket.request.session.save();
 	},
 
-	remove(socket) {
+	get(socket, key) {
 
-		debug("Remove session data for: ", socket.id);
+		debug(`Getting session value with key '${key}' for socketId '${socket.id}'`);
 
-		for (const key in socket.request.session) {
+		if (!socket.request?.session) {
 
-			if (key !== 'cookie') {
+			debug(`No session data found for socketId '${socket.id}'`);
 
-				delete socket.request.session[key];
-			}
+			return;
+
+		} else if (!socket.request.session?.[key]) {
+
+			debug(`No session data found for key '${key}' for socketId '${socket.id}'`);
+
+			return;
 		}
 
-		socket.request.session.save();
+		return socket.request.session[key];
+	},
+
+	remove(socket) {
+
+		if (!socket.request.session) {
+
+			debug(`No session data to destroy found for socketId '${socket.id}'`);
+
+		} else {
+
+			debug(`Destroying session data for socketId '${socket.id}'`);
+
+			for (const key in socket.request.session) {
+
+				if (key !== 'cookie') {
+
+					delete socket.request.session[key];
+				}
+			}
+
+			socket.request.session.save();
+		}
 	}
 };

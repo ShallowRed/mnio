@@ -8,7 +8,7 @@ import { port, db, cookieSecret } from '#config';
 import createSessionStore from '#server/session-store';
 
 import Debug from '#debug';
-const debug = Debug('server');
+const debug = Debug('server   |');
 
 export default function ({ namespaces }) {
 
