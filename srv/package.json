@@ -3,7 +3,7 @@
 	"version": "0.0.3",
 	"type": "module",
 	"scripts": {
-		"start": "node app.js",
+		"start": "node entry.cjs",
 		"dev": "pm2 start ecosystem.dev.config.cjs && pm2 logs",
 		"prod": "pm2 start ecosystem.prod.config.cjs && pm2 logs"
 	},

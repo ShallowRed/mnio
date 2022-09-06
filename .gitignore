@@ -1,11 +1,9 @@
-node_modules/
 .vscode/
-.ftpconfig
+
 TODO.md
-srv/node_modules/
-srv/lib/config.js
-srv/data/
+
+node_modules/
+
 dist/
-old-bundler/
-config
-ecosystem.prod.config2.cjs
+
+ecosystem.prod.config.cjs
