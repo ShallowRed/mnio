@@ -27,22 +27,4 @@ router.use(serveStatic(PUBLIC_FOLDER, { extensions: ['html'] }));
 
 debug('Serving static files from', PUBLIC_FOLDER);
 
-router.route('/')
-	.get((req, res, next) => {
-		res.redirect('/login/');
-		next();
-	});
-
-router.route('/palette')
-	.get((req, res, next) => {
-		res.redirect('/palette/');
-		next();
-	});
-
-router.route('/game')
-	.get((req, res, next) => {
-		res.redirect('/game/');
-		next();
-	});
-
 export default router;

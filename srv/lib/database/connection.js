@@ -1,55 +1,46 @@
-import { createConnection, createPool } from 'mysql';
+import * as MySql from 'mysql';
 import { promisify } from 'util';
 
 import { db } from '#config';
-const { host, user, database } = db;
-
-import QUERIES from '#database/queries';
 
 import Debug from '#debug';
 const debug = Debug('database:connection');
 
-export async function makeSureDbExists() {
+const { password, database, ...creds } = db;
 
-	const connection = createConnection({
-		host: host,
-		user: user,
-		password: db.password
-	});
+export default {
 
-	debug(`Make sure database '${db.database}' exists`);
+	async makeSureDbExists() {
 
-	await promisify(connection.query)
-		.call(connection, `CREATE DATABASE IF NOT EXISTS ${db.database}`);
+		const connection = MySql.createConnection({ password, ...creds });
 
-	connection.end();
-}
+		debug(`Making sure database '${database}' exists`);
 
-class Pool {
+		const result = await promisify(connection.query)
+			.call(connection, `CREATE DATABASE IF NOT EXISTS ${database}`);
 
-	constructor() {
+		// debug("Database created:", result);
 
-		this.connection = createPool(db);
-	}
+		connection.end();
+	},
 
-	query(query, args) {
+	get pool() {
 
-		return promisify(this.connection.query)
-			.call(this.connection, QUERIES[query], args);
-	}
-}
+		if (!this._pool) {
 
+			this._pool = MySql.createPool(db);
 
-export const pool = {
+			debug("Mysql pool created");
+		}
 
-	creds: { host, user, database },
-
-	GameDate: Math.floor(Date.now() / 1000),
+		return this._pool;
+	},
 
 	query(query, args) {
 
-		this._pool ??= new Pool();
+		// debug("Query:", query, args);
 
-		return this._pool.query(query, args);
+		return promisify(this.pool.query)
+			.call(this.pool, query, args);
 	}
 }

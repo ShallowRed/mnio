@@ -1,3 +1,6 @@
+import { Tables } from '#database/tables';
+import database from '#database/client-events';
+
 import Debug from '#debug';
 const debug = Debug('game:player');
 
@@ -5,9 +8,8 @@ export default class PlayersFactory {
 
 	collection = {};
 
-	constructor(database, map) {
+	constructor(map) {
 		this.map = map;
-		this.database = database;
 	}
 
 	set(socket, data) {
@@ -34,36 +36,44 @@ export default class PlayersFactory {
 		}
 	}
 
-	async createExisting(socket, { position, playerid }) {
+	async createExisting(socket, { position, playerid , palette, ownCells}) {
 
 		debug("Creating existing player:", playerid);
-		
-		const palette = await this.database.getPlayerPalette(playerid);
 
-		const ownCells = await this.database.getPlayerOwnCells(playerid);
-
-		const player = new Player({ playerid, palette, position, ownCells }, this.map, this.database);
+		const player = new Player({ playerid, palette, position, ownCells }, this.map);
 
 		this.set(socket, player);
 
 		return player;
 	}
 
-	async createNew(socket, { paletteIndex }) {
+	async createNew(socket, { paletteid }) {
 
 		debug("Retrieving creds from players collection");
 
 		const creds = this.get(socket);
 
-		const playerid = await this.database.saveCredentials(creds);
+		debug("Creating new player:", creds);
 
-		debug("Creating new player:", playerid);
+		const playerid = await Tables.get("creds").insert({
+			username: creds.userName,
+			password: creds.password
+		});
 
-		const palette = await this.database.savePlayerPalette(playerid, paletteIndex);
+		debug("Saving player palette:", playerid, paletteid);
 
-		const player = new Player({ playerid, palette }, this.map, this.database);
+		await Tables.get("palettes").insert({
+			playerid,
+			paletteid
+		});
+
+		const palette = await database.getColors(paletteid);
+
+		const player = new Player({ playerid, palette }, this.map);
 
 		this.set(socket, player);
+
+		socket.emit("redirect", "/game");
 
 		return player;
 	}

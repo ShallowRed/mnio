@@ -1,7 +1,5 @@
 const { resolve } = require('path');
 
-const LiveReloadPlugin = require('webpack-livereload-plugin');
-
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -21,8 +19,6 @@ module.exports = (isDevMode, page) => {
 		},
 
 		plugins: [
-
-			// new LiveReloadPlugin(),
 
 			isDevMode && new ESLintPlugin({
 				emitWarning: true,

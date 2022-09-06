@@ -1,5 +1,5 @@
 import Map from '#game/Map';
-import GameDatabase from '#database/GameDatabase';
+import database from '#database/client-events';
 import PlayersFactory from '#game/Players';
 import ClientGame from '#game/ClientGame';
 
@@ -8,26 +8,20 @@ const debug = Debug('game:game');
 
 export default class Game {
 
-	constructor(mapState, io) {
+	constructor(mapState, io, sessionStore) {
 
 		this.io = io;
 
+		this.sessionStore = sessionStore;
+
 		this.map = new Map(mapState);
 
-		this.database = new GameDatabase(this.map.gameid);
-
-		this.players = new PlayersFactory(this.database, this.map);
+		this.players = new PlayersFactory(this.map);
 
 		this.listenConnection();
 	}
 
 	listenConnection() {
-
-		this.io.initNamespace("/login");
-
-		this.io.initNamespace("/game");
-
-		this.io.initNamespace("/palette");
 
 		this.io.of('/login').on('connection', socket => {
 
@@ -49,7 +43,7 @@ export default class Game {
 
 						debug("Player sent username");
 
-						const userNameData = await this.database.userNameData(userName);
+						const userNameData = await database.checkUsername(userName);
 
 						if (userNameData.exists) {
 
@@ -68,7 +62,7 @@ export default class Game {
 
 							if (
 								userNameData.exists &&
-								userNameData.Password !== password
+								userNameData.password !== password
 							) {
 
 								debug("Player sent wrong password for existing username");
@@ -77,19 +71,24 @@ export default class Game {
 
 							} else {
 
-								socket.emit('loginSuccess', !userNameData.exists);
-
 								if (userNameData.exists) {
 
 									debug("Player sent correct password for existing username");
 
-									this.players.createExisting(socket, userNameData);
+									const { playerid } = userNameData;
+									const { palette, ownCells } = await database.getPlayerData(playerid);
+
+									this.players.createExisting(socket, { playerid, palette, ownCells });
+
+									socket.emit("redirect", "/game");
 
 								} else if (this.map.emptyCells.length) {
 
 									debug("Player sent password for new username, saving creds in players collection");
 
 									this.players.set(socket, { userName, password });
+
+									socket.emit("redirect", "/palette");
 
 								} else {
 
@@ -128,15 +127,15 @@ export default class Game {
 
 					debug("Player on page palette credentials stored in session store, waiting for palette choice");
 
-					const palettes = await this.database.getEveryPalettes();
+					const palettes = await database.getGamePalettes();
 
 					socket.emit("chosePalette", palettes);
 
-					socket.on("paletteSelected", async paletteIndex => {
+					socket.on("paletteSelected", async paletteid => {
 
-						debug("Player selected palette");
+						debug("Player selected palette:", paletteid);
 
-						this.players.createNew(socket, { paletteIndex });
+						this.players.createNew(socket, { paletteid });
 					});
 				}
 			}
@@ -156,7 +155,7 @@ export default class Game {
 
 					debug("Player session not stored, saving");
 
-					this.io.session.save(socket, {
+					this.sessionStore.save(socket, {
 						isLogged: true,
 						playerid: player.playerid,
 						position: player.position
@@ -174,7 +173,9 @@ export default class Game {
 
 					const { playerid, position } = socket.request.session;
 
-					this.players.createExisting(socket, { playerid, position });
+					const { palette, ownCells } = await database.getPlayerData(playerid);
+
+					player = this.players.createExisting(socket, { playerid, position, palette, ownCells });
 				}
 			}
 
@@ -182,7 +183,7 @@ export default class Game {
 
 				debug("Starting client game");
 
-				new ClientGame(socket, player, this.map, this.database);
+				new ClientGame(socket, player, this.map, database);
 
 			} else {
 
@@ -192,7 +193,7 @@ export default class Game {
 
 					debug("Destroying session data");
 
-					this.io.session.remove(socket);
+					this.sessionStore.remove(socket);
 				}
 
 				socket.emit('redirect', '/');

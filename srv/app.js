@@ -1,15 +1,13 @@
 import server from '#server/server';
-import initDatabase from '#database/scripts/initDatabase';
-import fetchGame from '#database/scripts/getLastGame';
+import getGridState from '#database/game-setup';
 import Game from '#game/Game';
+import socketSessionStore from '#server/socket-session-store';
 
 export async function app() {
 
-	await initDatabase();
+	const mapState = await getGridState();
 
-	const mapState = await fetchGame();
+	const io = server({ namespaces: ["/login", "/palette", "/game"] });
 
-	const io = server();
-
-	new Game(mapState, io);
+	new Game(mapState, io, socketSessionStore);
 }

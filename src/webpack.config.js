@@ -3,36 +3,36 @@ const { resolve } = require('path');
 const getPlugins = require('./webpack.plugins.js');
 const getRules = require('./webpack.rules.js');
 
+const PUBLIC_FOLDER = '../dist';
+
 const pages = [
 	{
-		'entry': "/game/index.js",
-		'template': "/game/game.ejs",
-		'name': "game",
-	},
-	// {
-	// 	'entry': "/gallery/index.js",
-	// 	'template': "/gallery/gallery.ejs",
-	// },
-	{
-		'entry': "/login/index.js",
-		'template': "/login/index.ejs",
-		'name': "login",
+		entry: "/login/index.js",
+		template: "/login/index.ejs",
+		name: "login",
+		outputPath: ".",
 	},
 	{
-		'entry': "/paletteSelection/paletteSelection.js",
-		'template': "paletteSelection/paletteSelection.ejs",
-		'name': "palette",
+		entry: "/paletteSelection/paletteSelection.js",
+		template: "paletteSelection/paletteSelection.ejs",
+		name: "palette",
+		outputPath: "./palette",
+	},
+	{
+		entry: "/game/index.js",
+		template: "/game/game.ejs",
+		name: "game",
+		outputPath: "./game",
 	}
 ];
 
-const webpackConfig = (isDevMode, page, outputPath) => ({
+const webpackConfig = (isDevMode, page) => ({
 
 	entry: page.entry,
 
 	output: {
-		path: resolve(__dirname, '../dist') +  `/${page.name}`,
+		path: resolve(__dirname, PUBLIC_FOLDER, page.outputPath),
 		filename: `${page.name}.js`,
-		// publicPath: `/dist/` +  `${page.name}`,
 	},
 
 	resolve: {
@@ -45,7 +45,7 @@ const webpackConfig = (isDevMode, page, outputPath) => ({
 
 	watchOptions: {
 		ignored: /srv/,
-	  },
+	},
 
 	devtool: isDevMode && "inline-source-map",
 

@@ -1,13 +1,11 @@
 import expressSession, { MemoryStore } from 'express-session';
 import cookieParser from 'cookie-parser';
 
-import { createPool } from 'mysql';
-// const mySQLStore = require('express-mysql-session');
+// import MySql from 'mysql';
+// import mySQLStore from 'express-mysql-session';
 
 import Debug from '#debug';
 const debug = Debug('session-store');
-
-debug.log = console.info.bind(console);
 
 const EXPRESS_SID_KEY = 'connect.sid';
 
@@ -18,14 +16,14 @@ export default function createSessionStore(COOKIE_SECRET, DB_CONFIG) {
 	debug(`Creating session store with ${isMysql ? 'MySQL' : 'memory'}`);
 
 	const sessionStore = isMysql ?
-		new (mySQLStore(expressSession))({}, createPool(DB_CONFIG)) :
+		new (mySQLStore(expressSession))({}, MySql.createPool(DB_CONFIG)) :
 		new MemoryStore();
 
 	const parseCookie = cookieParser(COOKIE_SECRET);
 
 	return {
 
-		store: expressSession({
+		sessionStore: expressSession({
 			store: sessionStore,
 			resave: false,
 			saveUninitialized: true,
@@ -33,7 +31,7 @@ export default function createSessionStore(COOKIE_SECRET, DB_CONFIG) {
 			name: EXPRESS_SID_KEY
 		}),
 
-		middleware: function (req, _, next) {
+		sessionMiddleware: function (req, _, next) {
 
 			if (!req.headers.cookie) return next(new Error('No cookie transmitted'));
 
@@ -46,43 +44,16 @@ export default function createSessionStore(COOKIE_SECRET, DB_CONFIG) {
 				sessionStore.load(sessionIdCookie, (error, session) => {
 
 					if (error) return next(error);
+
 					else if (!session) return next(new Error('Session load failed'));
-					
+
 					req.session = session;
+
 					req.sessionId = sessionIdCookie;
 
 					return next();
 				});
 			});
-		},
-
-		socket: {
-
-			save(socket, sessionData) {
-
-				debug("Saving session for:", socket.id, sessionData);
-
-				Object.assign(socket.request.session, sessionData);
-
-				socket.request.session.save();
-			},
-
-
-			remove(socket) {
-
-				debug("Remove session data for: ", socket.id);
-
-				for (const key in socket.request.session) {
-
-					if (key !== 'cookie') {
-
-						delete socket.request.session[key];
-					}
-				}
-
-				socket.request.session.save();
-			}
-
 		}
 	}
 }

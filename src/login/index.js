@@ -11,14 +11,13 @@ import registerServiceWorker from './js/registerServiceWorker';
 import initLobby from './js/lobby';
 
 const socket = io('/login');
+
 initLobby(socket);
+
 registerServiceWorker();
+
 listenLogin(socket);
 
-socket.once('loginSuccess', isPlayerNew => {
-  window.location = isPlayerNew ? "/palette" : "/game";
-});
-
 socket.once('redirect', path => {
-  window.location = path;
+	window.location = path;
 });

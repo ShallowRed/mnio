@@ -10,7 +10,9 @@ window.addEventListener("load", () => {
 	container.style.opacity = 1;
 });
 
-socket.on('chosePalette', palettesData => {
+socket.once('chosePalette', palettesData => {
+
+	console.log(palettesData);
 
 	let paletteIndex = 0;
 
@@ -46,12 +48,10 @@ socket.on('chosePalette', palettesData => {
 	function chosePalette() {
 
 		socket.emit("paletteSelected", currentPalette.id);
-
-		window.location = "/game";
 	}
 });
 
-socket.on('redirect', path => {
+socket.once('redirect', path => {
 
 	window.location = path;
 });

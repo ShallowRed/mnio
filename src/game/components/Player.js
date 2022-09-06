@@ -7,7 +7,7 @@ export default class Player {
 	
     this.position = position;
 	
-    this.palette = palette.map(color => `#${color}`);
+    this.palette = palette;
     this.sColor = palette[0];
     this.is = {};
     this.posInView = [0, 0];

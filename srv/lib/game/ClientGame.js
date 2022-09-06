@@ -1,4 +1,6 @@
 import Debug from '#debug';
+import { Tables } from '#database/tables';
+
 const debug = Debug('game:clientGame');
 
 export default class ClientGame {
@@ -24,7 +26,7 @@ export default class ClientGame {
 	}
 
 	get initialData() {
-		
+
 		return {
 			Game: {
 				colors: this.map.gridState,
@@ -41,7 +43,7 @@ export default class ClientGame {
 			}
 		}
 	}
-	
+
 	listenGameEvents() {
 
 		this.socket.on('move', direction => {
@@ -62,19 +64,23 @@ export default class ClientGame {
 
 		this.socket.on('fill', cell => {
 
-			this.database.saveFill(this.player.playerid, cell);
+			Tables.get("grid").insert({
+				playerid: this.player.playerid,
+				cellid: cell.position,
+				color: cell.color
+			});
 
 			this.map.saveFill(cell);
-	
+
 			this.socket.broadcast.emit('newFill', cell);
-	
+
 			const hasOwnedCellsBeenUpdated = this.player.updateOwnedCells(cell.position);
-	
+
 			if (hasOwnedCellsBeenUpdated) {
 				this.player.updateAllowedCells();
 				this.socket.emit('allowedCells', this.player.allowedCells);
 			}
-	
+
 			this.socket.emit('confirmFill');
 		});
 
@@ -83,9 +89,9 @@ export default class ClientGame {
 			debug('Player left:', this.player.playerid);
 
 			if (this.player.position) {
-	
+
 				this.map.newPosition([this.player.position, null]);
-	
+
 				this.socket.broadcast.emit("newPosition", [this.player.position, null])
 			}
 		});
