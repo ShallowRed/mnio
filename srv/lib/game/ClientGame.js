@@ -73,10 +73,10 @@ export default class ClientGame {
 
 			this.socket.broadcast.emit('newFill', cell);
 
-			const hasOwnedCellsBeenUpdated = this.player.updateOwnedCells(cell.position);
+			if (!this.player.ownCells.includes(cell.position)) {
 
-			if (hasOwnedCellsBeenUpdated) {
-
+				this.player.ownCells.push(cell.position);
+	
 				this.player.updateAllowedCells(this.map);
 				
 				this.socket.emit('allowedCells', this.player.allowedCells);

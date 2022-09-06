@@ -1,30 +1,18 @@
-import { Router, json, urlencoded } from 'express';
+import express from 'express';
 import { resolve } from 'path';
 import serveStatic from 'serve-static';
 
 import Debug from '#debug';
 const debug = Debug('game     |');
 
-const isPassenger = typeof (PhusionPassenger) !== 'undefined';
+const PUBLIC_FOLDER_PATH = resolve('../dist');
 
-const options = isPassenger ? {} : {
-	setHeaders: function (res, path, stat) {
-		res.set('Service-Worker-Allowed', '/');
-	}
-};
+debug('Serving static files from', PUBLIC_FOLDER_PATH);
 
-const PUBLIC_FOLDER = resolve('../dist');
+const staticPublicFolder = serveStatic(PUBLIC_FOLDER_PATH, { extensions: ['html'] });
 
-const router = Router();
-
-router.use(json());
-
-router.use(urlencoded({
-	extended: true
-}));
-
-router.use(serveStatic(PUBLIC_FOLDER, { extensions: ['html'] }));
-
-debug('Serving static files from', PUBLIC_FOLDER);
-
-export default router;
+export default express
+	.Router()
+	.use(express.json())
+	.use(express.urlencoded({ extended: true }))
+	.use(staticPublicFolder);

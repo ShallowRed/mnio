@@ -1,5 +1,3 @@
-import connection from '#database/connection';
-
 import Debug from '#debug';
 const debug = Debug('database |');
 
@@ -7,8 +5,10 @@ export default class Tables {
 
 	collection = {};
 
-	constructor(tablesConfig) {
-		
+	constructor(tablesConfig, connection) {
+
+		this.connection = connection;
+
 		this.tablesConfig = tablesConfig;
 	}
 
@@ -18,7 +18,7 @@ export default class Tables {
 
 		const columns = this.tablesConfig[key]['columns'];
 
-		const table = new Table(this, key, id, name, columns);
+		const table = new Table(this, this.connection, key, id, name, columns);
 
 		await table.create();
 
@@ -35,9 +35,11 @@ export default class Tables {
 
 class Table {
 
-	constructor(tables, key, id, name, columns) {
+	constructor(tables, connection, key, id, name, columns) {
 
 		this.tables = tables;
+
+		this.connection = connection;
 
 		this.key = key;
 
@@ -60,7 +62,7 @@ class Table {
 
 		debug(`Making sure table ${this.key} exists`);
 
-		await connection.query(query);
+		await this.connection.query(query);
 
 		return this;
 	}
@@ -77,7 +79,7 @@ class Table {
 
 		const query = `INSERT INTO ${this.name} (${keys}) VALUES(${values})`;
 
-		const results = await connection.query(query);
+		const results = await this.connection.query(query);
 
 		return results.insertId;
 	}
@@ -111,9 +113,7 @@ class Table {
 
 		}
 
-		console.log(query);
-
-		const results = await connection.query(query);
+		const results = await this.connection.query(query);
 
 		if (limit === 1) {
 
@@ -144,7 +144,7 @@ class Table {
 
 			query += ` WHERE ${entries}`;
 
-			return connection.query(query);
+			return this.connection.query(query);
 
 		} else {
 

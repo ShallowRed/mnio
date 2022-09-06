@@ -11,12 +11,30 @@ export default class Players {
 
 		debug(`Saving data in game players collection for socketId '${socket.id}'`);
 
+		if (!socket.request.sessionId) {
+
+			debug(`SocketId '${socket.id}' has no sessionId, redirecting to /login`);
+
+			socket.emit('redirect', '/');
+
+			return;
+		}
+
 		this.collection[socket.request.sessionId] = data;
 	}
 
 	get(socket) {
 
 		debug(`Getting data from game players collection for socketId '${socket.id}'`);
+
+		if (!socket.request.sessionId) {
+
+			debug(`SocketId '${socket.id}' has no sessionId, redirecting to /login`);
+
+			socket.emit('redirect', '/');
+
+			return;
+		}
 
 		return this.collection[socket.request.sessionId];
 	}
@@ -58,16 +76,6 @@ class Player {
 		this.position = position;
 	}
 
-	updateOwnedCells(position) {
-
-		if (!this.ownCells.includes(position)) {
-
-			this.ownCells.push(position);
-
-			return true;
-		}
-	}
-
 	updateAllowedCells(map) {
 
 		this.allowedCells = this.ownCells.reduce((cells, position) => {
@@ -78,7 +86,7 @@ class Player {
 			cells.push(...newNeighbours);
 
 			return cells;
-
+			
 		}, []);
 	}
 }

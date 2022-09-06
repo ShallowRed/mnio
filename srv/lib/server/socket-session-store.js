@@ -5,6 +5,13 @@ export default {
 
 	save(socket, sessionData) {
 
+		if (!socket.request?.session) {
+
+			debug(`No session object found for socketId '${socket.id}'`);
+
+			return;
+		}
+
 		debug(`Saving session data for socketId '${socket.id}'`);
 
 		Object.assign(socket.request.session, sessionData);
@@ -18,7 +25,7 @@ export default {
 
 		if (!socket.request?.session) {
 
-			debug(`No session data found for socketId '${socket.id}'`);
+			debug(`No session object found for socketId '${socket.id}'`);
 
 			return;
 

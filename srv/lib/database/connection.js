@@ -1,46 +1,38 @@
 import * as MySql from 'mysql';
 import { promisify } from 'util';
 
-import { db } from '#config';
-
 import Debug from '#debug';
 const debug = Debug('database |');
 
-const { password, database, ...creds } = db;
-
 export default {
 
-	async makeSureDbExists() {
+	async makeSureDbExists({ password, database, ...creds }) {
 
 		const connection = MySql.createConnection({ password, ...creds });
 
 		debug(`Making sure database '${database}' exists`);
 
-		const result = await promisify(connection.query)
+		await promisify(connection.query)
 			.call(connection, `CREATE DATABASE IF NOT EXISTS ${database}`);
-
-		// debug("Database created:", result);
 
 		connection.end();
 	},
 
-	get pool() {
+	Pool: class {
 
-		if (!this._pool) {
+		constructor(DB) {
 
-			this._pool = MySql.createPool(db);
+			this.pool = MySql.createPool(DB);
 
-			debug("Mysql pool created");
+			debug("MySql pool created");
 		}
 
-		return this._pool;
-	},
+		query(query, args) {
 
-	query(query, args) {
+			// debug("Query:", query, args);
 
-		// debug("Query:", query, args);
-
-		return promisify(this.pool.query)
-			.call(this.pool, query, args);
+			return promisify(this.pool.query)
+				.call(this.pool, query, args);
+		}
 	}
 }

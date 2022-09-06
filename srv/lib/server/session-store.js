@@ -1,23 +1,21 @@
-import expressSession, { MemoryStore } from 'express-session';
+import expressSession from 'express-session';
 import cookieParser from 'cookie-parser';
 
-// import MySql from 'mysql';
-// import mySQLStore from 'express-mysql-session';
+import MySql from 'mysql';
+import mySQLStore from 'express-mysql-session';
 
 import Debug from '#debug';
 const debug = Debug('server   |');
 
 const EXPRESS_SID_KEY = 'connect.sid';
 
-export default function createSessionStore(COOKIE_SECRET, DB_CONFIG) {
+export default function createSessionStore(COOKIE_SECRET, DB, USE_MEMORY_STORE) {
 
-	const isMysql = typeof mySQLStore !== 'undefined';
+	debug(`Creating session store with ${USE_MEMORY_STORE ? 'memory' : 'MySQL'}`);
 
-	debug(`Creating session store with ${isMysql ? 'MySQL' : 'memory'}`);
-
-	const sessionStore = isMysql ?
-		new (mySQLStore(expressSession))({}, MySql.createPool(DB_CONFIG)) :
-		new MemoryStore();
+	const sessionStore = USE_MEMORY_STORE ?
+		new expressSession.MemoryStore() :
+		new (mySQLStore(expressSession))({}, MySql.createPool(DB));
 
 	const parseCookie = cookieParser(COOKIE_SECRET);
 
@@ -43,9 +41,14 @@ export default function createSessionStore(COOKIE_SECRET, DB_CONFIG) {
 
 				sessionStore.load(sessionIdCookie, (error, session) => {
 
-					if (error) return next(error);
+					if (error) {
 
-					else if (!session) return next(new Error('Session load failed'));
+						return next(error);
+
+					} else if (!session) {
+
+						return next(new Error('Session load failed'));
+					}
 
 					req.session = session;
 
