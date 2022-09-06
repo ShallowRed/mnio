@@ -8,6 +8,7 @@ module.exports = {
 		env: {
 			"DEBUG": "app:*",
 			"DEBUG_HIDE_DATE": "true",
+			"USE_MEMORY_STORE": "false",
 		}
 	}
 };

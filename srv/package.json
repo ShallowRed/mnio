@@ -9,6 +9,7 @@
 	},
 	"dependencies": {
 		"cookie-parser": "^1.4.5",
+		"crypto-js": "^4.1.1",
 		"debug": "^4.3.4",
 		"express": "^4.18.1",
 		"express-mysql-session": "^2.1.8",
@@ -21,7 +22,7 @@
 		"#database/*": "./lib/database/*.js",
 		"#game/*": "./lib/game/*.js",
 		"#server/*": "./lib/server/*.js",
-		"#config": "./config.js",
+		"#config": "./app.config.js",
 		"#dist": "./dist",
 		"#debug": "./debug.js"
 	}

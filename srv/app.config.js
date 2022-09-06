@@ -6,10 +6,10 @@ export const DB = {
 	host: process.env?.DB_HOST ?? 'localhost',
 	user: process.env?.DB_USER ?? 'root',
 	password: process.env?.DB_PASSWORD ?? '',
-	database: process.env?.DB_DATABASE ?? 'mnio_rooniax__19',
+	database: process.env?.DB_NAME ?? 'mnio_rooniax__19',
 };
 
-export const USE_MEMORY_STORE = process.env?.USE_MEMORY_STORE ?? true;
+export const USE_MEMORY_STORE = (process.env.USE_MEMORY_STORE && process.env.USE_MEMORY_STORE === 'true') ?? true;
 
 export const DEFAULT_ROWS = process.env?.DEFAULT_ROWS ?? 20;
 export const DEFAULT_COLS = process.env?.DEFAULT_COLS ?? 20;

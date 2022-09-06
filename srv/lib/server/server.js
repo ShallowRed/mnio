@@ -17,7 +17,7 @@ export default function (PORT, sessionStore) {
 
 	const httpServer = http.createServer(app)
 		.listen(PORT, () =>
-			debug(`Server listening on PORT ${PORT}`)
+			debug(`Server listening on port ${PORT}`)
 		);
 
 	return new socketIo.Server(httpServer);

@@ -2,8 +2,8 @@ import Tables from '#database/tables';
 import Pokedex from '#database/pokedex';
 import GAME_TABLES from '#database/tables-config';
 
-import GameMap from '#game/Map';
-import Players from '#game/Players';
+import GameMap from '#game/map';
+import Players from '#game/players';
 
 import Debug from '#debug';
 const debug = Debug('game     |');
@@ -115,9 +115,9 @@ export default class Game {
 
 		await this.fillPalettes(Pokedex);
 
-		const gridState = this.getEmptyGridState({ rows, cols });
+		const gridState = this.getEmptyGridState({ rows: this.defaultRows, cols: this.defaultCols });
 
-		return { gridState, gridId, rows, cols };
+		return { gridState, gridId, rows: this.defaultRows, cols: this.defaultCols };
 	}
 
 	async createGameTables(gridId) {

@@ -1,4 +1,4 @@
-import ClientGame from '#game/ClientGame';
+import ClientGame from '#game/client-game';
 
 import Debug from '#debug';
 const debug = Debug('game     |');
