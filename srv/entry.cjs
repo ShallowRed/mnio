@@ -1,4 +1,4 @@
-import('./app.js')
+import('./lib/app.js')
 	.then(({ app }) => {
 		app();
 	});

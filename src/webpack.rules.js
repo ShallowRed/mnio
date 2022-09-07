@@ -5,31 +5,6 @@ const babelLoader = {
 	use: "babel-loader"
 };
 
-// const imageLoader = path => ({
-// 	type: 'asset/resource',
-// 	generator: {
-// 		filename: `${path}/[name][ext]`,
-// 	}
-// });
-
-const ejsLoader = {
-	test: /\.ejs$/,
-	use: [{
-	  loader: 'ejs-loader',
-	  options: {
-		esModule: false
-	  }
-	}]
-  };
-
-// const fontLoader = path => ({
-// 	type: 'asset/inline',
-// 	// type: 'asset/resource',
-// 	// generator: {
-// 	//   filename: `${path}/[name][ext]`,
-// 	// }
-// });
-
 const cssLoader = {
 	loader: "css-loader",
 	options: {
@@ -55,17 +30,24 @@ const postCssLoader = {
 	}
 };
 
-// const resolveUrlLoader = {
-// 	loader: 'resolve-url-loader',
-// };
+const resolveUrlLoader = {
+	loader: 'resolve-url-loader',
+};
 
-// const sassLoader = {
-// 	loader: 'sass-loader',
-// 	options: {
-// 		sourceMap: true,
-// 		webpackImporter: false,
-// 	}
-// };
+const sassLoader = {
+	loader: 'sass-loader',
+	options: {
+		sourceMap: true,
+		webpackImporter: false,
+	}
+};
+
+const imageLoader = {
+	type: 'asset/resource',
+	generator: {
+		filename: `img/[name][ext]`,
+	}
+};
 
 module.exports = (isDevMode) => ({
 
@@ -75,26 +57,18 @@ module.exports = (isDevMode) => ({
 			test: /\.js$/,
 			...babelLoader,
 		},
-		// {
-		// 	test: new RegExp(extensions.images),
-		// 	...imageLoader(paths.images),
-		// },
 		{
-			test: /\.ejs$/,
-			...ejsLoader,
+			test: /\.(png|jpe?g|gif|svg)$/,
+			...imageLoader,
 		},
-		// {
-		// 	test: new RegExp(extensions.fonts),
-		// 	...fontLoader(paths.fonts)
-		// },
 		{
 			test: /\.(sa|sc|c)ss$/,
 			use: [
 				MiniCssExtractPlugin.loader,
 				cssLoader,
 				postCssLoader,
-				// resolveUrlLoader,
-				// sassLoader
+				resolveUrlLoader,
+				sassLoader
 			]
 		}
 	].filter(Boolean)

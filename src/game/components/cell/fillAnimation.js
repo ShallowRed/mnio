@@ -1,6 +1,6 @@
 import { getCoordInView } from './checkPosInView';
 
-const ANIMATION_DURATION = 600;
+const ANIMATION_DURATION = 400;
 const N_STRIPES = 8;
 
 export const fillAnimation = (position, Game) => {
@@ -85,14 +85,20 @@ const drawStripe = (stripeIndex, [startX, endX], {
   let posY;
 
   if (stripeIndex < numSmallStripes) {
+
     posY = cellSize - lineWidth * (stripeIndex + 0.5);
-  } else if (stripeIndex < N_STRIPES) {
-    ++lineWidth;
-    posY = lineWidth * (N_STRIPES - stripeIndex - 0.5);
-  } else return;
+  
+} else if (stripeIndex < N_STRIPES) {
+
+	++lineWidth;
+
+	posY = lineWidth * (N_STRIPES - stripeIndex - 0.5);
+
+} else return;
 
   ctx.lineWidth = lineWidth;
   ctx.strokeStyle = sColor;
+
   ctx.beginPath();
   ctx.moveTo(x + startX, y + posY);
   ctx.lineTo(x + endX, y + posY);

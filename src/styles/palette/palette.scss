@@ -1,0 +1,31 @@
+@import "../commons/lobby";
+
+.palette {
+	width: 100%;
+	max-width: 400px;
+	display: flex;
+	justify-content: space-around;
+}
+
+.palette > div {
+	box-sizing: border-box;
+	border-radius: 5px;
+	border: solid 1px var(--dark);
+	box-shadow: #aaa 5px 5px;
+	width: 3rem;
+	height: 3rem;
+	transition: background 0.2s ease;
+}
+
+section.buttons {
+	margin-top: 4rem;
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+}
+
+form {
+	width: 100%;
+	margin-top: 1rem;
+}

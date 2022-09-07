@@ -17,7 +17,7 @@ import './utils/polyfill';
 export default class Game {
 
   constructor(data, socket) {
-    this.duration = 0.2;
+    this.duration = 0.15;
     this.socket = socket;
 	
     Object.assign(this, data.Game);

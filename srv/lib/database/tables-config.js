@@ -15,9 +15,11 @@ export default {
 	"gridUsers": {
 		name: "grid_?__users",
 		columns: {
-			"userId": "MEDIUMINT PRIMARY KEY NOT NULL AUTO_INCREMENT",
-			"userName": "VARCHAR(15) NOT NULL",
-			"password": "VARCHAR(20) NOT NULL"
+			"userId": "INT PRIMARY KEY NOT NULL AUTO_INCREMENT",
+			"username": "VARCHAR(255) NOT NULL",
+			"password": "VARCHAR(255) DEFAULT NULL",
+			"salt": "VARCHAR(255) DEFAULT NULL",
+			"paletteId": "SMALLINT DEFAULT NULL"
 		}
 	},
 

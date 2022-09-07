@@ -1,7 +1,7 @@
 import * as MySql from 'mysql';
 import { promisify } from 'util';
 
-import Debug from '#debug';
+import Debug from '#config/debug';
 const debug = Debug('database |');
 
 export default {

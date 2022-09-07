@@ -1,11 +1,5 @@
-import '../global.css';
-
-import './styles/main.css';
-import './styles/help.css';
-import './styles/menu.css';
-import './styles/map.css';
-import './styles/player.css';
-import './styles/ui.css';
+import 'styles/commons/commons.scss';
+import 'styles/game/index.scss';
 
 ///////////////////////
 
@@ -24,7 +18,7 @@ socket.once("initGame", data => {
 
 	const hasAlreadyPlayed = data.Game.owned.length;
 	
-	Tutoriel[hasAlreadyPlayed ? "end" : "init"](socket);
+	// Tutoriel[hasAlreadyPlayed ? "end" : "init"](socket);
 
 	showAll();
 });
@@ -37,4 +31,4 @@ function showAll() {
   [...document.querySelectorAll('body>*')].forEach(el => {
     el.style.opacity = 1;
   });
-};
+}

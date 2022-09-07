@@ -1,24 +1,23 @@
-import Tables from '#database/tables';
 import Pokedex from '#database/pokedex';
-import GAME_TABLES from '#database/tables-config';
 
 import GameMap from '#game/map';
-import Players from '#game/players';
+import { Players } from '#game/players';
 
-import Debug from '#debug';
+import Debug from '#config/debug';
 const debug = Debug('game     |');
 
 import clientConnections from '#game/client-connections';
-import connection from '#database/connection';
 
 // to end game: "UPDATE grids SET isOver = ? WHERE gridId = ?"
 const gameDate = Math.floor(Date.now() / 1000);
 
 export default class Game {
 
-	constructor(io, socketSessionStore, socketSessionMiddleware, { DEFAULT_ROWS, DEFAULT_COLS }) {
+	constructor(io, tables, socketSessionStore, socketSessionMiddleware, { DEFAULT_ROWS, DEFAULT_COLS }) {
 
 		this.io = io;
+
+		this.tables = tables;
 
 		this.sessionStore = socketSessionStore;
 
@@ -28,11 +27,9 @@ export default class Game {
 		this.defaultCols = DEFAULT_COLS;
 	}
 
-	async init(DB) {
+	async init(tables) {
 
 		this.players = new Players();
-
-		this.tables = new Tables(GAME_TABLES, new connection.Pool(DB));
 
 		const { palettes, gridState, rows, cols } = await this.getGameData();
 
@@ -51,22 +48,33 @@ export default class Game {
 		}
 	}
 
-	async fetchPlayerData(userId) {
+	getShuffledPalettes(palette) {
 
-		const joined = await this.tables.get('gridPalettes')
-			.join('palettes', { on: { 'paletteId': 'paletteId' } })
-			.select('*', { where: { "userId": userId }, limit: 1 });
+		return [...this.palettes].sort(() => Math.random() - 0.5);
+	}
 
-		const palette = Object.keys(joined)
+	async fetchPlayerData(userId, paletteId) {
+
+		let palette = await this.tables.get('palettes')
+			.select('*', { where: { "paletteId": paletteId }, limit: 1 });
+
+		palette = Object.keys(palette)
 			.filter(key => key.match(/color/))
-			.map(key => `#${joined[key]}`);
+			.map(key => `#${palette[key]}`);
 
-		const ownCells = await this.tables.get('gridEvents')
+		let ownCells = await this.tables.get('gridEvents')
 			.select('cellid', { where: { "userId": userId } });
 
+		ownCells = ownCells?.map(({ cellid }) => cellid) ?? []
+
+		const position = ownCells.length ?
+			ownCells[0] :
+			this.map.getRandomPosition();
+
 		return {
+			position,
 			palette,
-			ownCells: ownCells?.map(({ cellid }) => cellid) ?? []
+			ownCells
 		};
 	}
 
@@ -125,7 +133,7 @@ export default class Game {
 		return Promise.all([
 			this.tables.create("gridEvents", gridId),
 			this.tables.create("gridPalettes", gridId),
-			this.tables.create("gridUsers", gridId),
+			// this.tables.create("gridUsers", gridId),
 			this.tables.create("palettes", Pokedex.id)
 		]);
 	}

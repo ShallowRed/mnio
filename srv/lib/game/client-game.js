@@ -1,4 +1,4 @@
-import Debug from '#debug';
+import Debug from '#config/debug';
 const debug = Debug('game     |');
 
 export default class ClientGame {

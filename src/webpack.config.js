@@ -7,36 +7,34 @@ const PUBLIC_FOLDER = '../dist';
 
 const pages = [
 	{
-		entry: "/login/index.js",
-		template: "/login/index.ejs",
-		name: "login",
-		outputPath: ".",
+		entry: "/lobby/index.js",
+		name: "lobby",
 	},
 	{
-		entry: "/paletteSelection/paletteSelection.js",
-		template: "paletteSelection/paletteSelection.ejs",
+		entry: "/palette/index.js",
 		name: "palette",
-		outputPath: "./palette",
 	},
 	{
 		entry: "/game/index.js",
-		template: "/game/game.ejs",
 		name: "game",
-		outputPath: "./game",
 	}
 ];
 
-const webpackConfig = (isDevMode, page) => ({
+const webpackConfig = (isDevMode, { entry, name }) => ({
 
-	entry: page.entry,
+	entry,
 
 	output: {
-		path: resolve(__dirname, PUBLIC_FOLDER, page.outputPath),
-		filename: `${page.name}.js`,
+		path: resolve(__dirname, PUBLIC_FOLDER),
+		filename: `scripts/${name}.js`,
 	},
 
 	resolve: {
-		modules: [resolve(__dirname, 'node_modules'), 'node_modules']
+		modules: [resolve(__dirname, 'node_modules'), 'node_modules'],
+		alias: {
+			styles: resolve(__dirname, 'styles'),
+			img: resolve(__dirname, 'assets/img'),
+		  },
 	},
 
 	target: "web",

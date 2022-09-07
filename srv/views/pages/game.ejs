@@ -1,0 +1,54 @@
+<%- include('../partials/header.ejs', locals) %>
+
+	<section id="game">
+		<div id="view" style="position: relative;">
+			<canvas></canvas>
+			<canvas></canvas>
+			<canvas></canvas>
+			<div id="player"></div>
+			<div id="shadow"></div>
+		</div>
+
+		<div id="buttons">
+			<button type="button" class="zoom" id="zoomin"><img src="/assets/img/zoom-in.svg" alt=""></button>
+			<button type="button" class="zoom" id="zoomout"><img src="/assets/img/zoom-out.svg" alt=""></button>
+			<button type="button" class="color"></button>
+			<button type="button" class="color"></button>
+			<button type="button" class="color"></button>
+			<button type="button" class="color"></button>
+			<button type="button" class="color"></button>
+		</div>
+	</section>
+
+	<div id="menu">
+		<form action="/logout" method="post">
+		<button type="submit">
+			<img src="/assets/img/home.svg" alt="">
+			<p><b>&#8592; Retour au menu</b></p>
+		</button>
+		</form>
+		<button type="button" onclick="window.location.reload()">
+			<img src="/assets/img/refresh.svg" alt="">
+			<p><b>&#8592; En cas de bug</b></p>
+		</button>
+		<button type="button" id="help-btn">
+			<img src="/assets/img/help.svg" alt="">
+			<p><b>&#8592; Aide</b></p>
+		</button>
+	</div>
+
+	<section id="help">
+		<div id="help-block-move" class="help-block"> </div>
+		<div>
+			<svg fill="var(--grey)" stroke="var(--dark)" width="24" height="24" viewBox="0 0 24 24">
+				<path d="M5 7v-6l11 11-11 11v-6h-13v-10z" />
+			</svg>
+			<svg fill="var(--grey)" stroke="var(--dark)" width="24" height="24" viewBox="0 0 24 24">
+				<path d="M5 7v-6l11 11-11 11v-6h-13v-10z" />
+			</svg>
+			<div id="help-block-zoom" class="help-block"> </div>
+			<div id="help-block-fill" class="help-block"> </div>
+		</div>
+	</section>
+
+<%- include('../partials/footer.ejs', locals) %>

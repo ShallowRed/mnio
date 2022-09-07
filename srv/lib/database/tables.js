@@ -1,4 +1,4 @@
-import Debug from '#debug';
+import Debug from '#config/debug';
 const debug = Debug('database |');
 
 export default class Tables {
@@ -119,7 +119,14 @@ class Table {
 
 			if (results.length) {
 
-				return results[0];
+				if (columns === "*") {
+
+					return results[0];
+
+				} else {
+
+					return results[0][columns];
+				}
 			}
 
 		} else {
@@ -143,7 +150,6 @@ class Table {
 				.join(" AND ");
 
 			query += ` WHERE ${entries}`;
-
 			return this.connection.query(query);
 
 		} else {

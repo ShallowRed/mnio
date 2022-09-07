@@ -118,14 +118,14 @@ const Help = {
   },
 
   hide() {
-    helpIcon.src = `dist/img/icons/help.svg`;
+    helpIcon.src = `/assets/img/help.svg`;
     [helpContainer, ...menuCaptions].forEach(el => {
       el.style.display = "none";
     });
   },
 
   show() {
-    helpIcon.src = `dist/img/icons/close.svg`;
+    helpIcon.src = `/assets/img/close.svg`;
     [helpContainer, ...menuCaptions].forEach(el => {
       el.style.display = "block";
     });

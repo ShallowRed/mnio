@@ -1,7 +1,7 @@
-import Debug from '#debug';
+import Debug from '#config/debug';
 const debug = Debug('game     |');
 
-export default class Players {
+export class Players {
 
 	collection = {};
 
@@ -48,22 +48,9 @@ export default class Players {
 			delete this.collection[socket.request.sessionId];
 		}
 	}
-
-	create(socket, { userId, palette, position, ownCells }, map) {
-
-		debug(`Creating new player with socketId '${socket.id}' and userId '${userId}'`);
-
-		const player = new Player({ userId, palette, position, ownCells });
-
-		player.updateAllowedCells(map);
-
-		this.set(socket, player);
-
-		return player;
-	}
 }
 
-class Player {
+export class Player {
 
 	constructor({ userId, position, palette, ownCells }) {
 
@@ -86,7 +73,7 @@ class Player {
 			cells.push(...newNeighbours);
 
 			return cells;
-			
+
 		}, []);
 	}
 }

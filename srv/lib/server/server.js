@@ -4,21 +4,23 @@ import * as socketIo from 'socket.io';
 
 import Router from "#server/router";
 
-import Debug from '#debug';
-const debug = Debug('server   |');
 
-export default function (PORT, sessionStore) {
+export default function (PORT, tables, sessionStore) {
 
 	debug(`Creating server`);
 
+	const router = Router(sessionStore, tables);
+
 	const app = express()
-		.use('/', Router)
+		.use('/', router)
 		.use(sessionStore);
+
+	app.set('view engine', 'ejs');
 
 	const httpServer = http.createServer(app)
 		.listen(PORT, () =>
 			debug(`Server listening on port ${PORT}`)
 		);
 
-	return new socketIo.Server(httpServer);
+	const io = new socketIo.Server(httpServer);
 }

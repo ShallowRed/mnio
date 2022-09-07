@@ -1,0 +1,14 @@
+<%- include('../partials/header.ejs', locals) %>
+
+<main>
+	<h1><%= siteName %></h1>
+	<%- include('../partials/info.ejs', locals) %>
+	<form action="/<%= action %>" method="post">
+		<% for (const field of fields) { %>
+		<%- include('../partials/form-field.ejs', field) %>
+		<% } %>
+		<button class="primary" type="submit"><%= submitMessage %></button>
+	</form>
+</main>
+
+<%- include('../partials/footer.ejs', locals) %>
