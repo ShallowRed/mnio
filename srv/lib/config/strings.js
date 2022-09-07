@@ -1,8 +1,8 @@
 export const STRINGS = {
 
-	SITE_NAME: 'My Awesome Site',
+	SITE_NAME: 'Rooniax 2k22',
 
-	SITE_TEXT: 'This is my awesome site',
+	SITE_TEXT: 'Participez au dessin collaboratif pour l\'anniv du Rooniax',
 
 	ENTER_USERNAME: 'Saisissez un nom d\'utilisateur',
 	USERNAME_NEW: 'Ce nom d\'utilisateur n\'existe pas, s\'inscrire',

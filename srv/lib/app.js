@@ -3,7 +3,7 @@ import http from 'http';
 import * as socketIo from 'socket.io';
 
 import createRouter from "#server/router";
-import Game from '#game/Game';
+import Game from '#game/game';
 import connection from '#database/connection';
 
 import createSessionStore from '#server/session-store';
