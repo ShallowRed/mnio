@@ -1,23 +1,30 @@
 import express from 'express';
 import http from 'http';
+import serveStatic from 'serve-static';
 import * as socketIo from 'socket.io';
 
-import createRouter from "#server/router";
-import Game from '#game/game';
-import connection from '#database/connection';
+import { resolve } from 'path';
 
+import connection from '#database/connection';
+import TABLES_BUEPRINTS from '#config/tables-blueprints';
+import Tables from '#database/tables';
+
+import createRouter from "#server/router";
 import createSessionStore from '#server/session-store';
-import socketSessionStore from '#server/socket-session-store';
+
+import Game from '#game/game';
+import clientConnections from '#game/client-connections';
+
+import GameStarter from '#game/game-setup';
+
+import Pokedex from '#config/pokedex';
 
 import { PORT, DB, COOKIE_SECRET, USE_MEMORY_STORE, DEFAULT_ROWS, DEFAULT_COLS } from '#config/app.config';
-
-import TABLES_CONFIG from '#database/tables-config';
-import Tables from '#database/tables';
 
 import Debug from '#config/debug';
 const debug = Debug('server   |');
 
-const USERS_GRID_ID = 1;
+const PUBLIC_FOLDER_PATH = '../dist';
 
 export async function app() {
 
@@ -25,16 +32,20 @@ export async function app() {
 
 	const pool = new connection.Pool(DB);
 
-	const tables = new Tables(TABLES_CONFIG, pool);
+	const tables = new Tables(pool, TABLES_BUEPRINTS);
 
-	const { sessionStore, socketSessionMiddleware } = createSessionStore(COOKIE_SECRET, DB, USE_MEMORY_STORE);
+	const gameStarter = new GameStarter(tables, Pokedex, DEFAULT_ROWS, DEFAULT_COLS);
 
-	const router = await createRouter(tables, sessionStore, USERS_GRID_ID);
+	const gameData = await gameStarter.getGameData();
+
+	const sessionMiddleware = createSessionStore(COOKIE_SECRET, DB, USE_MEMORY_STORE);
+
+	const router = await createRouter(tables, sessionMiddleware);
 
 	const app = express()
 		.set('view engine', 'ejs')
 		.set('views', 'views')
-		.use(sessionStore)
+		.use('/assets', serveStatic(resolve(PUBLIC_FOLDER_PATH), { index: false }))
 		.use('/', router)
 
 	const httpServer = http
@@ -43,7 +54,15 @@ export async function app() {
 
 	const io = new socketIo.Server(httpServer);
 
-	const game = new Game(io, tables, socketSessionStore, socketSessionMiddleware, { DEFAULT_ROWS, DEFAULT_COLS });
+	const game = new Game(io, tables, { DEFAULT_ROWS, DEFAULT_COLS });
 
-	game.init();
+	for (const namespace in clientConnections) {
+
+		io.of(namespace)
+			.use((socket, next) => {
+				sessionMiddleware(socket.request, {}, next);
+			})
+	}
+
+	game.init(gameData);
 }

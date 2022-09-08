@@ -5,48 +5,40 @@ export class Players {
 
 	collection = {};
 
-	constructor() { }
+	constructor(tables, map, palettes) {
 
-	set(socket, data) {
+		this.tables = tables;
 
-		debug(`Saving data in game players collection for socketId '${socket.id}'`);
+		this.map = map;
 
-		if (!socket.request.sessionId) {
-
-			debug(`SocketId '${socket.id}' has no sessionId, redirecting to /login`);
-
-			socket.emit('redirect', '/');
-
-			return;
-		}
-
-		this.collection[socket.request.sessionId] = data;
+		this.palettes = palettes;
 	}
 
-	get(socket) {
+	get(userId) {
 
-		debug(`Getting data from game players collection for socketId '${socket.id}'`);
-
-		if (!socket.request.sessionId) {
-
-			debug(`SocketId '${socket.id}' has no sessionId, redirecting to /login`);
-
-			socket.emit('redirect', '/');
-
-			return;
-		}
-
-		return this.collection[socket.request.sessionId];
+		return this.collection[userId];
 	}
 
-	delete(socket) {
+	set(userId, player) {
 
-		if (this.getSession(socket)) {
+		this.collection[userId] = player;
+	}
 
-			debug(`Deleting data from game players collection for socketId '${socket.id}'`);
 
-			delete this.collection[socket.request.sessionId];
-		}
+	async create({ userId, paletteId }) {
+
+		const palette = this.palettes.find(p => p.id === paletteId).colors;
+
+		let ownCells = await this.tables.get('gridEvents')
+			.select('cellid', { where: { "userId": userId } });
+
+		const position = ownCells?.[0] ?? this.map.getRandomPosition();
+
+		const player = new Player({ userId, position, palette, ownCells });
+
+		this.set(userId, player);
+
+		return player;
 	}
 }
 

@@ -5,20 +5,20 @@ export default class Tables {
 
 	collection = {};
 
-	constructor(tablesConfig, connection) {
+	constructor(connection, blueprints) {
 
 		this.connection = connection;
 
-		this.tablesConfig = tablesConfig;
+		this.blueprints = blueprints;
 	}
 
-	async create(key, id) {
+	async create(key, id, ...args) {
 
-		const name = this.tablesConfig[key]['name'].replace(/\?/g, id);
+		const name = this.blueprints[key]['name'].replace(/\?/g, id);
 
-		const columns = this.tablesConfig[key]['columns'];
+		const columns = this.blueprints[key]['columns'];
 
-		const table = new Table(this, this.connection, key, id, name, columns);
+		const table = new Table(this, key, name, columns, ...args);
 
 		await table.create();
 
@@ -35,19 +35,19 @@ export default class Tables {
 
 class Table {
 
-	constructor(tables, connection, key, id, name, columns) {
+	constructor(tables, key, name, columns, ...args) {
 
 		this.tables = tables;
 
-		this.connection = connection;
+		this.connection = tables.connection;
 
 		this.key = key;
-
-		this.id = id;
 
 		this.name = name;
 
 		this.columns = columns;
+
+		this.args = args;
 
 		return this;
 	}
@@ -62,7 +62,7 @@ class Table {
 
 		debug(`Making sure table ${this.key} exists`);
 
-		await this.connection.query(query);
+		await this.connection.query(query, this.args);
 
 		return this;
 	}
@@ -131,7 +131,14 @@ class Table {
 
 		} else {
 
-			return results;
+			if (columns === "*") {
+
+				return results;
+
+			} else {
+
+				return results?.map(result => result[columns]) ?? [];
+			}
 		}
 	}
 

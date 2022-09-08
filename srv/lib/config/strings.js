@@ -2,7 +2,9 @@ export const STRINGS = {
 
 	SITE_NAME: 'Rooniax 2k22',
 
-	SITE_TEXT: 'Participez au dessin collaboratif pour l\'anniv du Rooniax',
+	SITE_TEXT: `Participez au dessin collaboratif pour l\'anniv d\'Antoine 
+	(aussi connu sous le nom de Roonie, Rooniax, Niax, Trounex, et plus récément Toutoune).
+	On veut voir des dessins, des messages, pas trop de sguegs mais un peu quand même !`,
 
 	ENTER_USERNAME: 'Saisissez un nom d\'utilisateur',
 	USERNAME_NEW: 'Ce nom d\'utilisateur n\'existe pas, s\'inscrire',

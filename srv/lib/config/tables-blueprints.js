@@ -33,23 +33,11 @@ export default {
 		}
 	},
 
-	"gridPalettes": {
-		name: "grid_?__palettes",
-		columns: {
-			"userId": "SMALLINT PRIMARY KEY NOT NULL",
-			"paletteId": "SMALLINT NOT NULL"
-		}
-	},
-
 	"palettes": {
 		name: "palettes_?",
 		columns: {
-			"paletteId": "INT PRIMARY KEY NOT NULL AUTO_INCREMENT",
-			"color1": "VARCHAR(6) NOT NULL",
-			"color2": "VARCHAR(6) NOT NULL",
-			"color3": "VARCHAR(6) NOT NULL",
-			"color4": "VARCHAR(6) NOT NULL",
-			"color5": "VARCHAR(6) NOT NULL"
+			"paletteId": "INT NOT NULL",
+			"colors": "VARCHAR(?) NOT NULL",
 		}
 	}
 };

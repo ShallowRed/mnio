@@ -1,10 +1,45 @@
+import { Strategy as LocalStrategy } from 'passport-local';
+
 import saltHash from '#database/salt-hash';
 
 import Debug from '#config/debug';
 const debug = Debug('passport |');
 
-export function serializeUser(user, done) {
+export default function (passport, table) {
+
+	passport.serializeUser(serializeUser);
+
+	passport.deserializeUser(deserializeUser);
+
+	passport.use('local-username', new LocalStrategy({
+		usernameField: 'username',
+		passwordField: 'username',
+		passReqToCallback: true
+	}, verifyUsername(table)));
+
+	passport.use('local-signup', new LocalStrategy({
+		usernameField: 'password',
+		passwordField: 'password2',
+		passReqToCallback: true
+	}, verifySignup(table)));
+
+	passport.use('local-login', new LocalStrategy({
+		usernameField: 'password',
+		passwordField: 'password',
+		passReqToCallback: true
+	}, verifyLogin(table)));
+
+	passport.use('local-palette', new LocalStrategy({
+		usernameField: 'paletteId',
+		passwordField: 'paletteId',
+		passReqToCallback: true
+	}, verifyPalette(table)));
+}
+
+function serializeUser(user, done) {
+
 	// debug('- serializeUser:', user);
+	
 	done(null, {
 		userId: user?.userId,
 		username: user?.username,
@@ -13,14 +48,14 @@ export function serializeUser(user, done) {
 	});
 }
 
-export async function deserializeUser(user, done) {
+async function deserializeUser(user, done) {
 
 	// debug('- deserializeUser:', user);
 
 	done(null, user);
 }
 
-export function verifyUsername(table) {
+function verifyUsername(table) {
 
 	return async (req, username, _, done) => {
 
@@ -53,7 +88,7 @@ export function verifyUsername(table) {
 	}
 }
 
-export function verifySignup(table) {
+function verifySignup(table) {
 
 	return async (req, password, password2, done) => {
 
@@ -88,7 +123,7 @@ export function verifySignup(table) {
 	}
 }
 
-export function verifyLogin(table) {
+function verifyLogin(table) {
 
 	return async (req, password, _, done) => {
 
@@ -123,7 +158,7 @@ export function verifyLogin(table) {
 	}
 }
 
-export function verifyPalette(table) {
+function verifyPalette(table) {
 
 	return async (req, paletteId, _, done) => {
 

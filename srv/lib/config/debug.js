@@ -6,5 +6,7 @@ export default function(key) {
 
 	debug.log = console.info.bind(console);
 
-	return debug;
+	debug.error = console.error.bind(console);
+
+	return debug;s
 }
