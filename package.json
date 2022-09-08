@@ -17,19 +17,11 @@
 		"npm": ">=6.0.0"
 	},
 	"scripts": {
-		"dev": "concurrently \"npm:dev:bundle\" \"npm:dev:server\"",
-		"dev:open": "concurrently \"npm:dev\" \"npm:open\"",
 		"dev:server": "npm run dev --prefix srv",
 		"dev:bundle": "npm run dev --prefix src",
+		"start": "npm run prod --prefix srv",
 		"bundle": "npm run prod --prefix src",
-		"open": "open-cli http://localhost:3000",
 		"install:dev": "npm install && npm install --prefix srv && npm install --prefix src",
-		"install:prod": "npm install --omit=dev --prefix srv",
-		"start": "npm run prod --prefix srv"
-	},
-	"devDependencies": {
-		"concurrently": "^7.1.0",
-		"live-server": "^1.2.2",
-		"open-cli": "^7.0.1"
+		"install:prod": "npm install --omit=dev --prefix srv"
 	}
 }

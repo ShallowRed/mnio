@@ -11,56 +11,80 @@ export default class {
 		this.defaultCols = defaultCols;
 	}
 
-	async getGameData() {
+	async getGameData(gridId = null) {
 
 		const gamesTable = await this.tables.create("grids");
 
-		const lastGame = await gamesTable.select("*", { orderBy: 'gridId DESC', limit: 1 });
+		const previousGameData = gridId ?
+			await gamesTable.select("*", { where: { "gridId": gridId }, limit: 1 }) :
+			await gamesTable.select("*", { orderBy: 'lastMod DESC', limit: 1 });
 
 		const timeStamp = Math.floor(Date.now() / 1000);
 
-		const gameData = lastGame ?
-			await this.fetchLastGame(lastGame, timeStamp) :
+		const gameData = previousGameData ?
+			await this.getExistingGameData(previousGameData, timeStamp) :
 			await this.createNewGame(timeStamp);
 
-		gameData.palettes = await this.getPalettes();
+		const palettes = await this.tables.get("palettes")
+			.select("*");
 
-		return gameData;
+		return {
+			...gameData,
+			gridState: this.parseGridState(gameData),
+			palettes: palettes.map(this.decodePalette)
+		};
 	}
 
-	async fetchLastGame(lastGame, timeStamp) {
+	async getExistingGameData(gameData, timeStamp) {
 
-		const { gridId, gridRows, gridCols } = lastGame;
+		const {
+			gridId,
+			gridRows: rows,
+			gridCols: cols,
+			palettesLengths
+		} = gameData;
 
 		await this.createTables(gridId);
 
 		const gridEvents = await this.tables.get("gridEvents").select("*");
 
-		const gridState = this.parseGridState(gridEvents, gridRows, gridCols);
-
 		this.tables.get('grids')
 			.update({ "lastMod": timeStamp }, { where: { "gridId": gridId } });
 
-		return { gridState, gridId, rows: gridRows, cols: gridCols };
+		return {
+			gridId,
+			gridEvents,
+			palettesLengths,
+			rows,
+			cols
+		};
 	}
 
 	async createNewGame(timeStamp) {
 
+		const palettesLengths = this.Pokedex.lengths;
+		const rows = this.defaultRows;
+		const cols = this.defaultCols;
+
 		const gridId = await this.tables.get('grids').insert({
-			gridRows: this.defaultRows,
-			gridCols: this.defaultCols,
-			lastMod: timeStamp,
-			palettesId: this.Pokedex.id,
-			isOver: 0
+			"gridRows": rows,
+			"gridCols": cols,
+			"palettesId": this.Pokedex.id,
+			"palettesLengths": palettesLengths,
+			"lastMod": timeStamp,
+			"isOver": 0
 		});
 
 		await this.createTables(gridId);
 
-		await this.fillPalettes(this.Pokedex);
+		await this.insertPalettes(this.Pokedex.palettes);
 
-		const gridState = getEmptyGridState({ rows: this.defaultRows, cols: this.defaultCols });
-
-		return { gridState, gridId, rows: this.defaultRows, cols: this.defaultCols };
+		return {
+			gridId,
+			palettesLengths,
+			rows,
+			cols
+		};
 	}
 
 	async createTables(gridId) {
@@ -72,52 +96,46 @@ export default class {
 		]);
 	}
 
-	async fillPalettes() {
+	async insertPalettes(palettes) {
 
 		const table = this.tables.get("palettes");
 
-		return Promise.all(
-			this.Pokedex.palettes.map((palette, i) => {
-				return table.insert({
-					'paletteId': i + 1,
-					'colors': palette.join(''),
-				});
-			})
+		return Promise.all(palettes
+			.map(this.encodePalette)
+			.map(palette => table.insert(palette))
 		);
 	}
 
-	async getPalettes() {
-
-		const palettes = await this.tables.get("palettes")
-			.select("*");
-
-		return palettes.map(({ paletteId, colors }) => {
-			return {
-				id: paletteId,
-				colors: colors.match(/.{1,6}/g).map(color => `#${color}`)
-			};
-		})
+	encodePalette(palette, i) {
+		return {
+			"paletteId": i + 1,
+			"colors": palette.join(''),
+		};
 	}
 
-	parseGridState(gridEvents, rows, cols) {
+	decodePalette({ paletteId, colors }) {
+		return {
+			id: paletteId,
+			colors: colors.match(/.{1,6}/g).map(color => `#${color}`)
+		};
+	};
 
-		const gridState = getEmptyGridState({ rows, cols });
+	parseGridState({ rows, cols, gridEvents = null }) {
 
-		let i = 0;
+		const gridState = new Array(rows * cols).fill(null);
 
-		for (i; i < gridEvents.length; i++) {
+		if (gridEvents) {
 
-			const { cellid, color } = gridEvents[i];
+			let i = 0;
 
-			gridState[cellid] = color;
+			for (i; i < gridEvents.length; i++) {
 
+				const { cellid, color } = gridEvents[i];
+
+				gridState[cellid] = color;
+			}
 		}
 
 		return gridState;
 	}
-}
-
-function getEmptyGridState({ rows, cols }) {
-
-	return new Array(rows * cols).fill(null);
 }

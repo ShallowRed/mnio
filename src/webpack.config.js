@@ -7,11 +7,11 @@ const PUBLIC_FOLDER = '../dist';
 
 const pages = [
 	{
-		entry: "/lobby/index.js",
+		entry: "/lobby/login.js",
 		name: "lobby",
 	},
 	{
-		entry: "/palette/index.js",
+		entry: "/lobby/palette.js",
 		name: "palette",
 	},
 	{

@@ -14,9 +14,9 @@ export default class ClientGame {
 
 	spawnPlayer() {
 
-		this.socket.emit('initGame', this.initialData);
+		this.socket.emit('INIT_GAME', this.initialData);
 
-		this.socket.broadcast.emit("newPosition", [null, this.player.position]);
+		this.socket.broadcast.emit("NEW_POSITION", [null, this.player.position]);
 
 		this.game.map.newPosition([null, this.player.position]);
 	}
@@ -41,15 +41,15 @@ export default class ClientGame {
 
 	listenGameEvents() {
 
-		this.socket.on('move', direction => {
+		this.socket.on('MOVE', direction => {
 
 			const newPosition = this.checkMove(direction);
 
 			if (newPosition) {
 
-				this.socket.emit("newPlayerPos", newPosition);
+				this.socket.emit("NEW_PLAYER_POSITION", newPosition);
 
-				this.socket.broadcast.emit("newPosition", [this.player.position, newPosition]);
+				this.socket.broadcast.emit("NEW_POSITION", [this.player.position, newPosition]);
 
 				this.game.map.newPosition([this.player.position, newPosition]);
 
@@ -57,7 +57,7 @@ export default class ClientGame {
 			}
 		});
 
-		this.socket.on('fill', cell => {
+		this.socket.on('FILL', cell => {
 
 			this.game.tables.get("gridEvents").insert({
 				userId: this.player.userId,
@@ -67,7 +67,7 @@ export default class ClientGame {
 
 			this.game.map.saveFill(cell);
 
-			this.socket.broadcast.emit('newFill', cell);
+			this.socket.broadcast.emit('NEW_FILL', cell);
 
 			if (!this.player.ownCells.includes(cell.position)) {
 
@@ -75,10 +75,10 @@ export default class ClientGame {
 	
 				this.player.updateAllowedCells(this.game.map);
 				
-				this.socket.emit('allowedCells', this.player.allowedCells);
+				this.socket.emit('ALLOWED_CELLS', this.player.allowedCells);
 			}
 
-			this.socket.emit('confirmFill');
+			this.socket.emit('CONFIRM_FILL');
 		});
 
 		this.socket.on('disconnect', () => {
@@ -89,7 +89,7 @@ export default class ClientGame {
 
 				this.game.map.newPosition([this.player.position, null]);
 
-				this.socket.broadcast.emit("newPosition", [this.player.position, null])
+				this.socket.broadcast.emit("NEW_POSITION", [this.player.position, null])
 			}
 		});
 	}

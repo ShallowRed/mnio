@@ -8,16 +8,14 @@ import { resolve } from 'path';
 import connection from '#database/connection';
 import TABLES_BUEPRINTS from '#config/tables-blueprints';
 import Tables from '#database/tables';
+import Pokedex from '#config/pokedex';
 
 import createRouter from "#server/router";
 import createSessionStore from '#server/session-store';
 
+import GameStarter from '#game/game-setup';
 import Game from '#game/game';
 import clientConnections from '#game/client-connections';
-
-import GameStarter from '#game/game-setup';
-
-import Pokedex from '#config/pokedex';
 
 import { PORT, DB, COOKIE_SECRET, USE_MEMORY_STORE, DEFAULT_ROWS, DEFAULT_COLS } from '#config/app.config';
 

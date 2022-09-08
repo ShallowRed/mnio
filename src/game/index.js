@@ -1,3 +1,10 @@
+import 'img/close.svg';
+import 'img/help.svg';
+import 'img/home.svg';
+import 'img/refresh.svg';
+import 'img/zoom-in.svg';
+import 'img/zoom-out.svg';
+
 import 'styles/commons/commons.scss';
 import 'styles/game/index.scss';
 
@@ -10,9 +17,9 @@ import Game from './Game';
 
 const socket = io('/game');
 
-socket.once("initGame", data => {
+socket.once("INIT_GAME", data => {
 
-	console.log('initGame', data);
+	console.log('INIT_GAME', data);
 	
 	new Game(data, socket);
 

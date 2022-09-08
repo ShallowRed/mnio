@@ -24,6 +24,10 @@ export const STRINGS = {
 	PASSWORD2_FIELD_LABEL: 'Confirmer le mot de passe',
 	USERNAME_FIELD_PLACEHOLDER: '4 à 20 caractères',
 	PASSWORD_FIELD_PLACEHOLDER: '4 à 32 caractères',
+
+	PALETTE_CHANGE_LABEL: 'Changer',
+	PALETTE_SUBMIT_LABEL: 'Choisir cette palette',
+	PALETTE_INSTRUCTIONS: 'Choisissez une palette de couleurs',
 	
 	USERNAME_SUBMIT_LABEL: 'Suivant',
 	LOGIN_SUBMIT_LABEL:  'S\'identifier',	

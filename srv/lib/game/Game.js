@@ -17,9 +17,17 @@ export default class Game {
 		this.tables = tables;
 	}
 
-	async init( { palettes, gridState, rows, cols }) {
+	async init({
+		palettes,
+		palettesLengths,
+		gridState,
+		rows,
+		cols
+	}) {
 
 		this.palettes = palettes;
+
+		this.palettesLengths = palettesLengths;
 
 		this.map = new GameMap({ gridState, rows, cols });
 

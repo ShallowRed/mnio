@@ -8,6 +8,7 @@ export default {
 			"gridCols": "SMALLINT NOT NULL",
 			"lastMod": "INT NOT NULL",
 			"palettesId": "INT NOT NULL",
+			"palettesLengths": "TINYINT NOT NULL",
 			"isOver": "BOOLEAN NOT NULL"
 		}
 	},
@@ -17,9 +18,9 @@ export default {
 		columns: {
 			"userId": "INT PRIMARY KEY NOT NULL AUTO_INCREMENT",
 			"username": "VARCHAR(255) NOT NULL",
-			"password": "VARCHAR(255) DEFAULT NULL",
-			"salt": "VARCHAR(255) DEFAULT NULL",
-			"paletteId": "SMALLINT DEFAULT NULL"
+			"password": "VARCHAR(128) DEFAULT NULL",
+			"salt": "VARCHAR(32) DEFAULT NULL",
+			"paletteId": "INT DEFAULT NULL"
 		}
 	},
 
@@ -27,8 +28,8 @@ export default {
 		name: "grid_?__events",
 		columns: {
 			"eventId": "INT PRIMARY KEY NOT NULL AUTO_INCREMENT",
-			"cellid": "MEDIUMINT NOT NULL",
-			"userId": "SMALLINT NOT NULL",
+			"cellid": "INT NOT NULL",
+			"userId": "INT NOT NULL",
 			"color": "VARCHAR(6) NOT NULL"
 		}
 	},

@@ -79,8 +79,11 @@ export default function(router, passport) {
 			redirectLoggedUsers,
 			render('palette', {
 				title: STRINGS['PALETTE_PAGE_TITLE'],
+				instructions: STRINGS['PALETTE_INSTRUCTIONS'],
 				stylesheets: ['palette'],
-				scripts: ['palette']
+				scripts: ['palette'],
+				changeMessage: STRINGS['PALETTE_CHANGE_LABEL'],
+				submitMessage: STRINGS['PALETTE_SUBMIT_LABEL'],
 			})
 		)
 		.post(

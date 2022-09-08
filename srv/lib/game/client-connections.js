@@ -7,7 +7,10 @@ export default {
 
 	'/palette': async function (socket) {
 
-		socket.emit("chosePalette", this.getShuffledPalettes());
+		socket.emit("CHOSE_PALETTE", {
+			palettesLengths: this.palettesLengths,
+			palettes: this.getShuffledPalettes()
+		});
 	},
 
 	'/game': async function (socket, session) {

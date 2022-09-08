@@ -75,7 +75,7 @@ export default class Game {
       this.flag.isTranslating ||
       this.flag.isZooming
     ) return;
-    this.socket.emit('move', direction);
+    this.socket.emit('MOVE', direction);
     const nextpos = checkMove(direction, this.Player.position, this);
     nextpos ?
       this.movePlayer(nextpos, direction) :
@@ -139,7 +139,7 @@ export default class Game {
     Cell.fillAnimation(position, this);
     const color = sColor.substring(1);
     colors[position] = color;
-    socket.emit("fill", { position, color });
+    socket.emit("FILL", { position, color });
     flag.waitingServerConfirmFill = true;
     this.Player.stamp();
   }

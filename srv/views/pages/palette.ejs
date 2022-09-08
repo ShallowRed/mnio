@@ -1,26 +1,19 @@
 <%- include('../partials/header.ejs', locals) %>
-
 <main>
-	<h1>Choisissez une palette de couleurs</h1>
-	<section class="palette">
-		<div></div>
-		<div></div>
-		<div></div>
-		<div></div>
-		<div></div>
-	</section>
-	<section class="buttons">
-		<button type="button" class="secondary tap-change">changer</button>
-		<form action="/palette" method="post">
-			<button
-				class="primary tap-select"
-				type="submit"
-				name="paletteId"
-				value="0"
-				>choisir
-			</button>
-		</form>
-	</section>
-</form>
+	<h1><%= instructions %></h1>
+	<section class="palette-container"></section>
+	<form action="/palette" method="post">
+		<button
+			type="button"
+			name="changePalette"
+			class="secondary"
+		><%= changeMessage %></button>
+		<button
+			type="submit"
+			name="paletteId"
+			class="primary"
+		><%= submitMessage %></button>
+	</form>
+</main>
 <%- include('../partials/footer.ejs', locals) %>
 

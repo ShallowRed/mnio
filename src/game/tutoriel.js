@@ -16,22 +16,22 @@ const Tutoriel = {
 
     const showHowToFill = () => {
       showBlock("fill");
-      socket.on("confirmFill", onFirstFill);
+      socket.on("CONFIRM_FILL", onFirstFill);
     };
 
     const onFirstFill = () => {
-      socket.removeListener("confirmFill", onFirstFill);
+      socket.removeListener("CONFIRM_FILL", onFirstFill);
       hideBlock("fill");
       setTimeout(showHowToMove, 1000);
     }
 
     const showHowToMove = () => {
       showBlock("move");
-      socket.on("newPlayerPos", onFirstMove);
+      socket.on("NEW_PLAYER_POSITION", onFirstMove);
     };
 
     const onFirstMove = () => {
-      socket.removeListener("newPlayerPos", onFirstMove);
+      socket.removeListener("NEW_PLAYER_POSITION", onFirstMove);
       hideBlock("move");
       setTimeout(showLastInfos, 1000);
     }

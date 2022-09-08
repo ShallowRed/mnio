@@ -1,31 +1,21 @@
-@import "../commons/lobby";
+@import '../commons/lobby';
 
-.palette {
-	width: 100%;
-	max-width: 400px;
+section.palette-container {
 	display: flex;
 	justify-content: space-around;
-}
+	margin-top: 3rem;
 
-.palette > div {
-	box-sizing: border-box;
-	border-radius: 5px;
-	border: solid 1px var(--dark);
-	box-shadow: #aaa 5px 5px;
-	width: 3rem;
-	height: 3rem;
-	transition: background 0.2s ease;
-}
-
-section.buttons {
-	margin-top: 4rem;
-	width: 100%;
-	display: flex;
-	justify-content: center;
-	flex-direction: column;
+	& .palette-element {
+		box-sizing: border-box;
+		border-radius: 0.25rem;
+		border: solid 1px var(--dark);
+		box-shadow: #aaa 5px 5px;
+		width: min(3.5rem, 10vw);
+		height: min(3.5rem, 10vw);
+		transition: background 0.2s ease;
+	}
 }
 
 form {
-	width: 100%;
-	margin-top: 1rem;
+	margin-top: 3rem;
 }
