@@ -10,15 +10,11 @@ import clientConnections from '#game/client-connections';
 
 export default class Game {
 
-	constructor(io, tables, { DEFAULT_ROWS, DEFAULT_COLS }) {
+	constructor(io, tables) {
 
 		this.io = io;
 
 		this.tables = tables;
-
-		this.defaultRows = DEFAULT_ROWS;
-
-		this.defaultCols = DEFAULT_COLS;
 	}
 
 	async init( { palettes, gridState, rows, cols }) {
@@ -27,7 +23,7 @@ export default class Game {
 
 		this.map = new GameMap({ gridState, rows, cols });
 
-		this.players = new Players(this.tables, this.map, this.palettes);
+		this.players = new Players(this);
 
 		for (const namespace in clientConnections) {
 

@@ -5,13 +5,9 @@ export class Players {
 
 	collection = {};
 
-	constructor(tables, map, palettes) {
+	constructor(game) {
 
-		this.tables = tables;
-
-		this.map = map;
-
-		this.palettes = palettes;
+		this.game = game;
 	}
 
 	get(userId) {
@@ -27,12 +23,12 @@ export class Players {
 
 	async create({ userId, paletteId }) {
 
-		const palette = this.palettes.find(p => p.id === paletteId).colors;
+		const palette = this.game.palettes.find(p => p.id === paletteId).colors;
 
-		let ownCells = await this.tables.get('gridEvents')
+		let ownCells = await this.game.tables.get('gridEvents')
 			.select('cellid', { where: { "userId": userId } });
 
-		const position = ownCells?.[0] ?? this.map.getRandomPosition();
+		const position = ownCells?.[0] ?? this.game.map.getRandomPosition();
 
 		const player = new Player({ userId, position, palette, ownCells });
 

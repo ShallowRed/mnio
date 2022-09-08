@@ -18,6 +18,10 @@ export default {
 
 		player.updateAllowedCells(this.map);
 
-		new ClientGame(socket, player, this.map, this.tables);
+		const clientGame = new ClientGame(socket, player, this);
+
+		clientGame.spawnPlayer();
+		
+		clientGame.listenGameEvents();
 	}
 }

@@ -3,15 +3,13 @@ const debug = Debug('game     |');
 
 export default class ClientGame {
 
-	constructor(socket, player, map, tables) {
+	constructor(socket, player, game) {
 
 		this.socket = socket;
-		this.player = player;
-		this.map = map;
-		this.tables = tables;
 
-		this.spawnPlayer();
-		this.listenGameEvents();
+		this.player = player;
+		
+		this.game = game;
 	}
 
 	spawnPlayer() {
@@ -20,24 +18,23 @@ export default class ClientGame {
 
 		this.socket.broadcast.emit("newPosition", [null, this.player.position]);
 
-		this.map.newPosition([null, this.player.position]);
+		this.game.map.newPosition([null, this.player.position]);
 	}
 
 	get initialData() {
 
 		return {
 			Game: {
-				colors: this.map.gridState,
-				positions: this.map.playersPositions,
-				rows: this.map.rows,
-				cols: this.map.cols,
+				colors: this.game.map.gridState,
+				positions: this.game.map.playersPositions,
+				rows: this.game.map.rows,
+				cols: this.game.map.cols,
 				owned: this.player.ownCells,
 				allowed: this.player.allowedCells
 			},
 			Player: {
 				position: this.player.position,
 				palette: this.player.palette,
-				admin: this.player.name == "a"
 			}
 		}
 	}
@@ -46,7 +43,7 @@ export default class ClientGame {
 
 		this.socket.on('move', direction => {
 
-			const newPosition = this.checkMove(direction, this.player, this.map);
+			const newPosition = this.checkMove(direction);
 
 			if (newPosition) {
 
@@ -54,7 +51,7 @@ export default class ClientGame {
 
 				this.socket.broadcast.emit("newPosition", [this.player.position, newPosition]);
 
-				this.map.newPosition([this.player.position, newPosition]);
+				this.game.map.newPosition([this.player.position, newPosition]);
 
 				this.player.position = newPosition;
 			}
@@ -62,13 +59,13 @@ export default class ClientGame {
 
 		this.socket.on('fill', cell => {
 
-			this.tables.get("gridEvents").insert({
+			this.game.tables.get("gridEvents").insert({
 				userId: this.player.userId,
 				cellid: cell.position,
 				color: cell.color
 			});
 
-			this.map.saveFill(cell);
+			this.game.map.saveFill(cell);
 
 			this.socket.broadcast.emit('newFill', cell);
 
@@ -76,7 +73,7 @@ export default class ClientGame {
 
 				this.player.ownCells.push(cell.position);
 	
-				this.player.updateAllowedCells(this.map);
+				this.player.updateAllowedCells(this.game.map);
 				
 				this.socket.emit('allowedCells', this.player.allowedCells);
 			}
@@ -90,7 +87,7 @@ export default class ClientGame {
 
 			if (this.player.position) {
 
-				this.map.newPosition([this.player.position, null]);
+				this.game.map.newPosition([this.player.position, null]);
 
 				this.socket.broadcast.emit("newPosition", [this.player.position, null])
 			}
@@ -99,13 +96,13 @@ export default class ClientGame {
 
 	checkMove(direction) {
 
-		let [x, y] = this.map.indexToCoords(this.player.position);
+		let [x, y] = this.game.map.indexToCoords(this.player.position);
 
 		if (direction == "left" && x !== 0) {
 
 			x--;
 
-		} else if (direction == "right" && x !== this.map.cols - 1) {
+		} else if (direction == "right" && x !== this.game.map.cols - 1) {
 
 			x++;
 
@@ -113,7 +110,7 @@ export default class ClientGame {
 
 			y--;
 
-		} else if (direction == "down" && y !== this.map.rows - 1) {
+		} else if (direction == "down" && y !== this.game.map.rows - 1) {
 
 			y++;
 
@@ -122,12 +119,12 @@ export default class ClientGame {
 			return;
 		}
 
-		const targetPosition = this.map.coordsToIndex([x, y]);
+		const targetPosition = this.game.map.coordsToIndex([x, y]);
 
 		if (this.player.ownCells.includes(targetPosition) || (
 			this.player.allowedCells.includes(targetPosition) &&
-			!this.map.playersPositions.includes(targetPosition) &&
-			!this.map.gridState[targetPosition]
+			!this.game.map.playersPositions.includes(targetPosition) &&
+			!this.game.map.gridState[targetPosition]
 		)) {
 
 			return targetPosition;
