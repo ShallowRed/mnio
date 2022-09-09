@@ -8,18 +8,10 @@ export default class ClientGame {
 		this.socket = socket;
 
 		this.player = player;
-		
+
 		this.game = game;
 	}
 
-	spawnPlayer() {
-
-		this.socket.emit('INIT_GAME', this.initialData);
-
-		this.socket.broadcast.emit("NEW_POSITION", [null, this.player.position]);
-
-		this.game.map.newPosition([null, this.player.position]);
-	}
 
 	get initialData() {
 
@@ -39,6 +31,13 @@ export default class ClientGame {
 		}
 	}
 
+	spawnPlayer() {
+
+		this.socket.emit('INIT_GAME', this.initialData);
+
+		this.movePlayer({ from: null, to: this.player.position });
+	}
+
 	listenGameEvents() {
 
 		this.socket.on('MOVE', direction => {
@@ -47,12 +46,8 @@ export default class ClientGame {
 
 			if (newPosition) {
 
-				this.socket.emit("NEW_PLAYER_POSITION", newPosition);
-
-				this.socket.broadcast.emit("NEW_POSITION", [this.player.position, newPosition]);
-
-				this.game.map.newPosition([this.player.position, newPosition]);
-
+				this.movePlayer({ from: this.player.position, to: newPosition });
+				
 				this.player.position = newPosition;
 			}
 		});
@@ -72,9 +67,9 @@ export default class ClientGame {
 			if (!this.player.ownCells.includes(cell.position)) {
 
 				this.player.ownCells.push(cell.position);
-	
+
 				this.player.updateAllowedCells(this.game.map);
-				
+
 				this.socket.emit('ALLOWED_CELLS', this.player.allowedCells);
 			}
 
@@ -83,15 +78,26 @@ export default class ClientGame {
 
 		this.socket.on('disconnect', () => {
 
-			debug(`User with socketId '${this.socket.id}' and username ${this.player.name} disconnected`);
+			debug(`User with userId '${this.player.userId}' disconnected`);
 
 			if (this.player.position) {
 
-				this.game.map.newPosition([this.player.position, null]);
-
-				this.socket.broadcast.emit("NEW_POSITION", [this.player.position, null])
+				this.movePlayer({ from: this.player.position, to: null });
 			}
 		});
+	}
+
+
+	movePlayer({ from, to }) {
+
+		// todo no need to send to socket if disconnected
+		// maybe neither on spawn
+
+		this.socket.emit("NEW_PLAYER_POSITION", to);
+
+		this.socket.broadcast.emit("NEW_POSITION", { from, to });
+
+		this.game.map.newPosition({ from, to });
 	}
 
 	checkMove(direction) {

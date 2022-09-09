@@ -1,4 +1,4 @@
-import * as MySql from 'mysql';
+import { createConnection, createPool } from 'mysql';
 import { promisify } from 'util';
 
 import Debug from '#config/debug';
@@ -8,12 +8,11 @@ export default {
 
 	async makeSureDbExists({ password, database, ...creds }) {
 
-		const connection = MySql.createConnection({ password, ...creds });
+		const connection = createConnection({ password, ...creds });
 
 		debug(`Making sure database '${database}' exists`);
 
-		await promisify(connection.query)
-			.call(connection, `CREATE DATABASE IF NOT EXISTS ${database}`);
+		await promisifiedQuery(connection, `CREATE DATABASE IF NOT EXISTS ${database}`);
 
 		connection.end();
 	},
@@ -22,17 +21,22 @@ export default {
 
 		constructor(DB) {
 
-			this.pool = MySql.createPool(DB);
+			this.pool = createPool(DB);
 
 			debug("MySql pool created");
 		}
 
 		query(query, args) {
 
-			// debug("Query:", query, args);
-
-			return promisify(this.pool.query)
-				.call(this.pool, query, args);
+			return promisifiedQuery(this.pool, query, args);
 		}
 	}
+}
+
+function promisifiedQuery(connection, query, args) {
+
+	// debug("Running query: \r\n ->", query);
+
+	return promisify(connection.query)
+		.call(connection, query, args);
 }

@@ -1,26 +1,20 @@
-import { STRINGS, FIELDS } from '#config/strings';
+import { redirect, render, logOut } from '#server/middlewares';
 
-export default function(router, passport) {
+import { TEMPLATES_DATA } from '#config/strings';
 
-	router.get('/',
-		redirectLoggedUsers,
-		render('index', {
-			stylesheets: ['lobby'],
-			text: STRINGS['SITE_TEXT'],
-		})
-	);
+export default function createRoutes (router, passport) {
 
-	router.route('/username')
+	router.route('/')
 		.get(
-			redirectLoggedUsers,
-			render('login', {
-				action: 'username',
-				title: STRINGS['USERNAME_PAGE_TITLE'],
-				info: STRINGS['ENTER_USERNAME'],
-				submitMessage: STRINGS['USERNAME_SUBMIT_LABEL'],
-				fields: [FIELDS.USERNAME],
-				stylesheets: ['lobby']
-			})
+			redirect.loggedUsers.at('/game'),
+			render('pages/index', TEMPLATES_DATA['page-index'])
+		);
+
+	router
+		.route('/username')
+		.get(
+			redirect.loggedUsers.at('/game'),
+			render('pages/lobby', TEMPLATES_DATA['page-username'])
 		)
 		.post(
 			passport.authenticate('local-username', {
@@ -33,16 +27,9 @@ export default function(router, passport) {
 
 	router.route('/signup')
 		.get(
-			redirectUnSerializedUsers,
-			redirectLoggedUsers,
-			render('login', {
-				action: 'signup',
-				title: STRINGS['SIGNUP_PAGE_TITLE'],
-				info: STRINGS['USERNAME_NEW'],
-				submitMessage: STRINGS['SIGNUP_SUBMIT_LABEL'],
-				fields: [FIELDS.PASSWORD, FIELDS.PASSWORD2],
-				stylesheets: ['lobby']
-			})
+			redirect.unSerializedUsers.at('/'),
+			redirect.loggedUsers.at('/game'),
+			render('pages/lobby', TEMPLATES_DATA['page-signup'])
 		)
 		.post(
 			passport.authenticate('local-signup', {
@@ -54,16 +41,9 @@ export default function(router, passport) {
 
 	router.route('/login')
 		.get(
-			redirectUnSerializedUsers,
-			redirectLoggedUsers,
-			render('login', {
-				action: 'login',
-				title: STRINGS['LOGIN_PAGE_TITLE'],
-				info: STRINGS['USERNAME_EXISTS'],
-				submitMessage: STRINGS['LOGIN_SUBMIT_LABEL'],
-				fields: [FIELDS.PASSWORD],
-				stylesheets: ['lobby']
-			})
+			redirect.unSerializedUsers.at('/'),
+			redirect.loggedUsers.at('/game'),
+			render('pages/lobby', TEMPLATES_DATA['page-login'])
 		)
 		.post(
 			passport.authenticate('local-login', {
@@ -75,80 +55,24 @@ export default function(router, passport) {
 
 	router.route('/palette')
 		.get(
-			redirectUnSerializedUsers,
-			redirectLoggedUsers,
-			render('palette', {
-				title: STRINGS['PALETTE_PAGE_TITLE'],
-				instructions: STRINGS['PALETTE_INSTRUCTIONS'],
-				stylesheets: ['palette'],
-				scripts: ['palette'],
-				changeMessage: STRINGS['PALETTE_CHANGE_LABEL'],
-				submitMessage: STRINGS['PALETTE_SUBMIT_LABEL'],
-			})
+			redirect.unSerializedUsers.at('/'),
+			redirect.loggedUsers.at('/game'),
+			render('pages/palette', TEMPLATES_DATA['page-palette'])
 		)
 		.post(
 			passport.authenticate('local-palette', {
 				successRedirect: '/game',
+				failureRedirect: '/palette',
 			})
 		);
 
-	router.get('/game',
-		redirectUnLoggedUsers,
-		render('game', {
-			title: STRINGS['GAME_PAGE_TITLE'],
-			stylesheets: ['game'],
-			scripts: ['game']
-		})
-	);
+	router.route('/game')
+		.get(
+			redirect.unLoggedUsers.at('/'),
+			render('pages/game', TEMPLATES_DATA['page-game'])
+		);
 
-	router.post('/logout', function (req, res, next) {
-		req.logout(function (err) {
-			if (err) { return next(err); }
-			res.redirect('/');
-		});
-	});
+	router.post('/logout', logOut);
 
-	router.use((req, res) => {
-		res.redirect('/');
-	});
-}
-
-
-function render(path, data) {
-	return (req, res) => {
-
-		const errors = req.flash('error');
-
-		data.siteName = STRINGS['SITE_NAME'];
-
-		if (data && errors) {
-			data.error = STRINGS[errors[0]];
-		}
-
-		res.render(`pages/${path}`, data)
-	}
-}
-
-function redirectUnSerializedUsers(req, res, next) {
-	if (!req.user) {
-		return res.redirect('/');
-	} else {
-		next();
-	}
-}
-
-function redirectLoggedUsers(req, res, next) {
-	if (req.user?.isLoggedIn) {
-		res.redirect('/game');
-	} else {
-		next();
-	}
-}
-
-function redirectUnLoggedUsers(req, res, next) {
-	if (!req.user?.isLoggedIn) {
-		return res.redirect('/');
-	} else {
-		next();
-	}
+	router.use(redirect.at('/'));
 }

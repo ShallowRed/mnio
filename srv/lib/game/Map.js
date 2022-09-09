@@ -1,8 +1,10 @@
-export default class Map {
+export default class GameMap {
 
 	playersPositions = [];
 
-	constructor({ gridState, rows, cols }) {
+	constructor(game, { gridState, rows, cols }) {
+
+		this.game = game;
 
 		this.gridState = gridState;
 
@@ -11,16 +13,18 @@ export default class Map {
 		this.cols = cols;
 	}
 
-	newPosition([lastPos, newPos]) {
+	newPosition({ from: lastPosition, to: newPosition }) {
 
 		const positions = this.playersPositions;
 
-		if (lastPos) {
-			positions.splice(positions.indexOf(lastPos), 1);
+		if (lastPosition) {
+
+			positions.splice(positions.indexOf(lastPosition), 1);
 		}
 
-		if (newPos && !positions.includes(newPos)) {
-			positions.push(newPos);
+		if (newPosition && !positions.includes(newPosition)) {
+
+			positions.push(newPosition);
 		}
 	}
 
@@ -29,21 +33,18 @@ export default class Map {
 		this.gridState[position] = color;
 	}
 
-	get emptyCells() {
-
-		return this.gridState.filter(e => e === null);
-	}
-
 	getRandomPosition() {
-
-		if (!this.emptyCells.length) {
-
-			return "end";
-		}
 
 		const emptyCellsIndexes = this.gridState
 			.map((cell, i) => cell ?? i)
 			.filter(Boolean);
+
+		if (!emptyCellsIndexes.length) {
+
+			this.game.end();
+
+			return false;
+		}
 
 		const randomIndex = Math.floor(Math.random() * emptyCellsIndexes.length);
 
@@ -58,6 +59,7 @@ export default class Map {
 	}
 
 	areCoordsInBounds([x, y]) {
+
 		return (
 			x >= 0 &&
 			y >= 0 &&
@@ -69,6 +71,7 @@ export default class Map {
 	indexToCoords(index) {
 
 		const x = index % this.cols;
+
 		const y = (index - x) / this.rows;
 
 		return [x, y];
@@ -91,7 +94,6 @@ export default class Map {
 	getNeighboursCoords([x, y]) {
 
 		return [
-			[x, y],
 			[x - 1, y],
 			[x + 1, y],
 			[x, y - 1],

@@ -1,24 +1,36 @@
 import expressSession from 'express-session';
-
-import MySql from 'mysql';
-import mySQLStore from 'express-mysql-session';
+import MySQLStore from 'express-mysql-session';
 
 import Debug from '#config/debug';
 const debug = Debug('server   |');
 
-export default function (COOKIE_SECRET, DB, USE_MEMORY_STORE) {
+const SESSION_STORE_OPTIONS = {
+	resave: false,
+	saveUninitialized: false,
+	name: 'connect.sid'
+};
+
+export default function createSessionMiddleware(connection, COOKIE_SECRET, USE_MEMORY_STORE) {
 
 	debug(`Creating session store with ${USE_MEMORY_STORE ? 'memory' : 'MySQL'}`);
 
-	const sessionStore = USE_MEMORY_STORE ?
-		new expressSession.MemoryStore() :
-		new (mySQLStore(expressSession))({}, MySql.createPool(DB));
-
 	return expressSession({
-		store: sessionStore,
-		resave: false,
-		saveUninitialized: false,
+		store: createSessionStore(connection, USE_MEMORY_STORE),
 		secret: COOKIE_SECRET,
-		name: 'connect.sid'
+		...SESSION_STORE_OPTIONS
 	});
+}
+
+function createSessionStore(connection, USE_MEMORY_STORE) {
+
+	if (USE_MEMORY_STORE) {
+
+		return new expressSession.MemoryStore();
+
+	} else {
+
+		const SessionStore = MySQLStore(expressSession);
+
+		return new SessionStore({}, connection.pool);
+	}
 }

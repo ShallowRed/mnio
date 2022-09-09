@@ -1,6 +1,6 @@
 import CryptoJS from "crypto-js";
 
-export default function (string, salt) {
+export default function saltHash(string, salt) {
 
 	salt ??= CryptoJS.lib.WordArray.random(16).toString();
 

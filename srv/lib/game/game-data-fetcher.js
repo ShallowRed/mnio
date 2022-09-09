@@ -1,4 +1,4 @@
-export default class {
+export default class GameDataFetcher {
 
 	constructor(tables, Pokedex, defaultRows, defaultCols) {
 
@@ -11,19 +11,23 @@ export default class {
 		this.defaultCols = defaultCols;
 	}
 
-	async getGameData(gridId = null) {
+	async fetch(gridId = null) {
 
-		const gamesTable = await this.tables.create("grids");
+		const gridsTable = await this.tables.create("grids");
 
 		const previousGameData = gridId ?
-			await gamesTable.select("*", { where: { "gridId": gridId }, limit: 1 }) :
-			await gamesTable.select("*", { orderBy: 'lastMod DESC', limit: 1 });
+			await gridsTable.select("*", { where: { "gridId": gridId }, limit: 1 }) :
+			await gridsTable.select("*", { orderBy: 'lastMod DESC', limit: 1 });
 
 		const timeStamp = Math.floor(Date.now() / 1000);
 
-		const gameData = previousGameData ?
-			await this.getExistingGameData(previousGameData, timeStamp) :
-			await this.createNewGame(timeStamp);
+		const grid = previousGameData ?
+			await this.getExistingGrid(previousGameData, timeStamp) :
+			await this.createNewGrid(timeStamp);
+
+		await this.createAndOrGetTables(grid.gridId);
+
+		const gameData = await grid.fetch();
 
 		const palettes = await this.tables.get("palettes")
 			.select("*");
@@ -35,7 +39,7 @@ export default class {
 		};
 	}
 
-	async getExistingGameData(gameData, timeStamp) {
+	async getExistingGrid(gameData, timeStamp) {
 
 		const {
 			gridId,
@@ -44,29 +48,34 @@ export default class {
 			palettesLengths
 		} = gameData;
 
-		await this.createTables(gridId);
-
-		const gridEvents = await this.tables.get("gridEvents").select("*");
-
-		this.tables.get('grids')
-			.update({ "lastMod": timeStamp }, { where: { "gridId": gridId } });
-
 		return {
+
 			gridId,
-			gridEvents,
-			palettesLengths,
-			rows,
-			cols
+
+			fetch: async () => {
+
+				const gridEvents = await this.tables.get("gridEvents").select("*");
+
+				this.tables.get('grids')
+					.update({ "lastMod": timeStamp }, { where: { "gridId": gridId } });
+
+				return {
+					gridEvents,
+					palettesLengths,
+					rows,
+					cols
+				}
+			}
 		};
 	}
 
-	async createNewGame(timeStamp) {
+	async createNewGrid(timeStamp) {
 
 		const palettesLengths = this.Pokedex.lengths;
 		const rows = this.defaultRows;
 		const cols = this.defaultCols;
 
-		const gridId = await this.tables.get('grids').insert({
+		const insertId = await this.tables.get('grids').insert({
 			"gridRows": rows,
 			"gridCols": cols,
 			"palettesId": this.Pokedex.id,
@@ -75,19 +84,24 @@ export default class {
 			"isOver": 0
 		});
 
-		await this.createTables(gridId);
-
-		await this.insertPalettes(this.Pokedex.palettes);
-
 		return {
-			gridId,
-			palettesLengths,
-			rows,
-			cols
+
+			gridId: insertId,
+
+			fetch: async () => {
+
+				await this.insertPalettes(this.Pokedex.palettes);
+
+				return {
+					palettesLengths,
+					rows,
+					cols
+				}
+			}
 		};
 	}
 
-	async createTables(gridId) {
+	async createAndOrGetTables(gridId) {
 
 		return Promise.all([
 			this.tables.create("gridUsers", gridId),
@@ -107,6 +121,7 @@ export default class {
 	}
 
 	encodePalette(palette, i) {
+
 		return {
 			"paletteId": i + 1,
 			"colors": palette.join(''),
@@ -114,9 +129,12 @@ export default class {
 	}
 
 	decodePalette({ paletteId, colors }) {
+
 		return {
 			id: paletteId,
-			colors: colors.match(/.{1,6}/g).map(color => `#${color}`)
+			colors: colors
+				.match(/.{1,6}/g)
+				.map(color => `#${color}`)
 		};
 	};
 

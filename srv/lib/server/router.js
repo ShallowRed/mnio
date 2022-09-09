@@ -5,7 +5,7 @@ import passport from 'passport';
 import createStrategies from '#server/auth-strategies';
 import createRoutes from '#server/routes';
 
-export default async function (tables, sessionMiddleware) {
+export default async function createRouter (tables, sessionMiddleware) {
 
 	createStrategies(passport, tables.get('gridUsers'));
 

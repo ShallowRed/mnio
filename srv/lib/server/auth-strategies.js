@@ -5,7 +5,7 @@ import saltHash from '#database/salt-hash';
 import Debug from '#config/debug';
 const debug = Debug('passport |');
 
-export default function (passport, table) {
+export default function createStrategies(passport, table) {
 
 	passport.serializeUser(serializeUser);
 

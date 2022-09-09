@@ -1,6 +1,6 @@
 import Debug from 'debug';
 
-export default function(key) {
+export default function debug(key) {
 
 	const debug = Debug(`app:${key}`);
 

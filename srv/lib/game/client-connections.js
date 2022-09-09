@@ -19,12 +19,19 @@ export default {
 			this.players.get(session.userId) ??
 			await this.players.create(session);
 
+		if (player === false) {
+
+			socket.emit('GAME_OVER');
+
+			return;
+		}
+
 		player.updateAllowedCells(this.map);
 
 		const clientGame = new ClientGame(socket, player, this);
 
 		clientGame.spawnPlayer();
-		
+
 		clientGame.listenGameEvents();
 	}
 }

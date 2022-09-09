@@ -23,12 +23,16 @@ export class Players {
 
 	async create({ userId, paletteId }) {
 
-		const palette = this.game.palettes.find(p => p.id === paletteId).colors;
+		const palette = this.game.getPalette(paletteId);
 
-		let ownCells = await this.game.tables.get('gridEvents')
-			.select('cellid', { where: { "userId": userId } });
+		const ownCells = await this.game.fetchPlayerOwnCells(userId);
 
 		const position = ownCells?.[0] ?? this.game.map.getRandomPosition();
+
+		if (position === false) {
+
+			return false;
+		}
 
 		const player = new Player({ userId, position, palette, ownCells });
 

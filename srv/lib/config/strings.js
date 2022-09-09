@@ -34,7 +34,7 @@ export const STRINGS = {
 	SIGNUP_SUBMIT_LABEL: 'S\'inscrire',
 };
 
-export const FIELDS = {
+const FIELDS = {
 	USERNAME: {
 		name: 'username',
 		type: 'text',
@@ -60,3 +60,53 @@ export const FIELDS = {
 		placeholder: STRINGS['PASSWORD_FIELD_PLACEHOLDER'],
 	},
 };
+
+export const TEMPLATES_DATA = {
+
+	'page-index': {
+		stylesheets: ['lobby'],
+		text: STRINGS['SITE_TEXT'],
+	},
+
+	'page-username': {
+		action: 'username',
+		title: STRINGS['USERNAME_PAGE_TITLE'],
+		info: STRINGS['ENTER_USERNAME'],
+		submitMessage: STRINGS['USERNAME_SUBMIT_LABEL'],
+		fields: [FIELDS.USERNAME],
+		stylesheets: ['lobby']
+	},
+
+	'page-signup': {
+		action: 'signup',
+		title: STRINGS['SIGNUP_PAGE_TITLE'],
+		info: STRINGS['USERNAME_NEW'],
+		submitMessage: STRINGS['SIGNUP_SUBMIT_LABEL'],
+		fields: [FIELDS.PASSWORD, FIELDS.PASSWORD2],
+		stylesheets: ['lobby']
+	}
+	,
+	'page-login': {
+		action: 'login',
+		title: STRINGS['LOGIN_PAGE_TITLE'],
+		info: STRINGS['USERNAME_EXISTS'],
+		submitMessage: STRINGS['LOGIN_SUBMIT_LABEL'],
+		fields: [FIELDS.PASSWORD],
+		stylesheets: ['lobby']
+	},
+
+	'page-palette': {
+		title: STRINGS['PALETTE_PAGE_TITLE'],
+		instructions: STRINGS['PALETTE_INSTRUCTIONS'],
+		stylesheets: ['palette'],
+		scripts: ['palette'],
+		changeMessage: STRINGS['PALETTE_CHANGE_LABEL'],
+		submitMessage: STRINGS['PALETTE_SUBMIT_LABEL'],
+	},
+
+	'page-game': {
+		title: STRINGS['GAME_PAGE_TITLE'],
+		stylesheets: ['game'],
+		scripts: ['game']
+	}
+}

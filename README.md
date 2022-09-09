@@ -19,7 +19,7 @@ npm run install:all
 ### 2. Bundle client in dev mode
 
 ```
-npm run dev:bundle
+npm run dev:client
 ```
 
 ### 3. Start developpement server

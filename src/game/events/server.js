@@ -14,14 +14,14 @@ const serverEvents = Object.entries({
 			Game.movePlayer(newPosition);
 	},
 
-	NEW_POSITION({ positions, Cell }, [lastPos, newPos]) {
-		lastPos && (
-			positions.splice(positions.indexOf(lastPos), 1),
-			Cell.render.clear(lastPos)
+	NEW_POSITION({ positions, Cell }, {from: lastPosition, to: newPosition}) {
+		lastPosition && (
+			positions.splice(positions.indexOf(lastPosition), 1),
+			Cell.render.clear(lastPosition)
 		);
 		newPos && (
-			positions.push(newPos),
-			Cell.render.position(newPos)
+			positions.push(newPosition),
+			Cell.render.position(newPosition)
 		)
 	},
 

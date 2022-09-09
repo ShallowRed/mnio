@@ -6,8 +6,6 @@ const debug = Debug('game     |');
 
 import clientConnections from '#game/client-connections';
 
-// to end game: "UPDATE grids SET isOver = ? WHERE gridId = ?"
-
 export default class Game {
 
 	constructor(io, tables) {
@@ -15,6 +13,8 @@ export default class Game {
 		this.io = io;
 
 		this.tables = tables;
+
+		this.clientConnections = clientConnections;
 	}
 
 	async init({
@@ -29,11 +29,11 @@ export default class Game {
 
 		this.palettesLengths = palettesLengths;
 
-		this.map = new GameMap({ gridState, rows, cols });
+		this.map = new GameMap(this, { gridState, rows, cols });
 
 		this.players = new Players(this);
 
-		for (const namespace in clientConnections) {
+		for (const namespace in this.clientConnections) {
 
 			this.io.of(namespace)
 				.on('connection', socket => {
@@ -55,5 +55,23 @@ export default class Game {
 	getShuffledPalettes() {
 
 		return [...this.palettes].sort(() => Math.random() - 0.5);
+	}
+
+	getPalette(paletteId) {
+
+		return this.palettes.find(palette => palette.id === paletteId)?.colors;
+	}
+
+	fetchPlayerOwnCells(userId) {
+
+		return this.tables.get('gridEvents')
+			.select('cellid', { where: { "userId": userId } });
+	}
+
+	end() {
+
+		debug(`No more empty cells in grid, ending game`);
+
+		"UPDATE grids SET isOver = ? WHERE gridId = ?"
 	}
 }
