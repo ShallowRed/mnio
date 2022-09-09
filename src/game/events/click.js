@@ -1,45 +1,59 @@
-export default function listenClickEvents(Game) {
-  const { flag, Ui } = Game;
+export default function listenClickEvents(game) {
+	const { flag, Ui } = game;
 
-  Ui.colorBtns.forEach((colorBtn, i) => {
-    colorBtn.style.background = Game.Player.palette[i];
+	Ui.colorBtns.forEach((colorBtn, i) => {
 
-    colorBtn.addEventListener("mousedown", () => {
-      Game.selectColor(i);
-    });
+		colorBtn.style.background = game.player.palette[i];
 
-    colorBtn.addEventListener("mouseup", () => {
-      if (flag.isTranslating || flag.isZooming) return;
-      Game.fill();
-    });
+		colorBtn.addEventListener("mousedown", () => {
 
-    colorBtn.addEventListener("touchstart", (event) => {
-      event.preventDefault();
-      Game.selectColor(i);
-    });
+			game.selectColor(i);
+		});
 
-    colorBtn.addEventListener("touchend", (event) => {
-      event.preventDefault();
-      if (flag.isTranslating || flag.isZooming) return;
-      Game.fill();
-    });
-  });
+		colorBtn.addEventListener("mouseup", () => {
 
-  for (const [direction, zoomBtn] of Object.entries(Ui.zoomBtns)) {
+			if (flag.isTranslating || flag.isZooming) return;
 
-    zoomBtn.addEventListener("click", () => {
-      Game.zoom(direction);
-    });
+			game.fill();
+		});
 
-    zoomBtn.addEventListener("touchstart", (event) => {
-      event.preventDefault();
-      Game.zoom(direction);
-    });
-  }
+		colorBtn.addEventListener("touchstart", (event) => {
 
-  document.addEventListener('click', () => {
-    if (document.activeElement.toString() ==
-      '[object HTMLButtonElement]')
-      document.activeElement.blur();
-  });
+			event.preventDefault();
+
+			game.selectColor(i);
+		});
+
+		colorBtn.addEventListener("touchend", (event) => {
+
+			event.preventDefault();
+
+			if (flag.isTranslating || flag.isZooming) return;
+
+			game.fill();
+		});
+	});
+
+	for (const [direction, zoomBtn] of Object.entries(Ui.zoomBtns)) {
+
+		zoomBtn.addEventListener("click", () => {
+
+			game.zoom(direction);
+		});
+
+		zoomBtn.addEventListener("touchstart", (event) => {
+
+			event.preventDefault();
+
+			game.zoom(direction);
+		});
+	}
+
+	document.addEventListener('click', () => {
+
+		if (document.activeElement.toString() == '[object HTMLButtonElement]') {
+
+			document.activeElement.blur();
+		}
+	});
 }

@@ -15,16 +15,16 @@ export default class GameMap {
 
 	newPosition({ from: lastPosition, to: newPosition }) {
 
-		const positions = this.playersPositions;
-
 		if (lastPosition) {
 
-			positions.splice(positions.indexOf(lastPosition), 1);
+			const index = this.playersPositions.indexOf(lastPosition);
+			
+			this.playersPositions.splice(index, 1);
 		}
 
-		if (newPosition && !positions.includes(newPosition)) {
+		if (newPosition && !this.playersPositions.includes(newPosition)) {
 
-			positions.push(newPosition);
+			this.playersPositions.push(newPosition);
 		}
 	}
 

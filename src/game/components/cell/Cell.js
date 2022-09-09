@@ -3,48 +3,66 @@ import { getCoordInView } from './checkPosInView';
 import { fillAnimation } from './fillAnimation';
 
 export default class Cell {
-  constructor(Game) {
-    this.render = {};
 
-    for (const [key, fn] of renderCell) {
-      this.render[key] = (position) => {
-        fn(position, Game);
-      }
-    }
+	render = {};
 
-    this.fillAnimation = (position) =>
-      fillAnimation(position, Game);
-  }
+	constructor(game) {
+
+		this.game = game;
+	}
+
+	fillAnimation = (position) => {
+
+		fillAnimation(position, this.game);
+	}
+
+	render = {
+		
+		clear: (position) => {
+
+			const coord = getCoordInView(position, this.game);
+
+			if (!coord) return;
+
+			const { ctx, cellSize } = this.game.map;
+
+			fillCell(coord, cellSize, ctx[2], null);
+		},
+
+		color: (position) => {
+
+			const coord = getCoordInView(position, this.game);
+
+			if (!coord) return;
+
+			const { colors, map: { ctx, cellSize } } = this.game;
+
+			fillCell(coord, cellSize, ctx[1], `#${colors[position]}`);
+
+		},
+
+		allowedCells: (position) => {
+
+			const coord = getCoordInView(position, this.game);
+
+			if (!coord) return;
+
+			const { ctx, cellSize } = this.game.map;
+
+			fillCell(coord, cellSize, ctx[0], '#e9e9e9');
+		},
+
+		position: (position) => {
+
+			const coord = getCoordInView(position, this.game);
+
+			if (!coord) return;
+
+			const { ctx, cellSize } = this.game.map;
+
+			const shift = Math.round(cellSize / 8);
+
+			roundSquare(coord, cellSize, ctx[2], shift);
+		}
+	}
 }
-
-const renderCell = Object.entries({
-
-  clear: (position, Game) => {
-    const coord = getCoordInView(position, Game);
-    if (!coord) return;
-    const { ctx, cellSize } = Game.Map;
-    fillCell(coord, cellSize, ctx[2], null);
-  },
-
-  color: (position, Game) => {
-    const coord = getCoordInView(position, Game);
-    if (!coord) return;
-    const { colors, Map: { ctx, cellSize } } = Game;
-    fillCell(coord, cellSize, ctx[1], `#${colors[position]}`);
-  },
-
-  allowed: (position, Game) => {
-    const coord = getCoordInView(position, Game);
-    if (!coord) return;
-    const { ctx, cellSize } = Game.Map;
-    fillCell(coord, cellSize, ctx[0], '#e9e9e9');
-  },
-
-  position: (position, Game) => {
-    const coord = getCoordInView(position, Game);
-    if (!coord) return;
-    const { ctx, cellSize } = Game.Map;
-    const shift = Math.round(cellSize / 8);
-    roundSquare(coord, cellSize, ctx[2], shift);
-  }
-});

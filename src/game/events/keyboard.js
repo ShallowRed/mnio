@@ -1,78 +1,113 @@
 let isAltPressed = false;
 
-export default (Game) => {
-  document.addEventListener('keydown', event => {
+export default (game) => {
+	document.addEventListener('keydown', event => {
 
-    if (event.code == "AltLeft")
-      isAltPressed = true;
+		if (event.code == "AltLeft") {
 
-    if (
-      Game.flag.isTranslating ||
-      Game.flag.waitingServerConfirmMove
-    ) return;
+			isAltPressed = true;
+		}
 
-    onKeyDown(event, Game)
-  });
+		if (
+			game.flag.isTranslating ||
+			game.flag.waitingServerConfirmMove
+		) return;
 
-  document.addEventListener('keyup', event => {
-    if (event.code == "AltLeft")
-      isAltPressed = false;
-  });
+		onKeyDown(event, game)
+	});
+
+	document.addEventListener('keyup', event => {
+
+		if (event.code == "AltLeft") {
+
+			isAltPressed = false;
+		}
+	});
 };
 
-const onKeyDown = (event, Game) => {
+const onKeyDown = (event, game) => {
 
-  switch (event.code) {
+	switch (event.code) {
 
-    case "Space":
-      document.querySelector(".pressed")
-      focusBtn(".pressed");
-      Game.fill();
-      break;
+		case "Space":
 
-    case "KeyW":
-      focusBtn(Game.Ui.zoomBtns.in);
-      Game.zoom("in");
-      break;
+			document.querySelector(".pressed")
 
-    case "KeyS":
-      if (isAltPressed) {
-        focusBtn(Game.Ui.zoomBtns.out);
-        Game.zoom("out");
-      }
-      break;
+			focusBtn(".pressed");
 
-    case "ControlLeft":
-      Game.selectColor("next");
-      break;
+			game.fill();
 
-    case "ShiftLeft":
-      Game.selectColor("prev");
-      break;
+			break;
 
-    case "ArrowLeft":
-      Game.moveAttempt("left");
-      break;
+		case "KeyW":
 
-    case "ArrowUp":
-      Game.moveAttempt("up");
-      break;
+			focusBtn(game.Ui.zoomBtns.in);
 
-    case "ArrowRight":
-      Game.moveAttempt("right");
-      break;
+			game.zoom("in");
 
-    case "ArrowDown":
-      Game.moveAttempt("down");
-      break;
-  }
+			break;
+
+		case "KeyS":
+
+			if (isAltPressed) {
+
+				focusBtn(game.Ui.zoomBtns.out);
+
+				game.zoom("out");
+			}
+
+			break;
+
+		case "ControlLeft":
+
+			game.selectColor("next");
+
+			break;
+
+		case "ShiftLeft":
+
+			game.selectColor("prev");
+
+			break;
+
+		case "ArrowLeft":
+
+			game.moveAttempt("left");
+
+			break;
+
+		case "ArrowUp":
+
+			game.moveAttempt("up");
+
+			break;
+
+		case "ArrowRight":
+
+			game.moveAttempt("right");
+
+			break;
+
+		case "ArrowDown":
+
+			game.moveAttempt("down");
+
+			break;
+	}
 };
 
 const focusBtn = (btn) => {
-  if (typeof btn == "string")
-    btn = document.querySelector(btn);
-  btn.focus();
-  setTimeout(() => {
-    document.activeElement.blur();
-  }, 200);
+
+	if (typeof btn == "string") {
+
+		btn = document.querySelector(btn);
+	}
+	
+	btn.focus();
+	
+	setTimeout(() => {
+	
+		document.activeElement.blur();
+	
+	}, 200);
 };

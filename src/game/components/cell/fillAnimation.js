@@ -3,104 +3,113 @@ import { getCoordInView } from './checkPosInView';
 const ANIMATION_DURATION = 400;
 const N_STRIPES = 8;
 
-export const fillAnimation = (position, Game) => {
-  const [x, y] = getCoordInView(position, Game);
+export const fillAnimation = (position, game) => {
 
-  const {
-    flag,
-    Player: { sColor },
-    Map: { cellSize, ctx: [, ctx] }
-  } = Game;
+	const [x, y] = getCoordInView(position, game);
 
-  flag.fill = true;
+	const {
+		flag,
+		player: { sColor },
+		map: { cellSize, ctx: [, ctx] }
+	} = game;
 
-  fillFrame({
-    x: Math.round(cellSize * x),
-    y: Math.round(cellSize * y),
-    lineWidth: Math.floor(cellSize / N_STRIPES),
-    numSmallStripes: N_STRIPES - cellSize % N_STRIPES,
-    flag,
-    ctx,
-    cellSize,
-    sColor
-  });
+	flag.fill = true;
+
+	fillFrame({
+		x: Math.round(cellSize * x),
+		y: Math.round(cellSize * y),
+		lineWidth: Math.floor(cellSize / N_STRIPES),
+		numSmallStripes: N_STRIPES - cellSize % N_STRIPES,
+		flag,
+		ctx,
+		cellSize,
+		sColor
+	});
 };
 
-const fillFrame = (props,
-  lastStripeIndex = 0,
-  lastStripePortion = 0,
-  startDate = Date.now()) => {
+const fillFrame = (
+	props,
+	lastStripeIndex = 0,
+	lastStripePortion = 0,
+	startDate = Date.now()
+) => {
 
-  const { flag, cellSize } = props;
+	const { flag, cellSize } = props;
 
-  const delay = Date.now() - startDate;
-  const progress = delay * N_STRIPES / ANIMATION_DURATION;
+	const delay = Date.now() - startDate;
 
-  const stripeIndex = Math.trunc(progress);
-  const stripePortion = Math.round((progress - stripeIndex) * cellSize);
+	const progress = delay * N_STRIPES / ANIMATION_DURATION;
 
-  drawFrameStripes(props, stripeIndex, lastStripeIndex, stripePortion,
-    lastStripePortion, cellSize);
+	const stripeIndex = Math.trunc(progress);
 
-  if (delay < ANIMATION_DURATION) {
+	const stripePortion = Math.round((progress - stripeIndex) * cellSize);
 
-    window.requestAnimationFrame(() => {
-      fillFrame(props, stripeIndex, stripePortion, startDate);
-    });
+	drawFrameStripes(props, stripeIndex, lastStripeIndex, stripePortion, lastStripePortion, cellSize);
 
-  } else {
-    flag.fill = false;
-  }
+	if (delay < ANIMATION_DURATION) {
+
+		window.requestAnimationFrame(() => {
+			fillFrame(props, stripeIndex, stripePortion, startDate);
+		});
+
+	} else {
+
+		flag.fill = false;
+	}
 };
 
-const drawFrameStripes = (props, stripeIndex, lastStripeIndex, stripePortion,
-  lastStripePortion, cellSize) => {
+const drawFrameStripes = (props, stripeIndex, lastStripeIndex, stripePortion, lastStripePortion, cellSize) => {
 
-  if (stripeIndex === lastStripeIndex) {
+	if (stripeIndex === lastStripeIndex) {
 
-    drawStripe(stripeIndex, [lastStripePortion, stripePortion], props);
+		drawStripe(stripeIndex, [lastStripePortion, stripePortion], props);
 
-  } else {
+	} else {
 
-    drawStripe(lastStripeIndex, [lastStripePortion, cellSize], props);
+		drawStripe(lastStripeIndex, [lastStripePortion, cellSize], props);
 
-    for (let i = lastStripeIndex + 1; i < stripeIndex; i++) {
-      drawStripe(i, [0, cellSize], props);
-    }
+		for (let i = lastStripeIndex + 1; i < stripeIndex; i++) {
 
-    drawStripe(stripeIndex, [0, stripePortion], props);
-  }
+			drawStripe(i, [0, cellSize], props);
+		}
+
+		drawStripe(stripeIndex, [0, stripePortion], props);
+	}
 }
 
 const drawStripe = (stripeIndex, [startX, endX], {
-  x,
-  y,
-  ctx,
-  sColor,
-  cellSize,
-  lineWidth,
-  numSmallStripes
+	x,
+	y,
+	ctx,
+	sColor,
+	cellSize,
+	lineWidth,
+	numSmallStripes
 }) => {
 
-  let posY;
+	let posY;
 
-  if (stripeIndex < numSmallStripes) {
+	if (stripeIndex < numSmallStripes) {
 
-    posY = cellSize - lineWidth * (stripeIndex + 0.5);
-  
-} else if (stripeIndex < N_STRIPES) {
+		posY = cellSize - lineWidth * (stripeIndex + 0.5);
 
-	++lineWidth;
+	} else if (stripeIndex < N_STRIPES) {
 
-	posY = lineWidth * (N_STRIPES - stripeIndex - 0.5);
+		++lineWidth;
 
-} else return;
+		posY = lineWidth * (N_STRIPES - stripeIndex - 0.5);
 
-  ctx.lineWidth = lineWidth;
-  ctx.strokeStyle = sColor;
+	} else return;
 
-  ctx.beginPath();
-  ctx.moveTo(x + startX, y + posY);
-  ctx.lineTo(x + endX, y + posY);
-  ctx.stroke();
+	ctx.lineWidth = lineWidth;
+	
+	ctx.strokeStyle = sColor;
+
+	ctx.beginPath();
+	
+	ctx.moveTo(x + startX, y + posY);
+	
+	ctx.lineTo(x + endX, y + posY);
+	
+	ctx.stroke();
 };

@@ -21,7 +21,7 @@ export default {
 
 		if (player === false) {
 
-			socket.emit('GAME_OVER');
+			socket.emit('GAME_OVER'); // todo
 
 			return;
 		}

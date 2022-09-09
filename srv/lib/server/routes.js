@@ -1,4 +1,4 @@
-import { redirect, render, logOut } from '#server/middlewares';
+import { redirect, render, logout } from '#server/middlewares';
 
 import { TEMPLATES_DATA } from '#config/strings';
 
@@ -72,7 +72,7 @@ export default function createRoutes (router, passport) {
 			render('pages/game', TEMPLATES_DATA['page-game'])
 		);
 
-	router.post('/logout', logOut);
+	router.post('/logout', logout);
 
 	router.use(redirect.at('/'));
 }

@@ -1,8 +1,7 @@
-import Player from './components/Player';
-import Map from './components/Map';
-import Ui from './components/Ui';
-import Cell from './components/cell/Cell';
-import { Help } from './components/help';
+import Player from './components/player';
+import GameMap from './components/map';
+import Ui from './components/ui';
+import Cell from './components/cell/cell';
 import ScreenRatio from './utils/styleAccordingToRatio'
 
 import listenServerEvents from './events/server';
@@ -16,131 +15,192 @@ import './utils/polyfill';
 
 export default class Game {
 
-  constructor(data, socket) {
-    this.duration = 0.2;
-    this.socket = socket;
-	
-    Object.assign(this, data.Game);
-    this.Map = new Map(this);
-    this.Player = new Player(data.Player, this);
-    this.Ui = new Ui();
-    this.Cell = new Cell(this);
-    this.flag = {};
+	duration = 0.2;
 
-    this.selectColor(0);
-    this.Ui.focusColorBtn(0);
+	flag = {};
 
-    Help.init();
-    this.render();
+	constructor(data, socket) {
 
-    this.listenWindowEvents();
-    listenClickEvents(this);
-    listenKeyboardEvents(this)
-    listenTouchEvents(this);
-    listenServerEvents(this);	
+		this.socket = socket;
 
-	console.log(this);
-	
-  }
+		Object.assign(this, data.game);
 
-  listenWindowEvents() {
-    const render = () => this.render();
-    window.addEventListener('resize', render);
-    window.addEventListener("orientationchange", () =>
-      setTimeout(render, 500)
-    );
-  }
+		this.map = new GameMap(this);
 
-  render() {
-    ScreenRatio.update();
-    Help.render();
-    this.Ui.render();
-    this.Map.setView();
-    this.updateState();
-    this.Map.render();
-    this.Player.render();
-  }
+		this.player = new Player(data.player, this);
 
-  updateState(position, direction) {
-    this.Player.updatePosition(position, direction);
-    if (!this.flag.isTranslating)
-      this.Map.updateCanvasGrid();
-    this.Player.updatePosInView();
-    this.Map.updateCanvasOrigin();
-  }
+		this.Ui = new Ui();
 
-  moveAttempt(direction) {
-    if (
-      this.flag.waitingServerConfirmMove ||
-      this.flag.isTranslating ||
-      this.flag.isZooming
-    ) return;
-    this.socket.emit('MOVE', direction);
-    const nextpos = checkMove(direction, this.Player.position, this);
-    nextpos ?
-      this.movePlayer(nextpos, direction) :
-      this.Player.bump(direction);
-  }
+		this.Cell = new Cell(this);
 
-  movePlayer(position, direction) {
-    this.flag.waitingServerConfirmMove = true;
-    this.flag.isTranslating = true;
+		console.log(this);
+	}
 
-    this.updateState(position, direction);
+	init() {
 
-    this.Map.translateCanvas({ duration: this.duration * 0.9 });
-    animationTimeout(this, () => {
-      this.Map.render();
-      this.flag.isTranslating = false;
-    });
+		this.selectColor(0);
 
-    this.Player.render();
-  }
+		this.Ui.focusColorBtn(0);
 
-  zoom(direction) {
-    if (this.flag.isZooming || this.flag.isTranslating) return;
-    const isZoomable = this.Map.incrementMainNumCells(direction);
-    if (!isZoomable) return;
-    this.flag.isZooming = true;
+		this.render();
 
-    this.updateState();
+		this.listenWindowEvents();
 
-    this.Map.zoom();
-    animationTimeout(this, () => {
-      this.Map.render();
-      this.flag.isZooming = false;
-    });
+		listenClickEvents(this);
 
-    this.Player.render();
-  }
+		listenKeyboardEvents(this)
 
-  selectColor(index) {
-    const { sColor, palette } = this.Player;
-    const next =
-      index == "next" ? 1 :
-      index == "prev" ? palette.length - 1 :
-      null;
+		listenTouchEvents(this);
 
-    if (next)
-      index = (palette.indexOf(sColor) + next) % palette.length;
+		listenServerEvents(this);
 
-    this.Player.setColor(index);
-    this.Ui.focusColorBtn(index);
-  }
+		console.log(this);
+	}
 
-  fill() {
-    const { socket, flag, owned, colors, Cell } = this;
-    const { position, sColor } = this.Player;
-    if (flag.waitingServerConfirmFill || flag.fill) return;
+	listenWindowEvents() {
 
-    if (!owned.includes(position))
-      owned.push(position);
+		const render = () => this.render();
 
-    Cell.fillAnimation(position, this);
-    const color = sColor.substring(1);
-    colors[position] = color;
-    socket.emit("FILL", { position, color });
-    flag.waitingServerConfirmFill = true;
-    this.Player.stamp();
-  }
+		window.addEventListener('resize', render);
+
+		window.addEventListener("orientationchange", () => {
+
+			setTimeout(render, 500)
+		});
+	}
+
+	render() {
+
+		ScreenRatio.update();
+
+		this.Ui.render();
+
+		this.map.setView();
+
+		this.updateState();
+
+		this.map.render();
+
+		this.player.render();
+	}
+
+	updateState(position, direction) {
+
+		this.player.updatePosition(position, direction);
+
+		if (!this.flag.isTranslating) {
+
+			this.map.updateCanvasGrid();
+		}
+
+		this.player.updatePosInView();
+
+		this.map.updateCanvasOrigin();
+	}
+
+	moveAttempt(direction) {
+		if (
+			this.flag.waitingServerConfirmMove ||
+			this.flag.isTranslating ||
+			this.flag.isZooming
+		) return;
+
+		this.socket.emit('MOVE', direction);
+
+		const nextpos = checkMove(direction, this.player.position, this);
+
+		if (nextpos) {
+
+			this.movePlayer(nextpos, direction);
+		
+		} else {
+
+			this.player.bump(direction);
+		}
+	}
+
+	movePlayer(position, direction) {
+		
+		this.flag.waitingServerConfirmMove = true;
+		
+		this.flag.isTranslating = true;
+
+		this.updateState(position, direction);
+
+		this.map.translateCanvas({ duration: this.duration * 0.9 });
+		
+		animationTimeout(this, () => {
+			this.map.render();
+			this.flag.isTranslating = false;
+		});
+
+		this.player.render();
+	}
+
+	zoom(direction) {
+		
+		if (this.flag.isZooming || this.flag.isTranslating) return;
+		
+		const isZoomable = this.map.incrementMainNumCells(direction);
+		
+		if (!isZoomable) return;
+		
+		this.flag.isZooming = true;
+
+		this.updateState();
+
+		this.map.zoom();
+		
+		animationTimeout(this, () => {
+			this.map.render();
+			this.flag.isZooming = false;
+		});
+
+		this.player.render();
+	}
+
+	selectColor(index) {
+		
+		const { sColor, palette } = this.player;
+		
+		const next =
+			index == "next" ? 1 :
+				index == "prev" ? palette.length - 1 :
+					null;
+
+		if (next) {
+
+			index = (palette.indexOf(sColor) + next) % palette.length;
+		}
+
+		this.player.setColor(index);
+		
+		this.Ui.focusColorBtn(index);
+	}
+
+	fill() {
+		
+		const { socket, flag, ownCells, colors, Cell } = this;
+		
+		const { position, sColor } = this.player;
+		
+		if (flag.waitingServerConfirmFill || flag.fill) return;
+
+		if (!ownCells.includes(position)) {
+
+			ownCells.push(position);
+		}
+
+		Cell.fillAnimation(position, this);
+		
+		const color = sColor.substring(1);
+		
+		colors[position] = color;
+		
+		socket.emit("FILL", { position, color });
+		
+		flag.waitingServerConfirmFill = true;
+		
+		this.player.stamp();
+	}
 }

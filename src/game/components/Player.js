@@ -1,190 +1,234 @@
 import { indexToCoord } from '../utils/converters'
+
 export default class Player {
 
-  constructor({ position, palette }, Game) {
-    this.Game = () => Game;
-    this.Map = () => Game.Map;
-	
-    this.position = position;
-	
-    this.palette = palette;
-    this.sColor = palette[0];
-    this.is = {};
-    this.posInView = [0, 0];
-    this.posInViewCoef = [0, 0];
-    this.lastCoord = [0, 0];
+	is = {};
 
-    this.sprite = [
-      document.getElementById('player'),
-      document.getElementById('shadow')
-    ];
-  }
+	posInView = [0, 0];
 
-  ////////////////////////////////////////////////////
+	posInViewCoef = [0, 0];
 
-  updatePosition(position, direction) {
-    if (this.coord)
-      this.lastCoord = [...this.coord];
-    if (position)
-      this.position = position;
-    if (direction)
-      this.lastdir = direction;
-    this.coord = indexToCoord(this.position, this.Game());
-  }
+	lastCoord = [0, 0];
 
-  updatePosInView(Game = this.Game()) {
-    this.lastPosInView = [...this.posInView];
+	constructor({ position, palette }, game) {
 
-    for (let i = 0; i <= 1; i++) {
-      const pX = this.coord[i];
-      const gX = [Game.cols, Game.rows][i];
-      const mX = Game.Map.numCellsInView[i];
-      const hX = (mX - 1) / 2;
+		this.game = game;
 
-      this.posInView[i] = this.getPosInView(gX, mX, hX, pX);
-      this.posInViewCoef[i] = this.getPosInViewCoef(gX, hX, pX);
-    }
-  }
+		this.position = position;
 
-  getPosInView(gX, mX, hX, pX) {
-    return pX < Math.ceil(hX) ?
-      pX :
-      pX > gX - hX - 1 ?
-      pX + mX - gX :
-      hX;
-  }
+		this.palette = palette;
 
-  getPosInViewCoef(gX, hX, pX) {
-    return pX <= hX ?
-      0 :
-      pX >= gX - hX - 1 ?
-      1 :
-      1 / 2;
-  }
+		this.sColor = palette[0];
 
-  ////////////////////////////////////////////////////
+		this.sprite = [
+			document.getElementById('player'),
+			document.getElementById('shadow')
+		];
+	}
 
-  render(Game = this.Game()) {
-    const { isZooming, isTranslating } = Game.flag;
-    const duration = (isTranslating || isZooming) ? Game.duration : 0;
-    this.setSpritePosition({ duration });
-    !isTranslating && this.setSpriteSize();
-  }
+	////////////////////////////////////////////////////
 
-  setSpritePosition({ duration }) {
-    this.updateTranslateVector();
-    this.sprite.forEach((sprite, i) => {
-      sprite.style.transitionDuration = `${duration}s`;
-      sprite.style.transform =
-        `translate(${this.translateVector}) translate(-${i}px, -${i}px)`;
-    });
-  }
+	updatePosition(position, direction) {
 
-  updateTranslateVector(Map = this.Map()) {
-    this.shift = Math.round(Map.cellSize / 8);
-    this.translateVector = this.posInView.map((posInView, i) => {
-        return `${posInView * Map.cellSize + Map.canvasOrigin[i] + this.shift}px`;
-      })
-      .join(', ');
-  }
+		if (this.coord) {
 
-  setSpriteSize() {
-    const { sprite } = this;
-    const { cellSize } = this.Map();
-    this.shift = Math.round(cellSize / 8);
+			this.lastCoord = [...this.coord];
+		}
 
-    sprite[0].style.width =
-      sprite[0].style.height =
-      `${cellSize - this.shift * 2}px`;
+		if (position) {
 
-    sprite[1].style.width =
-      sprite[1].style.height =
-      `${cellSize - this.shift * 2 + 2}px`;
+			this.position = position;
+		}
 
-    sprite.forEach(c =>
-      c.style.borderRadius = `${this.shift}px`
-    );
+		if (direction) {
 
-    sprite[0].style.borderWidth = `${this.shift}px`;
-    sprite[1].style.borderWidth = `min(3px,${this.shift / 4}px)`;
-  }
+			this.lastdir = direction;
+		}
 
-  setColor(i) {
-    const { palette, sprite: [sprite] } = this;
-    this.sColor = palette[i];
-    sprite.style.background = this.sColor;
-  }
+		this.coord = indexToCoord(this.position, this.game);
+	}
 
-  stamp() {
-    const { sprite: [player, shadow] } = this;
+	updatePosInView() {
 
-    player.style.transitionDuration =
-      shadow.style.transitionDuration = "0.1s";
+		this.lastPosInView = [...this.posInView];
 
-    player.style.transform =
-      shadow.style.transform =
-      `translate(${this.translateVector}) scale(0.9)`;
+		for (let i = 0; i <= 1; i++) {
 
-    shadow.style.boxShadow = "0 0 0 #555";
+			const pX = this.coord[i];
 
-    setTimeout(() => {
+			const gX = [this.game.cols, this.game.rows][i];
 
-      player.style.transform =
-        `translate(${this.translateVector}) scale(1)`;
-      shadow.style.transform =
-        `translate(${this.translateVector}) translate(-1px, -1px) scale(1)`;
+			const mX = this.game.map.numCellsInView[i];
 
-      shadow.style.boxShadow = "3px 3px 5px #777";
+			const hX = (mX - 1) / 2;
 
-      player.style.transitionDuration =
-        shadow.style.transitionDuration =
-        "0.2s";
+			this.posInView[i] = this.getPosInView(gX, mX, hX, pX);
 
-    }, 100)
-  }
+			this.posInViewCoef[i] = this.getPosInViewCoef(gX, hX, pX);
+		}
+	}
 
-  bump(direction, Game = this.Game()) {
-    if (Game.flag.isBumping) return;
-    Game.flag.isBumping = true;
+	getPosInView(gX, mX, hX, pX) {
 
-    const { sprite: [player, shadow] } = this;
+		return pX < Math.ceil(hX) ?
+			pX :
+			pX > gX - hX - 1 ?
+				pX + mX - gX :
+				hX;
+	}
 
-    const coef = direction == "up" ? [0, -1] :
-      direction == "down" ? [0, 1] :
-      direction == "left" ? [-1, 0] : [1, 0];
+	getPosInViewCoef(gX, hX, pX) {
 
-    const bumpTranslation = coef.map(e => `${e * this.shift * 1.5}px`)
-      .join(", ");
+		return pX <= hX ?
+			0 :
+			pX >= gX - hX - 1 ?
+				1 :
+				1 / 2;
+	}
 
-    const bumpScale = coef.map(e => `${1 - 0.1 * Math.abs(e)}`)
-      .join(", ");
+	////////////////////////////////////////////////////
 
-    player.style.transitionDuration =
-      shadow.style.transitionDuration =
-      "0.07s";
+	render() {
 
-    player.style.transform =
-      `translate(${this.translateVector}) translate(${bumpTranslation}) scale(${bumpScale})`;
+		const { isZooming, isTranslating } = this.game.flag;
 
-    shadow.style.transform =
-      `translate(${this.translateVector}) translate(${bumpTranslation}) translate(-1px, -1px) scale(${bumpScale})`;
+		const duration = (isTranslating || isZooming) ? this.game.duration : 0;
 
-    setTimeout(() => {
+		this.setSpritePosition({ duration });
 
-      player.style.transform =
-        `translate(${this.translateVector})`;
-        
-      shadow.style.transform =
-        `translate(${this.translateVector}) translate(-1px, -1px)`;
+		!isTranslating && this.setSpriteSize();
+	}
 
-      player.style.transitionDuration =
-        shadow.style.transitionDuration =
-        "0.2s";
+	setSpritePosition({ duration }) {
 
-      setTimeout(() => {
-        Game.flag.isBumping = false;
-      }, 250);
+		this.updateTranslateVector();
 
-    }, 70)
-  }
+		this.sprite.forEach((sprite, i) => {
+
+			sprite.style.transitionDuration = `${duration}s`;
+
+			sprite.style.transform =
+				`translate(${this.translateVector}) translate(-${i}px, -${i}px)`;
+		});
+	}
+
+	updateTranslateVector() {
+
+		this.shift = Math.round(this.game.map.cellSize / 8);
+
+		this.translateVector = this.posInView.map((posInView, i) => {
+			return `${posInView * this.game.map.cellSize + this.game.map.canvasOrigin[i] + this.shift}px`;
+		})
+			.join(', ');
+	}
+
+	setSpriteSize() {
+
+		const { sprite } = this;
+
+		const { cellSize } = this.game.map
+
+		this.shift = Math.round(cellSize / 8);
+
+		sprite[0].style.width =
+			sprite[0].style.height =
+			`${cellSize - this.shift * 2}px`;
+
+		sprite[1].style.width =
+			sprite[1].style.height =
+			`${cellSize - this.shift * 2 + 2}px`;
+
+		sprite.forEach(c =>
+			c.style.borderRadius = `${this.shift}px`
+		);
+
+		sprite[0].style.borderWidth = `${this.shift}px`;
+
+		sprite[1].style.borderWidth = `min(3px,${this.shift / 4}px)`;
+	}
+
+	setColor(i) {
+
+		const { palette, sprite: [sprite] } = this;
+
+		this.sColor = palette[i];
+
+		sprite.style.background = this.sColor;
+	}
+
+	stamp() {
+		const { sprite: [player, shadow] } = this;
+
+		player.style.transitionDuration =
+			shadow.style.transitionDuration = "0.1s";
+
+		player.style.transform =
+			shadow.style.transform =
+			`translate(${this.translateVector}) scale(0.9)`;
+
+		shadow.style.boxShadow = "0 0 0 #555";
+
+		setTimeout(() => {
+
+			player.style.transform =
+				`translate(${this.translateVector}) scale(1)`;
+				
+			shadow.style.transform =
+				`translate(${this.translateVector}) translate(-1px, -1px) scale(1)`;
+
+			shadow.style.boxShadow = "3px 3px 5px #777";
+
+			player.style.transitionDuration =
+				shadow.style.transitionDuration =
+				"0.2s";
+
+		}, 100)
+	}
+
+	bump(direction) {
+
+		if (this.game.flag.isBumping) return;
+
+		this.game.flag.isBumping = true;
+
+		const { sprite: [player, shadow] } = this;
+
+		const coef = direction == "up" ? [0, -1] :
+			direction == "down" ? [0, 1] :
+				direction == "left" ? [-1, 0] : [1, 0];
+
+		const bumpTranslation = coef.map(e => `${e * this.shift * 1.5}px`)
+			.join(", ");
+
+		const bumpScale = coef.map(e => `${1 - 0.1 * Math.abs(e)}`)
+			.join(", ");
+
+		player.style.transitionDuration =
+			shadow.style.transitionDuration =
+			"0.07s";
+
+		player.style.transform =
+			`translate(${this.translateVector}) translate(${bumpTranslation}) scale(${bumpScale})`;
+
+		shadow.style.transform =
+			`translate(${this.translateVector}) translate(${bumpTranslation}) translate(-1px, -1px) scale(${bumpScale})`;
+
+		setTimeout(() => {
+
+			player.style.transform =
+				`translate(${this.translateVector})`;
+
+			shadow.style.transform =
+				`translate(${this.translateVector}) translate(-1px, -1px)`;
+
+			player.style.transitionDuration =
+				shadow.style.transitionDuration =
+				"0.2s";
+
+			setTimeout(() => {
+				this.game.flag.isBumping = false;
+			}, 250);
+
+		}, 70)
+	}
 }

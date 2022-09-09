@@ -1,108 +1,149 @@
-export default (Game) => {
+export default (game) => {
 
-  const { flag, Map: { view } } = Game;
+	const { flag, map: { view } } = game;
 
-  view.addEventListener('touchstart', event =>
-    touchStart(event, flag),
-    false
-  );
+	view.addEventListener('touchstart', event =>
+		touchStart(event, flag),
+		false
+	);
 
-  view.addEventListener('touchmove', event =>
-    touchMove(event, flag, Game),
-    false
-  );
+	view.addEventListener('touchmove', event =>
+		touchMove(event, flag, game),
+		false
+	);
 
-  view.addEventListener('touchend', event =>
-    touchEnd(event, flag),
-    false
-  );
+	view.addEventListener('touchend', event =>
+		touchEnd(event, flag),
+		false
+	);
 };
 
 const Touch = {
-  start: [null, null],
-  delta: [null, null],
-  direction: null,
-  lastdir: null,
-  limit: 80,
 
-  setOrigin(evt) {
-    this.start[0] = evt.touches[0].clientX;
-    this.start[1] = evt.touches[0].clientY
-  },
+	start: [null, null],
 
-  setLimit(amount = 50) {
-    this.limit = amount;
-  },
+	delta: [null, null],
 
-  getDelta(evt) {
-    this.delta[0] = this.start[0] - evt.touches[0].clientX;
-    this.delta[1] = this.start[1] - evt.touches[0].clientY;
-  },
+	direction: null,
 
-  getDirection() {
-    const [deltaX, deltaY] = this.delta;
-    if (Math.abs(deltaX) > Math.abs(deltaY))
-      this.direction = deltaX > 0 ? "left" : "right"
-    else
-      this.direction = deltaY > 0 ? "up" : "down";
-  },
+	lastdir: null,
 
-  saveDirection() {
-    this.lastdir = this.direction;
-  },
+	limit: 80,
 
-  useLastDir() {
-    this.direction = this.lastdir;
-  },
+	setOrigin(evt) {
 
-  isSameDirection() {
-    return this.lastdir === this.direction;
-  },
+		this.start[0] = evt.touches[0].clientX;
 
-  isTooSmall() {
-    return Math.abs(Touch.delta[0]) < Touch.limit &&
-      Math.abs(Touch.delta[1]) < Touch.limit;
-  }
+		this.start[1] = evt.touches[0].clientY
+	},
+
+	setLimit(amount = 50) {
+
+		this.limit = amount;
+	},
+
+	getDelta(evt) {
+
+		this.delta[0] = this.start[0] - evt.touches[0].clientX;
+
+		this.delta[1] = this.start[1] - evt.touches[0].clientY;
+	},
+
+	getDirection() {
+
+		const [deltaX, deltaY] = this.delta;
+
+		if (Math.abs(deltaX) > Math.abs(deltaY)) {
+
+			this.direction = deltaX > 0 ? "left" : "right"
+		} else {
+
+			this.direction = deltaY > 0 ? "up" : "down";
+		}
+	},
+
+	saveDirection() {
+
+		this.lastdir = this.direction;
+	},
+
+	useLastDir() {
+
+		this.direction = this.lastdir;
+	},
+
+	isSameDirection() {
+
+		return this.lastdir === this.direction;
+	},
+
+	isTooSmall() {
+
+		return Math.abs(Touch.delta[0]) < Touch.limit &&
+			Math.abs(Touch.delta[1]) < Touch.limit;
+	}
 };
 
 const touchStart = (evt, flag) => {
-  flag.isTouching = true;
-  Touch.setOrigin(evt);
+
+	flag.isTouching = true;
+
+	Touch.setOrigin(evt);
 }
 
 const touchEnd = (evt, flag) => {
-  flag.isTouching = false;
-  Touch.setLimit();
-  Touch.start = [null, null];
-  Touch.direction = null;
-  Touch.lastdir = null;
+
+	flag.isTouching = false;
+
+	Touch.setLimit();
+
+	Touch.start = [null, null];
+
+	Touch.direction = null;
+
+	Touch.lastdir = null;
 }
 
-const touchMove = (evt, flag, Game) => {
-  let { start, lastdir, } = Touch;
-  if (!start[0] || !start[1]) return;
+const touchMove = (evt, flag, game) => {
 
-  Touch.getDelta(evt);
-  Touch.getDirection();
-  if (!lastdir) Touch.saveDirection();
+	let { start, lastdir, } = Touch;
 
-  if (
-    flag.waitingServerConfirmMove || flag.isTranslating ||
-    Touch.isTooSmall()
-  ) return;
+	if (!start[0] || !start[1]) return;
 
-  Game.moveAttempt(Touch.direction);
-  Touch.setOrigin(evt);
-  Touch.setLimit(120);
-  Touch.saveDirection();
+	Touch.getDelta(evt);
 
-  const keepMoving = setInterval(() => {
-    if (
-      !flag.waitingServerConfirmMove &&
-      !flag.isTranslating &&
-      flag.isTouching && Touch.direction
-    ) Game.moveAttempt(Touch.direction);
-    if (!flag.isTouching)
-      clearInterval(keepMoving);
-  }, 20);
+	Touch.getDirection();
+
+	if (!lastdir) Touch.saveDirection();
+
+	if (
+		flag.waitingServerConfirmMove || flag.isTranslating ||
+		Touch.isTooSmall()
+	) return;
+
+	game.moveAttempt(Touch.direction);
+
+	Touch.setOrigin(evt);
+
+	Touch.setLimit(120);
+
+	Touch.saveDirection();
+
+	const keepMoving = setInterval(() => {
+		
+		if (
+			!flag.waitingServerConfirmMove &&
+			!flag.isTranslating &&
+			flag.isTouching && Touch.direction
+		) {
+
+			game.moveAttempt(Touch.direction);
+		}
+
+		if (!flag.isTouching) {
+
+			clearInterval(keepMoving);
+		}
+
+	}, 20);
 }

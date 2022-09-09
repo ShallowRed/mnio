@@ -1,19 +1,21 @@
-const animationTimeout = (Game, callback, start = Date.now(), delay = Game
-  .duration) => {
+export default function animationTimeout(game, callback, start = Date.now(), delay = game.duration) {
 
-  const delta = (Date.now() - start) / 1000;
+	const delta = (Date.now() - start) / 1000;
 
-  if (Game.flag.fill)
-    delay += 0.015;
+	if (game.flag.fill) {
 
-  if (delta >= delay) {
-    callback();
-    return;
-  }
+		delay += 0.015;
+	}
 
-  window.requestAnimationFrame(() =>
-    animationTimeout(Game, callback, start, delay)
-  );
-};
+	if (delta >= delay) {
 
-export default animationTimeout;
+		callback();
+
+		return;
+	}
+
+	window.requestAnimationFrame(() => {
+
+		animationTimeout(game, callback, start, delay)
+	});
+}

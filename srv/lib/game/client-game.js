@@ -16,15 +16,15 @@ export default class ClientGame {
 	get initialData() {
 
 		return {
-			Game: {
+			game: {
 				colors: this.game.map.gridState,
-				positions: this.game.map.playersPositions,
+				playersPositions: this.game.map.playersPositions,
 				rows: this.game.map.rows,
 				cols: this.game.map.cols,
-				owned: this.player.ownCells,
-				allowed: this.player.allowedCells
+				ownCells: this.player.ownCells,
+				allowedCells: this.player.allowedCells
 			},
-			Player: {
+			player: {
 				position: this.player.position,
 				palette: this.player.palette,
 			}

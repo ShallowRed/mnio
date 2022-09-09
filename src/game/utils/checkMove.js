@@ -1,27 +1,34 @@
 import { indexToCoord, coordToIndex } from './converters';
 
-export default function checkmove(dir, position, Game) {
-  const { rows, cols } = Game;
+export default function checkmove(dir, position, game) {
+	
+	const { rows, cols } = game;
 
-  let [x, y] = indexToCoord(position, { cols, rows });
+	let [x, y] = indexToCoord(position, { cols, rows });
 
-  if (dir == "left" && x !== 0) x--;
-  else if (dir == "right" && x !== cols - 1) x++;
-  else if (dir == "up" && y !== 0) y--;
-  else if (dir == "down" && y !== rows - 1) y++;
-  else return;
+	if (dir == "left" && x !== 0) x--;
 
-  const nextpos = coordToIndex([x, y], { cols });
-  if (isAvailable(nextpos, Game)) return nextpos;
+	else if (dir == "right" && x !== cols - 1) x++;
+
+	else if (dir == "up" && y !== 0) y--;
+
+	else if (dir == "down" && y !== rows - 1) y++;
+
+	else return;
+
+	const nextpos = coordToIndex([x, y], { cols });
+
+	if (isAvailable(nextpos, game)) return nextpos;
 }
 
-const isAvailable = (nextpos, { owned, allowed, colors, positions }) => {
-  return (
-    owned.includes(nextpos) ||
-    (
-      allowed.includes(nextpos) &&
-      !positions.includes(nextpos) &&
-      !colors[nextpos]
-    )
-  );
+const isAvailable = (nextpos, { ownCells, allowedCells, colors, playersPositions }) => {
+
+	return (
+		ownCells.includes(nextpos) ||
+		(
+			allowedCells.includes(nextpos) &&
+			!playersPositions.includes(nextpos) &&
+			!colors[nextpos]
+		)
+	);
 }

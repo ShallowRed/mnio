@@ -17,7 +17,7 @@ export function render(path, data) {
 	}
 }
 
-export function logOut(req, res, next) {
+export function logout(req, res, next) {
 
 	req.logout(function (err) {
 

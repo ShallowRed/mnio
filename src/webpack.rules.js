@@ -30,10 +30,6 @@ const postCssLoader = {
 	}
 };
 
-const resolveUrlLoader = {
-	loader: 'resolve-url-loader',
-};
-
 const sassLoader = {
 	loader: 'sass-loader',
 	options: {
@@ -67,7 +63,6 @@ module.exports = (isDevMode) => ({
 				MiniCssExtractPlugin.loader,
 				cssLoader,
 				postCssLoader,
-				resolveUrlLoader,
 				sassLoader
 			]
 		}
