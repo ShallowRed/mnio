@@ -1,6 +1,6 @@
-export const fillCell = (coord, cellSize, ctx, color) => {
+export const fillCell = (coords, cellSize, ctx, color) => {
 
-	const [vX, vY] = coord.map(x => Math.round(cellSize * x));
+	const [vX, vY] = coords.map(x => Math.round(cellSize * x));
 
 	ctx.clearRect(vX, vY, cellSize, cellSize);
 
@@ -13,9 +13,9 @@ export const fillCell = (coord, cellSize, ctx, color) => {
 	ctx.fillRect(vX, vY, cellSize, cellSize);
 };
 
-export const roundSquare = (coord, cellSize, ctx, shift) => {
+export const roundSquare = (coords, cellSize, ctx, shift) => {
 
-	const [x, y] = coord.map(x => {
+	const [x, y] = coords.map(x => {
 
 		return Math.round(cellSize * x + shift * 1.5);
 	});

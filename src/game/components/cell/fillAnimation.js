@@ -8,22 +8,22 @@ export const fillAnimation = (position, game) => {
 	const [x, y] = getCoordInView(position, game);
 
 	const {
-		flag,
-		player: { sColor },
+		flags,
+		player: { selectedColor },
 		map: { cellSize, ctx: [, ctx] }
 	} = game;
 
-	flag.fill = true;
+	flags.fill = true;
 
 	fillFrame({
 		x: Math.round(cellSize * x),
 		y: Math.round(cellSize * y),
 		lineWidth: Math.floor(cellSize / N_STRIPES),
 		numSmallStripes: N_STRIPES - cellSize % N_STRIPES,
-		flag,
+		flags,
 		ctx,
 		cellSize,
-		sColor
+		selectedColor
 	});
 };
 
@@ -34,7 +34,7 @@ const fillFrame = (
 	startDate = Date.now()
 ) => {
 
-	const { flag, cellSize } = props;
+	const { flags, cellSize } = props;
 
 	const delay = Date.now() - startDate;
 
@@ -54,7 +54,7 @@ const fillFrame = (
 
 	} else {
 
-		flag.fill = false;
+		flags.fill = false;
 	}
 };
 
@@ -81,7 +81,7 @@ const drawStripe = (stripeIndex, [startX, endX], {
 	x,
 	y,
 	ctx,
-	sColor,
+	selectedColor,
 	cellSize,
 	lineWidth,
 	numSmallStripes
@@ -103,7 +103,7 @@ const drawStripe = (stripeIndex, [startX, endX], {
 
 	ctx.lineWidth = lineWidth;
 	
-	ctx.strokeStyle = sColor;
+	ctx.strokeStyle = selectedColor;
 
 	ctx.beginPath();
 	

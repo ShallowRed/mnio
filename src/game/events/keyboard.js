@@ -9,8 +9,8 @@ export default (game) => {
 		}
 
 		if (
-			game.flag.isTranslating ||
-			game.flag.waitingServerConfirmMove
+			game.flags.isTranslating ||
+			game.flags.waitingServerConfirmMove
 		) return;
 
 		onKeyDown(event, game)

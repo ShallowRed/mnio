@@ -20,49 +20,49 @@ export default class Cell {
 		
 		clear: (position) => {
 
-			const coord = getCoordInView(position, this.game);
+			const coords = getCoordInView(position, this.game);
 
-			if (!coord) return;
+			if (!coords) return;
 
 			const { ctx, cellSize } = this.game.map;
 
-			fillCell(coord, cellSize, ctx[2], null);
+			fillCell(coords, cellSize, ctx[2], null);
 		},
 
 		color: (position) => {
 
-			const coord = getCoordInView(position, this.game);
+			const coords = getCoordInView(position, this.game);
 
-			if (!coord) return;
+			if (!coords) return;
 
-			const { colors, map: { ctx, cellSize } } = this.game;
+			const { gridState, map: { ctx, cellSize } } = this.game;
 
-			fillCell(coord, cellSize, ctx[1], `#${colors[position]}`);
+			fillCell(coords, cellSize, ctx[1], `#${gridState[position]}`);
 
 		},
 
 		allowedCells: (position) => {
 
-			const coord = getCoordInView(position, this.game);
+			const coords = getCoordInView(position, this.game);
 
-			if (!coord) return;
+			if (!coords) return;
 
 			const { ctx, cellSize } = this.game.map;
 
-			fillCell(coord, cellSize, ctx[0], '#e9e9e9');
+			fillCell(coords, cellSize, ctx[0], '#e9e9e9');
 		},
 
 		position: (position) => {
 
-			const coord = getCoordInView(position, this.game);
+			const coords = getCoordInView(position, this.game);
 
-			if (!coord) return;
+			if (!coords) return;
 
 			const { ctx, cellSize } = this.game.map;
 
 			const shift = Math.round(cellSize / 8);
 
-			roundSquare(coord, cellSize, ctx[2], shift);
+			roundSquare(coords, cellSize, ctx[2], shift);
 		}
 	}
 }

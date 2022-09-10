@@ -13,7 +13,7 @@ const serverEvents = Object.entries({
 
 	NEW_PLAYER_POSITION(game, newPosition) {
 
-		game.flag.waitingServerConfirmMove = false;
+		game.flags.waitingServerConfirmMove = false;
 
 		if (newPosition !== game.player.position) {
 
@@ -34,14 +34,14 @@ const serverEvents = Object.entries({
 		)
 	},
 
-	NEW_FILL({ colors, Cell }, { position, color }) {
+	NEW_FILL({ gridState, Cell }, { position, color }) {
 
-		colors[position] = color;
+		gridState[position] = color;
 
 		Cell.render.color(position);
 	},
 
-	ALLOWED_CELLS({ allowedCells, Cell, flag }, cells) {
+	ALLOWED_CELLS({ allowedCells, Cell, flags }, cells) {
 
 		cells.forEach(position => {
 
@@ -49,16 +49,16 @@ const serverEvents = Object.entries({
 
 			allowedCells.push(position);
 
-			if (!flag.isTranslating) {
+			if (!flags.isTranslating) {
 
 				Cell.render.allowedCells(position);
 			}
 		});
 	},
 
-	CONFIRM_FILL({ flag }) {
+	CONFIRM_FILL({ flags }) {
 
-		flag.waitingServerConfirmFill = false;
+		flags.waitingServerConfirmFill = false;
 	},
 
 	reconnect_attempt: () => {

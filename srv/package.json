@@ -2,10 +2,9 @@
 	"name": "mnio-server",
 	"version": "0.0.3",
 	"type": "module",
+	"main": "entry.cjs",
 	"scripts": {
-		"start": "node entry.cjs",
-		"dev": "pm2 start ecosystem.dev.config.cjs && pm2 logs",
-		"prod": "pm2 start ecosystem.prod.config.cjs && pm2 logs"
+		"start": "node entry.cjs"
 	},
 	"dependencies": {
 		"connect-flash": "^0.1.1",
@@ -26,7 +25,6 @@
 		"#database/*": "./lib/database/*.js",
 		"#game/*": "./lib/game/*.js",
 		"#server/*": "./lib/server/*.js",
-		"#config/*": "./lib/config/*.js",
-		"#dist": "./dist"
+		"#config/*": "./lib/config/*.js"
 	}
 }

@@ -1,7 +1,7 @@
 import { indexToCoord, coordToIndex } from './converters';
 
 export default function checkmove(dir, position, game) {
-	
+
 	const { rows, cols } = game;
 
 	let [x, y] = indexToCoord(position, { cols, rows });
@@ -18,17 +18,20 @@ export default function checkmove(dir, position, game) {
 
 	const nextpos = coordToIndex([x, y], { cols });
 
-	if (isAvailable(nextpos, game)) return nextpos;
+	if (isAvailable(nextpos, game)) {
+
+		return nextpos;
+	}
 }
 
-const isAvailable = (nextpos, { ownCells, allowedCells, colors, playersPositions }) => {
+const isAvailable = (nextpos, { ownCells, allowedCells, gridState, playersPositions }) => {
 
 	return (
 		ownCells.includes(nextpos) ||
 		(
 			allowedCells.includes(nextpos) &&
 			!playersPositions.includes(nextpos) &&
-			!colors[nextpos]
+			!gridState[nextpos]
 		)
 	);
 }

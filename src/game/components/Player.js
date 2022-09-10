@@ -2,13 +2,18 @@ import { indexToCoord } from '../utils/converters'
 
 export default class Player {
 
+	sprite = [
+		document.getElementById('player'),
+		document.getElementById('shadow')
+	];
+
 	is = {};
 
 	posInView = [0, 0];
 
 	posInViewCoef = [0, 0];
 
-	lastCoord = [0, 0];
+	lastCoords = [0, 0];
 
 	constructor({ position, palette }, game) {
 
@@ -18,21 +23,16 @@ export default class Player {
 
 		this.palette = palette;
 
-		this.sColor = palette[0];
-
-		this.sprite = [
-			document.getElementById('player'),
-			document.getElementById('shadow')
-		];
+		this.selectedColor = palette[0];
 	}
 
 	////////////////////////////////////////////////////
 
 	updatePosition(position, direction) {
 
-		if (this.coord) {
+		if (this.coords) {
 
-			this.lastCoord = [...this.coord];
+			this.lastCoords = [...this.coords];
 		}
 
 		if (position) {
@@ -42,10 +42,10 @@ export default class Player {
 
 		if (direction) {
 
-			this.lastdir = direction;
+			this.lastDirection = direction;
 		}
 
-		this.coord = indexToCoord(this.position, this.game);
+		this.coords = indexToCoord(this.position, this.game);
 	}
 
 	updatePosInView() {
@@ -54,7 +54,7 @@ export default class Player {
 
 		for (let i = 0; i <= 1; i++) {
 
-			const pX = this.coord[i];
+			const pX = this.coords[i];
 
 			const gX = [this.game.cols, this.game.rows][i];
 
@@ -90,7 +90,7 @@ export default class Player {
 
 	render() {
 
-		const { isZooming, isTranslating } = this.game.flag;
+		const { isZooming, isTranslating } = this.game.flags;
 
 		const duration = (isTranslating || isZooming) ? this.game.duration : 0;
 
@@ -151,9 +151,9 @@ export default class Player {
 
 		const { palette, sprite: [sprite] } = this;
 
-		this.sColor = palette[i];
+		this.selectedColor = palette[i];
 
-		sprite.style.background = this.sColor;
+		sprite.style.background = this.selectedColor;
 	}
 
 	stamp() {
@@ -187,9 +187,9 @@ export default class Player {
 
 	bump(direction) {
 
-		if (this.game.flag.isBumping) return;
+		if (this.game.flags.isBumping) return;
 
-		this.game.flag.isBumping = true;
+		this.game.flags.isBumping = true;
 
 		const { sprite: [player, shadow] } = this;
 
@@ -226,7 +226,7 @@ export default class Player {
 				"0.2s";
 
 			setTimeout(() => {
-				this.game.flag.isBumping = false;
+				this.game.flags.isBumping = false;
 			}, 250);
 
 		}, 70)

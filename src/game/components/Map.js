@@ -191,7 +191,7 @@ export default class GameMap {
 			Cell.render.position(position);
 		});
 
-		this.game.colors.map((color, i) => color ? i : null)
+		this.game.gridState.map((color, i) => color ? i : null)
 			.filter(color => color)
 			.forEach((position) => {
 
@@ -239,11 +239,11 @@ export default class GameMap {
 
 	updateTranslateCoef() {
 		
-		const { lastCoord, coord, lastPosInView, posInView } = this.game.player;
+		const { lastCoords, coords, lastPosInView, posInView } = this.game.player;
 		
-		this.translateCoef = lastCoord.map((x, i) => {
+		this.translateCoef = lastCoords.map((x, i) => {
 
-			return x - coord[i] + posInView[i] - lastPosInView[i];
+			return x - coords[i] + posInView[i] - lastPosInView[i];
 		});
 	}
 

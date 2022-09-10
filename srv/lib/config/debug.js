@@ -8,5 +8,5 @@ export default function debug(key) {
 
 	debug.error = console.error.bind(console);
 
-	return debug;s
+	return debug;
 }

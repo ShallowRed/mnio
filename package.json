@@ -16,12 +16,17 @@
 		"node": ">=12.0.0",
 		"npm": ">=6.0.0"
 	},
+	"type": "module",
 	"scripts": {
-		"dev:server": "npm run dev --prefix srv",
-		"dev:client": "npm run dev --prefix src",
-		"start": "npm run prod --prefix srv",
+		"start": "pm2 start ecosystem.config.cjs && pm2 logs",
 		"bundle": "npm run prod --prefix src",
+		"dev:bundle": "npm run dev --prefix src",
 		"install:dev": "npm install && npm install --prefix srv && npm install --prefix src",
-		"install:prod": "npm install --omit=dev --prefix srv"
+		"install:prod": "npm install --omit=dev --prefix srv",
+		"deploy:setup": "pm2 deploy ecosystem.deploy.cjs production setup",
+		"deploy": "pm2 deploy ecosystem.deploy.cjs production"
+	},
+	"exports": {
+		"shared": "./shared"
 	}
 }

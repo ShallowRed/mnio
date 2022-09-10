@@ -5,7 +5,8 @@ import * as socketIo from 'socket.io';
 
 import { resolve } from 'path';
 
-const PUBLIC_FOLDER_PATH = '../dist';
+const PUBLIC_FOLDER_PATH = './dist';
+const VIEWS_PATH = './srv/views';
 
 import Debug from '#config/debug';
 const debug = Debug('server   |');
@@ -14,7 +15,7 @@ export default function createServer (PORT, router) {
 
 	const app = express()
 		.set('view engine', 'ejs')
-		.set('views', 'views')
+		.set('views', VIEWS_PATH)
 		.use('/assets', serveStatic(resolve(PUBLIC_FOLDER_PATH), { index: false }))
 		.use('/', router)
 

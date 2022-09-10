@@ -6,16 +6,15 @@ export function getCoordInView(position, game) {
 
 	const absoluteCoord = indexToCoord(position, { rows, cols });
 
-	const relativeCoord = absoluteCoord.map((coord, i) => {
+	const relativeCoord = absoluteCoord.map((coords, i) => {
 
-		return coord - player.coord[i] + player.posInView[i] + offScreenCells;
+		return coords - player.coords[i] + player.posInView[i] + offScreenCells;
 
 	});
 
 	if (isCoordInView(relativeCoord, numCellsInView, offScreenCells)) {
 
 		return relativeCoord;
-
 	}
 
 }

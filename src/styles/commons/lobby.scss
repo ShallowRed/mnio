@@ -95,17 +95,17 @@ form {
 	padding: 1rem 1.5rem;
 	border-radius: 0.25rem;
 	
-	&.info {
-		background: $color__info;
-		font-size: 1.2rem;
-		margin-bottom: 2rem;
-	}
+	// &.info {
+	// 	background: $color__info;
+	// 	font-size: 1.2rem;
+	// 	margin-bottom: 2rem;
+	// }
 
 	&.error {
 		background: $color__error;
 	}
 
-	&.text {
+	&.text, &.info {
 		padding: 1.5rem 0;
 		font-size: 1.4rem;
 	}

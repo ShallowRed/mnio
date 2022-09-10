@@ -32,9 +32,11 @@ const webpackConfig = (isDevMode, { entry, name }) => ({
 	resolve: {
 		modules: [resolve(__dirname, 'node_modules'), 'node_modules'],
 		alias: {
-			styles: resolve(__dirname, 'styles'),
-			img: resolve(__dirname, 'assets/img'),
-		  },
+			'styles': resolve(__dirname, 'styles'),
+			'shared': resolve(__dirname, '../shared'),
+			'game': resolve(__dirname, 'game'),
+			'img': resolve(__dirname, 'assets/img'),
+		},
 	},
 
 	target: "web",

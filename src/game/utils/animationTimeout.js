@@ -2,7 +2,7 @@ export default function animationTimeout(game, callback, start = Date.now(), del
 
 	const delta = (Date.now() - start) / 1000;
 
-	if (game.flag.fill) {
+	if (game.flags.fill) {
 
 		delay += 0.015;
 	}

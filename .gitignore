@@ -1,9 +1,8 @@
 .vscode/
 
-TODO.md
+*.md
+!README.md
 
 node_modules/
 
-dist/
-
-ecosystem.prod.config.cjs
+ecosystem.deploy.cjs

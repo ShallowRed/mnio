@@ -1,19 +1,19 @@
 export default (game) => {
 
-	const { flag, map: { view } } = game;
+	const { flags, map: { view } } = game;
 
 	view.addEventListener('touchstart', event =>
-		touchStart(event, flag),
+		touchStart(event, flags),
 		false
 	);
 
 	view.addEventListener('touchmove', event =>
-		touchMove(event, flag, game),
+		touchMove(event, flags, game),
 		false
 	);
 
 	view.addEventListener('touchend', event =>
-		touchEnd(event, flag),
+		touchEnd(event, flags),
 		false
 	);
 };
@@ -26,7 +26,7 @@ const Touch = {
 
 	direction: null,
 
-	lastdir: null,
+	lastDirection: null,
 
 	limit: 80,
 
@@ -64,17 +64,17 @@ const Touch = {
 
 	saveDirection() {
 
-		this.lastdir = this.direction;
+		this.lastDirection = this.direction;
 	},
 
 	useLastDir() {
 
-		this.direction = this.lastdir;
+		this.direction = this.lastDirection;
 	},
 
 	isSameDirection() {
 
-		return this.lastdir === this.direction;
+		return this.lastDirection === this.direction;
 	},
 
 	isTooSmall() {
@@ -84,16 +84,16 @@ const Touch = {
 	}
 };
 
-const touchStart = (evt, flag) => {
+const touchStart = (evt, flags) => {
 
-	flag.isTouching = true;
+	flags.isTouching = true;
 
 	Touch.setOrigin(evt);
 }
 
-const touchEnd = (evt, flag) => {
+const touchEnd = (evt, flags) => {
 
-	flag.isTouching = false;
+	flags.isTouching = false;
 
 	Touch.setLimit();
 
@@ -101,12 +101,12 @@ const touchEnd = (evt, flag) => {
 
 	Touch.direction = null;
 
-	Touch.lastdir = null;
+	Touch.lastDirection = null;
 }
 
-const touchMove = (evt, flag, game) => {
+const touchMove = (evt, flags, game) => {
 
-	let { start, lastdir, } = Touch;
+	let { start, lastDirection, } = Touch;
 
 	if (!start[0] || !start[1]) return;
 
@@ -114,10 +114,10 @@ const touchMove = (evt, flag, game) => {
 
 	Touch.getDirection();
 
-	if (!lastdir) Touch.saveDirection();
+	if (!lastDirection) Touch.saveDirection();
 
 	if (
-		flag.waitingServerConfirmMove || flag.isTranslating ||
+		flags.waitingServerConfirmMove || flags.isTranslating ||
 		Touch.isTooSmall()
 	) return;
 
@@ -132,15 +132,15 @@ const touchMove = (evt, flag, game) => {
 	const keepMoving = setInterval(() => {
 		
 		if (
-			!flag.waitingServerConfirmMove &&
-			!flag.isTranslating &&
-			flag.isTouching && Touch.direction
+			!flags.waitingServerConfirmMove &&
+			!flags.isTranslating &&
+			flags.isTouching && Touch.direction
 		) {
 
 			game.moveAttempt(Touch.direction);
 		}
 
-		if (!flag.isTouching) {
+		if (!flags.isTouching) {
 
 			clearInterval(keepMoving);
 		}

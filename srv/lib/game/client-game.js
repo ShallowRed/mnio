@@ -1,6 +1,8 @@
 import Debug from '#config/debug';
 const debug = Debug('game     |');
 
+import sharedMapMethods from '../../../shared/map-methods.js';
+
 export default class ClientGame {
 
 	constructor(socket, player, game) {
@@ -12,22 +14,17 @@ export default class ClientGame {
 		this.game = game;
 	}
 
-
 	get initialData() {
 
 		return {
-			game: {
-				colors: this.game.map.gridState,
-				playersPositions: this.game.map.playersPositions,
-				rows: this.game.map.rows,
-				cols: this.game.map.cols,
-				ownCells: this.player.ownCells,
-				allowedCells: this.player.allowedCells
-			},
-			player: {
-				position: this.player.position,
-				palette: this.player.palette,
-			}
+			gridState: this.game.map.gridState,
+			playersPositions: this.game.map.playersPositions,
+			rows: this.game.map.rows,
+			cols: this.game.map.cols,
+			ownCells: this.player.ownCells,
+			allowedCells: this.player.allowedCells,
+			position: this.player.position,
+			palette: this.player.palette,
 		}
 	}
 
@@ -47,7 +44,7 @@ export default class ClientGame {
 			if (newPosition) {
 
 				this.movePlayer({ from: this.player.position, to: newPosition });
-				
+
 				this.player.position = newPosition;
 			}
 		});

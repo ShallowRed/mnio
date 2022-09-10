@@ -17,23 +17,40 @@ export default class Game {
 
 	duration = 0.2;
 
-	flag = {};
+	flags = {};
 
-	constructor(data, socket) {
+	constructor(socket, {
+		gridState,
+		playersPositions,
+		rows,
+		cols,
+		ownCells,
+		allowedCells,
+		position,
+		palette
+	}) {
 
 		this.socket = socket;
 
-		Object.assign(this, data.game);
+		this.gridState = gridState;
+
+		this.playersPositions = playersPositions;
+
+		this.rows = rows;
+
+		this.cols = cols;
+
+		this.ownCells = ownCells;
+
+		this.allowedCells = allowedCells;
 
 		this.map = new GameMap(this);
 
-		this.player = new Player(data.player, this);
+		this.player = new Player({ position, palette }, this);
 
 		this.Ui = new Ui();
 
 		this.Cell = new Cell(this);
-
-		console.log(this);
 	}
 
 	init() {
@@ -88,7 +105,7 @@ export default class Game {
 
 		this.player.updatePosition(position, direction);
 
-		if (!this.flag.isTranslating) {
+		if (!this.flags.isTranslating) {
 
 			this.map.updateCanvasGrid();
 		}
@@ -99,10 +116,11 @@ export default class Game {
 	}
 
 	moveAttempt(direction) {
+
 		if (
-			this.flag.waitingServerConfirmMove ||
-			this.flag.isTranslating ||
-			this.flag.isZooming
+			this.flags.waitingServerConfirmMove ||
+			this.flags.isTranslating ||
+			this.flags.isZooming
 		) return;
 
 		this.socket.emit('MOVE', direction);
@@ -112,7 +130,7 @@ export default class Game {
 		if (nextpos) {
 
 			this.movePlayer(nextpos, direction);
-		
+
 		} else {
 
 			this.player.bump(direction);
@@ -120,49 +138,49 @@ export default class Game {
 	}
 
 	movePlayer(position, direction) {
-		
-		this.flag.waitingServerConfirmMove = true;
-		
-		this.flag.isTranslating = true;
+
+		this.flags.waitingServerConfirmMove = true;
+
+		this.flags.isTranslating = true;
 
 		this.updateState(position, direction);
 
 		this.map.translateCanvas({ duration: this.duration * 0.9 });
-		
+
 		animationTimeout(this, () => {
 			this.map.render();
-			this.flag.isTranslating = false;
+			this.flags.isTranslating = false;
 		});
 
 		this.player.render();
 	}
 
 	zoom(direction) {
-		
-		if (this.flag.isZooming || this.flag.isTranslating) return;
-		
+
+		if (this.flags.isZooming || this.flags.isTranslating) return;
+
 		const isZoomable = this.map.incrementMainNumCells(direction);
-		
+
 		if (!isZoomable) return;
-		
-		this.flag.isZooming = true;
+
+		this.flags.isZooming = true;
 
 		this.updateState();
 
 		this.map.zoom();
-		
+
 		animationTimeout(this, () => {
 			this.map.render();
-			this.flag.isZooming = false;
+			this.flags.isZooming = false;
 		});
 
 		this.player.render();
 	}
 
 	selectColor(index) {
-		
-		const { sColor, palette } = this.player;
-		
+
+		const { selectedColor, palette } = this.player;
+
 		const next =
 			index == "next" ? 1 :
 				index == "prev" ? palette.length - 1 :
@@ -170,21 +188,21 @@ export default class Game {
 
 		if (next) {
 
-			index = (palette.indexOf(sColor) + next) % palette.length;
+			index = (palette.indexOf(selectedColor) + next) % palette.length;
 		}
 
 		this.player.setColor(index);
-		
+
 		this.Ui.focusColorBtn(index);
 	}
 
 	fill() {
-		
-		const { socket, flag, ownCells, colors, Cell } = this;
-		
-		const { position, sColor } = this.player;
-		
-		if (flag.waitingServerConfirmFill || flag.fill) return;
+
+		const { socket, flags, ownCells, gridState, Cell } = this;
+
+		const { position, selectedColor } = this.player;
+
+		if (flags.waitingServerConfirmFill || flags.fill) return;
 
 		if (!ownCells.includes(position)) {
 
@@ -192,15 +210,15 @@ export default class Game {
 		}
 
 		Cell.fillAnimation(position, this);
-		
-		const color = sColor.substring(1);
-		
-		colors[position] = color;
-		
+
+		const color = selectedColor.substring(1);
+
+		gridState[position] = color;
+
 		socket.emit("FILL", { position, color });
-		
-		flag.waitingServerConfirmFill = true;
-		
+
+		flags.waitingServerConfirmFill = true;
+
 		this.player.stamp();
 	}
 }

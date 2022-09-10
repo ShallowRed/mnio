@@ -1,5 +1,5 @@
 export default function listenClickEvents(game) {
-	const { flag, Ui } = game;
+	const { flags, Ui } = game;
 
 	Ui.colorBtns.forEach((colorBtn, i) => {
 
@@ -12,7 +12,7 @@ export default function listenClickEvents(game) {
 
 		colorBtn.addEventListener("mouseup", () => {
 
-			if (flag.isTranslating || flag.isZooming) return;
+			if (flags.isTranslating || flags.isZooming) return;
 
 			game.fill();
 		});
@@ -28,7 +28,7 @@ export default function listenClickEvents(game) {
 
 			event.preventDefault();
 
-			if (flag.isTranslating || flag.isZooming) return;
+			if (flags.isTranslating || flags.isZooming) return;
 
 			game.fill();
 		});
