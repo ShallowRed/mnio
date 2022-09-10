@@ -9,3 +9,5 @@ ecosystem.deploy.cjs
 
 Deploy/
 docker-compose.yml
+
+docker-compose.template.yml

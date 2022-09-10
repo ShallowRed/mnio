@@ -1,7 +1,7 @@
 import Debug from '#config/debug';
 const debug = Debug('game     |');
 
-import sharedMapMethods from '../../../shared/map-methods.js';
+import mapMethods from '#shared/map-methods';
 
 export default class ClientGame {
 

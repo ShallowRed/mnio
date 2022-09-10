@@ -2,7 +2,7 @@ const isDevMode = process.env.NODE_ENV !== "production";
 
 const watch = isDevMode && {
 
-	watch: ['./srv/lib'],
+	watch: ['./lib'],
 
 	watch_options: {
 		followSymlinks: false
@@ -13,7 +13,9 @@ module.exports = {
 
 	apps: {
 
-		script: './srv/entry.cjs',
+		cwd: `${__dirname}/srv`,
+
+		script: './entry.cjs',
 
 		...watch,
 

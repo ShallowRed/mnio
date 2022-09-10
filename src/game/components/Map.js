@@ -1,3 +1,5 @@
+import mapMethods from 'shared/map-methods';
+
 export default class GameMap {
 
 	mincells = 7;

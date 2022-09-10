@@ -13,6 +13,10 @@ import Game from '#game/game';
 
 import { PORT, DB, COOKIE_SECRET, USE_MEMORY_STORE, DEFAULT_ROWS, DEFAULT_COLS } from '#config/app.config';
 
+import { resolve } from 'path';
+const PUBLIC_ASSETS_PATH = resolve('../dist');
+const VIEWS_PATH = resolve('./views');
+
 export async function app() {
 
 	await connection.makeSureDbExists(DB);
@@ -27,7 +31,7 @@ export async function app() {
 
 	const router = await createRouter(tables, sessionMiddleware);
 
-	const io = createServer(PORT, router);
+	const io = createServer(router, PORT, VIEWS_PATH, PUBLIC_ASSETS_PATH);
 
 	const game = new Game(io, tables, { DEFAULT_ROWS, DEFAULT_COLS });
 
