@@ -23,9 +23,9 @@
 		"dev:bundle": "npm run dev --prefix src",
 		"install:dev": "npm install && npm install --prefix srv && npm install --prefix src",
 		"install:prod": "npm install --omit=dev --prefix srv",
-		"deploy:setup": "npm run pre-deploy; pm2 deploy ecosystem.deploy.config.cjs production setup",
-		"pre-deploy": "git add . ; git commit -m \"Deploying\" ; git push origin master:deploy ; git push origin master",
-		"deploy": "npm run pre-deploy; pm2 deploy ecosystem.deploy.config.cjs production"
+		"deploy:setup": "npm run pre-deploy; pm2 deploy ecosystem.deploy.config.cjs production setup --force",
+		"pre-deploy": "git add . ; git commit -m \"Deploying\" ; git push origin master:deploy",
+		"deploy": "pm2 deploy ecosystem.deploy.config.cjs production --force"
 	},
 	"exports": {
 		"shared": "./shared"
