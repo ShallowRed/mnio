@@ -16,10 +16,10 @@ module.exports = {
 
 			"pre-deploy-local": "ls",
 			'pre-setup': "rm -rf /root/Source/mnio",
-			"post-setup": "cd /root/Source/Deploy && docker-compose down --remove-orphans && docker-compose up --build -d",
-			
+			// "post-setup": "",
+
 			// "pre-deploy": "pm2 startOrRestart ecosystem.json --env production",
-			"post-deploy": "echo 'deployed'",
+			"post-deploy": "cd /root/Source/Deploy && docker-compose down --remove-orphans && docker-compose up --build -d",
 		}
 	}
 };

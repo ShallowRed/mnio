@@ -24,7 +24,7 @@
 		"install:dev": "npm install && npm install --prefix srv && npm install --prefix src",
 		"install:prod": "npm install --omit=dev --prefix srv",
 		"deploy:setup": "pm2 deploy ecosystem.deploy.config.cjs production setup",
-		"pre-deploy": "git commit -am \"Deploying\" && git push origin master:deploy",
+		"pre-deploy": "git commit -am \"Deploying\" && git push origin && git push origin master:deploy",
 		"deploy": "pm2 deploy ecosystem.deploy.config.cjs production"
 	},
 	"exports": {
