@@ -2,12 +2,14 @@ const isDevMode = process.env.NODE_ENV !== "production";
 
 const watch = isDevMode && {
 
-	watch: ['./lib'],
+	watch: ['lib', 'shared'],
 
 	watch_options: {
 		followSymlinks: false
 	},
 };
+console.log(watch);
+
 
 module.exports = {
 

@@ -1,81 +1,74 @@
-export default (game) => {
+export default function listenServerEvents() {
 
-	for (const [eventName, callback] of serverEvents) {
+	this.socket.on("NEW_PLAYER_POSITION", (newPosition) => {
 
-		game.socket.on(eventName, (data) =>
+		this.flags.waitingServerConfirmMove = false;
 
-			callback(game, data)
-		);
-	}
-}
+		if (newPosition !== this.player.position) {
 
-const serverEvents = Object.entries({
-
-	NEW_PLAYER_POSITION(game, newPosition) {
-
-		game.flags.waitingServerConfirmMove = false;
-
-		if (newPosition !== game.player.position) {
-
-			game.movePlayer(newPosition);
+			this.movePlayer(newPosition);
 		}
-	},
+	});
 
-	NEW_POSITION({ playersPositions, Cell }, { from: lastPosition, to: newPosition }) {
+	this.socket.on("NEW_POSITION", ({ from: lastPosition, to: newPosition }) => {
 
-		lastPosition && (
-			playersPositions.splice(playersPositions.indexOf(lastPosition), 1),
-			Cell.render.clear(lastPosition)
-		);
+		if (lastPosition) {
 
-		newPosition && (
-			playersPositions.push(newPosition),
-			Cell.render.position(newPosition)
-		)
-	},
+			this.playersPositions.splice(this.playersPositions.indexOf(lastPosition), 1);
 
-	NEW_FILL({ gridState, Cell }, { position, color }) {
+			this.Cell.render.clear(lastPosition)
+		}
 
-		gridState[position] = color;
+		if (newPosition) {
 
-		Cell.render.color(position);
-	},
+			this.playersPositions.push(newPosition);
 
-	ALLOWED_CELLS({ allowedCells, Cell, flags }, cells) {
+			this.Cell.render.position(newPosition)
+		}
+	});
+
+	this.socket.on("NEW_FILL", ({ position, color }) => {
+
+		this.gridState[position] = color;
+
+		this.Cell.render.color(position);
+	});
+
+	this.socket.on("ALLOWED_CELLS", (cells) => {
 
 		cells.forEach(position => {
 
-			if (allowedCells.includes(position)) return;
+			if (this.allowedCells.includes(position)) return;
 
-			allowedCells.push(position);
+			this.allowedCells.push(position);
 
-			if (!flags.isTranslating) {
+			if (!this.flags.isTranslating) {
 
-				Cell.render.allowedCells(position);
+				this.Cell.render.allowedCells(position);
 			}
 		});
-	},
+	});
 
-	CONFIRM_FILL({ flags }) {
+	this.socket.on("CONFIRM_FILL", () => {
 
-		flags.waitingServerConfirmFill = false;
-	},
+		this.flags.waitingServerConfirmFill = false;
+	});
 
-	reconnect_attempt: () => {
+	this.socket.on("ALERT", message => {
+
+		alert(message);
+	});
+
+	this.socket.on("reconnect_attempt", () => {
 
 		window.location.reload(true);
-	},
+	});
 
-	error: () => {
+	this.socket.on("error", () => {
 
 		if (!window.isReloading) {
 
 			window.location.reload(true);
 		}
-	},
-
-	ALERT: message => {
-
-		alert(message);
-	}
-});
+	});
+}

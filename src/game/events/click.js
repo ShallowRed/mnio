@@ -1,4 +1,5 @@
 export default function listenClickEvents(game) {
+	
 	const { flags, Ui } = game;
 
 	Ui.colorBtns.forEach((colorBtn, i) => {

@@ -1,11 +1,11 @@
-import { getCoordInView } from './checkPosInView';
+import { getCellCoordsInView } from './checkPosInView';
 
 const ANIMATION_DURATION = 400;
 const N_STRIPES = 8;
 
 export const fillAnimation = (position, game) => {
 
-	const [x, y] = getCoordInView(position, game);
+	const [x, y] = getCellCoordsInView(position, game);
 
 	const {
 		flags,

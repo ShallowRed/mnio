@@ -10,7 +10,6 @@ import listenKeyboardEvents from './events/keyboard';
 import listenTouchEvents from './events/touchScreen';
 
 import animationTimeout from './utils/animationTimeout';
-import checkMove from './utils/checkMove';
 import './utils/polyfill';
 
 export default class Game {
@@ -51,6 +50,7 @@ export default class Game {
 		this.Ui = new Ui();
 
 		this.Cell = new Cell(this);
+
 	}
 
 	init() {
@@ -65,13 +65,11 @@ export default class Game {
 
 		listenClickEvents(this);
 
-		listenKeyboardEvents(this)
+		listenKeyboardEvents.call(this);
 
 		listenTouchEvents(this);
 
-		listenServerEvents(this);
-
-		console.log(this);
+		listenServerEvents.call(this);
 	}
 
 	listenWindowEvents() {
@@ -125,7 +123,7 @@ export default class Game {
 
 		this.socket.emit('MOVE', direction);
 
-		const nextpos = checkMove(direction, this.player.position, this);
+		const nextpos = this.map.checkMove(this.player, direction);
 
 		if (nextpos) {
 
@@ -198,26 +196,24 @@ export default class Game {
 
 	fill() {
 
-		const { socket, flags, ownCells, gridState, Cell } = this;
+		const { position } = this.player;
 
-		const { position, selectedColor } = this.player;
+		if (this.flags.waitingServerConfirmFill || this.flags.fill) return;
 
-		if (flags.waitingServerConfirmFill || flags.fill) return;
+		if (!this.player.ownCells.includes(position)) {
 
-		if (!ownCells.includes(position)) {
-
-			ownCells.push(position);
+			this.player.ownCells.push(position);
 		}
 
-		Cell.fillAnimation(position, this);
+		this.Cell.fillAnimation(position, this);
 
-		const color = selectedColor.substring(1);
+		const color = this.player.selectedColor.substring(1);
 
-		gridState[position] = color;
+		this.map.gridState[position] = color;
 
-		socket.emit("FILL", { position, color });
+		this.socket.emit("FILL", { position, color });
 
-		flags.waitingServerConfirmFill = true;
+		this.flags.waitingServerConfirmFill = true;
 
 		this.player.stamp();
 	}

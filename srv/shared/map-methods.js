@@ -1,21 +1,6 @@
-export default {
+export default class SharedGameMap {
 
-	isPositionInBounds(position) {
-
-		const coords = this.indexToCoords(position);
-
-		return this.areCoordsInBounds(coords);
-	},
-
-	areCoordsInBounds([x, y]) {
-
-		return (
-			x >= 0 &&
-			y >= 0 &&
-			x < this.cols &&
-			y < this.rows
-		);
-	},
+	constructor() {}
 
 	indexToCoords(index) {
 
@@ -24,43 +9,22 @@ export default {
 		const y = (index - x) / this.rows;
 
 		return [x, y];
-	},
+	}
 
 	coordsToIndex([x, y]) {
 
 		return this.cols * y + x;
-	},
+	}
 
-	getNeighbours(position) {
+	checkMove(player, direction) {
 
-		const coords = this.indexToCoords(position);
-
-		return this.getNeighboursCoords(coords)
-			.filter(coords => this.areCoordsInBounds(coords))
-			.map(coords => this.coordsToIndex(coords));
-	},
-
-	getNeighboursCoords([x, y]) {
-
-		return [
-			[x - 1, y],
-			[x + 1, y],
-			[x, y - 1],
-			[x, y + 1]
-		];
-	},
-
-	checkMove(direction) {
-
-		const { map, player } = this;
-
-		let [x, y] = this.game.map.indexToCoords(player.position);
+		let [x, y] = this.indexToCoords(player.position);
 
 		if (direction == "left" && x !== 0) {
 
 			x--;
 
-		} else if (direction == "right" && x !== map.cols - 1) {
+		} else if (direction == "right" && x !== this.cols - 1) {
 
 			x++;
 
@@ -68,7 +32,7 @@ export default {
 
 			y--;
 
-		} else if (direction == "down" && y !== map.rows - 1) {
+		} else if (direction == "down" && y !== this.rows - 1) {
 
 			y++;
 
@@ -77,29 +41,23 @@ export default {
 			return;
 		}
 
-		const targetPosition = map.coordsToIndex([x, y]);
+		const targetPosition = this.coordsToIndex([x, y]);
 
-		if (player.ownCells.includes(targetPosition) || (
-			player.allowedCells.includes(targetPosition) &&
-			!map.playersPositions.includes(targetPosition) &&
-			!map.gridState[targetPosition]
-		)) {
+		if (this.isAvailable(targetPosition, player)) {
 
 			return targetPosition;
 		}
-	},
+	}
 
-	// isAvailable(position) {
+	isAvailable(position, player) {
 
-	// 	const { map, player } = this;
-
-	// 	return (
-	// 		player.ownCells.includes(position) ||
-	// 		(
-	// 			player.allowedCells.includes(position) &&
-	// 			!map.playersPositions.includes(position) &&
-	// 			!map.gridState[position]
-	// 		)
-	// 	);
-	// }
+		return (
+			player.ownCells.includes(position) ||
+			(
+				player.allowedCells.includes(position) &&
+				!this.playersPositions.includes(position) &&
+				!this.gridState[position]
+			)
+		);
+	}
 };

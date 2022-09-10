@@ -1,6 +1,6 @@
-import mapMethods from 'shared/map-methods';
+import SharedGameMap from 'shared/map-methods';
 
-export default class GameMap {
+export default class GameMap extends SharedGameMap {
 
 	mincells = 7;
 		
@@ -25,8 +25,18 @@ export default class GameMap {
 	canvas = document.querySelectorAll('canvas');
 
 	constructor(game) {
+
+		super();
 		
 		this.game = game;
+
+		this.rows = this.game.rows;
+
+		this.cols = this.game.cols;
+
+		this.playersPositions = this.game.playersPositions;
+
+		this.gridState = this.game.gridState;
 		
 		this.ctx = [...this.canvas].map(canvas => {
 

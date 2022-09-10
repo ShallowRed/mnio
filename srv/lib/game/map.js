@@ -1,8 +1,12 @@
-export default class GameMap {
+import SharedGameMap from '#shared/map-methods';
+
+export default class GameMap extends SharedGameMap {
 
 	playersPositions = [];
 
 	constructor(game, { gridState, rows, cols }) {
+
+		super();
 
 		this.game = game;
 
@@ -18,7 +22,7 @@ export default class GameMap {
 		if (lastPosition) {
 
 			const index = this.playersPositions.indexOf(lastPosition);
-			
+
 			this.playersPositions.splice(index, 1);
 		}
 
@@ -68,20 +72,6 @@ export default class GameMap {
 		);
 	}
 
-	indexToCoords(index) {
-
-		const x = index % this.cols;
-
-		const y = (index - x) / this.rows;
-
-		return [x, y];
-	}
-
-	coordsToIndex([x, y]) {
-
-		return this.cols * y + x;
-	}
-
 	getNeighbours(position) {
 
 		const coords = this.indexToCoords(position);
@@ -99,5 +89,5 @@ export default class GameMap {
 			[x, y - 1],
 			[x, y + 1]
 		];
-	};
+	}
 }

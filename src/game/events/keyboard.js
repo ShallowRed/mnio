@@ -1,6 +1,7 @@
 let isAltPressed = false;
 
-export default (game) => {
+export default function listenKeyboardEvents() {
+
 	document.addEventListener('keydown', event => {
 
 		if (event.code == "AltLeft") {
@@ -9,11 +10,11 @@ export default (game) => {
 		}
 
 		if (
-			game.flags.isTranslating ||
-			game.flags.waitingServerConfirmMove
+			this.flags.isTranslating ||
+			this.flags.waitingServerConfirmMove
 		) return;
 
-		onKeyDown(event, game)
+		onKeyDown.call(this, event)
 	});
 
 	document.addEventListener('keyup', event => {
@@ -23,9 +24,9 @@ export default (game) => {
 			isAltPressed = false;
 		}
 	});
-};
+}
 
-const onKeyDown = (event, game) => {
+function onKeyDown(event) {
 
 	switch (event.code) {
 
@@ -35,15 +36,15 @@ const onKeyDown = (event, game) => {
 
 			focusBtn(".pressed");
 
-			game.fill();
+			this.fill();
 
 			break;
 
 		case "KeyW":
 
-			focusBtn(game.Ui.zoomBtns.in);
+			focusBtn(this.Ui.zoomBtns.in);
 
-			game.zoom("in");
+			this.zoom("in");
 
 			break;
 
@@ -51,63 +52,63 @@ const onKeyDown = (event, game) => {
 
 			if (isAltPressed) {
 
-				focusBtn(game.Ui.zoomBtns.out);
+				focusBtn(this.Ui.zoomBtns.out);
 
-				game.zoom("out");
+				this.zoom("out");
 			}
 
 			break;
 
 		case "ControlLeft":
 
-			game.selectColor("next");
+			this.selectColor("next");
 
 			break;
 
 		case "ShiftLeft":
 
-			game.selectColor("prev");
+			this.selectColor("prev");
 
 			break;
 
 		case "ArrowLeft":
 
-			game.moveAttempt("left");
+			this.moveAttempt("left");
 
 			break;
 
 		case "ArrowUp":
 
-			game.moveAttempt("up");
+			this.moveAttempt("up");
 
 			break;
 
 		case "ArrowRight":
 
-			game.moveAttempt("right");
+			this.moveAttempt("right");
 
 			break;
 
 		case "ArrowDown":
 
-			game.moveAttempt("down");
+			this.moveAttempt("down");
 
 			break;
 	}
-};
+}
 
-const focusBtn = (btn) => {
+function focusBtn(btn) {
 
 	if (typeof btn == "string") {
 
 		btn = document.querySelector(btn);
 	}
-	
+
 	btn.focus();
-	
+
 	setTimeout(() => {
-	
+
 		document.activeElement.blur();
-	
+
 	}, 200);
-};
+}

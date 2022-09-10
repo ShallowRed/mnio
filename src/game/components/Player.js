@@ -1,5 +1,3 @@
-import { indexToCoord } from '../utils/converters'
-
 export default class Player {
 
 	sprite = [
@@ -24,6 +22,10 @@ export default class Player {
 		this.palette = palette;
 
 		this.selectedColor = palette[0];
+
+		this.ownCells = this.game.ownCells;
+
+		this.allowedCells = this.game.allowedCells;
 	}
 
 	////////////////////////////////////////////////////
@@ -45,7 +47,7 @@ export default class Player {
 			this.lastDirection = direction;
 		}
 
-		this.coords = indexToCoord(this.position, this.game);
+		this.coords = this.game.map.indexToCoords(this.position);
 	}
 
 	updatePosInView() {

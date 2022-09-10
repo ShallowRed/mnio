@@ -1,8 +1,6 @@
 import Debug from '#config/debug';
 const debug = Debug('game     |');
 
-import mapMethods from '#shared/map-methods';
-
 export default class ClientGame {
 
 	constructor(socket, player, game) {
@@ -35,11 +33,11 @@ export default class ClientGame {
 		this.movePlayer({ from: null, to: this.player.position });
 	}
 
-	listenGameEvents() {
+	listenGameEvents() { 
 
 		this.socket.on('MOVE', direction => {
 
-			const newPosition = this.checkMove(direction);
+			const newPosition = this.game.map.checkMove(this.player, direction);
 
 			if (newPosition) {
 

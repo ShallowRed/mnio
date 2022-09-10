@@ -44,7 +44,8 @@ const webpackConfig = (isDevMode, { entry, name }) => ({
 	watch: isDevMode,
 
 	watchOptions: {
-		ignored: /srv/,
+		// ignore srv folder except for shared
+		ignored: /srv\/(?!shared)/,
 	},
 
 	devtool: isDevMode && "inline-source-map",

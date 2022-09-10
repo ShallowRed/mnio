@@ -1,10 +1,8 @@
-import { indexToCoord } from '../../utils/converters';
+export function getCellCoordsInView(position, game) {
 
-export function getCoordInView(position, game) {
+	const { map: { numCellsInView, offScreenCells }, player } = game;
 
-	const { rows, cols, map: { numCellsInView, offScreenCells }, player } = game;
-
-	const absoluteCoord = indexToCoord(position, { rows, cols });
+	const absoluteCoord = game.map.indexToCoords(position);
 
 	const relativeCoord = absoluteCoord.map((coords, i) => {
 

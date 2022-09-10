@@ -1,5 +1,5 @@
 import { fillCell, roundSquare } from './drawCanvas';
-import { getCoordInView } from './checkPosInView';
+import { getCellCoordsInView } from './checkPosInView';
 import { fillAnimation } from './fillAnimation';
 
 export default class Cell {
@@ -20,7 +20,7 @@ export default class Cell {
 		
 		clear: (position) => {
 
-			const coords = getCoordInView(position, this.game);
+			const coords = getCellCoordsInView(position, this.game);
 
 			if (!coords) return;
 
@@ -31,7 +31,7 @@ export default class Cell {
 
 		color: (position) => {
 
-			const coords = getCoordInView(position, this.game);
+			const coords = getCellCoordsInView(position, this.game);
 
 			if (!coords) return;
 
@@ -43,7 +43,7 @@ export default class Cell {
 
 		allowedCells: (position) => {
 
-			const coords = getCoordInView(position, this.game);
+			const coords = getCellCoordsInView(position, this.game);
 
 			if (!coords) return;
 
@@ -54,7 +54,7 @@ export default class Cell {
 
 		position: (position) => {
 
-			const coords = getCoordInView(position, this.game);
+			const coords = getCellCoordsInView(position, this.game);
 
 			if (!coords) return;
 
