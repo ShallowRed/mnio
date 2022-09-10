@@ -5,12 +5,12 @@ module.exports = {
 		production: {
 
 			"host": "mnio-deploy",
-			"path": "/root/Source/mnio",
+			"path": "/root/Source/Deploy/mnio",
 
 			"repo": "git@github:ShallowRed/mnio.git",
 			"ref": "origin/deploy",
 
-			'pre-setup': "rm -rf /root/Source/mnio",
+			// 'pre-setup': "rm -rf /root/Source/Deploy/mnio",
 			// "post-setup": "",
 			
 			"pre-deploy-local": "npm run bundle && npm run pre-deploy",
