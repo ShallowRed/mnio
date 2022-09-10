@@ -14,8 +14,9 @@ module.exports = {
 			// "post-setup": "",
 			
 			"pre-deploy-local": "npm run bundle && npm run pre-deploy",
-			// "pre-deploy": "pm2 startOrRestart ecosystem.json --env production",
-			"post-deploy": "cd /root/Source/Deploy && docker-compose down --remove-orphans && docker-compose up --build -d",
+			
+			"pre-deploy": "cd /root/Source/Deploy && docker-compose down --remove-orphans",
+			"post-deploy": "cd /root/Source/Deploy && docker-compose up --build -d",
 		}
 	}
 };
