@@ -7,8 +7,6 @@ node_modules/
 
 ecosystem.deploy.cjs
 
-dist/
-
 Deploy/
 docker-compose.yml
 
