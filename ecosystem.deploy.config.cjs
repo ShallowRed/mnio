@@ -19,7 +19,7 @@ module.exports = {
 			// "post-setup": "cd /root/Source/Deploy && docker-compose down --remove-orphans && docker-compose up --build -d",
 			
 			// "pre-deploy": "pm2 startOrRestart ecosystem.json --env production",
-			// "post-deploy": "pm2 startOrRestart ecosystem.json --env production",
+			"post-deploy": "echo 'deployed'",
 		}
 	}
 };
