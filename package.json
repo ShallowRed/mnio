@@ -25,7 +25,7 @@
 		"install:prod": "npm install --omit=dev --prefix srv",
 		"deploy:setup": "pm2 deploy ecosystem.deploy.config.cjs production setup",
 		"pre-deploy": "git commit -am \"Deploying\" && git push origin deploy",
-		"deploy": "npm run pre-deploy; pm2 deploy ecosystem.deploy.config.cjs production"
+		"deploy": "pm2 deploy ecosystem.deploy.config.cjs production"
 	},
 	"exports": {
 		"shared": "./shared"
