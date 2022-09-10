@@ -9,5 +9,3 @@ ecosystem.deploy.cjs
 
 Deploy/
 docker-compose.yml
-
-src2/
