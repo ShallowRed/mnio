@@ -10,7 +10,7 @@ module.exports = {
 			"repo": "git@github:ShallowRed/mnio.git",
 			"ref": "origin/deploy",
 
-			// 'pre-setup': "rm -rf /root/Source/Deploy/mnio",
+			'pre-setup': "rm -rf /root/Source/Deploy/mnio",
 			// "post-setup": "",
 			
 			"pre-deploy-local": "npm run bundle && npm run pre-deploy",
