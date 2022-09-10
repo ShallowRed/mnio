@@ -7,7 +7,7 @@ module.exports = {
 			"host": "rooniax",
 
 			"ref": "origin/deploy",
-			"repo": "git@github.com:ShallowRed/mnio.git",
+			"repo": "git@deployment:ShallowRed/mnio.git",
 			"path": "/root/Source/mnio",
 
 			"pre-deploy-local": "ls",
