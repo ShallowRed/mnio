@@ -16,14 +16,14 @@ export default function listenServerEvents() {
 
 			this.playersPositions.splice(this.playersPositions.indexOf(lastPosition), 1);
 
-			this.Cell.render.clear(lastPosition)
+			this.cell.clear(lastPosition, this)
 		}
 
 		if (newPosition) {
 
 			this.playersPositions.push(newPosition);
 
-			this.Cell.render.position(newPosition)
+			this.cell.renderPosition(newPosition, this)
 		}
 	});
 
@@ -31,7 +31,7 @@ export default function listenServerEvents() {
 
 		this.gridState[position] = color;
 
-		this.Cell.render.color(position);
+		this.cell.renderColor(position, this);
 	});
 
 	this.socket.on("ALLOWED_CELLS", (cells) => {
@@ -44,7 +44,7 @@ export default function listenServerEvents() {
 
 			if (!this.flags.isTranslating) {
 
-				this.Cell.render.allowedCells(position);
+				this.cell.renderAllowedCell(position, this);
 			}
 		});
 	});

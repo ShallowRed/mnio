@@ -1,12 +1,22 @@
-let isAltPressed = false;
+let isMetaPressed = false;
 
 export default function listenKeyboardEvents() {
 
 	document.addEventListener('keydown', event => {
 
-		if (event.code == "AltLeft") {
+		// detect if cmd on mac is pressed
+		if (
+			event.code === 'MetaLeft' ||
+			event.code === 'MetaRight' ||
+			event.code === 'AltLeft' ||
+			event.code === 'AltRight' ||
+			event.code === 'ControlLeft' ||
+			event.code === 'ControlRight'
+		) {
 
-			isAltPressed = true;
+			isMetaPressed = true;
+
+			return;
 		}
 
 		if (
@@ -19,9 +29,18 @@ export default function listenKeyboardEvents() {
 
 	document.addEventListener('keyup', event => {
 
-		if (event.code == "AltLeft") {
+		if (
+			event.code === 'MetaLeft' ||
+			event.code === 'MetaRight' ||
+			event.code === 'AltLeft' ||
+			event.code === 'AltRight' ||
+			event.code === 'ControlLeft' ||
+			event.code === 'ControlRight'
+		) {
 
-			isAltPressed = false;
+			isMetaPressed = false;
+
+			return;
 		}
 	});
 }
@@ -32,42 +51,13 @@ function onKeyDown(event) {
 
 		case "Space":
 
-			document.querySelector(".pressed")
-
-			focusBtn(".pressed");
-
 			this.fill();
 
 			break;
 
-		case "KeyW":
+		case "Enter":
 
-			focusBtn(this.Ui.zoomBtns.in);
-
-			this.zoom("in");
-
-			break;
-
-		case "KeyS":
-
-			if (isAltPressed) {
-
-				focusBtn(this.Ui.zoomBtns.out);
-
-				this.zoom("out");
-			}
-
-			break;
-
-		case "ControlLeft":
-
-			this.selectColor("next");
-
-			break;
-
-		case "ShiftLeft":
-
-			this.selectColor("prev");
+			this.fill();
 
 			break;
 
@@ -77,38 +67,38 @@ function onKeyDown(event) {
 
 			break;
 
-		case "ArrowUp":
-
-			this.moveAttempt("up");
-
-			break;
-
 		case "ArrowRight":
 
 			this.moveAttempt("right");
 
 			break;
 
+		case "ArrowUp":
+
+			if (isMetaPressed) {
+
+				this.selectColor("prev");
+
+			} else {
+
+
+				this.moveAttempt("up");
+			}
+
+			break;
+
 		case "ArrowDown":
 
-			this.moveAttempt("down");
+			if (isMetaPressed) {
+
+				this.selectColor("next");
+
+			} else {
+
+
+				this.moveAttempt("down");
+			}
 
 			break;
 	}
-}
-
-function focusBtn(btn) {
-
-	if (typeof btn == "string") {
-
-		btn = document.querySelector(btn);
-	}
-
-	btn.focus();
-
-	setTimeout(() => {
-
-		document.activeElement.blur();
-
-	}, 200);
 }

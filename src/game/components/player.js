@@ -159,6 +159,7 @@ export default class Player {
 	}
 
 	stamp() {
+		
 		const { sprite: [player, shadow] } = this;
 
 		player.style.transitionDuration =
@@ -174,7 +175,7 @@ export default class Player {
 
 			player.style.transform =
 				`translate(${this.translateVector}) scale(1)`;
-				
+
 			shadow.style.transform =
 				`translate(${this.translateVector}) translate(-1px, -1px) scale(1)`;
 

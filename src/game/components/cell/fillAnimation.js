@@ -49,6 +49,7 @@ const fillFrame = (
 	if (delay < ANIMATION_DURATION) {
 
 		window.requestAnimationFrame(() => {
+			
 			fillFrame(props, stripeIndex, stripePortion, startDate);
 		});
 

@@ -6,9 +6,8 @@
 		"prod": "webpack  --mode=production --config webpack.config.js"
 	},
 	"browserslist": [
-		">0.25%",
-		"last 12 versions",
-		"Firefox ESR",
+		">10%",
+		"last 2 versions",
 		"not ie < 11"
 	],
 	"dependencies": {

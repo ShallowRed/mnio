@@ -1,7 +1,7 @@
 import Player from './components/player';
 import GameMap from './components/map';
 import Ui from './components/ui';
-import Cell from './components/cell/cell';
+import cell from './components/cell/cell';
 import ScreenRatio from './utils/styleAccordingToRatio'
 
 import listenServerEvents from './events/server';
@@ -9,8 +9,10 @@ import listenClickEvents from './events/click';
 import listenKeyboardEvents from './events/keyboard';
 import listenTouchEvents from './events/touchScreen';
 
+import { fillAnimation } from './components/cell/fillAnimation';
 import animationTimeout from './utils/animationTimeout';
-import './utils/polyfill';
+
+import { Help } from './components/help';
 
 export default class Game {
 
@@ -49,8 +51,11 @@ export default class Game {
 
 		this.Ui = new Ui();
 
-		this.Cell = new Cell(this);
-
+		this.cell = cell;
+		this.cell.clear = this.cell.clear.bind(this);
+		this.cell.renderColor = this.cell.renderColor.bind(this);
+		this.cell.renderAllowedCell = this.cell.renderAllowedCell.bind(this);
+		this.cell.renderPosition = this.cell.renderPosition.bind(this);
 	}
 
 	init() {
@@ -59,7 +64,11 @@ export default class Game {
 
 		this.Ui.focusColorBtn(0);
 
+		Help.init();
+
 		this.render();
+
+		Help.render();
 
 		this.listenWindowEvents();
 
@@ -146,7 +155,9 @@ export default class Game {
 		this.map.translateCanvas({ duration: this.duration * 0.9 });
 
 		animationTimeout(this, () => {
+
 			this.map.render();
+
 			this.flags.isTranslating = false;
 		});
 
@@ -168,7 +179,9 @@ export default class Game {
 		this.map.zoom();
 
 		animationTimeout(this, () => {
+
 			this.map.render();
+
 			this.flags.isZooming = false;
 		});
 
@@ -205,7 +218,7 @@ export default class Game {
 			this.player.ownCells.push(position);
 		}
 
-		this.Cell.fillAnimation(position, this);
+		fillAnimation(position, this);
 
 		const color = this.player.selectedColor.substring(1);
 

@@ -4,5 +4,26 @@ section {
 
   &#game {
     display: flex;
+
+	& #view {
+
+		animation: fade-in 0.4s ease-out;
+	}
+
+	& #buttons {
+		animation: fade-in 0.4s ease-out;
+	}
+  }
+}
+
+@keyframes fade-in {
+  0% {
+	opacity: 0;
+  }
+  20% {
+	opacity: 0;
+  }
+  100% {
+	opacity: 1;
   }
 }

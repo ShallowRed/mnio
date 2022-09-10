@@ -186,7 +186,7 @@ export default class GameMap extends SharedGameMap {
 
 	renderCells() {
 		
-		const { Cell } = this.game;
+		const { cell } = this.game;
 
 		this.ctx.forEach(ctx => {
 
@@ -194,20 +194,20 @@ export default class GameMap extends SharedGameMap {
 		});
 
 		this.game.allowedCells.forEach(position => {
-		
-			Cell.render.allowedCells(position);
+					
+			cell.renderAllowedCell(position, this.game);
 		});
 
 		this.game.playersPositions.forEach(position => {
 
-			Cell.render.position(position);
+			cell.renderPosition(position, this.game);
 		});
 
 		this.game.gridState.map((color, i) => color ? i : null)
 			.filter(color => color)
 			.forEach((position) => {
 
-				Cell.render.color(position);
+				cell.renderColor(position, this.game);
 			});
 	}
 

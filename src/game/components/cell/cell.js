@@ -1,68 +1,44 @@
 import { fillCell, roundSquare } from './drawCanvas';
 import { getCellCoordsInView } from './checkPosInView';
-import { fillAnimation } from './fillAnimation';
 
-export default class Cell {
+export default {
 
-	render = {};
+	clear(position) {
 
-	constructor(game) {
+		const coords = getCellCoordsInView(position, this);
 
-		this.game = game;
-	}
+		if (!coords) return;
 
-	fillAnimation = (position) => {
+		fillCell(coords,this.map.cellSize, this.map.ctx[2], null);
+	},
 
-		fillAnimation(position, this.game);
-	}
+	renderColor(position) {
 
-	render = {
-		
-		clear: (position) => {
+		const coords = getCellCoordsInView(position, this);
 
-			const coords = getCellCoordsInView(position, this.game);
+		if (!coords) return;
 
-			if (!coords) return;
+		fillCell(coords, this.map.cellSize, this.map.ctx[1], `#${this.map.gridState[position]}`);
 
-			const { ctx, cellSize } = this.game.map;
+	},
 
-			fillCell(coords, cellSize, ctx[2], null);
-		},
+	renderAllowedCell(position) {
 
-		color: (position) => {
+		const coords = getCellCoordsInView(position, this);
 
-			const coords = getCellCoordsInView(position, this.game);
+		if (!coords) return;
 
-			if (!coords) return;
+		fillCell(coords, this.map.cellSize, this.map.ctx[0], '#e9e9e9');
+	},
 
-			const { gridState, map: { ctx, cellSize } } = this.game;
+	renderPosition(position) {
 
-			fillCell(coords, cellSize, ctx[1], `#${gridState[position]}`);
+		const coords = getCellCoordsInView(position, this);
 
-		},
+		if (!coords) return;
 
-		allowedCells: (position) => {
+		const shift = Math.round(this.map.cellSize / 8);
 
-			const coords = getCellCoordsInView(position, this.game);
-
-			if (!coords) return;
-
-			const { ctx, cellSize } = this.game.map;
-
-			fillCell(coords, cellSize, ctx[0], '#e9e9e9');
-		},
-
-		position: (position) => {
-
-			const coords = getCellCoordsInView(position, this.game);
-
-			if (!coords) return;
-
-			const { ctx, cellSize } = this.game.map;
-
-			const shift = Math.round(cellSize / 8);
-
-			roundSquare(coords, cellSize, ctx[2], shift);
-		}
+		roundSquare(coords,  this.map.cellSize,  this.map.ctx[2], shift);
 	}
 }
