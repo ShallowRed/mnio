@@ -7,7 +7,7 @@ module.exports = {
 			"host": "mnio-deploy",
 			"path": "/root/Source/Deploy/mnio",
 
-			"repo": "git@github:ShallowRed/mnio.git",
+			"repo": "git@github.com:ShallowRed/mnio.git",
 			"ref": "origin/deploy",
 
 			'pre-setup': "rm -rf /root/Source/Deploy/mnio",
