@@ -2,7 +2,6 @@ import Player from './components/player';
 import GameMap from './components/map';
 import Ui from './components/ui';
 import cell from './components/cell/cell';
-import ScreenRatio from './utils/styleAccordingToRatio'
 
 import listenServerEvents from './events/server';
 import listenClickEvents from './events/click';
@@ -10,7 +9,6 @@ import listenKeyboardEvents from './events/keyboard';
 import listenTouchEvents from './events/touchScreen';
 
 import { fillAnimation } from './components/cell/fillAnimation';
-import animationTimeout from './utils/animationTimeout';
 
 import { Help } from './components/help';
 
@@ -49,26 +47,23 @@ export default class Game {
 
 		this.player = new Player({ position, palette }, this);
 
-		this.Ui = new Ui();
-
 		this.cell = cell;
-		this.cell.clear = this.cell.clear.bind(this);
-		this.cell.renderColor = this.cell.renderColor.bind(this);
-		this.cell.renderAllowedCell = this.cell.renderAllowedCell.bind(this);
-		this.cell.renderPosition = this.cell.renderPosition.bind(this);
+		this.cell.clear = cell.clear.bind(this);
+		this.cell.renderColor = cell.renderColor.bind(this);
+		this.cell.renderAllowedCell = cell.renderAllowedCell.bind(this);
+		this.cell.renderPosition = cell.renderPosition.bind(this);
+
 	}
 
 	init() {
 
 		this.selectColor(0);
 
-		this.Ui.focusColorBtn(0);
+		Ui.focusColorBtn({ index: 0 });
 
 		Help.init();
 
 		this.render();
-
-		Help.render();
 
 		this.listenWindowEvents();
 
@@ -95,9 +90,9 @@ export default class Game {
 
 	render() {
 
-		ScreenRatio.update();
+		this.widthIsLarger = window.innerWidth >= window.innerHeight;
 
-		this.Ui.render();
+		document.body.className = this.widthIsLarger ? 'width-larger' : 'height-larger';
 
 		this.map.setView();
 
@@ -154,7 +149,7 @@ export default class Game {
 
 		this.map.translateCanvas({ duration: this.duration * 0.9 });
 
-		animationTimeout(this, () => {
+		this.animationTimeout(() => {
 
 			this.map.render();
 
@@ -178,7 +173,7 @@ export default class Game {
 
 		this.map.zoom();
 
-		animationTimeout(this, () => {
+		this.animationTimeout(() => {
 
 			this.map.render();
 
@@ -204,7 +199,7 @@ export default class Game {
 
 		this.player.setColor(index);
 
-		this.Ui.focusColorBtn(index);
+		Ui.focusColorBtn({ index });
 	}
 
 	fill() {
@@ -229,5 +224,29 @@ export default class Game {
 		this.flags.waitingServerConfirmFill = true;
 
 		this.player.stamp();
+	}
+
+	animationTimeout(callback, start = Date.now(), delay) {
+
+		delay ??= this.duration;
+
+		const delta = (Date.now() - start) / 1000;
+
+		if (this.flags.fill) {
+
+			delay += 0.015;
+		}
+
+		if (delta >= delay) {
+
+			callback();
+
+			return;
+		}
+
+		window.requestAnimationFrame(() => {
+
+			this.animationTimeout(callback, start, delay)
+		});
 	}
 }

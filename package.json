@@ -21,7 +21,7 @@
 		"start": "pm2 start ecosystem.start.config.cjs && pm2 logs",
 		"bundle": "npm run prod --prefix src",
 		"dev:bundle": "npm run dev --prefix src",
-		"install:dev": "npm install && npm install --prefix srv && npm install --prefix src",
+		"install:dev": "npm install --prefix srv && npm install --prefix src",
 		"install:prod": "npm install --omit=dev --prefix srv",
 		"push-master": "git add . ; git commit -m \"Deploy source\" ; git push origin",
 		"push-deploy": "git add . ; git commit -m \"Deploy build\" ; git push origin master:deploy --force",

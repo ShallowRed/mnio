@@ -2,6 +2,14 @@ section {
   height: 100%;
   width: 100%;
 
+  @include width-larger {
+	flex-direction: row;
+  }
+
+  @include height-larger {
+	flex-direction: column;
+  }
+
   &#game {
     display: flex;
 

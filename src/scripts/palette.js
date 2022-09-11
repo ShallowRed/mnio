@@ -1,5 +1,6 @@
 import 'styles/commons/commons.scss';
-import 'styles/palette/palette.scss'
+import 'styles/palette/palette.scss';
+
 import io from 'socket.io-client';
 
 const socket = io('/palette');

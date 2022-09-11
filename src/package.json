@@ -6,10 +6,34 @@
 		"prod": "webpack  --mode=production --config webpack.config.js"
 	},
 	"browserslist": [
-		">10%",
-		"last 2 versions",
+		">0.25%",
+		"last 10 versions",
+		"Firefox ESR",
 		"not ie < 11"
 	],
+	"eslintConfig": {
+		"extends": "eslint:recommended",
+		"env": {
+			"browser": true
+		},
+		"parser": "@babel/eslint-parser",
+		"parserOptions": {
+			"ecmaVersion": 2022,
+			"sourceType": "module"
+		}
+	},
+	"babel": {
+		"presets": [
+			[
+				"@babel/preset-env",
+				{
+					"debug": false,
+					"useBuiltIns": "usage",
+					"corejs": 3
+				}
+			]
+		]
+	},
 	"dependencies": {
 		"core-js": "^3.25.0",
 		"socket.io-client": "^4.5.2"

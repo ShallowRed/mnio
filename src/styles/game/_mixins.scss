@@ -1,0 +1,13 @@
+@mixin width-larger {
+
+	.width-larger & {
+		@content;
+	}
+}
+
+@mixin height-larger {
+
+	.height-larger & {
+		@content;
+	}
+}

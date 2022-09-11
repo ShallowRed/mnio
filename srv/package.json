@@ -23,9 +23,9 @@
 	},
 	"imports": {
 		"#database/*": "./lib/database/*.js",
+		"#config/*": "./lib/config/*.js",
 		"#game/*": "./lib/game/*.js",
 		"#server/*": "./lib/server/*.js",
-		"#config/*": "./lib/config/*.js",
 		"#shared/*": "./shared/*.js"
 	}
 }

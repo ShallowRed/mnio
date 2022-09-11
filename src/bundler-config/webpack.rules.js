@@ -45,18 +45,20 @@ const imageLoader = {
 	}
 };
 
-module.exports = (isDevMode) => ({
+module.exports = function getWebpackRules(isDevMode) {
 
-	rules: [
+	return [
 
 		!isDevMode && {
 			test: /\.js$/,
 			...babelLoader,
 		},
+
 		{
 			test: /\.(png|jpe?g|gif|svg)$/,
 			...imageLoader,
 		},
+
 		{
 			test: /\.(sa|sc|c)ss$/,
 			use: [
@@ -66,5 +68,6 @@ module.exports = (isDevMode) => ({
 				sassLoader
 			]
 		}
-	].filter(Boolean)
-});
+
+	].filter(Boolean);
+}

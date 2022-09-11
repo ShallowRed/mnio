@@ -1,23 +1,22 @@
-import 'img/close.svg';
-import 'img/home.svg';
-import 'img/refresh.svg';
-import 'img/help.svg';
-import 'img/zoom-in.svg';
-import 'img/zoom-out.svg';
+import 'resources/img/close.svg';
+import 'resources/img/home.svg';
+import 'resources/img/refresh.svg';
+import 'resources/img/help.svg';
+import 'resources/img/zoom-in.svg';
+import 'resources/img/zoom-out.svg';
 
 import 'styles/commons/commons.scss';
 import 'styles/game/index.scss';
 
 import io from 'socket.io-client';
 
-import Game from './game';
+import Game from './game/game';
 
-import * as Tutoriel from './utils/tutoriel';
+import * as Tutoriel from './game/tutoriel';
 
 const socket = io('/game');
 
 socket.once("INIT_GAME", data => {
-
 
 	console.log('INIT_GAME', data);
 
@@ -26,8 +25,6 @@ socket.once("INIT_GAME", data => {
 	game.init();
 
 	const isPlayerFirstLog = data.ownCells.length === 0;
-
-	console.log("-----------------------------------------");
 
 	Tutoriel[isPlayerFirstLog ? "init" : "end"](socket);
 });

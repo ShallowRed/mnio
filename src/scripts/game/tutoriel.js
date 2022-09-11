@@ -3,7 +3,7 @@ import {
 	helpBlocks,
 	helpContainer,
 	arrows
-} from '../components/help';
+} from './components/help';
 
 const blockArrows = {
 	zoom: arrows[0],

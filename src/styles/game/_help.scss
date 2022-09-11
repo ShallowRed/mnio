@@ -18,7 +18,7 @@
 			}
 		}
 	}
-		
+
 	& svg {
 		visibility: hidden;
 		position: absolute;
@@ -55,10 +55,10 @@
 		grid-template-rows: 1fr 1fr;
 		grid-gap: 0.3rem;
 		align-items: center;
-		grid-template-areas: 
-			". up ."
-			"left down right";
-		
+		grid-template-areas:
+			'. up .'
+			'left down right';
+
 		& .key.up {
 			grid-area: up;
 		}
@@ -87,3 +87,77 @@
 		text-align: center;
 	}
 }
+
+#help {
+	& #help-block-move {
+		@include width-larger {
+			top: 73%;
+			left: 22%;
+			transform: translate(-50%, -50%);
+		}
+
+		@include height-larger {
+			top: 19%;
+			left: 75%;
+			transform: translate(-50%, -50%);
+		}
+	}
+
+	& #help-block-zoom,
+	& #help-block-fill {
+		@include width-larger {
+			width: auto;
+			margin-bottom: 3vh;
+			margin-top: 5px;
+			height: auto;
+		}
+
+		@include height-larger {
+			width: 30%;
+			margin-bottom: 4.5px;
+			margin-top: auto;
+			height: 100%;
+		}
+	}
+
+	& #help svg {
+		@include width-larger {
+			right: 8px;
+			bottom: auto;
+			transform: translateX(100%) scale(1.5);
+		}
+
+		@include height-larger {
+			right: auto;
+			bottom: -5px;
+			transform: scale(1.5) rotate(90deg);
+		}
+	}
+}
+
+/* ScreenRatio.applyStyles({
+	domEl: #help svg[1],
+	styles: {
+		width: ["auto", "100%"],
+		right: ["13%", "auto"],
+		top: ["50%", "auto"],
+		bottom: ["auto", "13%"],
+		flexDirection: ["column", "row"],
+		transform: ["translateY(-50%)", "translate(0)"],
+	}
+},
+	{
+		domEl: #help svg[0],
+		styles: {
+			top: [isMobile ? "6%" : "20%", "auto"],
+			left: ["auto", "22%"],
+		}
+	},
+
+	{
+		domEl: #help svg[1],
+		styles: {
+			top: [isMobile ? "56%" : "60%", "auto"],
+			left: ["auto", "62%"],
+		}
+	}) */

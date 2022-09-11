@@ -1,6 +1,6 @@
 const isDevMode = process.env.NODE_ENV !== "production";
 
-const watch = isDevMode && {
+const watchOptions = isDevMode && {
 
 	watch: ['lib', 'shared'],
 
@@ -8,8 +8,6 @@ const watch = isDevMode && {
 		followSymlinks: false
 	},
 };
-console.log(watch);
-
 
 module.exports = {
 
@@ -19,7 +17,7 @@ module.exports = {
 
 		script: './entry.cjs',
 
-		...watch,
+		...watchOptions,
 
 		env: {
 			"DEBUG": "app:*",

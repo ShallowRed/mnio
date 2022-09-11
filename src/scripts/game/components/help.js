@@ -1,12 +1,6 @@
-
-
-import ScreenRatio from '../utils/styleAccordingToRatio'
-
 const menuCaptions = document.querySelectorAll('#menu p');
 
 const helpContainer = document.getElementById('help');
-
-const blocks = document.querySelectorAll("#help>div");
 
 const helpIcon = document.querySelector('#help-btn img');
 
@@ -63,60 +57,6 @@ const Help = {
 		}
 	},
 
-	render() {
-
-		ScreenRatio.applyStyles({
-			domEl: helpBlocks.move,
-			styles: {
-				top: ["73%", "19%"],
-				left: ["22%", "75%"],
-				transform: ["translate(-50%, -50%)", "translate(-50%, -50%)"],
-			}
-		}, {
-			domEl: blocks[1],
-			styles: {
-				width: ["auto", "100%"],
-				right: ["13%", "auto"],
-				top: ["50%", "auto"],
-				bottom: ["auto", "13%"],
-				flexDirection: ["column", "row"],
-				transform: ["translateY(-50%)", "translate(0)"],
-			}
-		},
-
-			...ScreenRatio.mapStyles([helpBlocks.zoom, helpBlocks.fill], {
-				width: ["auto", "30%"],
-				marginBottom: [isMobile ? "20vh" : "3vh", "4.5px"],
-				marginTop: ["5px", "auto"],
-				height: ["auto", "100%"],
-			}),
-
-			...ScreenRatio.mapStyles(arrows, {
-				right: ["8px", "auto"],
-				bottom: ["auto", "-5px"],
-				transform: [
-					"translateX(100%) scale(1.5)",
-					"scale(1.5) rotate(90deg)"
-				]
-			}),
-
-			{
-				domEl: arrows[0],
-				styles: {
-					top: [isMobile ? "6%" : "20%", "auto"],
-					left: ["auto", "22%"],
-				}
-			},
-
-			{
-				domEl: arrows[1],
-				styles: {
-					top: [isMobile ? "56%" : "60%", "auto"],
-					left: ["auto", "62%"],
-				}
-			})
-	},
-
 	listenBtn() {
 
 		const helpBtn = document.getElementById('help-btn');
@@ -142,7 +82,7 @@ const Help = {
 
 	show() {
 
-		helpIcon.src = `assets/img/close.svg`;
+		helpIcon.src = `/assets/img/close.svg`;
 
 		[helpContainer, ...menuCaptions].forEach(el => {
 			el.style.display = "block";

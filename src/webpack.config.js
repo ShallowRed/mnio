@@ -1,91 +1,43 @@
 const { resolve } = require('path');
 
-const getPlugins = require('./webpack.plugins.js');
-const getRules = require('./webpack.rules.js');
+const getWebpackConfig = require('./bundler-config/webpack.commons.js');
 
-const PUBLIC_FOLDER = '../dist';
-
-const pages = [
+const PAGES_CONFIG = [
 	{
-		entry: "/lobby/login.js",
-		name: "lobby",
+		ENTRY: "/scripts/lobby.js",
+		OUTPUT_FILENAME: "lobby",
 	},
 	{
-		entry: "/lobby/palette.js",
-		name: "palette",
+		ENTRY: "/scripts/palette.js",
+		OUTPUT_FILENAME: "palette",
 	},
 	{
-		entry: "/game/index.js",
-		name: "game",
+		ENTRY: "/scripts/index.js",
+		OUTPUT_FILENAME: "game",
 	}
 ];
 
-const webpackConfig = (isDevMode, { entry, name }) => ({
+const COMMONS_CONFIG = {
 
-	entry,
+	PUBLIC_FOLDER: resolve(__dirname, '../dist'),
 
-	output: {
-		path: resolve(__dirname, PUBLIC_FOLDER),
-		filename: `scripts/${name}.js`,
+	ALIASES: {
+		'shared': resolve(__dirname, '../srv/shared'),
+		'styles': resolve(__dirname, 'styles'),
+		'game': resolve(__dirname, 'game'),
+		'resources': resolve(__dirname, 'resources'),
 	},
 
-	resolve: {
-		modules: [resolve(__dirname, 'node_modules'), 'node_modules'],
-		alias: {
-			'styles': resolve(__dirname, 'styles'),
-			'shared': resolve(__dirname, '../srv/shared'),
-			'game': resolve(__dirname, 'game'),
-			'img': resolve(__dirname, 'assets/img'),
-		},
-	},
+	IGNORE_WATCH: /srv\/(?!shared)/,
 
-	target: "web",
-
-	watch: isDevMode,
-
-	watchOptions: {
-		// ignore srv folder except for shared
-		ignored: /srv\/(?!shared)/,
-	},
-
-	devtool: isDevMode && "inline-source-map",
-
-	stats: {
-		all: false,
-		timings: true,
-		version: true,
-		outputPath: true,
-		depth: false,
-		modules: true,
-		modulesSpace: 8,
-		groupModulesByPath: true,
-		children: false,
-		assets: true,
-		assetsSpace: 10,
-		groupAssetsByPath: true,
-		logging: "warn",
-		errors: true,
-		errorsCount: true,
-		errorStack: false,
-		warnings: true,
-		warningsCount: true,
-		// children: true,
-		excludeModules: m => m.match('data:text') || m.match('css-loader'),
-	}
-});
-
-module.exports = (env, argv) => {
-
-	isDevMode = argv.mode === 'development';
-
-	return pages.map(page => Object.assign(
-
-		webpackConfig(isDevMode, page),
-
-		getPlugins(isDevMode, page),
-
-		{
-			module: getRules(isDevMode)
-		}
-	));
+	NODE_MODULES_PATH: resolve(__dirname, 'node_modules'),
 };
+
+
+module.exports = PAGES_CONFIG.map(pageConfig => {
+
+	return getWebpackConfig({
+		...COMMONS_CONFIG,
+		...{ PAGE: pageConfig }
+	})
+});

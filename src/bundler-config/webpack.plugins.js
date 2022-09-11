@@ -4,7 +4,7 @@ const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const TerserPlugin = require("terser-webpack-plugin");
 
-module.exports = (isDevMode, { name }) => {
+module.exports = function getWebpackPlugins(isDevMode, CONFIG) {
 
 	return {
 
@@ -20,7 +20,7 @@ module.exports = (isDevMode, { name }) => {
 			}),
 
 			new MiniCssExtractPlugin({
-				filename: `styles/${name}.css`,
+				filename: `styles/${CONFIG.PAGE.OUTPUT_FILENAME}.css`,
 			}),
 
 		].filter(Boolean)
