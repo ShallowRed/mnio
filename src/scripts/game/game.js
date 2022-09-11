@@ -10,8 +10,6 @@ import listenTouchEvents from './events/touchScreen';
 
 import { fillAnimation } from './components/cell/fillAnimation';
 
-import { Help } from './components/help';
-
 export default class Game {
 
 	duration = 0.2;
@@ -60,8 +58,6 @@ export default class Game {
 		this.selectColor(0);
 
 		Ui.focusColorBtn({ index: 0 });
-
-		Help.init();
 
 		this.render();
 

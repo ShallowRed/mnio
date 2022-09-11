@@ -1,26 +1,20 @@
-const menuCaptions = document.querySelectorAll('#menu p');
+const isIpad = /Macintosh/i.test(navigator.userAgent) &&
+	navigator.maxTouchPoints &&
+	navigator.maxTouchPoints > 1;
 
-const helpContainer = document.getElementById('help');
+export const isMobile =
+	/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || isIpad;
 
-const helpIcon = document.querySelector('#help-btn img');
 
-const helpBlocks = {
-	fill: document.getElementById('help-block-fill'),
-	move: document.getElementById('help-block-move'),
-	zoom: document.getElementById('help-block-zoom'),
-};
-
-const arrows = document.querySelectorAll("#help svg");
-
-const messages = {
+export const messages = {
 
 	fill: {
-		mobile: `<h2>Colorier</h2>`,
+		mobile: `<h3>Colorier</h3>`,
 		desktop: `
       <h3>Colorier</h3>
 	  <p>Ou : <span class="key"> Espace </span></p>
-      <p>Pour changer de couleur :</p>
-      <p>Ctrl / Cmd + <span class="key">&#8593;</span>  <span class="key">&#8595;</span></p>
+      <p>Changer de couleur :</p>
+      <p><span class="key">Ctrl</span> / <span class="key">Cmd</span> + <span class="key">&#8593;</span>  <span class="key">&#8595;</span></p>
       `
 	},
 
@@ -38,69 +32,10 @@ const messages = {
 
 	zoom: {
 		mobile: `
-    	<h2>Zoomer / dézoomer </h2>
+    	<h3>Zoom</h3>
     `,
 		desktop: `
-    	<h2>Zoomer / dézoomer </h2>
+    	<h3>Zoomer / dézoomer </h3>
       `
 	}
 };
-
-const Help = {
-
-	init() {
-
-		for (const [key, domEl] of Object.entries(helpBlocks)) {
-
-			domEl.innerHTML = messages[key][isMobile ? "mobile" : "desktop"];
-
-		}
-	},
-
-	listenBtn() {
-
-		const helpBtn = document.getElementById('help-btn');
-
-		helpBtn.addEventListener("click", () => {
-
-			const toggleVisibility = helpContainer.style.display !== "none" ?
-				"hide" : "show";
-
-			this[toggleVisibility]();
-		})
-	},
-
-	hide() {
-
-		helpIcon.src = `/assets/img/help.svg`;
-
-		[helpContainer, ...menuCaptions].forEach(el => {
-
-			el.style.display = "none";
-		});
-	},
-
-	show() {
-
-		helpIcon.src = `/assets/img/close.svg`;
-
-		[helpContainer, ...menuCaptions].forEach(el => {
-			el.style.display = "block";
-		});
-	}
-}
-
-const isIpad = /Macintosh/i.test(navigator.userAgent) &&
-	navigator.maxTouchPoints &&
-	navigator.maxTouchPoints > 1;
-
-const isMobile =
-	/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || isIpad;
-
-export {
-	Help,
-	helpBlocks,
-	helpContainer,
-	menuCaptions,
-	arrows
-}

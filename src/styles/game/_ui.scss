@@ -3,7 +3,6 @@
 	display: flex;
 	justify-content: center;
 	box-sizing: border-box;
-	flex-wrap: wrap;
 
 	@include width-larger {
 		flex-flow: column;
@@ -17,7 +16,6 @@
 		flex-flow: row;
 		height: 11%;
 		width: 100%;
-		float: none;
 		margin: auto auto 0;
 	}
 
@@ -40,11 +38,11 @@
 		transform-origin: bottom right;
 		box-shadow: #bbb 5px 5px;
 		border: solid 1px var(--dark);
-		
+
 		@include width-larger {
 			height: 10vh;
 			width: 10vw;
-			margin: .5vh 0;
+			margin: 0.5vh 0;
 		}
 
 		@include height-larger {
@@ -73,30 +71,17 @@
 
 			& img {
 				opacity: 0.8;
-			}
-
-			/* &:focus {
-        border-color: blue;
-        filter: saturate(1);
-      } */
-			&:active {
-				border-color: blue;
-				filter: saturate(1);
-			}
-
-			& img {
 				height: 100%;
 				width: 100%;
 			}
+			&:hover img {
+				filter: invert(0.3);
+			}
 		}
 
-		&:not(.zoom) {
+		&.color {
 			min-height: 32px;
 			min-width: 32px;
-
-			&:active {
-				opacity: 0.8;
-			}
 		}
 	}
 }

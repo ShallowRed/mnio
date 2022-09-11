@@ -24,31 +24,30 @@
 		<form action="/logout" method="post">
 		<button type="submit">
 			<img src="/assets/img/home.svg" alt="">
-			<p><b>&#8592; Retour au menu</b></p>
+			<p>&#8592; Retour au menu</p>
 		</button>
 		</form>
 		<button type="button" onclick="window.location.reload()">
 			<img src="/assets/img/refresh.svg" alt="">
-			<p><b>&#8592; En cas de bug</b></p>
+			<p>&#8592; En cas de bug</p>
 		</button>
 		<button type="button" id="help-btn">
-			<img src="/assets/img/help.svg" alt="">
-			<p><b>&#8592; Aide</b></p>
+			<img class="help-open-icon" src="/assets/img/help.svg" alt="">
+			<img class="help-close-icon" src="/assets/img/close.svg" alt="">
+			<p>&#8592; Aide</p>
 		</button>
 	</div>
 
 	<section id="help">
-		<div id="help-block-move" class="help-block"> </div>
-		<div>
-			<svg fill="var(--grey)" stroke="var(--dark)" width="24" height="24" viewBox="0 0 24 24">
-				<path d="M5 7v-6l11 11-11 11v-6h-13v-10z" />
-			</svg>
-			<svg fill="var(--grey)" stroke="var(--dark)" width="24" height="24" viewBox="0 0 24 24">
-				<path d="M5 7v-6l11 11-11 11v-6h-13v-10z" />
-			</svg>
-			<div id="help-block-zoom" class="help-block"> </div>
-			<div id="help-block-fill" class="help-block"> </div>
+		<div id="help-block-move" class="help-block">
+			<% if (useragent.isMobile) {%>
+				<p>MOBILE</p>
+			<% } else {  %>
+				<p>DESKTOP</p>
+			<% } %>
 		</div>
+		<div id="help-block-zoom" class="help-block"> </div>
+		<div id="help-block-fill" class="help-block"> </div>
 	</section>
 
 <%- include('../partials/footer.ejs', locals) %>

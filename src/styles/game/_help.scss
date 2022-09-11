@@ -3,161 +3,167 @@
 	position: absolute;
 	z-index: 800;
 	top: 0;
-	left: 0;
+	width: 100%;
+	height: 100%;
 	pointer-events: none;
 
-	& > div {
-		position: absolute;
+	&.visible {
+		display: block;
 
-		&:not(.help-block) {
-			display: flex;
-			justify-content: center;
-
-			& div {
-				margin: 5px;
-			}
+		& .help-open-icon {
+			display: block;
+		}
+		& .help-close-icon {
+			display: none;
 		}
 	}
 
-	& svg {
-		visibility: hidden;
-		position: absolute;
-		transform-origin: left;
-		transform: translateX(100%) scale(1.5);
+	&:not(.visible) {
+		display: none;
 
-		& path {
-			transform: translateX(-1px);
+		& .help-open-icon {
+			display: block;
+		}
+		& .help-close-icon {
+			display: none;
 		}
 	}
 }
 
 .help-block {
 	visibility: hidden;
+	box-sizing: border-box;
 	border: solid 2px var(--dark);
-	background: var(--grey);
-	padding: 0 2rem;
+	background: rgba(250, 250, 250, 0.85);
 	border-radius: 10px;
 	text-align: center;
 
 	& h2 {
 		font-size: 1.7rem;
 	}
-
-	& h3 {
-		font-size: 1.5rem;
-		margin-bottom: 1rem;
-		margin-top: 1rem;
-	}
-
-	& .arrow-keys {
-		display: grid;
-		grid-template-columns: 1fr 1fr 1fr;
-		grid-template-rows: 1fr 1fr;
-		grid-gap: 0.3rem;
-		align-items: center;
-		grid-template-areas:
-			'. up .'
-			'left down right';
-
-		& .key.up {
-			grid-area: up;
-		}
-
-		& .key.left {
-			grid-area: left;
-		}
-
-		& .key.right {
-			grid-area: right;
-		}
-
-		& .key.down {
-			grid-area: down;
-		}
-	}
-
-	& span.key {
-		border: solid 1px var(--dark);
-		background-color: white;
-		border-radius: 5px;
-		padding: 0.5rem;
-		min-width: 1.2rem;
-		min-height: 1.2rem;
-		display: inline-block;
-		text-align: center;
-	}
 }
 
 #help {
-	& #help-block-move {
-		@include width-larger {
-			top: 73%;
-			left: 22%;
-			transform: translate(-50%, -50%);
-		}
+	@include width-larger {
+		width: 25%;
+		right: 15%;
+	}
+	@include height-larger {
+		bottom: 10vh;
+	}
 
+	.help-block {
+		position: absolute;
+		@include width-larger {
+			width: 100%;
+			right: 0;
+		}
 		@include height-larger {
-			top: 19%;
-			left: 75%;
-			transform: translate(-50%, -50%);
 		}
 	}
 
-	& #help-block-zoom,
+	& #help-block-zoom {
+		@include width-larger {
+			top: 29%;
+			transform: translate(0, -50%);
+		}
+		@include height-larger {
+			bottom: 0;
+			left: 5%;
+			width: 25%;
+			bottom: 15%;
+		}
+	}
+
 	& #help-block-fill {
 		@include width-larger {
-			width: auto;
-			margin-bottom: 3vh;
-			margin-top: 5px;
-			height: auto;
+			top: 52%;
+			transform: translate(0, -50%);
 		}
-
 		@include height-larger {
-			width: 30%;
-			margin-bottom: 4.5px;
-			margin-top: auto;
-			height: 100%;
+			bottom: 0;
+			right: 5%;
+			bottom: 15%;
+			width: 60%;
 		}
 	}
 
-	& #help svg {
+	& #help-block-move {
 		@include width-larger {
-			right: 8px;
-			bottom: auto;
-			transform: translateX(100%) scale(1.5);
+			bottom: 5%;
 		}
 
 		@include height-larger {
-			right: auto;
-			bottom: -5px;
-			transform: scale(1.5) rotate(90deg);
+			bottom: 25%;
+			left: 50%;
+			width: 90%;
+			transform: translate(-50%, 0);
+		}
+	}
+
+	& #help-block-fill,
+	& #help-block-zoom {
+		&:after {
+			content: '';
+			position: absolute;
+			width: 0;
+			height: 0;
+			border-style: solid;
+			border-width: 1rem 0 1rem 1rem;
+			border-color: transparent var(--dark) transparent;
+
+			@include width-larger {
+				top: 50%;
+				right: 0;
+				transform: translate(100%, -50%);
+			}
+
+			@include height-larger {
+				bottom: 0;
+				left: 50%;
+				transform: rotate(90deg) translate(150%, 25%);
+			}
 		}
 	}
 }
 
-/* ScreenRatio.applyStyles({
-	domEl: #help svg[1],
-	styles: {
-		width: ["auto", "100%"],
-		right: ["13%", "auto"],
-		top: ["50%", "auto"],
-		bottom: ["auto", "13%"],
-		flexDirection: ["column", "row"],
-		transform: ["translateY(-50%)", "translate(0)"],
-	}
-},
-	{
-		domEl: #help svg[0],
-		styles: {
-			top: [isMobile ? "6%" : "20%", "auto"],
-			left: ["auto", "22%"],
-		}
-	},
+#help-block-move .arrow-keys {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	grid-template-rows: 1fr 1fr;
+	grid-gap: 0.3rem;
+	align-items: center;
+	max-width: 8rem;
+	margin-left: auto;
+	margin-right: auto;
+	grid-template-areas:
+		'. up .'
+		'left down right';
 
-	{
-		domEl: #help svg[1],
-		styles: {
-			top: [isMobile ? "56%" : "60%", "auto"],
-			left: ["auto", "62%"],
-		}
-	}) */
+	& .key.up {
+		grid-area: up;
+	}
+
+	& .key.left {
+		grid-area: left;
+	}
+
+	& .key.right {
+		grid-area: right;
+	}
+
+	& .key.down {
+		grid-area: down;
+	}
+}
+
+span.key {
+	border: solid 1px var(--dark);
+	background-color: white;
+	border-radius: 5px;
+	padding: 0.5rem;
+	min-width: 1.2rem;
+	min-height: 1.2rem;
+	display: inline-block;
+	text-align: center;
+}

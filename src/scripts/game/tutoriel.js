@@ -1,96 +1,107 @@
-import {
-	Help,
-	helpBlocks,
-	helpContainer,
-	arrows
-} from './components/help';
+import { isMobile, messages } from './components/help';
 
-const blockArrows = {
-	zoom: arrows[0],
-	fill: arrows[1]
+const menuContainer = document.getElementById("menu");
+
+const menuHelpButton = document.getElementById('help-btn');
+
+const helpBlocksContainer = document.getElementById('help');
+
+const helpBlocks = {
+	fill: document.getElementById('help-block-fill'),
+	move: document.getElementById('help-block-move'),
+	zoom: document.getElementById('help-block-zoom'),
+};
+
+function showHelpBlock(...blockNames) {
+
+	blockNames.forEach(blockName => {
+
+		helpBlocks[blockName].style.visibility = "visible";
+	});
+};
+
+function hideHelpBlock(...blockNames) {
+
+	blockNames.forEach(blockName => {
+
+		helpBlocks[blockName].style.visibility = "hidden";
+	});
+};
+
+export function initTutoriel() {
+
+	for (const blockNames in helpBlocks) {
+
+		helpBlocks[blockNames].innerHTML = messages[blockNames][isMobile ? "mobile" : "desktop"];
+	}
 }
 
-export function init(socket) {
+export function startTutoriel(socket) {
 
-	const showHowToFill = () => {
+	initTutoriel();
 
-		showBlock("fill");
+	helpBlocksContainer.style.display = "block";
 
-		socket.on("CONFIRM_FILL", onFirstFill);
+	setTimeout(showHowToFill, 1000);
+
+	function showHowToFill() {
+
+		showHelpBlock("fill");
+
+		socket.on("CONFIRM_FILL", onFirstFillInput);
 	};
 
-	const onFirstFill = () => {
+	function onFirstFillInput() {
 
-		socket.removeListener("CONFIRM_FILL", onFirstFill);
+		socket.removeListener("CONFIRM_FILL", onFirstFillInput);
 
-		hideBlock("fill");
+		hideHelpBlock("fill");
 
 		setTimeout(showHowToMove, 1000);
 	}
 
-	const showHowToMove = () => {
+	function showHowToMove() {
 
-		showBlock("move");
+		showHelpBlock("move");
 
-		socket.on("NEW_PLAYER_POSITION", onFirstMove);
+		socket.on("NEW_PLAYER_POSITION", onFirstMoveInput);
 	};
 
-	const onFirstMove = () => {
+	function onFirstMoveInput() {
 
-		socket.removeListener("NEW_PLAYER_POSITION", onFirstMove);
+		socket.removeListener("NEW_PLAYER_POSITION", onFirstMoveInput);
 
-		hideBlock("move");
+		hideHelpBlock("move");
 
 		setTimeout(showLastInfos, 1000);
 	}
 
-	const showLastInfos = () => {
+	function showLastInfos() {
 
-		Help.show();
+		menuContainer.classList.add('open');
 
-		showBlock("zoom");
+		showHelpBlock("zoom");
 
-		setTimeout(end, 3000);
+		setTimeout(() => {
+
+			helpBlocksContainer.style.display = "none";
+
+			menuContainer.classList.remove('open');
+
+			endTutoriel();
+
+		}, 3000);
 	};
-
-	helpContainer.style.display = "block";
-
-	setTimeout(showHowToFill, 1000);
 }
 
-export function end() {
+export function endTutoriel() {
 
-	showBlock("zoom", "move", "fill");
+	showHelpBlock("zoom", "move", "fill");
 
-	Help.hide();
+	menuHelpButton.addEventListener("click", () => {
 
-	Help.listenBtn();
+			menuContainer.classList.toggle('open');
+
+			helpBlocksContainer.classList.toggle("visible");
+		});
 }
-
-const hideBlock = (...args) => {
-
-	args.forEach(key => {
-
-		helpBlocks[key].style.visibility = "hidden";
-
-		if (blockArrows[key]) {
-
-			blockArrows[key].style.visibility = "hidden";
-
-		}
-	});
-};
-
-const showBlock = (...args) => {
-
-	args.forEach(key => {
-
-		helpBlocks[key].style.visibility = "visible";
-
-		if (blockArrows[key]) {
-
-			blockArrows[key].style.visibility = "visible";
-
-		}
-	});
-};

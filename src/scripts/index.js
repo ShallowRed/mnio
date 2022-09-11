@@ -12,7 +12,7 @@ import io from 'socket.io-client';
 
 import Game from './game/game';
 
-import * as Tutoriel from './game/tutoriel';
+import { initTutoriel, startTutoriel, endTutoriel } from './game/tutoriel';
 
 const socket = io('/game');
 
@@ -26,5 +26,15 @@ socket.once("INIT_GAME", data => {
 
 	const isPlayerFirstLog = data.ownCells.length === 0;
 
-	Tutoriel[isPlayerFirstLog ? "init" : "end"](socket);
+	initTutoriel();
+	
+	if (true) {
+	// if (isPlayerFirstLog) {
+
+		startTutoriel(socket);
+
+	} else {
+
+		endTutoriel();
+	}
 });
