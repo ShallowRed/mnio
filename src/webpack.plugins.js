@@ -23,15 +23,6 @@ module.exports = (isDevMode, { name }) => {
 				filename: `styles/${name}.css`,
 			}),
 
-			new class { apply = logLine; }
-
 		].filter(Boolean)
 	}
 };
-
-
-function logLine(compiler) {
-	compiler.hooks.done.tap("customLogger", (stats) => {
-		console.log("\r\n------");
-	});
-}
