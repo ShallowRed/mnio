@@ -8,21 +8,21 @@ export default function listenClickEvents() {
 
 		colorBtn.addEventListener("mousedown", () => {
 
-			this.selectColor(i);
+			this.emit("SELECT_COLOR", i);
 		});
 
 		colorBtn.addEventListener("mouseup", () => {
 
 			if (this.flags.isTranslating || this.flags.isZooming) return;
 
-			this.fill();
+			this.emit("FILL_ATTEMPT");
 		});
 
 		colorBtn.addEventListener("touchstart", (event) => {
 
 			event.preventDefault();
 
-			this.selectColor(i);
+			this.emit("SELECT_COLOR", i);
 		});
 
 		colorBtn.addEventListener("touchend", (event) => {
@@ -31,7 +31,7 @@ export default function listenClickEvents() {
 
 			if (this.flags.isTranslating || this.flags.isZooming) return;
 
-			this.fill();
+			this.emit("FILL_ATTEMPT");
 		});
 	});
 
@@ -39,14 +39,14 @@ export default function listenClickEvents() {
 
 		zoomBtn.addEventListener("click", () => {
 
-			this.zoom(direction);
+			this.emit("ZOOM", direction);
 		});
 
 		zoomBtn.addEventListener("touchstart", (event) => {
 
 			event.preventDefault();
 
-			this.zoom(direction);
+			this.emit("ZOOM", direction);
 		});
 	}
 

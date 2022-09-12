@@ -18,8 +18,6 @@ const socket = io('/game');
 
 socket.once("INIT_GAME", data => {
 
-	console.log('INIT_GAME', data);
-
 	const game = new Game(socket, data);
 
 	game.init();

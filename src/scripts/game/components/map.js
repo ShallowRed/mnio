@@ -1,4 +1,5 @@
 import SharedGameMap from 'shared/map-methods';
+import * as draw from "game/utils/draw";
 
 export default class GameMap extends SharedGameMap {
 
@@ -190,7 +191,7 @@ export default class GameMap extends SharedGameMap {
 
 		if (!coords) return;
 
-		drawSquare(coords, this.cellSize, ctx, color);
+		draw.square(coords, this.cellSize, ctx, color);
 	}
 
 	clearCell(position, ctx) {
@@ -206,7 +207,7 @@ export default class GameMap extends SharedGameMap {
 
 		const shift = Math.round(this.map.cellSize / 8);
 
-		drawRoundSquare(coords, this.positionsColor, this.cellSize, this.positionsCtx, shift);
+		draw.roundSquare(coords, this.positionsColor, this.cellSize, this.positionsCtx, shift);
 	}
 
 	////////////////////////////////////////////////////
@@ -341,69 +342,4 @@ export default class GameMap extends SharedGameMap {
 			y - 1 <= this.numCellsInView[1] + this.offScreenCells
 		);
 	}
-}
-
-function drawSquare(coords, cellSize, ctx, color) {
-
-	const [x, y] = coords.map(x => Math.round(cellSize * x));
-
-	if (!color) {
-
-		ctx.clearRect(x, y, cellSize, cellSize);
-
-	} else {
-
-		ctx.fillStyle = color;
-
-		ctx.fillRect(x, y, cellSize, cellSize);
-	}
-}
-
-function drawRoundSquare(coords, color, cellSize, ctx, shift) {
-
-	const [x, y] = coords.map(x => {
-
-		return Math.round(cellSize * x + shift * 1.5);
-	});
-
-	ctx.strokeStyle = color;
-
-	ctx.lineWidth = shift;
-
-	roundSquarePath(ctx, {
-		left: x,
-		top: y,
-		size: cellSize - shift * 3,
-		radius: shift
-	});
-
-	ctx.stroke();
-}
-
-function roundSquarePath(ctx, { left, top, size, radius }) {
-
-	const right = left + size;
-	const bottom = top + size;
-
-	ctx.beginPath();
-
-	ctx.moveTo(left + radius, top);
-
-	ctx.lineTo(right - radius, top);
-
-	ctx.quadraticCurveTo(right, top, right, top + radius);
-
-	ctx.lineTo(right, bottom - radius);
-
-	ctx.quadraticCurveTo(right, bottom, right - radius, bottom);
-
-	ctx.lineTo(left + radius, bottom);
-
-	ctx.quadraticCurveTo(left, bottom, left, bottom - radius);
-
-	ctx.lineTo(left, top + radius);
-
-	ctx.quadraticCurveTo(left, top, left + radius, top);
-
-	ctx.closePath();
 }

@@ -46,7 +46,7 @@ function touchMove(evt) {
 		Touch.isTooSmall()
 	) return;
 
-	this.moveAttempt(Touch.direction);
+	this.emit("MOVE_ATTEMPT", Touch.direction);
 
 	Touch.setOrigin(evt);
 
@@ -62,7 +62,7 @@ function touchMove(evt) {
 			this.flags.isTouching && Touch.direction
 		) {
 
-			this.moveAttempt(Touch.direction);
+			this.emit("MOVE_ATTEMPT", Touch.direction);
 		}
 
 		if (!this.flags.isTouching) {

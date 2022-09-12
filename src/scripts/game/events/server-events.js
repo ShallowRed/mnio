@@ -6,7 +6,7 @@ export default function listenServerEvents() {
 
 		if (newPosition !== this.player.position) {
 
-			this.movePlayer(newPosition);
+			this.emit("MOVE_PLAYER", newPosition);
 		}
 	});
 

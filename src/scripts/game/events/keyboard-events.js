@@ -50,25 +50,25 @@ function onKeyDown(event) {
 
 		case "Space":
 
-			this.fill();
+			this.emit("FILL_ATTEMPT");
 
 			break;
 
 		case "Enter":
 
-			this.fill();
+			this.emit("FILL_ATTEMPT");
 
 			break;
 
 		case "ArrowLeft":
 
-			this.moveAttempt("left");
+			this.emit("MOVE_ATTEMPT", "left");
 
 			break;
 
 		case "ArrowRight":
 
-			this.moveAttempt("right");
+			this.emit("MOVE_ATTEMPT", "right");
 
 			break;
 
@@ -78,11 +78,13 @@ function onKeyDown(event) {
 
 				const length = this.player.palette.length;
 
-				this.selectColor((length + this.player.selectedColorIndex - 1) % length);
+				const index = (length + this.player.selectedColorIndex - 1) % length;
+
+				this.emit("SELECT_COLOR", index);
 
 			} else {
 
-				this.moveAttempt("up");
+				this.emit("MOVE_ATTEMPT", "up");
 			}
 
 			break;
@@ -93,12 +95,14 @@ function onKeyDown(event) {
 
 				const length = this.player.palette.length;
 
-				this.selectColor((length + this.player.selectedColorIndex + 1) % length);
+				const index = (length + this.player.selectedColorIndex + 1) % length;
+
+				this.emit("SELECT_COLOR", index);
 
 			} else {
 
 
-				this.moveAttempt("down");
+				this.emit("MOVE_ATTEMPT", "down");
 			}
 
 			break;

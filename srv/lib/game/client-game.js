@@ -15,14 +15,18 @@ export default class ClientGame {
 	get initialData() {
 
 		return {
-			gridState: this.game.map.gridState,
-			playersPositions: this.game.map.playersPositions,
-			rows: this.game.map.rows,
-			cols: this.game.map.cols,
-			ownCells: this.player.ownCells,
-			allowedCells: this.player.allowedCells,
-			position: this.player.position,
-			palette: this.player.palette,
+			map: {
+				gridState: this.game.map.gridState,
+				playersPositions: this.game.map.playersPositions,
+				rows: this.game.map.rows,
+				cols: this.game.map.cols,
+			},
+			player: {
+				ownCells: this.player.ownCells,
+				allowedCells: this.player.allowedCells,
+				position: this.player.position,
+				palette: this.player.palette,
+			}
 		}
 	}
 
@@ -33,7 +37,7 @@ export default class ClientGame {
 		this.movePlayer({ from: null, to: this.player.position });
 	}
 
-	listenGameEvents() { 
+	listenGameEvents() {
 
 		this.socket.on('MOVE', direction => {
 

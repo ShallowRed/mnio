@@ -5,10 +5,10 @@ export default function fillAnimation(position) {
 
 	this.flags.fill = true;
 
+	const cellSize = this.map.cellSize;
+
 	const [cellLeft, cellTop] = this.map.getRelativeCoords(position)
 		.map(coord => Math.round(coord * cellSize));
-
-	const cellSize = this.map.cellSize;
 
 	const lineWidth = Math.floor(cellSize / N_STRIPES);
 
