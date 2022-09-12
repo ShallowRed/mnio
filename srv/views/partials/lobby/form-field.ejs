@@ -1,5 +1,5 @@
 <section class="text-input">
-	<label for="<%= name %>"><%= label %></label>
+	<label for="<%= name %>"><%= label %><% if (locals.showUsername) { %><%= '"' + username + '"' %><% } %></label>
 	<input
 		name="<%= name %>"
 		type="<%= type %>"

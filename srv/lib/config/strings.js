@@ -11,7 +11,7 @@ export const STRINGS = {
 	USERNAME_EXISTS: 'Ce nom d\'utilisateur est déjà pris',
 
 	ERR_NO_PASS_MATCH: 'Les mots de passe ne correspondent pas',
-	ERR_INCORRECT_PASSWORD: 'Mot de passe incorrect',
+	ERR_INCORRECT_PASSWORD: 'Mot de passe incorrect pour ce nom d\'utilisateur',
 
 	USERNAME_PAGE_TITLE: 'Se connecter',
 	LOGIN_PAGE_TITLE: 'S\'identifier',
@@ -20,12 +20,14 @@ export const STRINGS = {
 	GAME_PAGE_TITLE: 'Dessiner',
 	
 	USERNAME_FIELD_LABEL: 'Nom d\'utilisateur',
-	PASSWORD_FIELD_LABEL: 'Mot de passe',
-	PASSWORD2_FIELD_LABEL: 'Confirmer le mot de passe',
+	PASSWORD_FIELD_LABEL: 'Mot de passe pour : ',
+	PASSWORD2_FIELD_LABEL: 'Confirmer le mot de passe pour : ',
 	USERNAME_FIELD_PLACEHOLDER: '4 à 20 caractères',
 	PASSWORD_FIELD_PLACEHOLDER: '4 à 32 caractères',
+	RETURN_USERNAME_LABEL: 'Choisir un autre nom',
 
-	PALETTE_CHANGE_LABEL: 'Changer',
+	PALETTE_PREV_LABEL: 'Précédente',
+	PALETTE_NEXT_LABEL: 'Suivante',
 	PALETTE_SUBMIT_LABEL: 'Choisir cette palette',
 	PALETTE_INSTRUCTIONS: 'Choisissez une palette de couleurs',
 	
@@ -65,6 +67,7 @@ export const TEMPLATES_DATA = {
 
 	'page-index': {
 		stylesheets: ['lobby'],
+		prevButton: false,
 		text: STRINGS['SITE_TEXT'],
 	},
 
@@ -72,6 +75,7 @@ export const TEMPLATES_DATA = {
 		action: 'username',
 		title: STRINGS['USERNAME_PAGE_TITLE'],
 		info: STRINGS['ENTER_USERNAME'],
+		prevButton: false,
 		submitMessage: STRINGS['USERNAME_SUBMIT_LABEL'],
 		fields: [FIELDS.USERNAME],
 		stylesheets: ['lobby']
@@ -82,7 +86,9 @@ export const TEMPLATES_DATA = {
 		title: STRINGS['SIGNUP_PAGE_TITLE'],
 		info: STRINGS['USERNAME_NEW'],
 		submitMessage: STRINGS['SIGNUP_SUBMIT_LABEL'],
+		prevButton: STRINGS['RETURN_USERNAME_LABEL'],
 		fields: [FIELDS.PASSWORD, FIELDS.PASSWORD2],
+		showUsername: true,
 		stylesheets: ['lobby']
 	}
 	,
@@ -90,8 +96,10 @@ export const TEMPLATES_DATA = {
 		action: 'login',
 		title: STRINGS['LOGIN_PAGE_TITLE'],
 		info: STRINGS['USERNAME_EXISTS'],
+		prevButton: STRINGS['RETURN_USERNAME_LABEL'],
 		submitMessage: STRINGS['LOGIN_SUBMIT_LABEL'],
 		fields: [FIELDS.PASSWORD],
+		showUsername: true,
 		stylesheets: ['lobby']
 	},
 
@@ -100,12 +108,15 @@ export const TEMPLATES_DATA = {
 		instructions: STRINGS['PALETTE_INSTRUCTIONS'],
 		stylesheets: ['palette'],
 		scripts: ['palette'],
-		changeMessage: STRINGS['PALETTE_CHANGE_LABEL'],
+		prevButton: false,
+		prevMessage: STRINGS['PALETTE_PREV_LABEL'],
+		nextMessage: STRINGS['PALETTE_NEXT_LABEL'],
 		submitMessage: STRINGS['PALETTE_SUBMIT_LABEL'],
 	},
 
 	'page-game': {
 		title: STRINGS['GAME_PAGE_TITLE'],
+		prevButton: false,
 		stylesheets: ['game'],
 		scripts: ['game']
 	}

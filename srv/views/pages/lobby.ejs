@@ -3,12 +3,7 @@
 <main>
 	<h1><%= siteName %></h1>
 	<%- include('../partials/lobby/info.ejs', locals) %>
-	<form action="/<%= action %>" method="post">
-		<% for (const field of fields) { %>
-		<%- include('../partials/lobby/form-field.ejs', field) %>
-		<% } %>
-		<button class="primary" type="submit"><%= submitMessage %></button>
-	</form>
+	<%- include('../partials/lobby/form.ejs', locals) %>
 </main>
 
 <%- include('../partials/footer.ejs', locals) %>

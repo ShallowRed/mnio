@@ -10,6 +10,8 @@
 <p class="message info"><%= info %></p>
 <% } %>
 
-<% if (locals.error) { %>
+<% if (locals.errors) { %>
+<% for (const error of errors) { %>
 <p class="message error"><%= error %></p>
+<% } %>
 <% } %>

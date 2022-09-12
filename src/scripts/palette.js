@@ -12,7 +12,8 @@ socket.once('CHOSE_PALETTE', ({
 
 	let paletteIndex = 0;
 
-	const changeButton = document.querySelector('button[name="changePalette"]');
+	const prevButton = document.querySelector('button[name="prevPalette"]');
+	const nextButton = document.querySelector('button[name="nextPalette"]');
 	const submitButton = document.querySelector('button[name="paletteId"][type="submit"]');
 	const container = document.querySelector('.palette-container');
 
@@ -22,9 +23,14 @@ socket.once('CHOSE_PALETTE', ({
 
 	renderPalette(paletteIndex);
 
-	changeButton.addEventListener("click", () => {
+	prevButton.addEventListener("click", () => {
 
 		renderPalette(++paletteIndex);
+	});
+
+	nextButton.addEventListener("click", () => {
+
+		renderPalette(--paletteIndex);
 	});
 
 	function createPaletteElement() {
@@ -40,7 +46,9 @@ socket.once('CHOSE_PALETTE', ({
 
 	function renderPalette(index) {
 
-		const { id, colors } = palettes[index % palettes.length];
+		index = (palettes.length + index) % palettes.length;
+
+		const { id, colors } = palettes[index];
 
 		submitButton.value = id;
 

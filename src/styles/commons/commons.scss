@@ -56,16 +56,8 @@ body {
 	color: var(--dark);
 }
 
-*:not(input) {
-	user-select: none;
-}
-
 button {
 	&:hover {
 		cursor: pointer;
-	}
-
-	&:focus {
-		outline: none;
 	}
 }

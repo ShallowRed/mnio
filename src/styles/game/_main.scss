@@ -8,7 +8,6 @@ body {
 	width: 100%;
 
 	box-sizing: border-box;
-	overflow: hidden;
 	padding: min(2.5%, 1.5rem);
 
 	@include width-larger {

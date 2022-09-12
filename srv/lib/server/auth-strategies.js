@@ -2,6 +2,8 @@ import { Strategy as LocalStrategy } from 'passport-local';
 
 import saltHash from '#database/salt-hash';
 
+import { STRINGS } from '#config/strings';
+
 import Debug from '#config/debug';
 const debug = Debug('passport |');
 
@@ -104,7 +106,7 @@ function verifySignup(table) {
 			return done(
 				null,
 				false,
-				{ 'message': 'NO_PASS_MATCH' }
+				{ 'message': `${STRINGS['ERR_NO_PASS_MATCH']}` }
 			);
 		}
 
@@ -152,7 +154,7 @@ function verifyLogin(table) {
 			return done(
 				null,
 				false,
-				{ 'message': 'INCORRECT_PASSWORD' }
+				{ 'message': `${STRINGS['ERR_INCORRECT_PASSWORD']}` }
 			);
 		}
 	}

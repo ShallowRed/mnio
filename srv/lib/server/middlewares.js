@@ -4,14 +4,16 @@ export function render(path, data) {
 
 	return (req, res) => {
 
-		const errors = req.flash('error');
-
 		data.siteName = STRINGS['SITE_NAME'];
+
+		const errors = req.flash('error');
 
 		if (data && errors) {
 
-			data.error = STRINGS[errors[0]];
+			data.errors = errors
 		}
+
+		data.username = req.user?.username;
 
 		res.render(path, data)
 	}

@@ -1,0 +1,13 @@
+<form action="/<%= action %>" method="post">
+	<% for (const field of fields) { %>
+	<%- include('./form-field.ejs', field) %>
+	<% } %>
+	<% if (prevButton) { %>
+	<button class="secondary" type="button" onclick="window.location.href='/username'">
+		<%= prevButton %>
+	</button>
+	<% } %>
+	<button class="primary" type="submit">
+		<%= submitMessage %>
+	</button>
+</form>
