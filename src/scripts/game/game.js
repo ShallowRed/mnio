@@ -1,14 +1,14 @@
-import Player from './player';
-import GameMap from './map';
-import gameButtons from './game-buttons';
+import Player from 'game/components/player';
+import GameMap from 'game/components/map';
+import gameButtons from 'game/components/buttons';
 
-import listenServerEvents from './events/server-events';
-import listenClickEvents from './events/click-events';
-import listenKeyboardEvents from './events/keyboard-events';
-import listenTouchEvents from './events/touch-events';
+import listenServerEvents from 'game/events/server-events';
+import listenClickEvents from 'game/events/click-events';
+import listenKeyboardEvents from 'game/events/keyboard-events';
+import listenTouchEvents from 'game/events/touch-events';
 
-import fillAnimation from './utils/fill-animation';
-import animationTimeout from './utils/animation-timeout';
+import fillAnimation from 'game/utils/fill-animation';
+import animationTimeout from 'game/utils/animation-timeout';
 
 export default class Game {
 
@@ -62,7 +62,6 @@ export default class Game {
 		listenTouchEvents.call(this);
 
 		listenServerEvents.call(this);
-
 	}
 
 	listenWindowEvents() {

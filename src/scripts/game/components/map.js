@@ -179,6 +179,7 @@ export default class GameMap extends SharedGameMap {
 			.map((color, i) => color && { color, position: i })
 			.filter(Boolean)
 			.forEach(({ color, position }) => {
+				
 				this.renderCell(position, this.colorsCtx, `#${color}`);
 			});
 	}

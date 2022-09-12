@@ -24,8 +24,8 @@ const COMMONS_CONFIG = {
 	ALIASES: {
 		'shared': resolve(__dirname, '../srv/shared'),
 		'styles': resolve(__dirname, 'styles'),
-		'game': resolve(__dirname, 'game'),
 		'resources': resolve(__dirname, 'resources'),
+		'game': resolve(__dirname, 'scripts/game'),
 	},
 
 	IGNORE_WATCH: /srv\/(?!shared)/,

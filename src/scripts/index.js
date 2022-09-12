@@ -10,9 +10,9 @@ import 'styles/game/index.scss';
 
 import io from 'socket.io-client';
 
-import Game from './game/game';
+import Game from 'game/game';
 
-import { startTutoriel, listenHelpButtonClick } from './game/help';
+import { startTutoriel, listenHelpButtonClick } from 'game/components/help';
 
 const socket = io('/game');
 

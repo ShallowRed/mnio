@@ -1,4 +1,4 @@
-import gameButtons from '../game-buttons';
+import gameButtons from 'game/components/buttons';
 
 export default function listenClickEvents() {
 	
