@@ -2,13 +2,17 @@ $primary-color: #007bff;
 $color__info: rgb(204, 254, 204);
 $color__error: rgb(254, 191, 198);
 
+body {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	justify-content: center;
+	align-items: center;
+}
 main {
-	margin-top: min(15%, 300px);
 	width: 75%;
 	min-width: 200px;
 	max-width: 400px;
-	margin-left: auto;
-	margin-right: auto;
 }
 
 button,
@@ -53,21 +57,40 @@ input {
 	border: 1px solid #ced4da;
 }
 
+@media screen and (max-width: 768px) {
+	button {
+		width: 100%;
+
+		& + button {
+			margin-top: 1rem;
+		}
+
+		&[name=prevPalette], &[name=nextPalette] {
+			margin-top: 1rem;
+			width: calc(50% - 0.5rem);
+		}
+	}
+}
+@media screen and (min-width: 768px) {
+	button {
+		width: 100%;
+
+		&.secondary {
+			width: calc(50% - 0.75rem);
+		}
+
+		& + button {
+			width: calc(50% - 0.75rem);
+		}
+
+		&.primary:nth-of-type(3) {
+			width: 100%;
+		}
+	}
+}
+
 button {
 	margin-top: 2rem;
-	width: 100%;
-
-	&.secondary {
-		width: calc(50% - 0.75rem);
-	}
-
-	& + button {
-		width: calc(50% - 0.75rem);
-	}
-
-	&.primary:nth-of-type(3) {
-		width: 100%;
-	}
 
 	border-radius: 0.25rem;
 
