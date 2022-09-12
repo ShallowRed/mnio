@@ -9,55 +9,60 @@
 	left: 0;
 	background: var(--grey);
 	border-radius: 0 0 min(50%, 25px);
+}
 
-	& button {
-		background: var(--grey);
-		border: none;
-		display: flex;
-		padding: 3px;
-		filter: saturate(0) brightness(1);
-		padding: 0.75rem;
+#menu button {
+	background: var(--grey);
+	border: none;
+	display: flex;
+	padding: 3px;
+	filter: saturate(0) brightness(1);
+	padding: 0.75rem;
 
-		font-weight: 400;
-		font-size: 1.1rem;
+	font-weight: 400;
+	font-size: 1.1rem;
 
-		&#help-btn {
-			border-radius: 0 0 min(50%, 25px) 0;
-		}
+	&#help-btn {
+		border-radius: 0 0 min(50%, 25px) 0;
+	}
 
-		&:hover {
-			color: blue;
-			filter: saturate(1) brightness(0.95);
-
-			& img {
-				filter: invert(0.3) sepia(1) saturate(5) hue-rotate(180deg);
-				opacity: 1;
-			}
-		}
-
-		&:active {
-			filter: saturate(1) brightness(0.75);
-		}
-
-		& a {
-			display: flex;
-			text-decoration: none;
-
-			&:active {
-				color: blue;
-			}
-		}
-
-		& p {
-			margin: auto 0.5rem;
-			display: none;
-		}
+	&:hover {
+		color: blue;
+		filter: saturate(1) brightness(0.95);
 
 		& img {
-			min-height: 32px;
-			height: 5vh;
-			max-height: 48px;
+			filter: invert(0.3) sepia(1) saturate(5) hue-rotate(180deg);
+			opacity: 1;
 		}
+	}
+
+	&:active {
+		filter: saturate(1) brightness(0.75);
+	}
+
+	& a {
+		display: flex;
+		text-decoration: none;
+
+		&:active {
+			color: blue;
+		}
+	}
+
+	& p {
+		margin: auto 0.5rem;
+	}
+
+	& img {
+		min-height: 32px;
+		height: 5vh;
+		max-height: 48px;
+	}
+}
+
+#menu {
+	& button p {
+		display: none;
 	}
 
 	& .help-open-icon {
@@ -68,7 +73,7 @@
 	}
 
 	&.open {
-		& p {
+		& button p {
 			display: block;
 		}
 		& .help-open-icon {

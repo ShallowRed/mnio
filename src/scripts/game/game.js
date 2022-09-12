@@ -1,17 +1,16 @@
-import Player from './components/player';
-import GameMap from './components/map';
-import Ui from './components/ui';
-import cell from './components/cell/cell';
+import Player from './player';
+import GameMap from './map';
+import gameButtons from './game-buttons';
 
 import listenServerEvents from './events/server';
 import listenClickEvents from './events/click';
 import listenKeyboardEvents from './events/keyboard';
 import listenTouchEvents from './events/touchScreen';
 
-import { fillAnimation } from './components/cell/fillAnimation';
+import fillAnimation from './utils/fillAnimation';
 
 export default class Game {
-
+ 
 	duration = 0.2;
 
 	flags = {};
@@ -29,35 +28,28 @@ export default class Game {
 
 		this.socket = socket;
 
-		this.gridState = gridState;
+		this.map = new GameMap(this, {
+			rows,
+			cols,
+			gridState,
+			playersPositions
+		});
 
-		this.playersPositions = playersPositions;
+		this.player = new Player(this, {
+			position,
+			palette,
+			ownCells,
+			allowedCells
+		});
 
-		this.rows = rows;
-
-		this.cols = cols;
-
-		this.ownCells = ownCells;
-
-		this.allowedCells = allowedCells;
-
-		this.map = new GameMap(this);
-
-		this.player = new Player({ position, palette }, this);
-
-		this.cell = cell;
-		this.cell.clear = cell.clear.bind(this);
-		this.cell.renderColor = cell.renderColor.bind(this);
-		this.cell.renderAllowedCell = cell.renderAllowedCell.bind(this);
-		this.cell.renderPosition = cell.renderPosition.bind(this);
-
+		this.fillAnimation = fillAnimation.bind(this);
 	}
 
 	init() {
 
 		this.selectColor(0);
 
-		Ui.focusColorBtn({ index: 0 });
+		gameButtons.focusColorBtn({ index: 0 });
 
 		this.render();
 
@@ -70,27 +62,25 @@ export default class Game {
 		listenTouchEvents(this);
 
 		listenServerEvents.call(this);
+
 	}
 
 	listenWindowEvents() {
 
-		const render = () => this.render();
+		window.addEventListener('resize', () => {
 
-		window.addEventListener('resize', render);
+			this.render();
+		});
 
 		window.addEventListener("orientationchange", () => {
 
-			setTimeout(render, 500)
+			setTimeout(this.render, 500)
 		});
 	}
 
 	render() {
 
-		this.widthIsLarger = window.innerWidth >= window.innerHeight;
-
-		document.body.className = this.widthIsLarger ? 'width-larger' : 'height-larger';
-
-		this.map.setView();
+		this.map.getViewSize();
 
 		this.updateState();
 
@@ -195,7 +185,7 @@ export default class Game {
 
 		this.player.setColor(index);
 
-		Ui.focusColorBtn({ index });
+		gameButtons.focusColorBtn({ index });
 	}
 
 	fill() {
@@ -209,7 +199,7 @@ export default class Game {
 			this.player.ownCells.push(position);
 		}
 
-		fillAnimation(position, this);
+		this.fillAnimation(position);
 
 		const color = this.player.selectedColor.substring(1);
 

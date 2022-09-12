@@ -1,37 +1,25 @@
-section {
-  height: 100%;
-  width: 100%;
+body {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+    align-items: flex-start;
 
-  @include width-larger {
-	flex-direction: row;
-  }
+	height: 100%;
+	width: 100%;
 
-  @include height-larger {
-	flex-direction: column;
-  }
+	box-sizing: border-box;
+	overflow: hidden;
+	padding: min(2.5%, 1.5rem);
 
-  &#game {
-    display: flex;
-
-	& #view {
-
-		animation: fade-in 0.4s ease-out;
+	@include width-larger {
+		flex-direction: row;
 	}
 
-	& #buttons {
-		animation: fade-in 0.4s ease-out;
+	@include height-larger {
+		flex-direction: column;
 	}
-  }
 }
 
-@keyframes fade-in {
-  0% {
-	opacity: 0;
-  }
-  20% {
-	opacity: 0;
-  }
-  100% {
-	opacity: 1;
-  }
+section#view, section#buttons {
+	animation: fade-in 0.4s ease-out;
 }

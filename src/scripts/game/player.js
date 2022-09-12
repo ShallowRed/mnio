@@ -13,7 +13,7 @@ export default class Player {
 
 	lastCoords = [0, 0];
 
-	constructor({ position, palette }, game) {
+	constructor(game, { position, palette, ownCells, allowedCells }) {
 
 		this.game = game;
 
@@ -21,11 +21,11 @@ export default class Player {
 
 		this.palette = palette;
 
+		this.ownCells = ownCells;
+
+		this.allowedCells = allowedCells;
+		
 		this.selectedColor = palette[0];
-
-		this.ownCells = this.game.ownCells;
-
-		this.allowedCells = this.game.allowedCells;
 	}
 
 	////////////////////////////////////////////////////

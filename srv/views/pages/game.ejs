@@ -1,53 +1,27 @@
 <%- include('../partials/header.ejs', locals) %>
 
-	<section id="game">
-		<div id="view" style="position: relative;">
-			<canvas></canvas>
-			<canvas></canvas>
-			<canvas></canvas>
-			<div id="player"></div>
-			<div id="shadow"></div>
-		</div>
+<section id="view">
+	<canvas></canvas>
+	<canvas></canvas>
+	<canvas></canvas>
+	<div id="player"></div>
+	<div id="shadow"></div>
+</section>
 
-		<div id="buttons">
-			<button type="button" class="zoom" id="zoomin"><img src="/assets/img/zoom-in.svg" alt=""></button>
-			<button type="button" class="zoom" id="zoomout"><img src="/assets/img/zoom-out.svg" alt=""></button>
-			<button type="button" class="color"></button>
-			<button type="button" class="color"></button>
-			<button type="button" class="color"></button>
-			<button type="button" class="color"></button>
-			<button type="button" class="color"></button>
-		</div>
-	</section>
+<section id="buttons">
+	<button type="button" class="zoom" id="zoomin">
+		<img src="/assets/img/zoom-in.svg" alt="" />
+	</button>
+	<button type="button" class="zoom" id="zoomout">
+		<img src="/assets/img/zoom-out.svg" alt="" />
+	</button>
+	<button type="button" class="color"></button>
+	<button type="button" class="color"></button>
+	<button type="button" class="color"></button>
+	<button type="button" class="color"></button>
+	<button type="button" class="color"></button>
+</section>
 
-	<div id="menu">
-		<form action="/logout" method="post">
-		<button type="submit">
-			<img src="/assets/img/home.svg" alt="">
-			<p>&#8592; Retour au menu</p>
-		</button>
-		</form>
-		<button type="button" onclick="window.location.reload()">
-			<img src="/assets/img/refresh.svg" alt="">
-			<p>&#8592; En cas de bug</p>
-		</button>
-		<button type="button" id="help-btn">
-			<img class="help-open-icon" src="/assets/img/help.svg" alt="">
-			<img class="help-close-icon" src="/assets/img/close.svg" alt="">
-			<p>&#8592; Aide</p>
-		</button>
-	</div>
-
-	<section id="help">
-		<div id="help-block-move" class="help-block">
-			<% if (useragent.isMobile) {%>
-				<p>MOBILE</p>
-			<% } else {  %>
-				<p>DESKTOP</p>
-			<% } %>
-		</div>
-		<div id="help-block-zoom" class="help-block"> </div>
-		<div id="help-block-fill" class="help-block"> </div>
-	</section>
-
+<%- include('../partials/game/menu.ejs', locals) %>
+<%- include('../partials/game/help.ejs', locals) %>
 <%- include('../partials/footer.ejs', locals) %>

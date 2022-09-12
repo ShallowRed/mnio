@@ -1,37 +1,15 @@
-#help {
-	display: none;
+section#help {
 	position: absolute;
 	z-index: 800;
 	top: 0;
 	width: 100%;
 	height: 100%;
 	pointer-events: none;
-
-	&.visible {
-		display: block;
-
-		& .help-open-icon {
-			display: block;
-		}
-		& .help-close-icon {
-			display: none;
-		}
-	}
-
-	&:not(.visible) {
-		display: none;
-
-		& .help-open-icon {
-			display: block;
-		}
-		& .help-close-icon {
-			display: none;
-		}
-	}
 }
 
 .help-block {
-	visibility: hidden;
+	display: none;
+	position: absolute;
 	box-sizing: border-box;
 	border: solid 2px var(--dark);
 	background: rgba(250, 250, 250, 0.85);
@@ -41,9 +19,20 @@
 	& h2 {
 		font-size: 1.7rem;
 	}
+
+	& span.key {
+		border: solid 1px var(--dark);
+		background-color: white;
+		border-radius: 5px;
+		padding: 0.5rem;
+		min-width: 1.2rem;
+		min-height: 1.2rem;
+		display: inline-block;
+		text-align: center;
+	}
 }
 
-#help {
+section#help {
 	@include width-larger {
 		width: 25%;
 		right: 15%;
@@ -53,12 +42,9 @@
 	}
 
 	.help-block {
-		position: absolute;
 		@include width-larger {
 			width: 100%;
 			right: 0;
-		}
-		@include height-larger {
 		}
 	}
 
@@ -155,15 +141,4 @@
 	& .key.down {
 		grid-area: down;
 	}
-}
-
-span.key {
-	border: solid 1px var(--dark);
-	background-color: white;
-	border-radius: 5px;
-	padding: 0.5rem;
-	min-width: 1.2rem;
-	min-height: 1.2rem;
-	display: inline-block;
-	text-align: center;
 }

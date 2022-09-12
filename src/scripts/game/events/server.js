@@ -14,37 +14,37 @@ export default function listenServerEvents() {
 
 		if (lastPosition) {
 
-			this.playersPositions.splice(this.playersPositions.indexOf(lastPosition), 1);
+			this.map.playersPositions.splice(this.map.playersPositions.indexOf(lastPosition), 1);
 
-			this.cell.clear(lastPosition, this)
+			this.map.clearCell(lastPosition, this.map.positionsContext);
 		}
 
 		if (newPosition) {
 
-			this.playersPositions.push(newPosition);
+			this.map.playersPositions.push(newPosition);
 
-			this.cell.renderPosition(newPosition, this)
+			this.map.renderPosition(newPosition);
 		}
 	});
 
 	this.socket.on("NEW_FILL", ({ position, color }) => {
 
-		this.gridState[position] = color;
+		this.map.gridState[position] = color;
 
-		this.cell.renderColor(position, this);
+		this.renderCell(position, this.map.colorsCtx, `#${color}`);
 	});
 
 	this.socket.on("ALLOWED_CELLS", (cells) => {
 
 		cells.forEach(position => {
 
-			if (this.allowedCells.includes(position)) return;
+			if (this.player.allowedCells.includes(position)) return;
 
-			this.allowedCells.push(position);
+			this.player.allowedCells.push(position);
 
 			if (!this.flags.isTranslating) {
 
-				this.cell.renderAllowedCell(position, this);
+				this.map.renderCell(position, this.map.allowedCtx, this.map.allowedCellsColor);
 			}
 		});
 	});

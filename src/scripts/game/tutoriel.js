@@ -1,10 +1,4 @@
-import { isMobile, messages } from './components/help';
-
 const menuContainer = document.getElementById("menu");
-
-const menuHelpButton = document.getElementById('help-btn');
-
-const helpBlocksContainer = document.getElementById('help');
 
 const helpBlocks = {
 	fill: document.getElementById('help-block-fill'),
@@ -12,35 +6,23 @@ const helpBlocks = {
 	zoom: document.getElementById('help-block-zoom'),
 };
 
-function showHelpBlock(...blockNames) {
+function showHelpBlock(...blocksNames) {
 
-	blockNames.forEach(blockName => {
+	for (const blockName of blocksNames) {
 
-		helpBlocks[blockName].style.visibility = "visible";
-	});
-};
+		helpBlocks[blockName].style.display = "block";
+	}
+}
 
-function hideHelpBlock(...blockNames) {
+function hideHelpBlock(...blocksNames) {
 
-	blockNames.forEach(blockName => {
+	for (const blockName of blocksNames) {
 
-		helpBlocks[blockName].style.visibility = "hidden";
-	});
-};
-
-export function initTutoriel() {
-
-	for (const blockNames in helpBlocks) {
-
-		helpBlocks[blockNames].innerHTML = messages[blockNames][isMobile ? "mobile" : "desktop"];
+		helpBlocks[blockName].style.display = "none";
 	}
 }
 
 export function startTutoriel(socket) {
-
-	initTutoriel();
-
-	helpBlocksContainer.style.display = "block";
 
 	setTimeout(showHowToFill, 1000);
 
@@ -49,7 +31,7 @@ export function startTutoriel(socket) {
 		showHelpBlock("fill");
 
 		socket.on("CONFIRM_FILL", onFirstFillInput);
-	};
+	}
 
 	function onFirstFillInput() {
 
@@ -65,7 +47,7 @@ export function startTutoriel(socket) {
 		showHelpBlock("move");
 
 		socket.on("NEW_PLAYER_POSITION", onFirstMoveInput);
-	};
+	}
 
 	function onFirstMoveInput() {
 
@@ -82,26 +64,34 @@ export function startTutoriel(socket) {
 
 		showHelpBlock("zoom");
 
-		setTimeout(() => {
+		setTimeout(endTutoriel, 3000);
+	}
 
-			helpBlocksContainer.style.display = "none";
+	function endTutoriel() {
 
-			menuContainer.classList.remove('open');
+		menuContainer.classList.remove('open');
 
-			endTutoriel();
+		hideHelpBlock("zoom", "move", "fill");
 
-		}, 3000);
-	};
+		listenHelpButtonClick();
+	}
 }
 
-export function endTutoriel() {
+const menuHelpButton = document.getElementById('help-btn');
 
-	showHelpBlock("zoom", "move", "fill");
+export function listenHelpButtonClick() {
 
 	menuHelpButton.addEventListener("click", () => {
 
-			menuContainer.classList.toggle('open');
+		menuContainer.classList.toggle('open');
 
-			helpBlocksContainer.classList.toggle("visible");
-		});
+		if (menuContainer.classList.contains('open')) {
+
+			showHelpBlock("zoom", "move", "fill");
+
+		} else {
+
+			hideHelpBlock("zoom", "move", "fill");
+		}
+	});
 }

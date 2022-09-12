@@ -1,19 +1,27 @@
-#view {
-  overflow: hidden;
-  position: absolute;
-  box-sizing: border-box;
-  transform: translate(-50%, -50%);
-  background: white;
-}
+section#view {
+	overflow: hidden;
+	position: relative;
+	box-sizing: border-box;
+	background: white;
 
-canvas {
-  overflow: hidden;
-  position: absolute;
-  display: inline-block;
-  transition-timing-function: linear;
-  transform-origin: top left;
+	@include width-larger {
+		width: 90%;
+		height: 100%;
+	}
 
-  &:last-of-type {
-    opacity: 0.5;
-  }
+	@include height-larger {
+		height: 90%;
+		width: 100%;
+	}
+
+	& canvas {
+		overflow: hidden;
+		position: absolute;
+		transition-timing-function: linear;
+		transform-origin: top left;
+
+		&:last-of-type {
+			opacity: 0.5;
+		}
+	}
 }

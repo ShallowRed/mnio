@@ -4,7 +4,7 @@ export default function listenKeyboardEvents() {
 
 	document.addEventListener('keydown', event => {
 
-		// detect if cmd on mac is pressed
+		// detect if cmd on mac is selected
 		if (
 			event.code === 'MetaLeft' ||
 			event.code === 'MetaRight' ||

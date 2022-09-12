@@ -1,0 +1,46 @@
+<% isMobile = useragent.isMobile; %>
+<section id="help">
+	<div id="help-block-move" class="help-block">
+		<% if (isMobile) {%>
+		<h3>Se déplacer</h3>
+		<p>
+			Swiper :
+			<span class="key">&#8592;</span>
+			<span class="key">&#8593;</span>
+			<span class="key">&#8594;</span>
+			<span class="key">&#8595;</span>
+		</p>
+		<% } else { %>
+		<h3>Se déplacer</h3>
+		<p>Flèches directionnelles</p>
+		<p class="arrow-keys">
+			<span class="key left">&#8592;</span>
+			<span class="key up">&#8593;</span>
+			<span class="key right">&#8594;</span>
+			<span class="key down">&#8595;</span>
+		</p>
+		<% } %>
+	</div>
+	<div id="help-block-zoom" class="help-block">
+		<% if (isMobile) {%>
+		<h3>Zoom</h3>
+		<% } else { %>
+		<h3>Zoomer / dézoomer</h3>
+		<% } %>
+	</div>
+	<div id="help-block-fill" class="help-block">
+		<% if (isMobile) {%>
+		<h3>Colorier</h3>
+		<% } else { %>
+		<h3>Colorier</h3>
+		<p>Ou : <span class="key"> Espace </span></p>
+		<p>Changer de couleur :</p>
+		<p>
+			<span class="key">Ctrl</span> / 
+			<span class="key">Cmd</span> +
+			<span class="key">&#8593;</span>
+			<span class="key">&#8595;</span>
+		</p>
+		<% } %>
+	</div>
+</section>

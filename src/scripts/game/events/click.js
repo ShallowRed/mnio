@@ -1,10 +1,10 @@
-import Ui from '../components/ui';
+import gameButtons from '../game-buttons';
 
 export default function listenClickEvents(game) {
 	
 	const { flags } = game;
 
-	Ui.colorBtns.forEach((colorBtn, i) => {
+	gameButtons.colorBtns.forEach((colorBtn, i) => {
 
 		colorBtn.style.background = game.player.palette[i];
 
@@ -37,7 +37,7 @@ export default function listenClickEvents(game) {
 		});
 	});
 
-	for (const [direction, zoomBtn] of Object.entries(Ui.zoomBtns)) {
+	for (const [direction, zoomBtn] of Object.entries(gameButtons.zoomBtns)) {
 
 		zoomBtn.addEventListener("click", () => {
 
