@@ -7,13 +7,13 @@ export default {
 		out: document.getElementById('zoomout')
 	},
 
-	focusColorBtn({ index }) {
-
+	focusColorBtn(index) {
+		
 		this.colorBtns.forEach((btn, i) => {
 
 			if (i === index) {
 
-				btn.className = "color pressed";
+				btn.className = "color selected";
 
 			} else {
 

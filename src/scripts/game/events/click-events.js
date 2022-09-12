@@ -1,39 +1,37 @@
 import gameButtons from '../game-buttons';
 
-export default function listenClickEvents(game) {
+export default function listenClickEvents() {
 	
-	const { flags } = game;
-
 	gameButtons.colorBtns.forEach((colorBtn, i) => {
 
-		colorBtn.style.background = game.player.palette[i];
+		colorBtn.style.background = this.player.palette[i];
 
 		colorBtn.addEventListener("mousedown", () => {
 
-			game.selectColor(i);
+			this.selectColor(i);
 		});
 
 		colorBtn.addEventListener("mouseup", () => {
 
-			if (flags.isTranslating || flags.isZooming) return;
+			if (this.flags.isTranslating || this.flags.isZooming) return;
 
-			game.fill();
+			this.fill();
 		});
 
 		colorBtn.addEventListener("touchstart", (event) => {
 
 			event.preventDefault();
 
-			game.selectColor(i);
+			this.selectColor(i);
 		});
 
 		colorBtn.addEventListener("touchend", (event) => {
 
 			event.preventDefault();
 
-			if (flags.isTranslating || flags.isZooming) return;
+			if (this.flags.isTranslating || this.flags.isZooming) return;
 
-			game.fill();
+			this.fill();
 		});
 	});
 
@@ -41,14 +39,14 @@ export default function listenClickEvents(game) {
 
 		zoomBtn.addEventListener("click", () => {
 
-			game.zoom(direction);
+			this.zoom(direction);
 		});
 
 		zoomBtn.addEventListener("touchstart", (event) => {
 
 			event.preventDefault();
 
-			game.zoom(direction);
+			this.zoom(direction);
 		});
 	}
 

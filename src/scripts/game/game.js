@@ -2,15 +2,16 @@ import Player from './player';
 import GameMap from './map';
 import gameButtons from './game-buttons';
 
-import listenServerEvents from './events/server';
-import listenClickEvents from './events/click';
-import listenKeyboardEvents from './events/keyboard';
-import listenTouchEvents from './events/touchScreen';
+import listenServerEvents from './events/server-events';
+import listenClickEvents from './events/click-events';
+import listenKeyboardEvents from './events/keyboard-events';
+import listenTouchEvents from './events/touch-events';
 
-import fillAnimation from './utils/fillAnimation';
+import fillAnimation from './utils/fill-animation';
+import animationTimeout from './utils/animation-timeout';
 
 export default class Game {
- 
+
 	duration = 0.2;
 
 	flags = {};
@@ -43,23 +44,22 @@ export default class Game {
 		});
 
 		this.fillAnimation = fillAnimation.bind(this);
+		this.animationTimeout = animationTimeout.bind(this);
 	}
 
 	init() {
 
 		this.selectColor(0);
 
-		gameButtons.focusColorBtn({ index: 0 });
-
 		this.render();
 
 		this.listenWindowEvents();
 
-		listenClickEvents(this);
+		listenClickEvents.call(this);
 
 		listenKeyboardEvents.call(this);
 
-		listenTouchEvents(this);
+		listenTouchEvents.call(this);
 
 		listenServerEvents.call(this);
 
@@ -74,7 +74,7 @@ export default class Game {
 
 		window.addEventListener("orientationchange", () => {
 
-			setTimeout(this.render, 500)
+			setTimeout(() => this.render(), 500)
 		});
 	}
 
@@ -113,11 +113,11 @@ export default class Game {
 
 		this.socket.emit('MOVE', direction);
 
-		const nextpos = this.map.checkMove(this.player, direction);
+		const nextPosition = this.map.checkMove(this.player, direction);
 
-		if (nextpos) {
+		if (nextPosition) {
 
-			this.movePlayer(nextpos, direction);
+			this.movePlayer(nextPosition, direction);
 
 		} else {
 
@@ -170,22 +170,10 @@ export default class Game {
 	}
 
 	selectColor(index) {
-
-		const { selectedColor, palette } = this.player;
-
-		const next =
-			index == "next" ? 1 :
-				index == "prev" ? palette.length - 1 :
-					null;
-
-		if (next) {
-
-			index = (palette.indexOf(selectedColor) + next) % palette.length;
-		}
-
+		
 		this.player.setColor(index);
 
-		gameButtons.focusColorBtn({ index });
+		gameButtons.focusColorBtn(index);
 	}
 
 	fill() {
@@ -210,29 +198,5 @@ export default class Game {
 		this.flags.waitingServerConfirmFill = true;
 
 		this.player.stamp();
-	}
-
-	animationTimeout(callback, start = Date.now(), delay) {
-
-		delay ??= this.duration;
-
-		const delta = (Date.now() - start) / 1000;
-
-		if (this.flags.fill) {
-
-			delay += 0.015;
-		}
-
-		if (delta >= delay) {
-
-			callback();
-
-			return;
-		}
-
-		window.requestAnimationFrame(() => {
-
-			this.animationTimeout(callback, start, delay)
-		});
 	}
 }

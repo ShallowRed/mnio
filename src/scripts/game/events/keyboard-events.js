@@ -4,7 +4,6 @@ export default function listenKeyboardEvents() {
 
 	document.addEventListener('keydown', event => {
 
-		// detect if cmd on mac is selected
 		if (
 			event.code === 'MetaLeft' ||
 			event.code === 'MetaRight' ||
@@ -24,7 +23,7 @@ export default function listenKeyboardEvents() {
 			this.flags.waitingServerConfirmMove
 		) return;
 
-		onKeyDown.call(this, event)
+		onKeyDown.call(this, event);
 	});
 
 	document.addEventListener('keyup', event => {
@@ -77,10 +76,11 @@ function onKeyDown(event) {
 
 			if (isMetaPressed) {
 
-				this.selectColor("prev");
+				const length = this.player.palette.length;
+
+				this.selectColor((length + this.player.selectedColorIndex - 1) % length);
 
 			} else {
-
 
 				this.moveAttempt("up");
 			}
@@ -91,7 +91,9 @@ function onKeyDown(event) {
 
 			if (isMetaPressed) {
 
-				this.selectColor("next");
+				const length = this.player.palette.length;
+
+				this.selectColor((length + this.player.selectedColorIndex + 1) % length);
 
 			} else {
 

@@ -12,7 +12,7 @@ import io from 'socket.io-client';
 
 import Game from './game/game';
 
-import { startTutoriel, listenHelpButtonClick } from './game/tutoriel';
+import { startTutoriel, listenHelpButtonClick } from './game/help';
 
 const socket = io('/game');
 

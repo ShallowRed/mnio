@@ -153,6 +153,8 @@ export default class Player {
 
 		const { palette, sprite: [sprite] } = this;
 
+		this.selectedColorIndex = i;
+		
 		this.selectedColor = palette[i];
 
 		sprite.style.background = this.selectedColor;
