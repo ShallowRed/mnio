@@ -18,16 +18,16 @@ export default {
 		) return;
 
 		this.socket.emit('MOVE', direction);
-
+		
 		const nextPosition = this.map.checkMove(this.player, direction);
-
+		
 		if (nextPosition) {
 
 			this.emit("MOVE_PLAYER", nextPosition, direction);
 
 		} else {
 
-			this.player.bump(direction);
+			this.player.bumpAnimation(direction);
 		}
 	},
 
@@ -74,15 +74,15 @@ export default {
 		const color = this.player.selectedColor.substring(1);
 
 		this.map.gridState[position] = color;
-
+		
 		this.socket.emit("FILL", { position, color });
 
 		this.flags.waitingServerConfirmFill = true;
 
-		this.player.stamp();
+		this.player.stampAnimation();
 	},
 
-	"ZOOM": function(direction) {
+	"ZOOM": function (direction) {
 
 		if (this.flags.isZooming || this.flags.isTranslating) return;
 

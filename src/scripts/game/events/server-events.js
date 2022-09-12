@@ -35,7 +35,7 @@ export default function listenServerEvents() {
 	});
 
 	this.socket.on("ALLOWED_CELLS", (cells) => {
-
+		
 		cells.forEach(position => {
 
 			if (this.player.allowedCells.includes(position)) return;
@@ -44,7 +44,7 @@ export default function listenServerEvents() {
 
 			if (!this.flags.isTranslating) {
 
-				this.map.renderCell(position, this.map.allowedCtx, this.map.allowedCellsColor);
+				this.map.renderCell(position, this.map.allowedCtx, this.map.allowedColor);
 			}
 		});
 	});

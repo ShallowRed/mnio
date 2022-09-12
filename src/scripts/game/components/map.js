@@ -13,7 +13,7 @@ export default class GameMap extends SharedGameMap {
 
 	translateCoef = [0, 0];
 
-	numCellsInView = [null, null];
+	maxCoordsInView = [null, null];
 	viewSize = [null, null];
 	canvasOrigin = [null, null];
 	scale = {};
@@ -86,9 +86,9 @@ export default class GameMap extends SharedGameMap {
 
 		const index = this.isWidthLarger ? 0 : 1;
 
-		if (!this.numCellsInView[index]) {
+		if (!this.maxCoordsInView[index]) {
 
-			this.numCellsInView[index] = this.startcells;
+			this.maxCoordsInView[index] = this.startcells;
 		}
 
 		if (this.cellSize) {
@@ -98,21 +98,21 @@ export default class GameMap extends SharedGameMap {
 			this.lastCellSize = cellSize
 		}
 
-		this.cellSize = Math.round(this.viewSize[index] / this.numCellsInView[index]);
+		this.cellSize = Math.round(this.viewSize[index] / this.maxCoordsInView[index]);
 	}
 
 	updateSecDimensionNumCells() {
 
 		const index = this.isWidthLarger ? 1 : 0;
 
-		this.numCellsInView[index] = Math.round(this.viewSize[index] / this.cellSize);
+		this.maxCoordsInView[index] = Math.round(this.viewSize[index] / this.cellSize);
 	}
 
 	updateViewCanvasDeltaSize() {
 
 		this.viewCanvasDelta = [0, 1].map(i => {
 
-			return this.viewSize[i] - this.numCellsInView[i] * this.cellSize;
+			return this.viewSize[i] - this.maxCoordsInView[i] * this.cellSize;
 		});
 	}
 
@@ -120,7 +120,7 @@ export default class GameMap extends SharedGameMap {
 
 		this.canvasOrigin = this.viewCanvasDelta.map((viewCanvasDelta, i) => {
 
-			return viewCanvasDelta * this.game.player.posInViewCoef[i];
+			return viewCanvasDelta * this.game.player.coordsInViewCoef[i];
 		});
 	}
 
@@ -139,13 +139,13 @@ export default class GameMap extends SharedGameMap {
 
 	setCanvasSizeAndPos() {
 
-		const { cellSize, numCellsInView, offScreenCells } = this;
+		const { cellSize, maxCoordsInView, offScreenCells } = this;
 
 		this.canvas.forEach(canvas => {
 
-			canvas.width = cellSize * (numCellsInView[0] + offScreenCells * 2);
+			canvas.width = cellSize * (maxCoordsInView[0] + offScreenCells * 2);
 
-			canvas.height = cellSize * (numCellsInView[1] + offScreenCells * 2);
+			canvas.height = cellSize * (maxCoordsInView[1] + offScreenCells * 2);
 
 			canvas.style.top =
 				`-${Math.round(offScreenCells * cellSize)}px`;
@@ -250,11 +250,11 @@ export default class GameMap extends SharedGameMap {
 
 	updateTranslateCoef() {
 
-		const { lastCoords, coords, lastPosInView, posInView } = this.game.player;
+		const { lastCoords, coords, lastCoordsInView, coordsInView } = this.game.player;
 
 		this.translateCoef = lastCoords.map((x, i) => {
 
-			return x - coords[i] + posInView[i] - lastPosInView[i];
+			return x - coords[i] + coordsInView[i] - lastCoordsInView[i];
 		});
 	}
 
@@ -269,11 +269,11 @@ export default class GameMap extends SharedGameMap {
 		const index = this.isWidthLarger ? 0 : 1;
 
 		if (
-			(direction == "in" && this.numCellsInView[index] <= this.mincells) ||
-			(direction == "out" && this.numCellsInView[index] >= this.maxcells)
+			(direction == "in" && this.maxCoordsInView[index] <= this.mincells) ||
+			(direction == "out" && this.maxCoordsInView[index] >= this.maxcells)
 		) return;
 
-		this.numCellsInView[index] += increment * sense;
+		this.maxCoordsInView[index] += increment * sense;
 
 		return true;
 	}
@@ -313,9 +313,9 @@ export default class GameMap extends SharedGameMap {
 
 		const cO = this.canvasOrigin[dimension];
 
-		const pX1 = this.game.player.lastPosInView[dimension];
+		const pX1 = this.game.player.lastCoordsInView[dimension];
 
-		const pX2 = this.game.player.posInView[dimension];
+		const pX2 = this.game.player.coordsInView[dimension];
 
 		return dCs + (pX2 - pX1) * cS2 + cO;
 	}
@@ -324,7 +324,7 @@ export default class GameMap extends SharedGameMap {
 
 	getCoordInView = (coord, i) => {
 
-		return coord - this.game.player.coords[i] + this.game.player.posInView[i] + this.offScreenCells;
+		return coord - this.game.player.coords[i] + this.game.player.coordsInView[i] + this.offScreenCells;
 	}
 
 	getRelativeCoords(position) {
@@ -338,8 +338,8 @@ export default class GameMap extends SharedGameMap {
 		return (
 			x > -this.offScreenCells &&
 			y > -this.offScreenCells &&
-			x - 1 <= this.numCellsInView[0] + this.offScreenCells &&
-			y - 1 <= this.numCellsInView[1] + this.offScreenCells
+			x - 1 <= this.maxCoordsInView[0] + this.offScreenCells &&
+			y - 1 <= this.maxCoordsInView[1] + this.offScreenCells
 		);
 	}
 }

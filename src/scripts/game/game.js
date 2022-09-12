@@ -32,9 +32,9 @@ export default class Game {
 		this.animationTimeout = animationTimeout.bind(this);
 	}
 
-	emit(eventName, data) {
+	emit(eventName, ...data) {
 
-		this.events[eventName].call(this, data);
+		this.events[eventName].call(this, ...data);
 	}
 
 	init() {
@@ -74,7 +74,7 @@ export default class Game {
 			this.map.updateCanvasGrid();
 		}
 
-		this.player.updatePosInView();
+		this.player.updateCoordsInView();
 
 		this.map.updateCanvasOrigin();
 	}

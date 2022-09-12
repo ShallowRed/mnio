@@ -14,7 +14,7 @@ export default {
 	},
 
 	'/game': async function (socket, session) {
-
+		
 		const player =
 			this.players.get(session.userId) ??
 			await this.players.create(session);

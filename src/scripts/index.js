@@ -22,7 +22,7 @@ socket.once("INIT_GAME", data => {
 
 	game.init();
 
-	const isPlayerFirstLog = data.ownCells.length === 0;
+	const isPlayerFirstLog = data.player.ownCells.length === 0;
 
 	if (isPlayerFirstLog) {
 
