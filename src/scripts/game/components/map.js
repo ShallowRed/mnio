@@ -205,7 +205,7 @@ export default class GameMap extends SharedGameMap {
 
 		if (!coords) return;
 
-		const shift = Math.round(this.map.cellSize / 8);
+		const shift = Math.round(this.cellSize / 8);
 
 		draw.roundSquare(coords, this.positionsColor, this.cellSize, this.positionsCtx, shift);
 	}
