@@ -1,4 +1,5 @@
-import Player from 'game/components/player';
+import Player from 'game/components/self-player';
+import Players from 'game/components/players';
 import GameMap from 'game/components/map';
 
 import listenServerEvents from 'game/events/server-events';
@@ -25,6 +26,8 @@ export default class Game {
 
 		this.player = new Player(this, data.player);
 
+		this.players = new Players(this, data.players);
+
 		this.events = GAME_EVENTS;
 
 		this.fillAnimation = fillAnimation.bind(this);
@@ -40,11 +43,11 @@ export default class Game {
 	init() {
 
 		listenClickEvents.call(this);
-		
+
 		listenKeyboardEvents.call(this);
-		
+
 		listenTouchEvents.call(this);
-		
+
 		listenWindowEvents.call(this);
 
 		listenServerEvents.call(this);
@@ -63,6 +66,11 @@ export default class Game {
 		this.map.render();
 
 		this.player.render();
+
+		this.players.forEvery(player => {
+
+			player.render();
+		});
 	}
 
 	updateState(position, direction) {
@@ -77,5 +85,12 @@ export default class Game {
 		this.player.updateCoordsInView();
 
 		this.map.updateCanvasOrigin();
+
+		this.players.forEvery(player => {
+
+			player.updateCoordsInView();
+
+			player.render();
+		});
 	}
 }

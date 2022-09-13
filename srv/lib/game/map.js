@@ -2,8 +2,6 @@ import SharedGameMap from '#shared/map-methods';
 
 export default class GameMap extends SharedGameMap {
 
-	playersPositions = [];
-
 	constructor(game, { gridState, rows, cols }) {
 
 		super();
@@ -17,19 +15,10 @@ export default class GameMap extends SharedGameMap {
 		this.cols = cols;
 	}
 
-	newPosition({ from: lastPosition, to: newPosition }) {
+	get playersPositions() {
 
-		if (lastPosition) {
-
-			const index = this.playersPositions.indexOf(lastPosition);
-
-			this.playersPositions.splice(index, 1);
-		}
-
-		if (newPosition && !this.playersPositions.includes(newPosition)) {
-
-			this.playersPositions.push(newPosition);
-		}
+		return Object.values(this.game.players)
+			.map(player => player.position);
 	}
 
 	saveFill({ position, color }) {

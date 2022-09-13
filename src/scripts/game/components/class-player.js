@@ -6,24 +6,17 @@ export default class Player {
 
 	stampDuration = 100;
 
-	sprite = document.getElementById('player');
-
-	is = {};
 	coordsInView = [null, null];
-	coordsInViewCoef = [null, null];
+
 	lastCoords = [null, null];
 
-	constructor(game, { position, palette, ownCells, allowedCells }) {
-		
+	constructor(game, position, sprite) {
+
 		this.game = game;
 
 		this.position = position;
 
-		this.palette = palette;
-
-		this.ownCells = ownCells;
-
-		this.allowedCells = allowedCells;
+		this.sprite = sprite;
 	}
 
 	////////////////////////////////////////////////////
@@ -47,6 +40,7 @@ export default class Player {
 		if (position) {
 
 			this.lastPosition = parseInt(`${this.position}`, 10);
+
 			this.position = position;
 		}
 
@@ -58,63 +52,6 @@ export default class Player {
 		this.coords = this.game.map.indexToCoords(this.position);
 	}
 
-	updateCoordsInView() {
-
-		this.lastCoordsInView = [...this.coordsInView];
-
-		for (let i = 0; i <= 1; i++) {
-
-			const playerCoord = this.coords[i];
-
-			const mapMaxCoord = [this.game.map.cols, this.game.map.rows][i];
-
-			const maxCoordInView = this.game.map.maxCoordsInView[i];
-
-			const viewCenterCoord = (maxCoordInView - 1) / 2;
-
-			this.coordsInView[i] = this.getCoordsInView(mapMaxCoord, maxCoordInView, viewCenterCoord, playerCoord);
-
-			this.coordsInViewCoef[i] = this.getCoordsInViewCoef(mapMaxCoord, viewCenterCoord, playerCoord);
-		}
-	}
-
-	getCoordsInView(mapMaxCoord, maxCoordInView, viewCenterCoord, playerCoord) {
-
-		if (playerCoord < Math.ceil(viewCenterCoord)) {
-
-			return playerCoord;
-
-		} else {
-
-			if (playerCoord > mapMaxCoord - viewCenterCoord - 1) {
-
-				return playerCoord + maxCoordInView - mapMaxCoord;
-
-			} else {
-
-				return viewCenterCoord;
-			}
-		}
-	}
-
-	getCoordsInViewCoef(mapMaxCoord, viewCenterCoord, playerCoord) {
-
-		if (playerCoord <= viewCenterCoord) {
-
-			return 0;
-
-		} else {
-
-			if (playerCoord >= mapMaxCoord - viewCenterCoord - 1) {
-
-				return 1;
-
-			} else {
-
-				return 1 / 2;
-			}
-		}
-	}
 
 	////////////////////////////////////////////////////
 
@@ -130,11 +67,6 @@ export default class Player {
 
 	render() {
 
-		this.transitionDuration = (
-			this.game.flags.isTranslating ||
-			this.game.flags.isZooming
-		) ? this.translationDuration : 0;
-
 		this.setSpritePosition();
 
 		if (!this.game.flags.isTranslating) {
@@ -146,7 +78,7 @@ export default class Player {
 	setSpritePosition() {
 
 		this.updateTranslateVector();
-
+		
 		this.transform = `translate(${this.translateVector})`;
 	}
 
@@ -168,7 +100,7 @@ export default class Player {
 		this.shift = Math.round(this.game.map.cellSize / 8);
 
 		const size = this.game.map.cellSize - this.shift * 2;
-
+		
 		this.sprite.style.width = this.sprite.style.height = `${size}px`;
 	}
 
@@ -177,7 +109,7 @@ export default class Player {
 		this.transitionDuration = this.stampDuration;
 
 		this.transform = `translate(${this.translateVector}) scale(0.9)`;
-		
+
 		this.sprite.classList.toggle("stamp");
 
 		setTimeout(() => {

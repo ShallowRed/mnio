@@ -104,5 +104,10 @@ export default {
 		});
 
 		this.player.render();
+
+		this.players.forEvery(player => {
+
+			player.render();
+		});
 	},
 }

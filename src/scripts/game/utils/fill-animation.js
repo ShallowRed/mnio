@@ -14,7 +14,7 @@ export default function fillAnimation(position) {
 
 	const nSmallStripes = N_STRIPES - cellSize % N_STRIPES;
 
-	const ctx = this.map.colorsCtx;
+	const ctx = this.map.ctx;
 	const flags = this.flags;
 	const color = this.player.selectedColor;
 

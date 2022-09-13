@@ -14,15 +14,22 @@ export default class ClientGame {
 
 	get initialData() {
 
+		const players = Object.values(this.game.players.collection)
+			.filter(player => player.position !== this.player.position)
+			.map(player => {
+				return {
+					id: player.userId,
+					position: player.position
+				}
+			});
+
 		return {
 			map: {
 				gridState: this.game.map.gridState,
-				playersPositions: this.game.map.playersPositions.filter(
-					position => position !== this.player.position
-				),
 				rows: this.game.map.rows,
 				cols: this.game.map.cols,
 			},
+			players,
 			player: {
 				ownCells: this.player.ownCells,
 				allowedCells: this.player.allowedCells,
@@ -36,7 +43,7 @@ export default class ClientGame {
 
 		this.socket.emit('INIT_GAME', this.initialData);
 
-		this.movePlayer({ from: null, to: this.player.position });
+		this.movePlayer({ id: this.player.userId, from: null, to: this.player.position });
 	}
 
 	listenGameEvents() {
@@ -47,7 +54,7 @@ export default class ClientGame {
 
 			if (newPosition) {
 
-				this.movePlayer({ from: this.player.position, to: newPosition });
+				this.movePlayer({ id: this.player.userId, from: this.player.position, to: newPosition });
 
 				this.player.position = newPosition;
 			}
@@ -83,58 +90,19 @@ export default class ClientGame {
 
 			if (this.player.position) {
 
-				this.movePlayer({ from: this.player.position, to: null });
+				this.movePlayer({ id: this.player.userId, from: this.player.position, to: null });
 			}
 		});
 	}
 
 
-	movePlayer({ from, to }) {
+	movePlayer({ id, from, to }) {
 
 		// todo no need to send to socket if disconnected
 		// maybe neither on spawn
 
 		this.socket.emit("NEW_PLAYER_POSITION", to);
 
-		this.socket.broadcast.emit("NEW_POSITION", { from, to });
-
-		this.game.map.newPosition({ from, to });
-	}
-
-	checkMove(direction) {
-
-		let [x, y] = this.game.map.indexToCoords(this.player.position);
-
-		if (direction == "left" && x !== 0) {
-
-			x--;
-
-		} else if (direction == "right" && x !== this.game.map.cols - 1) {
-
-			x++;
-
-		} else if (direction == "up" && y !== 0) {
-
-			y--;
-
-		} else if (direction == "down" && y !== this.game.map.rows - 1) {
-
-			y++;
-
-		} else {
-
-			return;
-		}
-
-		const targetPosition = this.game.map.coordsToIndex([x, y]);
-
-		if (this.player.ownCells.includes(targetPosition) || (
-			this.player.allowedCells.includes(targetPosition) &&
-			!this.game.map.playersPositions.includes(targetPosition) &&
-			!this.game.map.gridState[targetPosition]
-		)) {
-
-			return targetPosition;
-		}
+		this.socket.broadcast.emit("NEW_POSITION", { id, from, to });
 	}
 };

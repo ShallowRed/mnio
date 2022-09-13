@@ -1,13 +1,12 @@
 import SharedGameMap from 'shared/map-methods';
-import * as draw from "game/utils/draw";
 
 export default class GameMap extends SharedGameMap {
 
 	view = document.getElementById('view');
-	canvas = document.querySelectorAll('canvas');
+	canvas = document.querySelector('canvas');
 
 	mincells = 7;
-	startcells = 15;
+	startcells = 17;
 	maxcells = 36;
 	offScreenCells = 2;
 
@@ -21,7 +20,7 @@ export default class GameMap extends SharedGameMap {
 	positionsColor = "black";
 	allowedColor = "#e5e5e5";
 
-	constructor(game, { rows, cols, gridState, playersPositions }) {
+	constructor(game, { rows, cols, gridState }) {
 
 		super();
 
@@ -31,38 +30,24 @@ export default class GameMap extends SharedGameMap {
 
 		this.cols = cols;
 
-		this.playersPositions = playersPositions;
-
 		this.gridState = gridState;
 
-		this.ctx = [...this.canvas].map(canvas => {
+		this.ctx = this.canvas.getContext('2d');
 
-			return canvas.getContext('2d')
-		});
 	}
 
+	get playersPositions() {
 
-	get positionsCtx() {
-
-		return this.ctx[2];
-	}
-
-	get colorsCtx() {
-
-		return this.ctx[1];
-	}
-
-	get allowedCtx() {
-
-		return this.ctx[0];
+		return [...this.game.players.collection]
+			.map(([_, player]) => player.position);
 	}
 
 	////////////////////////////////////////////////////
 
 	getViewSize() {
 
-		this.isWidthLarger =  window.innerWidth >= window.innerHeight;
-		
+		this.isWidthLarger = window.innerWidth >= window.innerHeight;
+
 		document.body.className = this.isWidthLarger ? 'width-larger' : 'height-larger';
 
 		this.viewSize = [
@@ -126,6 +111,29 @@ export default class GameMap extends SharedGameMap {
 
 	////////////////////////////////////////////////////
 
+	getCoordInView = (coord, i) => {
+
+		return coord - this.game.player.coords[i] + this.game.player.coordsInView[i] + this.offScreenCells;
+	}
+
+	getRelativeCoords(position) {
+
+		return this.indexToCoords(position)
+			.map(this.getCoordInView);
+	}
+
+	areCoordsInView([x, y]) {
+
+		return (
+			x > -this.offScreenCells &&
+			y > -this.offScreenCells &&
+			x - 1 <= this.maxCoordsInView[0] + this.offScreenCells &&
+			y - 1 <= this.maxCoordsInView[1] + this.offScreenCells
+		);
+	}
+
+	////////////////////////////////////////////////////
+
 	render() {
 
 		if (!this.game.flags.isTranslating) {
@@ -141,73 +149,53 @@ export default class GameMap extends SharedGameMap {
 
 		const { cellSize, maxCoordsInView, offScreenCells } = this;
 
-		this.canvas.forEach(canvas => {
+		this.canvas.width = cellSize * (maxCoordsInView[0] + offScreenCells * 2);
 
-			canvas.width = cellSize * (maxCoordsInView[0] + offScreenCells * 2);
+		this.canvas.height = cellSize * (maxCoordsInView[1] + offScreenCells * 2);
 
-			canvas.height = cellSize * (maxCoordsInView[1] + offScreenCells * 2);
+		this.canvas.style.top = `-${Math.round(offScreenCells * cellSize)}px`;
 
-			canvas.style.top =
-				`-${Math.round(offScreenCells * cellSize)}px`;
+		this.canvas.style.left = `-${Math.round(offScreenCells * cellSize)}px`;
 
-			canvas.style.left =
-				`-${Math.round(offScreenCells * cellSize)}px`;
-		});
-
-		this.ctx.forEach(ctx => {
-			ctx.imageSmoothingEnabled = false;
-		});
+		this.ctx.imageSmoothingEnabled = false;
 	}
 
 	renderCells() {
 
-		this.ctx.forEach(ctx => {
-
-			ctx.clearRect(0, 0, this.canvas[1].width, this.canvas[1].height)
-		});
+		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
 		this.game.player.allowedCells.forEach(position => {
 
-			this.renderCell(position, this.allowedCtx, this.allowedColor);
-		});
-
-		this.playersPositions.forEach(position => {
-
-			this.renderPosition(position);
+			this.renderCell(position, this.allowedColor);
 		});
 
 		this.gridState
 			.map((color, i) => color && { color, position: i })
 			.filter(Boolean)
 			.forEach(({ color, position }) => {
-				
-				this.renderCell(position, this.colorsCtx, `#${color}`);
+
+				this.renderCell(position, `#${color}`);
 			});
 	}
 
-	renderCell(position, ctx, color) {
+	renderCell(position, color) {
 
 		const coords = this.getRelativeCoords(position);
 
 		if (!coords) return;
 
-		draw.square(coords, this.cellSize, ctx, color);
-	}
+		const [x, y] = coords.map(x => Math.round(this.cellSize * x));
 
-	clearCell(position, ctx) {
+		if (!color) {
 
-		this.renderCell(position, ctx, null);
-	}
+			this.ctx.clearRect(x, y, this.cellSize, this.cellSize);
 
-	renderPosition(position) {
+		} else {
 
-		const coords = this.getRelativeCoords(position);
+			this.ctx.fillStyle = color;
 
-		if (!coords) return;
-
-		const shift = Math.round(this.cellSize / 8);
-
-		draw.roundSquare(coords, this.positionsColor, this.cellSize, this.positionsCtx, shift);
+			this.ctx.fillRect(x, y, this.cellSize, this.cellSize);
+		}
 	}
 
 	////////////////////////////////////////////////////
@@ -216,13 +204,9 @@ export default class GameMap extends SharedGameMap {
 
 		this.updateTranslateVector(duration);
 
-		this.canvas.forEach(canvas => {
+		this.canvas.style.transitionDuration = `${duration}s`;
 
-			canvas.style.transitionDuration = `${duration}s`;
-
-			canvas.style.transform =
-				`translate(${this.translateVector.join(', ')})`;
-		});
+		this.canvas.style.transform = `translate(${this.translateVector.join(', ')})`;
 	}
 
 	updateTranslateVector(duration) {
@@ -230,6 +214,7 @@ export default class GameMap extends SharedGameMap {
 		if (duration) {
 
 			this.updateTranslateCoef();
+
 		} else {
 
 			this.resetTranslateCoef();
@@ -282,13 +267,9 @@ export default class GameMap extends SharedGameMap {
 
 		this.updateScaleVector();
 
-		this.canvas.forEach(canvas => {
+		this.canvas.style.transitionDuration = "0.19s";
 
-			canvas.style.transitionDuration = "0.19s";
-
-			canvas.style.transform =
-				`translate(${this.scale.translation.join(', ')}) scale(${this.scale.factor}) `;
-		});
+		this.canvas.style.transform = `translate(${this.scale.translation.join(', ')}) scale(${this.scale.factor}) `;
 	}
 
 	updateScaleVector() {
@@ -318,28 +299,5 @@ export default class GameMap extends SharedGameMap {
 		const pX2 = this.game.player.coordsInView[dimension];
 
 		return dCs + (pX2 - pX1) * cS2 + cO;
-	}
-
-	////////////////////////////////////////////////////
-
-	getCoordInView = (coord, i) => {
-
-		return coord - this.game.player.coords[i] + this.game.player.coordsInView[i] + this.offScreenCells;
-	}
-
-	getRelativeCoords(position) {
-
-		return this.indexToCoords(position)
-			.map(this.getCoordInView);
-	}
-
-	areCoordsInView([x, y]) {
-
-		return (
-			x > -this.offScreenCells &&
-			y > -this.offScreenCells &&
-			x - 1 <= this.maxCoordsInView[0] + this.offScreenCells &&
-			y - 1 <= this.maxCoordsInView[1] + this.offScreenCells
-		);
 	}
 }

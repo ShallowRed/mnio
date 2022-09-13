@@ -10,22 +10,20 @@ export default function listenServerEvents() {
 		}
 	});
 
-	this.socket.on("NEW_POSITION", ({ from: lastPosition, to: newPosition }) => {
+	this.socket.on("NEW_POSITION", ({ id, from: lastPosition, to: newPosition }) => {
 
-		if (lastPosition) {
+		if (
+			newPosition &&
+			newPosition !== this.player.position &&
+			newPosition !== this.player.lastPosition
+		) {
 
-			this.map.playersPositions.splice(this.map.playersPositions.indexOf(lastPosition), 1);
+			const player = this.players.get(id);
 
-			this.map.clearCell(lastPosition, this.map.positionsContext);
-		}
-
-		if (newPosition) {
-
-			if (newPosition !== this.player.position && newPosition !== this.player.lastPosition ) {
-
-				this.map.playersPositions.push(newPosition);
-
-				this.map.renderPosition(newPosition);
+			if (player) {
+				player.updatePosition(newPosition);
+				player.updateCoordsInView();
+				player.render();
 			}
 		}
 	});
@@ -34,7 +32,7 @@ export default function listenServerEvents() {
 
 		this.map.gridState[position] = color;
 
-		this.renderCell(position, this.map.colorsCtx, `#${color}`);
+		this.renderCell(position, `#${color}`);
 	});
 
 	this.socket.on("ALLOWED_CELLS", (cells) => {
@@ -47,7 +45,7 @@ export default function listenServerEvents() {
 
 			if (!this.flags.isTranslating) {
 
-				this.map.renderCell(position, this.map.allowedCtx, this.map.allowedColor);
+				this.map.renderCell(position, this.map.allowedColor);
 			}
 		});
 	});

@@ -2,7 +2,6 @@
 @import './mixins';
 
 html {
-	font-family: $font-family;
 	color: $color__font-dark;
 	overflow: hidden;
 }
@@ -17,7 +16,10 @@ body {
 	color: $color__font-dark;
 }
 
-button {
+body, input, textarea, button {
 	font-family: $font-family;
+}
+
+button {
 	cursor: pointer;
 }
