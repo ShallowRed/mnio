@@ -21,9 +21,12 @@ export default function listenServerEvents() {
 
 		if (newPosition) {
 
-			this.map.playersPositions.push(newPosition);
+			if (newPosition !== this.player.position) {
 
-			this.map.renderPosition(newPosition);
+				this.map.playersPositions.push(newPosition);
+
+				this.map.renderPosition(newPosition);
+			}
 		}
 	});
 
@@ -35,7 +38,7 @@ export default function listenServerEvents() {
 	});
 
 	this.socket.on("ALLOWED_CELLS", (cells) => {
-		
+
 		cells.forEach(position => {
 
 			if (this.player.allowedCells.includes(position)) return;
