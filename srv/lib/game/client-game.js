@@ -17,7 +17,9 @@ export default class ClientGame {
 		return {
 			map: {
 				gridState: this.game.map.gridState,
-				playersPositions: this.game.map.playersPositions,
+				playersPositions: this.game.map.playersPositions.filter(
+					position => position !== this.player.position
+				),
 				rows: this.game.map.rows,
 				cols: this.game.map.cols,
 			},
