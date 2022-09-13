@@ -10,18 +10,31 @@ section#help {
 .help-block {
 	display: none;
 	position: absolute;
+
 	box-sizing: border-box;
-	border: solid 2px var(--dark);
-	background: rgba(250, 250, 250, 0.85);
+	border: solid 1px $color__font-dark;
+	background: $color__background;
+	opacity: 0.95;
+	box-shadow: 0.1rem 0.1rem 0.5rem rgba(0, 0, 0, 0.2);
 	border-radius: 10px;
 	text-align: center;
 
-	& h2 {
-		font-size: 1.7rem;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	& h3 {
+		font-size: 1.2rem;
+		margin: 1rem 0;
+	}
+
+	& p {
+		margin-top: 0;
 	}
 
 	& span.key {
-		border: solid 1px var(--dark);
+		box-shadow: #bbb 2px 2px;
+		border: solid 1px $color__font-dark;
 		background-color: white;
 		border-radius: 5px;
 		padding: 0.5rem;
@@ -35,7 +48,9 @@ section#help {
 section#help {
 	@include width-larger {
 		width: 25%;
-		right: 13.5%;
+		// right: 13.5%;
+		right: calc(min(10vh, 4rem) + 6%);
+
 	}
 	@include height-larger {
 		bottom: 10vh;
@@ -45,6 +60,7 @@ section#help {
 		@include width-larger {
 			width: 100%;
 			right: 0;
+			min-height: 6rem;
 		}
 	}
 
@@ -92,22 +108,26 @@ section#help {
 		&:after {
 			content: '';
 			position: absolute;
-			width: 0;
-			height: 0;
+			width: 2rem;
+			height: 2rem;
+			z-index: 999;
 			border-style: solid;
-			border-width: 1rem 0 1rem 1rem;
-			border-color: transparent var(--dark) transparent;
-
+			border-width: 1px 1px 0 0;
+			background: linear-gradient(
+				45deg,
+				transparent 50%,
+				$color__background 50%
+			);
 			@include width-larger {
 				top: 50%;
 				right: 0;
-				transform: translate(100%, -50%);
+				transform: translate(calc(50% + .5px), -50%) rotate(45deg);
 			}
 
 			@include height-larger {
 				bottom: 0;
 				left: 50%;
-				transform: rotate(90deg) translate(150%, 25%);
+				transform: translate(-25%, calc(50% + .5px)) rotate(135deg);
 			}
 		}
 	}

@@ -18,6 +18,9 @@ const postCssLoader = {
 		postcssOptions: {
 			ident: "postcss",
 			plugins: [
+				"postcss-css-variables",
+				"postcss-combine-media-query",
+				"postcss-combine-duplicated-selectors",
 				"postcss-normalize",
 				["postcss-preset-env", {
 					stage: 3,

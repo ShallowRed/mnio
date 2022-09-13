@@ -14,7 +14,7 @@ export default class Player {
 	lastCoords = [null, null];
 
 	constructor(game, { position, palette, ownCells, allowedCells }) {
-
+		
 		this.game = game;
 
 		this.position = position;

@@ -1,4 +1,3 @@
-import 'styles/commons/commons.scss';
 import 'styles/palette/palette.scss';
 
 import io from 'socket.io-client';

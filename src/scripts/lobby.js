@@ -1,2 +1,1 @@
-import 'styles/commons/commons.scss';
-import 'styles/commons/lobby.scss'
+import 'styles/lobby/lobby.scss'

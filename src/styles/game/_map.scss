@@ -3,25 +3,11 @@ section#view {
 	position: relative;
 	box-sizing: border-box;
 	background: white;
-
-	@include width-larger {
-		width: 90%;
-		height: 100%;
-	}
-
-	@include height-larger {
-		height: 90%;
-		width: 100%;
-	}
-
+	
 	& canvas {
 		overflow: hidden;
 		position: absolute;
 		transition-timing-function: linear;
 		transform-origin: top left;
-
-		&:last-of-type {
-			opacity: 0.5;
-		}
 	}
 }

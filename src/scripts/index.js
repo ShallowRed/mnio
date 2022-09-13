@@ -1,11 +1,10 @@
 import 'resources/img/close.svg';
-import 'resources/img/home.svg';
+import 'resources/img/logout.svg';
 import 'resources/img/refresh.svg';
 import 'resources/img/help.svg';
 import 'resources/img/zoom-in.svg';
 import 'resources/img/zoom-out.svg';
 
-import 'styles/commons/commons.scss';
 import 'styles/game/index.scss';
 
 import io from 'socket.io-client';
@@ -18,6 +17,8 @@ const socket = io('/game');
 
 socket.once("INIT_GAME", data => {
 
+	// console.log("INIT_GAME", data);
+	
 	const game = new Game(socket, data);
 
 	game.init();

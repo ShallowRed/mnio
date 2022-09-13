@@ -10,7 +10,7 @@ function showHelpBlock(...blocksNames) {
 
 	for (const blockName of blocksNames) {
 
-		helpBlocks[blockName].style.display = "block";
+		helpBlocks[blockName].style.display = "flex";
 	}
 }
 

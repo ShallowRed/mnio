@@ -1,0 +1,23 @@
+@import './variables';
+@import './mixins';
+
+html {
+	font-family: $font-family;
+	color: $color__font-dark;
+	overflow: hidden;
+}
+
+body {
+	position: absolute;
+	margin: 0;
+	top: 0;
+	left: 0;
+	width: 100%;
+	background: $color__background;
+	color: $color__font-dark;
+}
+
+button {
+	font-family: $font-family;
+	cursor: pointer;
+}

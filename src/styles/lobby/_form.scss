@@ -1,0 +1,86 @@
+form {
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+label {
+	display: block;
+	font-weight: 500;
+}
+
+input {
+	box-sizing: border-box;
+	border: 1px solid $color__secondary;
+
+	&:focus, &:active {
+		border-color: $color__input-active;
+	}
+}
+
+button,
+input {
+	line-height: 1.5;
+	padding: 0.75rem 1.5rem;
+	border-radius: 0.25rem;
+
+	box-shadow: 0 0 0 0 $color__input-active;
+
+	transition: color 0.15s ease-in-out,
+		border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+	&:focus,
+	&:active {
+		outline: none;
+		box-shadow: 0 0 0 0.2rem $color__input-active;
+	}
+}
+
+button {
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	user-select: none;
+	font-size: 1.1rem;
+
+	&:disabled {
+		opacity: 0.5;
+	}
+
+	&.primary {
+		color: #fff;
+		background-color: $color__primary;
+		border: 1px solid $color__primary;
+
+		&:hover {
+			color: #fff;
+			background-color: $color__primary-dark;
+			border-color: $color__primary-dark;
+		}
+
+		&:focus,
+		&:active {
+			color: #fff;
+			background-color: $color__primary-darker;
+			border-color: $color__primary-darker;
+		}
+	}
+
+	&.secondary {
+		background-color: #fff;
+		color: $color__secondary-dark;
+		border: 1px solid $color__secondary;
+
+		&:hover {
+			color: $color__primary-dark;
+			border-color: $color__primary-dark;
+		}
+
+		&:active{
+			background-color: $color__secondary-light;
+		}
+	}
+}

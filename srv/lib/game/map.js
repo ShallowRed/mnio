@@ -40,7 +40,7 @@ export default class GameMap extends SharedGameMap {
 	getRandomPosition() {
 
 		const emptyCellsIndexes = this.gridState
-			.map((cell, i) => cell ?? i)
+			.map((cell, i) => !cell && i || null)
 			.filter(Boolean);
 
 		if (!emptyCellsIndexes.length) {

@@ -3,10 +3,9 @@
 	transition-timing-function: linear;
 	box-sizing: border-box;
 
-	border: solid black;
+	border: solid 1px black;
 	border-radius: 20%;
-	box-shadow: rgba(0, 0, 0, 0.5) 3px 3px 5px;
-
+	box-shadow: rgba(30, 30, 30, 0.7) 3px 3px 2px;
 	&.stamp {
 		box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 0px;
 	}
@@ -20,7 +19,7 @@
 		right: 0;
 		bottom: 0;
 		border-radius: 19%;
-		border: solid white;
+		border: solid 1px white;
 		transform-origin: top left;
 	}
 }

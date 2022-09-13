@@ -7,8 +7,8 @@ export const STRINGS = {
 	On veut voir des dessins, des messages, pas trop de sguegs mais un peu quand même !`,
 
 	ENTER_USERNAME: 'Saisissez un nom d\'utilisateur',
-	USERNAME_NEW: 'Ce nom d\'utilisateur n\'existe pas, s\'inscrire',
-	USERNAME_EXISTS: 'Ce nom d\'utilisateur est déjà pris',
+	USERNAME_NEW: 'Ce nom d\'utilisateur n\'existe pas, voulez-vous le créer ?',
+	USERNAME_EXISTS: 'Ce nom d\'utilisateur est déjà pris, saisissez le mot de passe ou choisisez en un autre.',
 
 	ERR_NO_PASS_MATCH: 'Les mots de passe ne correspondent pas',
 	ERR_INCORRECT_PASSWORD: 'Mot de passe incorrect pour ce nom d\'utilisateur',

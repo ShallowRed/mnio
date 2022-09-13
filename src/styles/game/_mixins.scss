@@ -23,3 +23,13 @@
 		opacity: 1;
 	}
 }
+
+@mixin shadow-mid {
+	box-shadow: #bbb 5px 5px;
+}
+@mixin shadow-up {
+	box-shadow: #ddd 8px 8px;
+}
+@mixin shadow-down {
+	box-shadow: #777 2px 2px;
+}
