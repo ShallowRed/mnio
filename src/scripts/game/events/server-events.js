@@ -21,7 +21,7 @@ export default function listenServerEvents() {
 
 		if (newPosition) {
 
-			if (newPosition !== this.player.position) {
+			if (newPosition !== this.player.position && newPosition !== this.player.lastPosition ) {
 
 				this.map.playersPositions.push(newPosition);
 

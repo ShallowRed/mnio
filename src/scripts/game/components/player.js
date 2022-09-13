@@ -46,6 +46,7 @@ export default class Player {
 
 		if (position) {
 
+			this.lastPosition = parseInt(`${this.position}`, 10);
 			this.position = position;
 		}
 
