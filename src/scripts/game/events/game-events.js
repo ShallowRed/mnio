@@ -115,7 +115,7 @@ export default {
 
 					this.emit("ZOOM_ATTEMPT", direction);
 
-				}, 10);
+				}, 30);
 
 			} else {
 
