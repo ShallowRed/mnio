@@ -41,7 +41,7 @@ export default {
 
 		this.updateState(position, direction);
 
-		this.map.translateCanvas(this.durations.translation);
+		this.map.translateCanvas(this.durations.translation * 0.9);
 
 		this.animationTimeout(() => {
 
@@ -101,7 +101,7 @@ export default {
 
 		this.updateState();
 
-		this.map.zoom(this.durations.zoom);
+		this.map.zoom(this.durations.zoom * 0.9);
 
 		this.animationTimeout(() => {
 
