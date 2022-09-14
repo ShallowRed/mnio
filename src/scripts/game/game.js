@@ -12,15 +12,12 @@ import GAME_EVENTS from 'game/events/game-events';
 import fillAnimation from 'game/utils/fill-animation';
 import animationTimeout from 'game/utils/animation-timeout';
 
-// TODO: issue with allowedCells overlapping other players' ownCells
-// TODO: keep zooming while keep pressing button
-
 export default class Game {
 
 	durations = {
 		translation: 200,
 		zoom: 150,
-		fillAnimation: 400,
+		fillAnimation: 300,
 	};
 
 	flags = {
@@ -30,7 +27,8 @@ export default class Game {
 		isZooming: false,
 		isTouching: false,
 		isFilling: false,
-		viewSizeChanged: false
+		isStamping: false,
+		isFullRendering: false
 	};
 
 	constructor(socket, data) {
@@ -69,11 +67,15 @@ export default class Game {
 
 	fullRender = () => {
 
+		this.flags.isFullRendering = true;
+
 		this.map.setViewSize();
 
 		this.updateState();
 
 		this.render();
+
+		this.flags.isFullRendering = false;
 	};
 
 	updateState(position, direction) {
@@ -82,7 +84,7 @@ export default class Game {
 
 		if (
 			this.flags.isZooming ||
-			this.flags.viewSizeChanged
+			this.flags.isFullRendering
 		) {
 
 			this.map.updateState();

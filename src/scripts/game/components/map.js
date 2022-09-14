@@ -1,12 +1,13 @@
 import SharedGameMap from 'shared/map-methods';
+import ViewObject from "./view-object";
 
-export default class GameMap extends SharedGameMap {
+export default ViewObject(class GameMap extends SharedGameMap {
 
 	view = document.getElementById('view');
 	canvas = document.querySelector('canvas');
 
-	minCellsInView = 7;
-	startCellsInView = 17;
+	minCellsInView = 12;
+	startCellsInView = 18;
 	maxCellsInView = 36;
 	offScreenCells = 2;
 	nCellsZoomIncrement = 2;
@@ -19,20 +20,15 @@ export default class GameMap extends SharedGameMap {
 	positionsColor = "black";
 	allowedColor = "#e5e5e5";
 
-	constructor(game, { rows, cols, gridState }) {
+	constructor(game, { gridState, rows, cols }) {
 
-		super();
+		super({ gridState, rows, cols });
 
 		this.game = game;
 
-		this.rows = rows;
-
-		this.cols = cols;
-
-		this.gridState = gridState;
-
 		this.ctx = this.canvas.getContext('2d');
 
+		this.domElement = this.canvas;
 	}
 
 	get playersPositions() {
@@ -53,8 +49,6 @@ export default class GameMap extends SharedGameMap {
 	////////////////////////////////////////////////////
 
 	setViewSize() {
-
-		this.game.flags.viewSizeChanged = true;
 
 		this.isWidthLarger = window.innerWidth >= window.innerHeight;
 
@@ -77,14 +71,14 @@ export default class GameMap extends SharedGameMap {
 
 		this.cellSize = Math.round(this.viewSize[this.longestDimensionIndex] / this.maxCoordsInView[this.longestDimensionIndex]);
 
+		this.cellPadding = Math.round(this.game.map.cellSize / 8);
+
 		this.maxCoordsInView[this.shortestDimensionIndex] = Math.round(this.viewSize[this.shortestDimensionIndex] / this.cellSize);
 
 		for (const i in [0, 1]) {
 
 			this.canvasOffset[i] = this.viewSize[i] - this.maxCoordsInView[i] * this.cellSize;
 		}
-
-		this.game.flags.viewSizeChanged = false;
 	}
 
 	updateCanvasOrigin() {
@@ -181,20 +175,6 @@ export default class GameMap extends SharedGameMap {
 
 	////////////////////////////////////////////////////
 
-	set transitionDuration(duration) {
-
-		this.canvas.style.transitionDuration = `${duration / 1000}s`;
-	}
-
-	set transform({ translation, factor = 1 }) {
-
-		const translate = translation.map(t => `${t}px`).join(', ');
-
-		this.canvas.style.transform = `translate(${translate}) scale(${factor})`;
-	}
-
-	////////////////////////////////////////////////////
-
 	translateCanvas(duration) {
 
 		this.transitionDuration = duration;
@@ -261,4 +241,4 @@ export default class GameMap extends SharedGameMap {
 
 		this.transform = { translation, factor };
 	}
-}
+});

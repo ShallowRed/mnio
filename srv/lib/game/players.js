@@ -60,7 +60,13 @@ export class Player {
 		this.allowedCells = this.ownCells.reduce((cells, position) => {
 
 			const newNeighbours = map.getNeighbours(position)
-				.filter(position => !this.ownCells.includes(position))
+				.filter(position => {
+					
+					return (
+						!this.ownCells.includes(position) &&
+						map.gridState[position] === null
+					)
+				});
 
 			cells.push(...newNeighbours);
 

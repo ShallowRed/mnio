@@ -30,32 +30,24 @@ export function startTutoriel(socket) {
 
 		showHelpBlock("fill");
 
-		socket.on("CONFIRM_FILL", onFirstFillInput);
-	}
+		socket.once("CONFIRM_FILL", () => {
 
-	function onFirstFillInput() {
+			hideHelpBlock("fill");
 
-		socket.removeListener("CONFIRM_FILL", onFirstFillInput);
-
-		hideHelpBlock("fill");
-
-		setTimeout(showHowToMove, 1000);
+			setTimeout(showHowToMove, 1000);
+		});
 	}
 
 	function showHowToMove() {
 
 		showHelpBlock("move");
 
-		socket.on("NEW_PLAYER_POSITION", onFirstMoveInput);
-	}
-
-	function onFirstMoveInput() {
-
-		socket.removeListener("NEW_PLAYER_POSITION", onFirstMoveInput);
-
-		hideHelpBlock("move");
-
-		setTimeout(showLastInfos, 1000);
+		socket.once("NEW_PLAYER_POSITION", () => {
+	
+			hideHelpBlock("move");
+	
+			setTimeout(showLastInfos, 1000);
+		});
 	}
 
 	function showLastInfos() {

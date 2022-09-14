@@ -1,13 +1,18 @@
-export default class Player {
+import ViewObject from "./view-object";
 
-	bumpDuration = 70;
+export default ViewObject(class Player {
 
-	stampDuration = 100;
+	bumpDuration = 60;
+
+	stampDuration = 200;
 
 	pauseBetweenBumpsDuration = 200;
 
 	lastCoords = [null, null];
+
 	coordsInView = [null, null];
+
+	translateVector = [null, null];
 
 	constructor(game, position, sprite) {
 
@@ -15,77 +20,53 @@ export default class Player {
 
 		this.position = position;
 
+		this.domElement = sprite;
+
 		this.sprite = sprite;
-	}
-
-	////////////////////////////////////////////////////
-
-	set transitionDuration(duration) {
-
-		this.sprite.style.transitionDuration = `${duration / 1000}s`;
-	}
-
-	set transform(value) {
-
-		this.sprite.style.transform = value;
 	}
 
 	render() {
 
-		this.setSpritePosition();
+		for (const i in [0, 1]) {
+
+			const offset = this.game.map.canvasOrigin[i] + this.game.map.cellPadding;
+
+			this.translateVector[i] = offset + this.coordsInView[i] * this.game.map.cellSize;
+		}
+
+		this.transform = { translation: this.translateVector };
 
 		if (!this.game.flags.isTranslating) {
 
-			this.setSpriteSize();
+			const size = this.game.map.cellSize - this.game.map.cellPadding * 2;
+
+			this.sprite.style.width = this.sprite.style.height = `${size}px`;
 		}
-	}
-
-	setSpritePosition() {
-
-		this.updateTranslateVector();
-		
-		this.transform = `translate(${this.translateVector})`;
-	}
-
-	updateTranslateVector() {
-
-		this.shift = Math.round(this.game.map.cellSize / 8);
-
-		this.translateVector = this.coordsInView.map((coordsInView, i) => {
-
-			const offset = this.game.map.canvasOrigin[i] + this.shift;
-
-			return `${coordsInView * this.game.map.cellSize + offset}px`;
-		})
-			.join(', ');
-	}
-
-	setSpriteSize() {
-
-		this.shift = Math.round(this.game.map.cellSize / 8);
-
-		const size = this.game.map.cellSize - this.shift * 2;
-		
-		this.sprite.style.width = this.sprite.style.height = `${size}px`;
 	}
 
 	stampAnimation() {
 
-		this.transitionDuration = this.stampDuration;
+		this.game.flags.isStamping = true;
 
-		this.transform = `translate(${this.translateVector}) scale(0.9)`;
+		this.transitionDuration = this.stampDuration / 2;
 
-		this.sprite.classList.toggle("stamp");
+		this.transform = { translation: this.translateVector, factor: 0.9 };
 
-		setTimeout(() => {
+		this.sprite.classList.add("stamp");
 
-			this.sprite.classList.toggle("stamp");
+		// this.game.animationTimeout(() => {
 
-			this.transform = `translate(${this.translateVector}) scale(1)`;
+		// }, this.stampDuration / 4);
 
-			this.transitionDuration = this.game.durations.translation;
+		this.game.animationTimeout(() => {
 
-		}, this.stampDuration)
+			this.sprite.classList.remove("stamp");
+
+			this.transform = { translation: this.translateVector };
+			this.game.flags.isStamping = false;
+
+
+		}, this.stampDuration / 2);
 	}
 
 	bumpAnimation(direction) {
@@ -94,6 +75,8 @@ export default class Player {
 
 		this.game.flags.isBumping = true;
 
+		this.transitionDuration = this.bumpDuration;
+
 		const coefs = {
 			'up': [0, -1],
 			'down': [0, 1],
@@ -101,23 +84,19 @@ export default class Player {
 			'right': [1, 0],
 		}[direction];
 
-		const bumpTranslation = coefs.map(coef => `${coef * this.shift * 1.5}px`)
-			.join(", ");
+		const bumpTranslation = coefs.map(coef => coef * this.game.map.cellPadding * 1.2);
 
-		const bumpScale = coefs.map(coef => `${1 - 0.1 * Math.abs(coef)}`)
-			.join(", ");
+		const bumpScale = coefs.map(coef => 1 - 0.1 * Math.abs(coef));
 
-		this.transitionDuration = this.bumpDuration;
+		this.transform = { translation: this.translateVector, translation2: bumpTranslation, factor: bumpScale };
 
-		this.transform = `translate(${this.translateVector}) translate(${bumpTranslation}) scale(${bumpScale})`;
-
-		setTimeout(() => {
-
-			this.transform = `translate(${this.translateVector})`;
+		this.game.animationTimeout(() => {
 
 			this.transitionDuration = this.game.durations.translation;
 
-			setTimeout(() => {
+			this.transform = { translation: this.translateVector };
+
+			this.game.animationTimeout(() => {
 
 				this.game.flags.isBumping = false;
 
@@ -125,4 +104,4 @@ export default class Player {
 
 		}, this.bumpDuration)
 	}
-}
+});

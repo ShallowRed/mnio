@@ -37,7 +37,11 @@ export default class EnemyPlayer extends Player {
 
 	render() {
 
-		this.transitionDuration = this.game.durations.translation;
+		this.transitionDuration =
+			this.game.flags.isZooming ?
+				this.game.durations.zoom :
+				!this.game.flags.isFullRendering ?
+					this.game.durations.translation : 0
 
 		super.render();
 	}

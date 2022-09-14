@@ -14,6 +14,8 @@ export default {
 		if (
 			this.flags.waitingServerConfirmMove ||
 			this.flags.isTranslating ||
+			this.flags.isStamping ||
+			this.flags.isFilling ||
 			this.flags.isZooming
 		) return;
 
@@ -85,7 +87,7 @@ export default {
 		this.player.stampAnimation();
 	},
 
-	"ZOOM": function (direction) {
+	"ZOOM_ATTEMPT": function (direction) {
 
 		if (
 			this.flags.isZooming ||
@@ -105,7 +107,20 @@ export default {
 
 			this.map.render();
 
-			this.flags.isZooming = false;
+			if (this.flags.zoomBtnPressed) {
+
+				this.animationTimeout(() => {
+
+					this.flags.isZooming = false;
+
+					this.emit("ZOOM_ATTEMPT", direction);
+
+				}, 10);
+
+			} else {
+
+				this.flags.isZooming = false;
+			}
 
 		}, this.durations.zoom);
 

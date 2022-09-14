@@ -1,6 +1,13 @@
 export default class SharedGameMap {
 
-	constructor() {}
+	constructor({ gridState, cols, rows }) {
+
+		this.gridState = gridState;
+		
+		this.cols = cols;
+		
+		this.rows = rows;
+	}
 
 	indexToCoords(index) {
 

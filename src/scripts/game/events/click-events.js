@@ -35,18 +35,36 @@ export default function listenClickEvents() {
 		});
 	});
 
-	for (const [direction, zoomBtn] of Object.entries(gameButtons.zoomBtns)) {
+	for (const direction in gameButtons.zoomBtns) {
 
-		zoomBtn.addEventListener("click", () => {
+		const btn = gameButtons.zoomBtns[direction];
 
-			this.emit("ZOOM", direction);
+		btn.addEventListener("mousedown", () => {
+
+			this.flags.zoomBtnPressed = true;
+			
+			this.emit("ZOOM_ATTEMPT", direction);
 		});
 
-		zoomBtn.addEventListener("touchstart", (event) => {
+		btn.addEventListener("touchstart", (event) => {
 
 			event.preventDefault();
 
-			this.emit("ZOOM", direction);
+			this.flags.zoomBtnPressed = true;
+
+			this.emit("ZOOM_ATTEMPT", direction);
+		});
+
+		btn.addEventListener("mouseup", () => {
+
+			this.flags.zoomBtnPressed = false;
+		});
+
+		btn.addEventListener("touchend", (event) => {
+
+			event.preventDefault();
+
+			this.flags.zoomBtnPressed = false;
 		});
 	}
 

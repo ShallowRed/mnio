@@ -4,7 +4,7 @@ export default class GameMap extends SharedGameMap {
 
 	constructor(game, { gridState, rows, cols }) {
 
-		super();
+		super({ gridState, rows, cols });
 
 		this.game = game;
 

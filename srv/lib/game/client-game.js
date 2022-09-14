@@ -50,7 +50,11 @@ export default class ClientGame {
 
 		this.socket.emit('INIT_GAME', this.initialData);
 
-		this.movePlayer({ id: this.player.userId, from: null, to: this.player.position });
+		this.socket.broadcast.emit("NEW_POSITION", {
+			id: this.player.userId,
+			from: null,
+			to: this.player.position
+		});
 	}
 
 	listenGameEvents() {
@@ -61,7 +65,13 @@ export default class ClientGame {
 
 			if (newPosition) {
 
-				this.movePlayer({ id: this.player.userId, from: this.player.position, to: newPosition });
+				this.socket.emit("NEW_PLAYER_POSITION", newPosition);
+
+				this.socket.broadcast.emit("NEW_POSITION", {
+					id: this.player.userId,
+					from: this.player.position,
+					to: newPosition
+				});
 
 				this.player.position = newPosition;
 			}
@@ -99,18 +109,11 @@ export default class ClientGame {
 
 			this.player.connected = false;
 
-			if (this.player.position) {
-
-				this.movePlayer({ id: this.player.userId, from: this.player.position, to: null });
-			}
+			this.socket.broadcast.emit("NEW_POSITION", {
+				id: this.player.userId,
+				from: this.player.position,
+				to: null
+			});
 		});
-	}
-
-
-	movePlayer({ id, from, to }) {
-
-		this.socket.emit("NEW_PLAYER_POSITION", to);
-
-		this.socket.broadcast.emit("NEW_POSITION", { id, from, to });
 	}
 };
