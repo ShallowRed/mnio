@@ -137,7 +137,7 @@ export default class GameMap extends SharedGameMap {
 			this.ctx.imageSmoothingEnabled = false;
 		}
 
-		this.translateCanvas();
+		this.translateCanvas(0);
 
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
@@ -195,13 +195,13 @@ export default class GameMap extends SharedGameMap {
 
 	////////////////////////////////////////////////////
 
-	translateCanvas(duration = 0) {
+	translateCanvas(duration) {
 
 		this.transitionDuration = duration;
 
 		const translation = [...this.canvasOrigin];
 
-		if (duration) {
+		if (duration !== 0) {
 
 			const { lastCoords, coords, lastCoordsInView, coordsInView } = this.game.player;
 

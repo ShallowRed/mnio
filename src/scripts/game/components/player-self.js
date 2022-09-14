@@ -7,11 +7,11 @@ export default class selfPlayer extends Player {
 	coordsInViewCoef = [null, null];
 
 	constructor(game, { position, palette, ownCells, allowedCells }) {
-		
+
 		super(game, position, document.getElementById('player'));
 
 		this.palette = palette;
-		
+
 		this.ownCells = ownCells;
 
 		this.allowedCells = allowedCells;
@@ -48,21 +48,13 @@ export default class selfPlayer extends Player {
 		this.coords = this.game.map.indexToCoords(this.position);
 	}
 
-	setColor(i) {
-
-		this.selectedColorIndex = i;
-
-		this.selectedColor = this.palette[i];
-
-		this.sprite.style.background = this.selectedColor;
-	}
-
 	render() {
 
-		this.transitionDuration = (
-			this.game.flags.isTranslating ||
-			this.game.flags.isZooming
-		) ? this.translationDuration : 0;
+		this.transitionDuration =
+			this.game.flags.isTranslating ?
+				this.game.durations.translation :
+				this.game.flags.isZooming ?
+					this.game.durations.zoom : 0;
 
 		super.render();
 	}
@@ -107,7 +99,7 @@ export default class selfPlayer extends Player {
 	}
 
 	getCoordsInViewCoef(mapMaxCoord, viewCenterCoord, playerCoord) {
-		
+
 		if (playerCoord <= viewCenterCoord) {
 
 			return 0;

@@ -35,9 +35,9 @@ export default class EnemyPlayer extends Player {
 		}
 	}
 
-	render(duration) {
+	render() {
 
-		this.transitionDuration = duration ?? this.translationDuration;
+		this.transitionDuration = this.game.durations.translation;
 
 		super.render();
 	}

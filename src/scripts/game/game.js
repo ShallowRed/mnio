@@ -12,11 +12,26 @@ import GAME_EVENTS from 'game/events/game-events';
 import fillAnimation from 'game/utils/fill-animation';
 import animationTimeout from 'game/utils/animation-timeout';
 
+// TODO: issue with allowedCells overlapping other players' ownCells
+// TODO: keep zooming while keep pressing button
+
 export default class Game {
 
-	duration = 200;
+	durations = {
+		translation: 200,
+		zoom: 150,
+		fillAnimation: 400,
+	};
 
-	flags = {};
+	flags = {
+		waitingServerConfirmMove: false,
+		waitingServerConfirmFill: false,
+		isTranslating: false,
+		isZooming: false,
+		isTouching: false,
+		isFilling: false,
+		viewSizeChanged: false
+	};
 
 	constructor(socket, data) {
 

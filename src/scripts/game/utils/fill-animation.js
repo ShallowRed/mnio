@@ -1,9 +1,10 @@
-const ANIMATION_DURATION = 400;
 const N_STRIPES = 8;
 
 export default function fillAnimation(position, color) {
 
-	this.flags.fill = true;
+	this.flags.isFilling = true;
+
+	const duration = this.durations.fillAnimation;
 
 	const cellSize = this.map.cellSize;
 
@@ -27,7 +28,7 @@ export default function fillAnimation(position, color) {
 
 		const delay = Date.now() - startDate;
 
-		const progress = delay * N_STRIPES / ANIMATION_DURATION;
+		const progress = delay * N_STRIPES / duration;
 
 		const yIndex = Math.trunc(progress);
 
@@ -40,7 +41,7 @@ export default function fillAnimation(position, color) {
 			prevLineX
 		});
 
-		if (delay < ANIMATION_DURATION) {
+		if (delay < duration) {
 
 			window.requestAnimationFrame(() => {
 
@@ -53,7 +54,7 @@ export default function fillAnimation(position, color) {
 
 		} else {
 
-			flags.fill = false;
+			flags.isFilling = false;
 		}
 	}
 

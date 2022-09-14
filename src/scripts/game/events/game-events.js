@@ -39,7 +39,7 @@ export default {
 
 		this.updateState(position, direction);
 
-		this.map.translateCanvas(this.duration);
+		this.map.translateCanvas(this.durations.translation);
 
 		this.animationTimeout(() => {
 
@@ -47,7 +47,7 @@ export default {
 
 			this.flags.isTranslating = false;
 
-		}, this.duration);
+		}, this.durations.translation);
 
 		this.player.render();
 
@@ -58,7 +58,7 @@ export default {
 
 		if (
 			!this.flags.waitingServerConfirmFill &&
-			!this.flags.fill
+			!this.flags.isFilling
 		) {
 
 			this.emit("FILL_PLAYER_CELL", this.player.position);
@@ -99,7 +99,7 @@ export default {
 
 		this.updateState();
 
-		this.map.zoom(this.duration);
+		this.map.zoom(this.durations.zoom);
 
 		this.animationTimeout(() => {
 
@@ -107,7 +107,7 @@ export default {
 
 			this.flags.isZooming = false;
 
-		}, this.duration);
+		}, this.durations.zoom);
 
 		this.player.render();
 

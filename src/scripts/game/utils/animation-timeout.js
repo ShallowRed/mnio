@@ -2,7 +2,7 @@ export default function animationTimeout(callback, delay, start = Date.now()) {
 
 	const delta = Date.now() - start;
 
-	if (this.flags.fill) {
+	if (this.flags.isFilling) {
 
 		delay += 15;
 	}

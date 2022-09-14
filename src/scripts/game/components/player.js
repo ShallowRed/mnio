@@ -1,10 +1,10 @@
 export default class Player {
 
-	translationDuration = 200;
-
 	bumpDuration = 70;
 
 	stampDuration = 100;
+
+	pauseBetweenBumpsDuration = 200;
 
 	lastCoords = [null, null];
 	coordsInView = [null, null];
@@ -83,7 +83,7 @@ export default class Player {
 
 			this.transform = `translate(${this.translateVector}) scale(1)`;
 
-			this.transitionDuration = this.translationDuration;
+			this.transitionDuration = this.game.durations.translation;
 
 		}, this.stampDuration)
 	}
@@ -115,13 +115,13 @@ export default class Player {
 
 			this.transform = `translate(${this.translateVector})`;
 
-			this.transitionDuration = this.translationDuration;
+			this.transitionDuration = this.game.durations.translation;
 
 			setTimeout(() => {
 
 				this.game.flags.isBumping = false;
 
-			}, this.translationDuration);
+			}, this.pauseBetweenBumpsDuration);
 
 		}, this.bumpDuration)
 	}
