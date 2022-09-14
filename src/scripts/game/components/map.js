@@ -5,17 +5,16 @@ export default class GameMap extends SharedGameMap {
 	view = document.getElementById('view');
 	canvas = document.querySelector('canvas');
 
-	mincells = 7;
-	startcells = 17;
-	maxcells = 36;
+	minCellsInView = 7;
+	startCellsInView = 17;
+	maxCellsInView = 36;
 	offScreenCells = 2;
+	nCellsZoomIncrement = 2;
 
-	translateCoef = [0, 0];
-
+	canvasOrigin = [null, null];
+	canvasOffset = [null, null];
 	maxCoordsInView = [null, null];
 	viewSize = [null, null];
-	canvasOrigin = [null, null];
-	scale = {};
 
 	positionsColor = "black";
 	allowedColor = "#e5e5e5";
@@ -38,13 +37,24 @@ export default class GameMap extends SharedGameMap {
 
 	get playersPositions() {
 
-		return [...this.game.players.collection]
-			.map(([_, player]) => player.position);
+		return this.game.players.positions;
+	}
+
+	get longestDimensionIndex() {
+
+		return this.isWidthLarger ? 0 : 1;
+	}
+
+	get shortestDimensionIndex() {
+
+		return this.isWidthLarger ? 1 : 0;
 	}
 
 	////////////////////////////////////////////////////
 
-	getViewSize() {
+	setViewSize() {
+
+		this.game.flags.viewSizeChanged = true;
 
 		this.isWidthLarger = window.innerWidth >= window.innerHeight;
 
@@ -56,70 +66,46 @@ export default class GameMap extends SharedGameMap {
 		];
 	}
 
-	////////////////////////////////////////////////////
+	updateState() {
 
-	updateCanvasGrid() {
+		if (!this.maxCoordsInView[this.longestDimensionIndex]) {
 
-		this.updateCellSize();
-
-		this.updateSecDimensionNumCells();
-
-		this.updateViewCanvasDeltaSize();
-	}
-
-	updateCellSize() {
-
-		const index = this.isWidthLarger ? 0 : 1;
-
-		if (!this.maxCoordsInView[index]) {
-
-			this.maxCoordsInView[index] = this.startcells;
+			this.maxCoordsInView[this.longestDimensionIndex] = this.startCellsInView;
 		}
 
-		if (this.cellSize) {
+		this.lastCellSize = this.cellSize;
 
-			const { cellSize } = this;
+		this.cellSize = Math.round(this.viewSize[this.longestDimensionIndex] / this.maxCoordsInView[this.longestDimensionIndex]);
 
-			this.lastCellSize = cellSize
+		this.maxCoordsInView[this.shortestDimensionIndex] = Math.round(this.viewSize[this.shortestDimensionIndex] / this.cellSize);
+
+		for (const i in [0, 1]) {
+
+			this.canvasOffset[i] = this.viewSize[i] - this.maxCoordsInView[i] * this.cellSize;
 		}
 
-		this.cellSize = Math.round(this.viewSize[index] / this.maxCoordsInView[index]);
-	}
-
-	updateSecDimensionNumCells() {
-
-		const index = this.isWidthLarger ? 1 : 0;
-
-		this.maxCoordsInView[index] = Math.round(this.viewSize[index] / this.cellSize);
-	}
-
-	updateViewCanvasDeltaSize() {
-
-		this.viewCanvasDelta = [0, 1].map(i => {
-
-			return this.viewSize[i] - this.maxCoordsInView[i] * this.cellSize;
-		});
+		this.game.flags.viewSizeChanged = false;
 	}
 
 	updateCanvasOrigin() {
 
-		this.canvasOrigin = this.viewCanvasDelta.map((viewCanvasDelta, i) => {
+		for (const i in [0, 1]) {
 
-			return viewCanvasDelta * this.game.player.coordsInViewCoef[i];
-		});
+			this.canvasOrigin[i] = this.canvasOffset[i] * this.game.player.coordsInViewCoef[i];
+		}
 	}
 
 	////////////////////////////////////////////////////
-
-	getCoordInView = (coord, i) => {
-
-		return coord - this.game.player.coords[i] + this.game.player.coordsInView[i] + this.offScreenCells;
-	}
 
 	getRelativeCoords(position) {
 
 		return this.indexToCoords(position)
 			.map(this.getCoordInView);
+	}
+
+	getCoordInView = (coord, i) => {
+
+		return coord - this.game.player.coords[i] + this.game.player.coordsInView[i] + this.offScreenCells;
 	}
 
 	areCoordsInView([x, y]) {
@@ -137,30 +123,21 @@ export default class GameMap extends SharedGameMap {
 	render() {
 
 		if (!this.game.flags.isTranslating) {
-			this.setCanvasSizeAndPos();
+
+			const { cellSize, maxCoordsInView, offScreenCells } = this;
+
+			this.canvas.width = cellSize * (maxCoordsInView[0] + offScreenCells * 2);
+
+			this.canvas.height = cellSize * (maxCoordsInView[1] + offScreenCells * 2);
+
+			this.canvas.style.top = `-${Math.round(offScreenCells * cellSize)}px`;
+
+			this.canvas.style.left = `-${Math.round(offScreenCells * cellSize)}px`;
+
+			this.ctx.imageSmoothingEnabled = false;
 		}
 
-		this.translateCanvas({ duration: 0 });
-
-		this.renderCells();
-	}
-
-	setCanvasSizeAndPos() {
-
-		const { cellSize, maxCoordsInView, offScreenCells } = this;
-
-		this.canvas.width = cellSize * (maxCoordsInView[0] + offScreenCells * 2);
-
-		this.canvas.height = cellSize * (maxCoordsInView[1] + offScreenCells * 2);
-
-		this.canvas.style.top = `-${Math.round(offScreenCells * cellSize)}px`;
-
-		this.canvas.style.left = `-${Math.round(offScreenCells * cellSize)}px`;
-
-		this.ctx.imageSmoothingEnabled = false;
-	}
-
-	renderCells() {
+		this.translateCanvas();
 
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
@@ -169,135 +146,119 @@ export default class GameMap extends SharedGameMap {
 			this.renderCell(position, this.allowedColor);
 		});
 
-		this.gridState
-			.map((color, i) => color && { color, position: i })
-			.filter(Boolean)
-			.forEach(({ color, position }) => {
+		this.filledCells.forEach(({ color, position }) => {
 
-				this.renderCell(position, `#${color}`);
-			});
+			this.renderCell(position, color);
+		});
+	}
+
+	get filledCells() {
+
+		return this.gridState
+			.map((color, i) => color && { color: `#${color}`, position: i })
+			.filter(Boolean)
 	}
 
 	renderCell(position, color) {
 
-		const coords = this.getRelativeCoords(position);
+		const coordsInView = this.getRelativeCoords(position);
 
-		if (!coords) return;
+		if (!this.areCoordsInView(coordsInView)) return;
 
-		const [x, y] = coords.map(x => Math.round(this.cellSize * x));
+		const [x, y] = coordsInView.map(x => Math.round(this.cellSize * x));
 
-		if (!color) {
-
-			this.ctx.clearRect(x, y, this.cellSize, this.cellSize);
-
-		} else {
+		if (color) {
 
 			this.ctx.fillStyle = color;
 
 			this.ctx.fillRect(x, y, this.cellSize, this.cellSize);
-		}
-	}
-
-	////////////////////////////////////////////////////
-
-	translateCanvas({ duration }) {
-
-		this.updateTranslateVector(duration);
-
-		this.canvas.style.transitionDuration = `${duration}s`;
-
-		this.canvas.style.transform = `translate(${this.translateVector.join(', ')})`;
-	}
-
-	updateTranslateVector(duration) {
-
-		if (duration) {
-
-			this.updateTranslateCoef();
 
 		} else {
 
-			this.resetTranslateCoef();
+			this.ctx.clearRect(x, y, this.cellSize, this.cellSize);
 		}
-
-		this.translateVector = this.translateCoef.map((translateCoef, i) => {
-
-			return `${translateCoef * this.cellSize + this.canvasOrigin[i]}px`;
-		});
-	}
-
-	resetTranslateCoef() {
-
-		this.translateCoef[0] = 0;
-
-		this.translateCoef[1] = 0;
-	}
-
-	updateTranslateCoef() {
-
-		const { lastCoords, coords, lastCoordsInView, coordsInView } = this.game.player;
-
-		this.translateCoef = lastCoords.map((x, i) => {
-
-			return x - coords[i] + coordsInView[i] - lastCoordsInView[i];
-		});
 	}
 
 	////////////////////////////////////////////////////
 
-	incrementMainNumCells(direction) {
+	set transitionDuration(duration) {
 
-		const increment = 2;
+		this.canvas.style.transitionDuration = `${duration / 1000}s`;
+	}
+
+	set transform({ translation, factor = 1 }) {
+
+		const translate = translation.map(t => `${t}px`).join(', ');
+
+		this.canvas.style.transform = `translate(${translate}) scale(${factor})`;
+	}
+
+	////////////////////////////////////////////////////
+
+	translateCanvas(duration = 0) {
+
+		this.transitionDuration = duration;
+
+		const translation = [...this.canvasOrigin];
+
+		if (duration) {
+
+			const { lastCoords, coords, lastCoordsInView, coordsInView } = this.game.player;
+
+			for (const i in [0, 1]) {
+
+				const coef = lastCoords[i] - coords[i] + coordsInView[i] - lastCoordsInView[i];
+
+				translation[i] += coef * this.cellSize;
+			}
+		}
+
+		this.transform = { translation };
+	}
+
+	////////////////////////////////////////////////////
+
+	isZoomable(direction) {
+
+		if (
+			(
+				direction == "in" &&
+				this.maxCoordsInView[this.longestDimensionIndex] > this.minCellsInView
+			) || (
+				direction == "out" &&
+				this.maxCoordsInView[this.longestDimensionIndex] < this.maxCellsInView
+			)
+		) {
+
+			return true;
+		}
+	}
+
+	incrementMaxCoordsInView(direction) {
 
 		const sense = direction == "in" ? -1 : 1;
 
-		const index = this.isWidthLarger ? 0 : 1;
-
-		if (
-			(direction == "in" && this.maxCoordsInView[index] <= this.mincells) ||
-			(direction == "out" && this.maxCoordsInView[index] >= this.maxcells)
-		) return;
-
-		this.maxCoordsInView[index] += increment * sense;
-
-		return true;
+		this.maxCoordsInView[this.longestDimensionIndex] += this.nCellsZoomIncrement * sense;
 	}
 
-	zoom() {
+	zoom(duration) {
 
-		this.updateScaleVector();
+		this.transitionDuration = duration;
 
-		this.canvas.style.transitionDuration = "0.19s";
+		const factor = Math.round(1000 * this.cellSize / this.lastCellSize) / 1000;
 
-		this.canvas.style.transform = `translate(${this.scale.translation.join(', ')}) scale(${this.scale.factor}) `;
-	}
+		const canvasOffset = (this.lastCellSize - this.cellSize) * this.offScreenCells;
 
-	updateScaleVector() {
+		const translation = this.canvasOrigin.map(origin => {
 
-		const cS1 = this.lastCellSize;
+			return origin + canvasOffset;
+		})
 
-		const cS2 = this.cellSize;
+		for (const i in [0, 1]) {
 
-		const dCs = (cS1 - cS2) * this.offScreenCells;
+			translation[i] += (this.game.player.coordsInView[i] - this.game.player.lastCoordsInView[i]) * this.cellSize
+		}
 
-		this.scale.factor = Math.round(1000 * cS2 / cS1) / 1000;
-
-		this.scale.translation = [0, 1].map((e, i) => {
-
-			const oX = this.getScaleTranslation(i, dCs, cS2);
-
-			return `${Math.round(oX * 2) / 2}px`
-		});
-	}
-
-	getScaleTranslation(dimension, dCs, cS2) {
-
-		const cO = this.canvasOrigin[dimension];
-
-		const pX1 = this.game.player.lastCoordsInView[dimension];
-
-		const pX2 = this.game.player.coordsInView[dimension];
-
-		return dCs + (pX2 - pX1) * cS2 + cO;
+		this.transform = { translation, factor };
 	}
 }

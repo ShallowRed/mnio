@@ -6,7 +6,7 @@ export const DB = {
 	host: process.env?.DB_HOST ?? 'localhost',
 	user: process.env?.DB_USER ?? 'root',
 	password: process.env?.DB_PASSWORD ?? '',
-	database: process.env?.DB_NAME ?? 'mnio_rooniax',
+	database: process.env?.DB_NAME ?? 'mnio_rooniax_1',
 };
 
 export const USE_MEMORY_STORE = false;

@@ -1,12 +1,9 @@
 export default function listenWindowEvents() {
 
-	window.addEventListener('resize', () => {
-
-		this.render();
-	});
+	window.addEventListener('resize', this.fullRender);
 
 	window.addEventListener("orientationchange", () => {
 
-		setTimeout(() => this.render(), 500)
+		setTimeout(this.fullRender, 500)
 	});
 }

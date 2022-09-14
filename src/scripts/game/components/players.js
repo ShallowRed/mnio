@@ -1,8 +1,5 @@
-import EnemyPlayer from "./enemy-player";
+import EnemyPlayer from "./player-enemy";
 
-// todo:
-// remove out bound players
-// remove disconnected player
 // fill stamp when other player fill
 export default class Players {
 
@@ -12,23 +9,40 @@ export default class Players {
 
 		this.game = game;
 
-		if (playersData?.length) {
+		this.playersData = playersData;
+	}
 
-			playersData.forEach((data) => {
+	get positions() {
 
-				this.add(data);
-			});
+		return Object.values(this.collection)
+			.map((player) => player.position);
+	}
+
+	create({ id, position }) {
+
+		const coordsInView = this.game.map.getRelativeCoords(position);
+
+		if (this.game.map.areCoordsInView(coordsInView)) {
+
+			const player = new EnemyPlayer(this.game, { id, position });
+
+			this.collection.set(player.id, player);
+
+			player.updatePosition(position);
+
+			player.updateCoordsInView();
+
+			player.render();
+
+			return player;
 		}
 	}
 
-	add({ id, position }) {
-
-		const player = new EnemyPlayer(this.game, { id, position });
-
-		this.collection.set(player.id, player);
-	}
-
 	remove(id) {
+
+		const player = this.get(id);
+
+		player.sprite.remove();
 
 		this.collection.delete(id);
 	}
@@ -38,8 +52,47 @@ export default class Players {
 		return this.collection.get(id);
 	}
 
-	forEvery(callback) {
+	init() {
 
-		this.collection.forEach(callback);
+		this?.playersData?.forEach((data) => {
+
+			this.create(data);
+		});
+
+		delete this.playersData;
+
+		this.init = null;
+	}
+
+	updatePositions() {
+
+		this.collection.forEach((player) => {
+
+			player.updatePosition(player.position);
+
+		});
+	}
+
+	updateCoordsInView() {
+
+		this.collection.forEach((player) => {
+
+			player.updateCoordsInView();
+		});
+	}
+
+	render() {
+
+		if (this.init) {
+
+			this.init();
+
+		} else {
+
+			this.collection.forEach((player) => {
+
+				player.render();
+			});
+		}
 	}
 }

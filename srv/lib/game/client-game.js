@@ -15,7 +15,12 @@ export default class ClientGame {
 	get initialData() {
 
 		const players = Object.values(this.game.players.collection)
-			.filter(player => player.position !== this.player.position)
+			.filter(player => {
+				return (
+					player.connected &&
+					player.position !== this.player.position
+				);
+			})
 			.map(player => {
 				return {
 					id: player.userId,
@@ -41,6 +46,8 @@ export default class ClientGame {
 
 	spawnPlayer() {
 
+		this.player.connected = true;
+
 		this.socket.emit('INIT_GAME', this.initialData);
 
 		this.movePlayer({ id: this.player.userId, from: null, to: this.player.position });
@@ -60,21 +67,23 @@ export default class ClientGame {
 			}
 		});
 
-		this.socket.on('FILL', cell => {
+		this.socket.on('FILL', ({ position, color }) => {
+
+			const userId = this.player.userId;
 
 			this.game.tables.get("gridEvents").insert({
-				userId: this.player.userId,
-				cellid: cell.position,
-				color: cell.color
+				userId,
+				cellid: position,
+				color
 			});
 
-			this.game.map.saveFill(cell);
+			this.game.map.saveFill({ position, color });
 
-			this.socket.broadcast.emit('NEW_FILL', cell);
+			this.socket.broadcast.emit('NEW_FILL', { id: userId, position, color });
 
-			if (!this.player.ownCells.includes(cell.position)) {
+			if (!this.player.ownCells.includes(position)) {
 
-				this.player.ownCells.push(cell.position);
+				this.player.ownCells.push(position);
 
 				this.player.updateAllowedCells(this.game.map);
 
@@ -87,6 +96,8 @@ export default class ClientGame {
 		this.socket.on('disconnect', () => {
 
 			debug(`User with userId '${this.player.userId}' disconnected`);
+
+			this.player.connected = false;
 
 			if (this.player.position) {
 

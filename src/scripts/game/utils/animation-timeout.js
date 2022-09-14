@@ -1,12 +1,10 @@
-export default function animationTimeout(callback, start = Date.now(), delay) {
+export default function animationTimeout(callback, delay, start = Date.now()) {
 
-	delay ??= this.duration;
-
-	const delta = (Date.now() - start) / 1000;
+	const delta = Date.now() - start;
 
 	if (this.flags.fill) {
 
-		delay += 0.015;
+		delay += 15;
 	}
 
 	if (delta >= delay) {
@@ -18,6 +16,6 @@ export default function animationTimeout(callback, start = Date.now(), delay) {
 
 	window.requestAnimationFrame(() => {
 
-		this.animationTimeout(callback, start, delay)
+		this.animationTimeout(callback, delay, start)
 	});
 }

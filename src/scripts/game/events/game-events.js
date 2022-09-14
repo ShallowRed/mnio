@@ -18,9 +18,9 @@ export default {
 		) return;
 
 		this.socket.emit('MOVE', direction);
-		
+
 		const nextPosition = this.map.checkMove(this.player, direction);
-		
+
 		if (nextPosition) {
 
 			this.emit("MOVE_PLAYER", nextPosition, direction);
@@ -39,16 +39,19 @@ export default {
 
 		this.updateState(position, direction);
 
-		this.map.translateCanvas({ duration: this.duration * 0.9 });
+		this.map.translateCanvas(this.duration);
 
 		this.animationTimeout(() => {
 
 			this.map.render();
 
 			this.flags.isTranslating = false;
-		});
+
+		}, this.duration);
 
 		this.player.render();
+
+		this.players.render();
 	},
 
 	"FILL_ATTEMPT": function () {
@@ -58,11 +61,11 @@ export default {
 			!this.flags.fill
 		) {
 
-			this.emit("FILL_CELL", this.player.position);
+			this.emit("FILL_PLAYER_CELL", this.player.position);
 		}
 	},
 
-	"FILL_CELL": function (position) {
+	"FILL_PLAYER_CELL": function (position) {
 
 		if (!this.player.ownCells.includes(position)) {
 
@@ -74,7 +77,7 @@ export default {
 		const color = this.player.selectedColor.substring(1);
 
 		this.map.gridState[position] = color;
-		
+
 		this.socket.emit("FILL", { position, color });
 
 		this.flags.waitingServerConfirmFill = true;
@@ -84,30 +87,30 @@ export default {
 
 	"ZOOM": function (direction) {
 
-		if (this.flags.isZooming || this.flags.isTranslating) return;
-
-		const isZoomable = this.map.incrementMainNumCells(direction);
-
-		if (!isZoomable) return;
+		if (
+			this.flags.isZooming ||
+			this.flags.isTranslating ||
+			!this.map.isZoomable(direction)
+		) return;
 
 		this.flags.isZooming = true;
 
+		this.map.incrementMaxCoordsInView(direction);
+		
 		this.updateState();
 
-		this.map.zoom();
+		this.map.zoom(this.duration);
 
 		this.animationTimeout(() => {
 
 			this.map.render();
 
 			this.flags.isZooming = false;
-		});
+
+		}, this.duration);
 
 		this.player.render();
 
-		this.players.forEvery(player => {
-
-			player.render();
-		});
+		this.players.render();
 	},
 }

@@ -6,9 +6,8 @@ export default class Player {
 
 	stampDuration = 100;
 
-	coordsInView = [null, null];
-
 	lastCoords = [null, null];
+	coordsInView = [null, null];
 
 	constructor(game, position, sprite) {
 
@@ -21,43 +20,9 @@ export default class Player {
 
 	////////////////////////////////////////////////////
 
-	setColor(i) {
+	set transitionDuration(duration) {
 
-		this.selectedColorIndex = i;
-
-		this.selectedColor = this.palette[i];
-
-		this.sprite.style.background = this.selectedColor;
-	}
-
-	updatePosition(position, direction) {
-
-		if (this.coords) {
-
-			this.lastCoords = [...this.coords];
-		}
-
-		if (position) {
-
-			this.lastPosition = parseInt(`${this.position}`, 10);
-
-			this.position = position;
-		}
-
-		if (direction) {
-
-			this.lastDirection = direction;
-		}
-
-		this.coords = this.game.map.indexToCoords(this.position);
-	}
-
-
-	////////////////////////////////////////////////////
-
-	set transitionDuration(value) {
-
-		this.sprite.style.transitionDuration = `${value / 1000}s`;
+		this.sprite.style.transitionDuration = `${duration / 1000}s`;
 	}
 
 	set transform(value) {

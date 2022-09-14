@@ -1,4 +1,4 @@
-import Player from './class-player.js';
+import Player from './player.js';
 
 export default class selfPlayer extends Player {
 
@@ -26,6 +26,37 @@ export default class selfPlayer extends Player {
 		this.sprite.style.background = this.selectedColor;
 	}
 
+	updatePosition(position, direction) {
+
+		if (this.coords) {
+
+			this.lastCoords = [...this.coords];
+		}
+
+		if (position) {
+
+			this.lastPosition = parseInt(`${this.position}`, 10);
+
+			this.position = position;
+		}
+
+		if (direction) {
+
+			this.lastDirection = direction;
+		}
+
+		this.coords = this.game.map.indexToCoords(this.position);
+	}
+
+	setColor(i) {
+
+		this.selectedColorIndex = i;
+
+		this.selectedColor = this.palette[i];
+
+		this.sprite.style.background = this.selectedColor;
+	}
+
 	render() {
 
 		this.transitionDuration = (
@@ -40,7 +71,7 @@ export default class selfPlayer extends Player {
 
 		this.lastCoordsInView = [...this.coordsInView];
 
-		for (let i = 0; i <= 1; i++) {
+		for (const i in [0, 1]) {
 
 			const playerCoord = this.coords[i];
 

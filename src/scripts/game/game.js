@@ -1,4 +1,4 @@
-import Player from 'game/components/self-player';
+import SelfPlayer from 'game/components/player-self';
 import Players from 'game/components/players';
 import GameMap from 'game/components/map';
 
@@ -14,7 +14,7 @@ import animationTimeout from 'game/utils/animation-timeout';
 
 export default class Game {
 
-	duration = 0.2;
+	duration = 200;
 
 	flags = {};
 
@@ -24,7 +24,7 @@ export default class Game {
 
 		this.map = new GameMap(this, data.map);
 
-		this.player = new Player(this, data.player);
+		this.player = new SelfPlayer(this, data.player);
 
 		this.players = new Players(this, data.players);
 
@@ -33,11 +33,6 @@ export default class Game {
 		this.fillAnimation = fillAnimation.bind(this);
 
 		this.animationTimeout = animationTimeout.bind(this);
-	}
-
-	emit(eventName, ...data) {
-
-		this.events[eventName].call(this, ...data);
 	}
 
 	init() {
@@ -54,43 +49,48 @@ export default class Game {
 
 		this.emit("SELECT_COLOR", 0);
 
-		this.render();
+		this.fullRender();
 	}
 
-	render() {
+	fullRender = () => {
 
-		this.map.getViewSize();
+		this.map.setViewSize();
 
 		this.updateState();
 
-		this.map.render();
-
-		this.player.render();
-
-		this.players.forEvery(player => {
-
-			player.render();
-		});
-	}
+		this.render();
+	};
 
 	updateState(position, direction) {
 
 		this.player.updatePosition(position, direction);
 
-		if (!this.flags.isTranslating) {
+		if (
+			this.flags.isZooming ||
+			this.flags.viewSizeChanged
+		) {
 
-			this.map.updateCanvasGrid();
+			this.map.updateState();
 		}
 
 		this.player.updateCoordsInView();
 
 		this.map.updateCanvasOrigin();
 
-		this.players.forEvery(player => {
+		this.players.updateCoordsInView();
+	}
 
-			player.updateCoordsInView();
+	render() {
 
-			player.render();
-		});
+		this.map.render();
+
+		this.player.render();
+
+		this.players.render();
+	}
+
+	emit(eventName, ...data) {
+
+		this.events[eventName].call(this, ...data);
 	}
 }

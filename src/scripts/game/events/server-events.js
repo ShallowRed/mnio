@@ -12,7 +12,15 @@ export default function listenServerEvents() {
 
 	this.socket.on("NEW_POSITION", ({ id, from: lastPosition, to: newPosition }) => {
 
-		if (
+		if (!newPosition) {
+
+			this.players.remove(id);
+
+		} else if (!lastPosition) {
+
+			this.players.create({ id, position: newPosition });
+
+		} else if (
 			newPosition &&
 			newPosition !== this.player.position &&
 			newPosition !== this.player.lastPosition
@@ -20,19 +28,42 @@ export default function listenServerEvents() {
 
 			const player = this.players.get(id);
 
-			if (player) {
+			if (!player) {
+
+				this.players.create({ id, position: newPosition });
+
+			} else {
+
 				player.updatePosition(newPosition);
+
 				player.updateCoordsInView();
-				player.render();
+
+				if (!this.map.areCoordsInView(player.coordsInView)) {
+
+					this.players.remove(id);
+
+				} else {
+
+					player.render();
+				}
 			}
 		}
 	});
 
-	this.socket.on("NEW_FILL", ({ position, color }) => {
+	this.socket.on("NEW_FILL", ({ id, position, color }) => {
+
+		const player = this.players.get(id);
+
+		if (player) {
+
+			player.setColor(color);
+
+			player.stampAnimation();
+		}
 
 		this.map.gridState[position] = color;
 
-		this.renderCell(position, `#${color}`);
+		this.map.renderCell(position, `#${color}`);
 	});
 
 	this.socket.on("ALLOWED_CELLS", (cells) => {
