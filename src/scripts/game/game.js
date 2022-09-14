@@ -15,7 +15,7 @@ import animationTimeout from 'game/utils/animation-timeout';
 export default class Game {
 
 	durations = {
-		translation: 250,
+		translation: 200,
 		zoom: 200,
 		fillAnimation: 300,
 	};
