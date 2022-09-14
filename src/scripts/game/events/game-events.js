@@ -72,7 +72,7 @@ export default {
 			this.player.ownCells.push(position);
 		}
 
-		this.fillAnimation(position);
+		this.fillAnimation(position, this.player.selectedColor);
 
 		const color = this.player.selectedColor.substring(1);
 
@@ -96,7 +96,7 @@ export default {
 		this.flags.isZooming = true;
 
 		this.map.incrementMaxCoordsInView(direction);
-		
+
 		this.updateState();
 
 		this.map.zoom(this.duration);

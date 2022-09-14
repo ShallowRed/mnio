@@ -63,6 +63,8 @@ export default function listenServerEvents() {
 
 		this.map.gridState[position] = color;
 
+		// this.fillAnimation(position, `#${color}`);
+
 		this.map.renderCell(position, `#${color}`);
 	});
 

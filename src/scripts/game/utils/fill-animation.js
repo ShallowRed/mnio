@@ -1,7 +1,7 @@
 const ANIMATION_DURATION = 400;
 const N_STRIPES = 8;
 
-export default function fillAnimation(position) {
+export default function fillAnimation(position, color) {
 
 	this.flags.fill = true;
 
@@ -16,7 +16,6 @@ export default function fillAnimation(position) {
 
 	const ctx = this.map.ctx;
 	const flags = this.flags;
-	const color = this.player.selectedColor;
 
 	fillAnimationFrame();
 

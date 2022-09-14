@@ -109,9 +109,6 @@ export default class ClientGame {
 
 	movePlayer({ id, from, to }) {
 
-		// todo no need to send to socket if disconnected
-		// maybe neither on spawn
-
 		this.socket.emit("NEW_PLAYER_POSITION", to);
 
 		this.socket.broadcast.emit("NEW_POSITION", { id, from, to });
