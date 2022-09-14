@@ -22,6 +22,8 @@ module.exports = {
 		env: {
 			"DEBUG": "app:*",
 			"DEBUG_HIDE_DATE": "true",
+			"DEFAULT_ROWS": 150,
+			"DEFAULT_COLS": 150,
 		},
 	}
 };
