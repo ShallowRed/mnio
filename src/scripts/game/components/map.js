@@ -23,6 +23,11 @@ export default ViewObject(class GameMap extends SharedGameMap {
 
 		super({ gridState, rows, cols });
 
+		if (game.isAdmin) {
+			this.maxCellsInView = 150;
+			this.startCellsInView = 150;
+		}
+
 		this.game = game;
 
 		this.ctx = this.canvas.getContext('2d');

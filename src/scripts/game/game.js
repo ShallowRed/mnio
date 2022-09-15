@@ -39,6 +39,8 @@ export default class Game {
 
 	constructor(socket, data) {
 
+		this.isAdmin = data.isAdmin;
+		
 		this.socket = socket;
 
 		this.map = new GameMap(this, data.map);

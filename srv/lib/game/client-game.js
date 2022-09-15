@@ -14,7 +14,10 @@ export default class ClientGame {
 
 	get initialData() {
 
+		const isAdmin = this.player.userId === 1;
+
 		return {
+			isAdmin,
 			map: {
 				gridState: this.game.map.gridState,
 				rows: this.game.map.rows,
