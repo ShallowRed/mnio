@@ -2,13 +2,15 @@ import Player from 'game/components/player';
 
 export default class selfPlayer extends Player {
 
-	is = {};
+	sprite = document.getElementById('player');
 
 	coordsInViewCoef = [null, null];
 
 	constructor(game, { position, palette, ownCells, allowedCells }) {
 
-		super(game, position, document.getElementById('player'));
+		super(game, position);
+
+		this.domElement = this.sprite;
 
 		this.palette = palette;
 
@@ -26,39 +28,6 @@ export default class selfPlayer extends Player {
 		this.sprite.style.background = this.selectedColor;
 	}
 
-	updatePosition(position, direction) {
-
-		if (this.coords) {
-
-			this.lastCoords = [...this.coords];
-		}
-
-		if (position) {
-
-			this.lastPosition = parseInt(`${this.position}`, 10);
-
-			this.position = position;
-		}
-
-		if (direction) {
-
-			this.lastDirection = direction;
-		}
-
-		this.coords = this.game.map.indexToCoords(this.position);
-	}
-
-	render() {
-
-		this.transitionDuration =
-			this.game.flags.isTranslating ?
-				this.game.durations.translation :
-				this.game.flags.isZooming ?
-					this.game.durations.zoom : 0;
-
-		super.render();
-	}
-
 	updateCoordsInView() {
 
 		this.lastCoordsInView = [...this.coordsInView];
@@ -73,13 +42,15 @@ export default class selfPlayer extends Player {
 
 			const viewCenterCoord = (maxCoordInView - 1) / 2;
 
-			this.coordsInView[i] = this.getCoordsInView(mapMaxCoord, maxCoordInView, viewCenterCoord, playerCoord);
+			this.coordsInView[i] = this.getCoordInView(mapMaxCoord, maxCoordInView, viewCenterCoord, playerCoord);
 
-			this.coordsInViewCoef[i] = this.getCoordsInViewCoef(mapMaxCoord, viewCenterCoord, playerCoord);
+			this.coordsInViewCoef[i] = this.getCoordInViewCoef(mapMaxCoord, viewCenterCoord, playerCoord);
 		}
+
+		this.game.map.updateCanvasOffset();
 	}
 
-	getCoordsInView(mapMaxCoord, maxCoordInView, viewCenterCoord, playerCoord) {
+	getCoordInView(mapMaxCoord, maxCoordInView, viewCenterCoord, playerCoord) {
 
 		if (playerCoord < Math.ceil(viewCenterCoord)) {
 
@@ -98,7 +69,7 @@ export default class selfPlayer extends Player {
 		}
 	}
 
-	getCoordsInViewCoef(mapMaxCoord, viewCenterCoord, playerCoord) {
+	getCoordInViewCoef(mapMaxCoord, viewCenterCoord, playerCoord) {
 
 		if (playerCoord <= viewCenterCoord) {
 

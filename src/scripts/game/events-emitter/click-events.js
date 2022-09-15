@@ -1,7 +1,7 @@
 import gameButtons from 'game/components/buttons';
 
 export default function listenClickEvents() {
-	
+
 	gameButtons.colorBtns.forEach((colorBtn, i) => {
 
 		colorBtn.style.background = this.player.palette[i];
@@ -13,7 +13,10 @@ export default function listenClickEvents() {
 
 		colorBtn.addEventListener("mouseup", () => {
 
-			if (this.flags.isTranslating || this.flags.isZooming) return;
+			if (
+				this.flags.isTranslating ||
+				this.flags.isZooming
+			) return;
 
 			this.emit("FILL_ATTEMPT");
 		});
@@ -42,7 +45,7 @@ export default function listenClickEvents() {
 		btn.addEventListener("mousedown", () => {
 
 			this.flags.zoomBtnPressed = true;
-			
+
 			this.emit("ZOOM_ATTEMPT", direction);
 		});
 

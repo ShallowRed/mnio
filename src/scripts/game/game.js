@@ -2,12 +2,15 @@ import SelfPlayer from 'game/components/player-self';
 import Players from 'game/components/players';
 import GameMap from 'game/components/map';
 
-import listenServerEvents from 'game/events/server-events';
-import listenClickEvents from 'game/events/click-events';
-import listenKeyboardEvents from 'game/events/keyboard-events';
-import listenTouchEvents from 'game/events/touch-events';
-import listenWindowEvents from 'game/events/window-events';
-import GAME_EVENTS from 'game/events/game-events';
+import listenServerEvents from 'game/events-emitter/server-events';
+import listenClickEvents from 'game/events-emitter/click-events';
+import listenKeyboardEvents from 'game/events-emitter/keyboard-events';
+import listenTouchEvents from 'game/events-emitter/touch-events';
+import listenWindowEvents from 'game/events-emitter/window-events';
+
+import FILL_EVENTS from 'game/game-events/fill-events';
+import MOVE_EVENTS from 'game/game-events/move-events';
+import ZOOM_EVENTS from 'game/game-events/zoom-events';
 
 import fillAnimation from 'game/utils/fill-animation';
 import animationTimeout from 'game/utils/animation-timeout';
@@ -15,9 +18,13 @@ import animationTimeout from 'game/utils/animation-timeout';
 export default class Game {
 
 	durations = {
-		translation: 200,
-		zoom: 200,
+		translationAnimation: 200,
+		zoomAnimation: 200,
 		fillAnimation: 300,
+		delayBetweenZooms: 30,
+		bumpAnimation: 60,
+		stampAnimation: 200,
+		delayBetweenBumps: 200,
 	};
 
 	flags = {
@@ -28,7 +35,6 @@ export default class Game {
 		isTouching: false,
 		isFilling: false,
 		isStamping: false,
-		isFullRendering: false
 	};
 
 	constructor(socket, data) {
@@ -41,7 +47,11 @@ export default class Game {
 
 		this.players = new Players(this, data.players);
 
-		this.events = GAME_EVENTS;
+		this.events = {
+			...FILL_EVENTS,
+			...MOVE_EVENTS,
+			...ZOOM_EVENTS
+		};
 
 		this.fillAnimation = fillAnimation.bind(this);
 
@@ -67,47 +77,29 @@ export default class Game {
 
 		this.emit("SELECT_COLOR", 0);
 
-		this.fullRender();
+		this.render();
 	}
 
-	fullRender = () => {
-
-		this.flags.isFullRendering = true;
+	render = () => {
 
 		this.map.setViewSize();
 
-		this.updateState();
-
-		this.render();
-
-		this.flags.isFullRendering = false;
-	};
-
-	updateState(position, direction) {
-
-		this.player.updatePosition(position, direction);
-
-		if (
-			this.flags.isZooming ||
-			this.flags.isFullRendering
-		) {
-
-			this.map.updateState();
-		}
+		this.map.updateCellsLayout();
 
 		this.player.updateCoordsInView();
 
-		this.map.updateCanvasOrigin();
+		this.map.updateCanvasOffset();
 
-		this.players.updateCoordsInView();
-	}
+		this.map.updateCanvasLayout();
 
-	render() {
+		this.map.translate(0);
 
-		this.map.render();
+		this.map.renderCells();
 
-		this.player.render();
+		this.player.translate(0);
 
-		this.players.render();
-	}
+		this.player.setSize();
+
+		this.players.update(0);
+	};
 }

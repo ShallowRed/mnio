@@ -48,7 +48,7 @@ export default class ClientGame {
 		this.socket.on('MOVE', direction => {
 
 			const newPosition = this.game.map.checkMove(this.player, direction);
-
+			
 			if (newPosition) {
 
 				this.socket.emit("NEW_SELF_POSITION", newPosition);

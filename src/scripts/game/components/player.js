@@ -2,71 +2,79 @@ import ViewObject from "game/components/view-object";
 
 export default ViewObject(class Player {
 
-	bumpDuration = 60;
-
-	stampDuration = 200;
-
-	pauseBetweenBumpsDuration = 200;
-
 	lastCoords = [null, null];
 
 	coordsInView = [null, null];
 
 	translateVector = [null, null];
 
-	constructor(game, position, sprite) {
+	constructor(game, position) {
 
 		this.game = game;
 
 		this.position = position;
-
-		this.domElement = sprite;
-
-		this.sprite = sprite;
 	}
 
-	render() {
+	set position(position) {
+
+		if (this.coords) {
+
+			this.lastCoords = [...this.coords];
+		}
+
+		this.coords = this.game.map.indexToCoords(position);
+
+		this.lastPosition = parseInt(`${this.position}`, 10);
+
+		this._position = position;
+	}
+
+	get position() {
+
+		return this._position;
+	}
+
+	setSize() {
+
+		const size = this.game.map.cellSize - this.game.map.cellPadding * 2;
+
+		this.sprite.style.width = this.sprite.style.height = `${size}px`;
+	}
+
+	translate(duration) {
+
+		this.transitionDuration = duration;
 
 		for (const i in [0, 1]) {
 
-			const offset = this.game.map.canvasOrigin[i] + this.game.map.cellPadding;
+			const offset = this.game.map.canvasOffset[i] + this.game.map.cellPadding;
 
 			this.translateVector[i] = offset + this.coordsInView[i] * this.game.map.cellSize;
 		}
 
 		this.transform = { translation: this.translateVector };
-
-		if (!this.game.flags.isTranslating) {
-
-			const size = this.game.map.cellSize - this.game.map.cellPadding * 2;
-
-			this.sprite.style.width = this.sprite.style.height = `${size}px`;
-		}
 	}
 
 	stampAnimation() {
 
 		this.game.flags.isStamping = true;
 
-		this.transitionDuration = this.stampDuration / 2;
+		this.transitionDuration = this.game.durations.stampAnimation / 2;
 
 		this.transform = { translation: this.translateVector, factor: 0.9 };
 
 		this.sprite.classList.add("stamp");
 
-		// this.game.animationTimeout(() => {
-
-		// }, this.stampDuration / 4);
-
-		this.game.animationTimeout(() => {
+		const onStampAnimationEnd = () => {
 
 			this.sprite.classList.remove("stamp");
 
 			this.transform = { translation: this.translateVector };
+
 			this.game.flags.isStamping = false;
+		}
 
-
-		}, this.stampDuration / 2);
+		this.game.animationTimeout(onStampAnimationEnd, this.game.durations.stampAnimation / 2);
 	}
 
 	bumpAnimation(direction) {
@@ -75,7 +83,7 @@ export default ViewObject(class Player {
 
 		this.game.flags.isBumping = true;
 
-		this.transitionDuration = this.bumpDuration;
+		this.transitionDuration = this.game.durations.bumpAnimation;
 
 		const coefs = {
 			'up': [0, -1],
@@ -90,9 +98,7 @@ export default ViewObject(class Player {
 
 		this.transform = { translation: this.translateVector, translation2: bumpTranslation, factor: bumpScale };
 
-		this.game.animationTimeout(() => {
-
-			this.transitionDuration = this.game.durations.translation;
+		const onBumpAnimationEnd = () => {
 
 			this.transform = { translation: this.translateVector };
 
@@ -100,8 +106,9 @@ export default ViewObject(class Player {
 
 				this.game.flags.isBumping = false;
 
-			}, this.pauseBetweenBumpsDuration);
+			}, this.game.durations.delayBetweenBumps);
+		};
 
-		}, this.bumpDuration)
+		this.game.animationTimeout(onBumpAnimationEnd, this.game.durations.bumpAnimation);
 	}
 });

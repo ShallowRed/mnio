@@ -4,27 +4,49 @@ export default class EnemyPlayer extends Player {
 
 	constructor(game, { userId, position }) {
 
-		const sprite = document.createElement('div');
-
-		sprite.classList.add('player');
-
-		document.querySelector("#view").appendChild(sprite);
-
-		super(game, position, sprite);
+		super(game, position);
 
 		this.userId = userId;
+	}
+
+	update(duration) {
+
+		if (this.game.map.areCoordsInView(this.coordsInView)) {
+
+			if (!this.sprite) {
+
+				this.sprite = this.domElement = document.createElement('div');
+
+				this.sprite.classList.add('player');
+
+				document.querySelector("#view").appendChild(this.sprite);
+			}
+
+			this.translate(duration);
+
+			this.setSize();
+
+		} else {
+
+			if (this.sprite) {
+
+				this.sprite.remove();
+
+				delete this.sprite;
+			}
+		}
+	}
+
+	set position(position) {
+
+		super.position = position;
+
+		this.updateCoordsInView();
 	}
 
 	setColor(color) {
 
 		this.sprite.style.background = `#${color}`;
-	}
-
-	updatePosition(position) {
-
-		this.position = position;
-
-		this.coords = this.game.map.indexToCoords(this.position);
 	}
 
 	updateCoordsInView() {
@@ -33,16 +55,5 @@ export default class EnemyPlayer extends Player {
 
 			this.coordsInView[i] = this.coords[i] + this.game.player.coordsInView[i] - this.game.player.coords[i];
 		}
-	}
-
-	render() {
-
-		this.transitionDuration =
-			this.game.flags.isZooming ?
-				this.game.durations.zoom :
-				!this.game.flags.isFullRendering ?
-					this.game.durations.translation : 0
-
-		super.render();
 	}
 }

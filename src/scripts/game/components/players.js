@@ -6,81 +6,54 @@ export default class Players extends SharedPlayers {
 	constructor(game, playersData) {
 
 		super();
-		
+
 		this.game = game;
 
 		this.playersData = playersData;
 	}
 
-	remove(userId) {
+	get length() {
 
-		const player = this.get(userId);
+		return this.collection.size;
+	}
 
-		player.sprite.remove();
+	init() {
 
-		this.delete(userId);
+		this.playersData?.forEach(({ userId, position }) => {
+
+			this.create({ userId, position });
+		});
+
+		delete this.playersData;
 	}
 
 	create({ userId, position }) {
 
-		const coordsInView = this.game.map.getRelativeCoords(position);
-
-		if (this.game.map.areCoordsInView(coordsInView)) {
+		if (!this.collection.has(userId)) {
 
 			const player = new EnemyPlayer(this.game, { userId, position });
 
 			this.set(player);
 
-			player.updatePosition(position);
-
-			player.updateCoordsInView();
-
-			player.render();
-
-			return player;
+			player.update(0);
 		}
 	}
 
-	init() {
-
-		this?.playersData?.forEach((data) => {
-
-			this.create(data);
-		});
-
-		delete this.playersData;
-
-		this.init = null;
-	}
-
-	updatePositions() {
-
-		this.collection.forEach((player) => {
-
-			player.updatePosition(player.position);
-
-		});
-	}
-
-	updateCoordsInView() {
-
-		this.collection.forEach((player) => {
-
-			player.updateCoordsInView();
-		});
-	}
-
-	render() {
+	update(duration) {
 
 		if (this.init) {
 
 			this.init();
 
+			this.init = null;
+
 		} else {
 
-			this.collection.forEach((player) => {
+			this.collection.forEach(player => {
 
-				player.render();
+				player.updateCoordsInView();
+
+				player.update(duration);
 			});
 		}
 	}

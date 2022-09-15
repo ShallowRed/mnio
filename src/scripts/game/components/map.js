@@ -12,7 +12,6 @@ export default ViewObject(class GameMap extends SharedGameMap {
 	offScreenCells = 2;
 	nCellsZoomIncrement = 2;
 
-	canvasOrigin = [null, null];
 	canvasOffset = [null, null];
 	maxCoordsInView = [null, null];
 	viewSize = [null, null];
@@ -55,12 +54,9 @@ export default ViewObject(class GameMap extends SharedGameMap {
 		];
 	}
 
-	updateState() {
+	updateCellsLayout() {
 
-		if (!this.maxCoordsInView[this.longestDimensionIndex]) {
-
-			this.maxCoordsInView[this.longestDimensionIndex] = this.startCellsInView;
-		}
+		this.maxCoordsInView[this.longestDimensionIndex] ??= this.startCellsInView;
 
 		this.lastCellSize = this.cellSize;
 
@@ -69,64 +65,35 @@ export default ViewObject(class GameMap extends SharedGameMap {
 		this.cellPadding = Math.round(this.game.map.cellSize / 8);
 
 		this.maxCoordsInView[this.shortestDimensionIndex] = Math.round(this.viewSize[this.shortestDimensionIndex] / this.cellSize);
+	}
+
+	updateCanvasOffset() {
 
 		for (const i in [0, 1]) {
 
-			this.canvasOffset[i] = this.viewSize[i] - this.maxCoordsInView[i] * this.cellSize;
+			const canvasOffset = this.viewSize[i] - this.maxCoordsInView[i] * this.cellSize;
+
+			this.canvasOffset[i] = canvasOffset * this.game.player.coordsInViewCoef[i];
 		}
 	}
 
-	updateCanvasOrigin() {
+	updateCanvasLayout() {
 
-		for (const i in [0, 1]) {
+		const { cellSize, maxCoordsInView, offScreenCells } = this;
 
-			this.canvasOrigin[i] = this.canvasOffset[i] * this.game.player.coordsInViewCoef[i];
-		}
+		this.canvas.width = cellSize * (maxCoordsInView[0] + offScreenCells * 2);
+
+		this.canvas.height = cellSize * (maxCoordsInView[1] + offScreenCells * 2);
+
+		this.canvas.style.top = this.canvas.style.left =
+			`-${Math.round(offScreenCells * cellSize)}px`;
+
+		this.ctx.imageSmoothingEnabled = false;
 	}
 
 	////////////////////////////////////////////////////
 
-	getRelativeCoords(position) {
-
-		return this.indexToCoords(position)
-			.map(this.getCoordInView);
-	}
-
-	getCoordInView = (coord, i) => {
-
-		return coord - this.game.player.coords[i] + this.game.player.coordsInView[i] + this.offScreenCells;
-	}
-
-	areCoordsInView([x, y]) {
-
-		return (
-			x > -this.offScreenCells &&
-			y > -this.offScreenCells &&
-			x - 1 <= this.maxCoordsInView[0] + this.offScreenCells &&
-			y - 1 <= this.maxCoordsInView[1] + this.offScreenCells
-		);
-	}
-
-	////////////////////////////////////////////////////
-
-	render() {
-
-		if (!this.game.flags.isTranslating) {
-
-			const { cellSize, maxCoordsInView, offScreenCells } = this;
-
-			this.canvas.width = cellSize * (maxCoordsInView[0] + offScreenCells * 2);
-
-			this.canvas.height = cellSize * (maxCoordsInView[1] + offScreenCells * 2);
-
-			this.canvas.style.top = `-${Math.round(offScreenCells * cellSize)}px`;
-
-			this.canvas.style.left = `-${Math.round(offScreenCells * cellSize)}px`;
-
-			this.ctx.imageSmoothingEnabled = false;
-		}
-
-		this.translateCanvas(0);
+	renderCells() {
 
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
@@ -170,11 +137,34 @@ export default ViewObject(class GameMap extends SharedGameMap {
 
 	////////////////////////////////////////////////////
 
-	translateCanvas(duration) {
+	getRelativeCoords(position) {
+
+		return this.indexToCoords(position)
+			.map(this.getCoordInView);
+	}
+
+	getCoordInView = (coord, i) => {
+
+		return coord - this.game.player.coords[i] + this.game.player.coordsInView[i] + this.offScreenCells;
+	}
+
+	areCoordsInView([x, y]) {
+
+		return (
+			x > -this.offScreenCells &&
+			y > -this.offScreenCells &&
+			x - 1 <= this.maxCoordsInView[0] + this.offScreenCells &&
+			y - 1 <= this.maxCoordsInView[1] + this.offScreenCells
+		);
+	}
+
+	////////////////////////////////////////////////////
+
+	translate(duration) {
 
 		this.transitionDuration = duration;
 
-		const translation = [...this.canvasOrigin];
+		const translation = [...this.canvasOffset];
 
 		if (duration !== 0) {
 
@@ -222,14 +212,13 @@ export default ViewObject(class GameMap extends SharedGameMap {
 
 		const factor = Math.round(1000 * this.cellSize / this.lastCellSize) / 1000;
 
-		const canvasOffset = (this.lastCellSize - this.cellSize) * this.offScreenCells;
+		const deltaOffset = (this.lastCellSize - this.cellSize) * this.offScreenCells;
 
-		const translation = this.canvasOrigin.map(origin => {
-
-			return origin + canvasOffset;
-		})
+		const translation = [...this.canvasOffset];
 
 		for (const i in [0, 1]) {
+
+			translation[i] += deltaOffset;
 
 			translation[i] += (this.game.player.coordsInView[i] - this.game.player.lastCoordsInView[i]) * this.cellSize
 		}
