@@ -30,7 +30,7 @@ export function startTutoriel(socket) {
 
 		showHelpBlock("fill");
 
-		socket.once("CONFIRM_FILL", () => {
+		socket.once("NEW_CONFIRM_FILL", () => {
 
 			hideHelpBlock("fill");
 
@@ -42,7 +42,7 @@ export function startTutoriel(socket) {
 
 		showHelpBlock("move");
 
-		socket.once("NEW_PLAYER_POSITION", () => {
+		socket.once("NEW_SELF_POSITION", () => {
 	
 			hideHelpBlock("move");
 	

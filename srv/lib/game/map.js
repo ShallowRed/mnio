@@ -1,4 +1,4 @@
-import SharedGameMap from '#shared/map-methods';
+import SharedGameMap from '#shared/map';
 
 export default class GameMap extends SharedGameMap {
 
@@ -7,18 +7,6 @@ export default class GameMap extends SharedGameMap {
 		super({ gridState, rows, cols });
 
 		this.game = game;
-
-		this.gridState = gridState;
-
-		this.rows = rows;
-
-		this.cols = cols;
-	}
-
-	get playersPositions() {
-
-		return Object.values(this.game.players)
-			.map(player => player.position);
 	}
 
 	saveFill({ position, color }) {

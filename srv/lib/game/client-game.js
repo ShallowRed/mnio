@@ -14,27 +14,13 @@ export default class ClientGame {
 
 	get initialData() {
 
-		const players = Object.values(this.game.players.collection)
-			.filter(player => {
-				return (
-					player.connected &&
-					player.position !== this.player.position
-				);
-			})
-			.map(player => {
-				return {
-					id: player.userId,
-					position: player.position
-				}
-			});
-
 		return {
 			map: {
 				gridState: this.game.map.gridState,
 				rows: this.game.map.rows,
 				cols: this.game.map.cols,
 			},
-			players,
+			players: this.game.players.getConnectedEnnemies(this.player),
 			player: {
 				ownCells: this.player.ownCells,
 				allowedCells: this.player.allowedCells,
@@ -51,7 +37,7 @@ export default class ClientGame {
 		this.socket.emit('INIT_GAME', this.initialData);
 
 		this.socket.broadcast.emit("NEW_POSITION", {
-			id: this.player.userId,
+			userId: this.player.userId,
 			from: null,
 			to: this.player.position
 		});
@@ -65,10 +51,10 @@ export default class ClientGame {
 
 			if (newPosition) {
 
-				this.socket.emit("NEW_PLAYER_POSITION", newPosition);
+				this.socket.emit("NEW_SELF_POSITION", newPosition);
 
 				this.socket.broadcast.emit("NEW_POSITION", {
-					id: this.player.userId,
+					userId: this.player.userId,
 					from: this.player.position,
 					to: newPosition
 				});
@@ -89,7 +75,7 @@ export default class ClientGame {
 
 			this.game.map.saveFill({ position, color });
 
-			this.socket.broadcast.emit('NEW_FILL', { id: userId, position, color });
+			this.socket.broadcast.emit('NEW_FILL', { userId, position, color });
 
 			if (!this.player.ownCells.includes(position)) {
 
@@ -97,10 +83,10 @@ export default class ClientGame {
 
 				this.player.updateAllowedCells(this.game.map);
 
-				this.socket.emit('ALLOWED_CELLS', this.player.allowedCells);
+				this.socket.emit('NEW_SELF_ALLOWED_CELLS', this.player.allowedCells);
 			}
 
-			this.socket.emit('CONFIRM_FILL');
+			this.socket.emit('NEW_CONFIRM_FILL');
 		});
 
 		this.socket.on('disconnect', () => {
@@ -110,7 +96,7 @@ export default class ClientGame {
 			this.player.connected = false;
 
 			this.socket.broadcast.emit("NEW_POSITION", {
-				id: this.player.userId,
+				userId: this.player.userId,
 				from: this.player.position,
 				to: null
 			});

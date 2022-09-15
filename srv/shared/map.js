@@ -62,7 +62,7 @@ export default class SharedGameMap {
 			player.ownCells.includes(position) ||
 			(
 				player.allowedCells.includes(position) &&
-				!this.playersPositions.includes(position) &&
+				!this.game.players.positions.includes(position) &&
 				!this.gridState[position]
 			)
 		);

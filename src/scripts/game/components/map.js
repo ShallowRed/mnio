@@ -1,5 +1,5 @@
-import SharedGameMap from 'shared/map-methods';
-import ViewObject from "./view-object";
+import SharedGameMap from 'shared/map';
+import ViewObject from "game/components/view-object";
 
 export default ViewObject(class GameMap extends SharedGameMap {
 
@@ -29,11 +29,6 @@ export default ViewObject(class GameMap extends SharedGameMap {
 		this.ctx = this.canvas.getContext('2d');
 
 		this.domElement = this.canvas;
-	}
-
-	get playersPositions() {
-
-		return this.game.players.positions;
 	}
 
 	get longestDimensionIndex() {

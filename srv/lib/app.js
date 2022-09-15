@@ -23,7 +23,7 @@ export async function app(PATHS) {
 
 	const gameData = await new GameDataFetcher(tables, Pokedex, DEFAULT_ROWS, DEFAULT_COLS).fetch();
 
-	const sessionMiddleware = createSessionMiddleware(pool, COOKIE_SECRET, USE_MEMORY_STORE);
+	const sessionMiddleware = createSessionMiddleware(new connection.Pool(DB), COOKIE_SECRET, USE_MEMORY_STORE);
 
 	const router = await createRouter(tables, sessionMiddleware);
 

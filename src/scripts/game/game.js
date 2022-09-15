@@ -48,6 +48,11 @@ export default class Game {
 		this.animationTimeout = animationTimeout.bind(this);
 	}
 
+	emit(eventName, ...args) {
+
+		this.events[eventName].call(this, ...args);
+	}
+
 	init() {
 
 		listenClickEvents.call(this);
@@ -104,10 +109,5 @@ export default class Game {
 		this.player.render();
 
 		this.players.render();
-	}
-
-	emit(eventName, ...data) {
-
-		this.events[eventName].call(this, ...data);
 	}
 }

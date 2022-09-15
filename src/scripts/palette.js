@@ -47,9 +47,9 @@ socket.once('CHOSE_PALETTE', ({
 
 		index = (palettes.length + index) % palettes.length;
 
-		const { id, colors } = palettes[index];
+		const { paletteId, colors } = palettes[index];
 
-		submitButton.value = id;
+		submitButton.value = paletteId;
 
 		paletteElements.forEach((element, i) => {
 			element.style.background = colors[i];

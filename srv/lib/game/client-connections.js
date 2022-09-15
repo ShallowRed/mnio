@@ -1,8 +1,5 @@
 import ClientGame from '#game/client-game';
 
-import Debug from '#config/debug';
-const debug = Debug('game     |');
-
 export default {
 
 	'/palette': async function (socket) {
@@ -21,7 +18,7 @@ export default {
 
 		if (player === false) {
 
-			socket.emit('GAME_OVER');
+			socket.emit('alert', 'Il n\'y a plus de place !');
 
 			return;
 		}

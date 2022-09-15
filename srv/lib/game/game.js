@@ -1,5 +1,5 @@
 import GameMap from '#game/map';
-import { Players } from '#game/players';
+import Players from '#game/players';
 
 import Debug from '#config/debug';
 const debug = Debug('game     |');
@@ -59,7 +59,7 @@ export default class Game {
 
 	getPalette(paletteId) {
 
-		return this.palettes.find(palette => palette.id === paletteId)?.colors;
+		return this.palettes.find(palette => palette.paletteId === paletteId)?.colors;
 	}
 
 	fetchPlayerOwnCells(userId) {

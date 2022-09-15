@@ -1,25 +1,32 @@
-import Debug from '#config/debug';
-const debug = Debug('game     |');
+import SharedPlayers from '#shared/players';
 
-export class Players {
-
-	collection = {};
+export default class Players extends SharedPlayers {
 
 	constructor(game) {
+
+		super();
 
 		this.game = game;
 	}
 
-	get(userId) {
+	getConnectedEnnemies(clientPlayer) {
 
-		return this.collection[userId];
-	}
+		return this.values
+			.filter(player => {
 
-	set(userId, player) {
+				return (
+					player.connected &&
+					player.position !== clientPlayer.position
+				);
+			})
+			.map(player => {
 
-		this.collection[userId] = player;
-	}
-
+				return {
+					userId: player.userId,
+					position: player.position
+				}
+			});
+	};
 
 	async create({ userId, paletteId }) {
 
@@ -36,13 +43,13 @@ export class Players {
 
 		const player = new Player({ userId, position, palette, ownCells });
 
-		this.set(userId, player);
+		this.set(player);
 
 		return player;
 	}
 }
 
-export class Player {
+class Player {
 
 	constructor({ userId, position, palette, ownCells }) {
 
@@ -61,7 +68,7 @@ export class Player {
 
 			const newNeighbours = map.getNeighbours(position)
 				.filter(position => {
-					
+
 					return (
 						!this.ownCells.includes(position) &&
 						map.gridState[position] === null

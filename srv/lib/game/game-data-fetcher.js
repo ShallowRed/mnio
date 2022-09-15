@@ -131,7 +131,7 @@ export default class GameDataFetcher {
 	decodePalette({ paletteId, colors }) {
 
 		return {
-			id: paletteId,
+			paletteId,
 			colors: colors
 				.match(/.{1,6}/g)
 				.map(color => `#${color}`)

@@ -1,4 +1,4 @@
-import Player from './player.js';
+import Player from 'game/components/player';
 
 export default class selfPlayer extends Player {
 

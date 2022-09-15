@@ -1,8 +1,8 @@
-import Player from './player.js';
+import Player from 'game/components/player';
 
 export default class EnemyPlayer extends Player {
 
-	constructor(game, { id, position }) {
+	constructor(game, { userId, position }) {
 
 		const sprite = document.createElement('div');
 
@@ -12,7 +12,7 @@ export default class EnemyPlayer extends Player {
 
 		super(game, position, sprite);
 
-		this.id = id;
+		this.userId = userId;
 	}
 
 	setColor(color) {
