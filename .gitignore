@@ -13,3 +13,5 @@ docker-compose.yml
 dist/
 
 docker-compose.template.yml
+
+data/
