@@ -15,11 +15,11 @@ export async function app() {
 
 	const gameData = await getGameData(DATABASE_NAME, GAME_ID);
 
-	const canvas = new GridCanvas(gameData, { cellSize: 3 });
+	const canvas = new GridCanvas(gameData, { cellSize: 6 });
 
-	canvas.renderTimelapse(TIMELAPSE_OUTPUT_PATH);
+	// canvas.renderTimelapse(TIMELAPSE_OUTPUT_PATH);
 
-	// canvas.renderResult(RESULT_OUTPUT_PATH);
+	canvas.renderResult(RESULT_OUTPUT_PATH);
 }
 
 app();

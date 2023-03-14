@@ -111,39 +111,7 @@ export default class GridCanvas extends SharedGameMap {
 				return;
 			}
 
-			console.log('File saved to data/beginner.gif');
+			console.log('File saved to', outputPath);
 		})
 	}
-	// async renderTimelapse(outputPath, {
-	// 	fps = 30,
-	// 	duration = 10,
-	// } = {}) {
-
-	// 	if (!fs.existsSync(outputPath)) {
-	// 		fs.mkdirSync(outputPath);
-	// 	}
-
-	// 	const cellsPerFrame = Math.floor(this.gridState.length / (fps * duration));
-
-	// 	let count = 0;
-
-	// 	for (const { cellid, color } of this.events) {
-
-	// 		const [x, y] = this.indexToCoords(cellid);
-
-	// 		this.drawSquare(x, y, 1, `#${color}`);
-
-	// 		count++;
-
-	// 		if (
-	// 			count % cellsPerFrame === 0 ||
-	// 			count === this.gridState.length
-	// 		) {
-
-	// 			const frame = Math.floor(count / cellsPerFrame);
-
-	// 			await this.saveFile(`${outputPath}/${frame}.png`);
-	// 		}
-	// 	}
-	// }
 }
