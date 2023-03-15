@@ -4,8 +4,6 @@ COPY . /project
 
 WORKDIR /project
 
-RUN npm install pm2 -g
-
-RUN npm run install:prod
+RUN npm run install
 
 ENTRYPOINT ["npm", "run", "start"]

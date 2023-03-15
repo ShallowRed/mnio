@@ -14,17 +14,17 @@
 	},
 	"type": "module",
 	"main": "entry.cjs",
-  "engines": {
+	"engines": {
 		"node": ">=12.0.0",
 		"npm": ">=6.0.0"
 	},
 	"scripts": {
-    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
+		"dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
 		"dev:client": "vite",
-		"dev:server": "pm2 start ecosystem.start.config.cjs && pm2 logs",
+		"dev:server": "pm2 start ecosystem.config.cjs && pm2 logs",
 		"start": "node entry.cjs",
 		"build": "vite build",
-		"preview": "npm run build && NODE_ENV=production pm2 start ecosystem.start.config.cjs && pm2 logs"
+		"preview": "npm run build && pm2 start ecosystem.config.cjs --env production && pm2 logs"
 	},
 	"imports": {
 		"#database/*": "./lib/database/*.js",
@@ -46,14 +46,13 @@
 		"express-session": "^1.17.3",
 		"express-useragent": "^1.0.15",
 		"gif-encoder-2": "^1.0.5",
+		"minimist": "^1.2.8",
 		"mysql": "^2.18.1",
 		"passport": "^0.6.0",
 		"passport-local": "^1.0.0",
 		"serve-static": "^1.15.0",
 		"socket.io": "^4.5.2",
-		"socket.io-client": "^4.5.2",
-		"vite": "^4.0.4",
-		"vite-express": "^0.4.2"
+		"socket.io-client": "^4.5.2"
 	},
 	"devDependencies": {
 		"concurrently": "^7.6.0",
@@ -67,6 +66,7 @@
 		"stylelint": "^14.16.1",
 		"stylelint-config-standard-scss": "^6.1.0",
 		"vite-plugin-eslint": "^1.8.1",
-		"vite-plugin-stylelint": "^4.1.6"
+		"vite-plugin-stylelint": "^4.1.6",
+		"vite": "^4.0.4"
 	}
 }

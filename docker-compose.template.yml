@@ -1,0 +1,36 @@
+version: "3.7"
+
+services:
+
+  mnio:
+    build: "/root/Source/Deploy/mnio/source"
+    container_name: "mnio"
+    hostname: "mnio"
+    deploy:
+      restart_policy:
+        condition: any
+    links:
+      - "mariadb:mariadb"
+    environment:
+      - "NODE_ENV=production"
+      - "PORT=3000"
+      - "DB_HOST=mariadb" 
+      - "DB_USER=root"
+      # - "DB_NAME=mnio" # Optional, defaults to "mnio"
+      - "DB_PASSWORD=REPLACE_ME_WITH_A_DB_PASSWORD" # Same as MARIADB_ROOT_PASSWORD below
+      - "COOKIE_SECRET=REPLACE_ME_WITH_A_COOKIE_SECRET" # Generate a random string
+      - "USE_MEMORY_STORE=false"
+    ports:
+      - "3000:3000"
+
+  mariadb:
+    image: "mariadb:latest"
+    container_name: "mariadb"
+    hostname: "mariadb"
+    volumes:
+      - "/root/Source/Deploy/mnio/mariadb:/var/lib/mysql"
+    environment:
+      - "MARIADB_ROOT_PASSWORD=REPLACE_ME_WITH_A_DB_PASSWORD" # Same as DB_PASSWORD above
+
+# Export db using command:
+# docker exec mariadb mysqldump --user <DB_USER> --password='<DB_PASSWORD>' <DB_NAME> > /<DB_NAME>.dump

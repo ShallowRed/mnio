@@ -1,19 +1,15 @@
 .vscode/
+!.vscode/settings.json
+!.vscode/extensions.json
 
 *.md
 !README.md
 
 node_modules/
 
-ecosystem.deploy.cjs
-
-Deploy/
 docker-compose.yml
 
 dist/
-
-docker-compose.template.yml
-
 data/
 
 .DS_Store
