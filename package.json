@@ -17,15 +17,56 @@
 		"npm": ">=6.0.0"
 	},
 	"type": "module",
+  "main": "entry.cjs",
 	"scripts": {
-		"start": "pm2 start ecosystem.start.config.cjs && pm2 logs",
-		"bundle": "npm run prod --prefix src",
-		"dev:bundle": "npm run dev --prefix src",
-		"install:dev": "npm install --prefix srv && npm install --prefix src",
-		"install:prod": "npm install --omit=dev --prefix srv",
-		"push-master": "git add . ; git commit -m \"Deploy source\" ; git push origin",
-		"push-deploy": "git add . ; git commit -m \"Deploy build\" ; git push origin master:deploy --force",
-		"deploy-setup": "npm run push-deploy; pm2 deploy ecosystem.deploy.config.cjs production setup --force",
-		"deploy": "pm2 deploy ecosystem.deploy.config.cjs production --force"
+    "start": "node entry.cjs",
+    "dev": "concurrently \"pm2 start ecosystem.start.config.cjs && pm2 logs\" \"vite\"",
+		"build": "vite build --emptyOutDir",
+    "dev:server": "pm2 start ecosystem.start.config.cjs && pm2 logs",
+    "preview": "npm run build && NODE_ENV=production pm2 start ecosystem.start.config.cjs && pm2 logs"
+	},
+  "imports": {
+		"#database/*": "./lib/database/*.js",
+		"#config/*": "./lib/config/*.js",
+		"#game/*": "./lib/game/*.js",
+		"#server/*": "./lib/server/*.js",
+		"#shared/*": "./shared/*.js",
+		"#scripts/*": "./scripts/*.js"
+	},
+  "dependencies": {
+		"connect-flash": "^0.1.1",
+		"cookie-parser": "^1.4.5",
+		"crypto-js": "^4.1.1",
+    "socket.io-client": "^4.5.2",
+		"debug": "^4.3.4",
+		"ejs": "^3.1.8",
+		"express": "^4.18.1",
+		"express-mysql-session": "^2.1.8",
+		"express-session": "^1.17.3",
+		"express-useragent": "^1.0.15",
+		"mysql": "^2.18.1",
+		"passport": "^0.6.0",
+		"passport-local": "^1.0.0",
+		"serve-static": "^1.15.0",
+		"socket.io": "^4.5.2",
+    "vite": "^4.0.4",
+		"vite-express": "^0.4.2"
+  },
+  "devDependencies": {
+    "canvas": "^2.10.1",
+    "concurrently": "^7.6.0",
+    "eslint": "^8.32.0",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "eslint-plugin-import": "^2.27.5",
+		"gif-encoder-2": "^1.0.5",
+    "postcss-combine-duplicated-selectors": "^10.0.3",
+    "postcss-combine-media-query": "^1.0.1",
+    "postcss-normalize": "^10.0.1",
+    "sass": "^1.57.1",
+    "sass-loader": "^12.4.0",
+    "stylelint": "^14.16.1",
+    "stylelint-config-standard-scss": "^6.1.0",
+    "vite-plugin-eslint": "^1.8.1",
+    "vite-plugin-stylelint": "^4.1.6"
 	}
 }

@@ -1,0 +1,14 @@
+  <% if (locals.isDev) { %>
+    <script type="module" src="http://localhost:5173/@vite/client"></script>
+  <% } %>
+  <% if (locals.scripts) { %>
+	  <% for (const script of scripts) { %>
+      <% if (locals.isDev) { %>
+        <script type="module" src="http://localhost:5173/scripts/<%= script %>.js"></script>
+      <% } else { %>
+        <script type="module" src="/<%= locals.manifest['scripts/' + script + '.js'].file %>"></script>
+      <% } %>
+	  <% } %>
+	<% } %>
+	</body>
+</html

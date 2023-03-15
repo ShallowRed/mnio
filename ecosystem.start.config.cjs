@@ -13,7 +13,7 @@ module.exports = {
 
 	apps: {
 
-		cwd: `${__dirname}/srv`,
+		cwd: `${__dirname}`,
 
 		script: './entry.cjs',
 

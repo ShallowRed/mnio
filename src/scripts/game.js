@@ -1,10 +1,3 @@
-import 'resources/img/close.svg';
-import 'resources/img/logout.svg';
-import 'resources/img/refresh.svg';
-import 'resources/img/help.svg';
-import 'resources/img/zoom-in.svg';
-import 'resources/img/zoom-out.svg';
-
 import 'styles/game/index.scss';
 
 import io from 'socket.io-client';
@@ -21,7 +14,7 @@ socket.once("INIT_GAME", data => {
 	
 	const game = new Game(socket, data);
 
-	game.init();
+	game.init(); 
 
 	const isPlayerFirstLog = data.player.ownCells.length === 0;
 
