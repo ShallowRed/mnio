@@ -1,5 +1,5 @@
-import SharedPlayers from 'shared/players';
-import EnemyPlayer from "game/components/player-enemy";
+import SharedPlayers from '#shared/players';
+import EnemyPlayer from "@/scripts/game/components/player-enemy";
 
 export default class Players extends SharedPlayers {
 

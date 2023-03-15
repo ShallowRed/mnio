@@ -1,19 +1,19 @@
-import SelfPlayer from 'game/components/player-self';
-import Players from 'game/components/players';
-import GameMap from 'game/components/map';
+import SelfPlayer from '@/scripts/game/components/player-self';
+import Players from '@/scripts/game/components/players';
+import GameMap from '@/scripts/game/components/map';
 
-import listenServerEvents from 'game/events-emitter/server-events';
-import listenClickEvents from 'game/events-emitter/click-events';
-import listenKeyboardEvents from 'game/events-emitter/keyboard-events';
-import listenTouchEvents from 'game/events-emitter/touch-events';
-import listenWindowEvents from 'game/events-emitter/window-events';
+import listenServerEvents from '@/scripts/game/events-emitter/server-events';
+import listenClickEvents from '@/scripts/game/events-emitter/click-events';
+import listenKeyboardEvents from '@/scripts/game/events-emitter/keyboard-events';
+import listenTouchEvents from '@/scripts/game/events-emitter/touch-events';
+import listenWindowEvents from '@/scripts/game/events-emitter/window-events';
 
-import FILL_EVENTS from 'game/game-events/fill-events';
-import MOVE_EVENTS from 'game/game-events/move-events';
-import ZOOM_EVENTS from 'game/game-events/zoom-events';
+import FILL_EVENTS from '@/scripts/game/game-events/fill-events';
+import MOVE_EVENTS from '@/scripts/game/game-events/move-events';
+import ZOOM_EVENTS from '@/scripts/game/game-events/zoom-events';
 
-import fillAnimation from 'game/utils/fill-animation';
-import animationTimeout from 'game/utils/animation-timeout';
+import fillAnimation from '@/scripts/game/utils/fill-animation';
+import animationTimeout from '@/scripts/game/utils/animation-timeout';
 
 export default class Game {
 

@@ -1,4 +1,4 @@
-import 'styles/palette/palette.scss';
+import '@/styles/palette/palette.scss';
 
 import io from 'socket.io-client';
 

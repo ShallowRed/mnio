@@ -1,1 +1,1 @@
-import 'styles/lobby/lobby.scss'
+import '@/styles/lobby/lobby.scss'

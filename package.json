@@ -4,28 +4,29 @@
 	"description": "A real-time multiplayer drawing canvas",
 	"author": "Lucas Poulain (ShallowRed)",
 	"license": "ISC",
+	"homepage": "https://github.com/ShallowRed/mnio#readme",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/ShallowRed/mnio.git"
 	},
-	"homepage": "https://github.com/ShallowRed/mnio#readme",
 	"bugs": {
 		"url": "https://github.com/ShallowRed/mnio/issues"
 	},
-	"engines": {
+	"type": "module",
+	"main": "entry.cjs",
+  "engines": {
 		"node": ">=12.0.0",
 		"npm": ">=6.0.0"
 	},
-	"type": "module",
-  "main": "entry.cjs",
 	"scripts": {
-    "start": "node entry.cjs",
-    "dev": "concurrently \"pm2 start ecosystem.start.config.cjs && pm2 logs\" \"vite\"",
+		"start": "node entry.cjs",
+		"dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
 		"build": "vite build --emptyOutDir",
-    "dev:server": "pm2 start ecosystem.start.config.cjs && pm2 logs",
-    "preview": "npm run build && NODE_ENV=production pm2 start ecosystem.start.config.cjs && pm2 logs"
+		"dev:client": "vite",
+		"dev:server": "pm2 start ecosystem.start.config.cjs && pm2 logs",
+		"preview": "npm run build && NODE_ENV=production pm2 start ecosystem.start.config.cjs && pm2 logs"
 	},
-  "imports": {
+	"imports": {
 		"#database/*": "./lib/database/*.js",
 		"#config/*": "./lib/config/*.js",
 		"#game/*": "./lib/game/*.js",
@@ -33,40 +34,39 @@
 		"#shared/*": "./shared/*.js",
 		"#scripts/*": "./scripts/*.js"
 	},
-  "dependencies": {
+	"dependencies": {
+		"canvas": "^2.10.1",
 		"connect-flash": "^0.1.1",
 		"cookie-parser": "^1.4.5",
 		"crypto-js": "^4.1.1",
-    "socket.io-client": "^4.5.2",
 		"debug": "^4.3.4",
 		"ejs": "^3.1.8",
 		"express": "^4.18.1",
 		"express-mysql-session": "^2.1.8",
 		"express-session": "^1.17.3",
 		"express-useragent": "^1.0.15",
+		"gif-encoder-2": "^1.0.5",
 		"mysql": "^2.18.1",
 		"passport": "^0.6.0",
 		"passport-local": "^1.0.0",
 		"serve-static": "^1.15.0",
 		"socket.io": "^4.5.2",
-    "vite": "^4.0.4",
+		"socket.io-client": "^4.5.2",
+		"vite": "^4.0.4",
 		"vite-express": "^0.4.2"
-  },
-  "devDependencies": {
-    "canvas": "^2.10.1",
-    "concurrently": "^7.6.0",
-    "eslint": "^8.32.0",
-    "eslint-import-resolver-alias": "^1.1.2",
-    "eslint-plugin-import": "^2.27.5",
-		"gif-encoder-2": "^1.0.5",
-    "postcss-combine-duplicated-selectors": "^10.0.3",
-    "postcss-combine-media-query": "^1.0.1",
-    "postcss-normalize": "^10.0.1",
-    "sass": "^1.57.1",
-    "sass-loader": "^12.4.0",
-    "stylelint": "^14.16.1",
-    "stylelint-config-standard-scss": "^6.1.0",
-    "vite-plugin-eslint": "^1.8.1",
-    "vite-plugin-stylelint": "^4.1.6"
+	},
+	"devDependencies": {
+		"concurrently": "^7.6.0",
+		"eslint": "^8.32.0",
+		"eslint-import-resolver-alias": "^1.1.2",
+		"eslint-plugin-import": "^2.27.5",
+		"postcss-combine-duplicated-selectors": "^10.0.3",
+		"postcss-combine-media-query": "^1.0.1",
+		"postcss-normalize": "^10.0.1",
+		"sass": "^1.57.1",
+		"stylelint": "^14.16.1",
+		"stylelint-config-standard-scss": "^6.1.0",
+		"vite-plugin-eslint": "^1.8.1",
+		"vite-plugin-stylelint": "^4.1.6"
 	}
 }

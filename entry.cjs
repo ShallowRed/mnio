@@ -1,12 +1,16 @@
 const path = require('path');
 
-import('./lib/app.js')
+const PATHS =  {
+  APP: './lib/app.js',
+  PUBLIC_ASSETS: './dist',
+  VIEWS: './views'
+};
+
+import(path.resolve(__dirname, PATHS.APP))
 	.then(({ app }) => {
 
-		const PATHS =  {
-			PUBLIC_ASSETS: path.resolve(__dirname, './dist'),
-			VIEWS: path.resolve(__dirname, './views')
-		};
-
-		app(PATHS);
+		app({
+			PUBLIC_ASSETS: path.resolve(__dirname, PATHS.PUBLIC_ASSETS),
+			VIEWS: path.resolve(__dirname, PATHS.VIEWS)
+		});
 	});

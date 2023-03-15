@@ -1,10 +1,10 @@
-import 'styles/game/index.scss';
+import '@/styles/game/index.scss';
 
 import io from 'socket.io-client';
 
-import Game from 'game/game';
+import Game from '@/scripts/game/game';
 
-import { startTutoriel, listenHelpButtonClick } from 'game/components/help';
+import { startTutoriel, listenHelpButtonClick } from '@/scripts/game/components/help';
 
 const socket = io('/game');
 

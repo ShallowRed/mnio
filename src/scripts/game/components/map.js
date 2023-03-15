@@ -1,5 +1,5 @@
-import SharedGameMap from 'shared/map';
-import ViewObject from "game/components/view-object";
+import SharedGameMap from '#shared/map';
+import ViewObject from "@/scripts/game/components/view-object";
 
 export default ViewObject(class GameMap extends SharedGameMap {
 

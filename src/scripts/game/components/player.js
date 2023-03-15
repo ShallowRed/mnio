@@ -1,4 +1,4 @@
-import ViewObject from "game/components/view-object";
+import ViewObject from "@/scripts/game/components/view-object";
 
 export default ViewObject(class Player {
 
