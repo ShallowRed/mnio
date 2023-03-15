@@ -2,8 +2,8 @@
     <script type="module" src="http://localhost:5173/@vite/client"></script>
   <% } %>
   <% if (locals.scripts) { %>
-	  <% for (const script of scripts) { %>
-      <script type="module" src="/assets/<%= script %>.js"></script>
+	  <% for (const name of scripts) { %>
+      <script type="module" src="<%= name %>"></script>
 	  <% } %>
 	<% } %>
 	</body>

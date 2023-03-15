@@ -23,7 +23,7 @@
 		"dev:client": "vite",
 		"dev:server": "pm2 start ecosystem.start.config.cjs && pm2 logs",
 		"start": "node entry.cjs",
-		"build": "vite build --emptyOutDir",
+		"build": "vite build",
 		"preview": "npm run build && NODE_ENV=production pm2 start ecosystem.start.config.cjs && pm2 logs"
 	},
 	"imports": {

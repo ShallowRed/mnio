@@ -13,31 +13,22 @@ const projectDir = path.dirname(new URL(import.meta.url).pathname);
 const srcDir = path.resolve(projectDir, './src');
 const outDir = path.resolve(projectDir, './dist');
 
-const input = {
-  lobby: path.resolve(srcDir, 'scripts/lobby.js'),
-  palette: path.resolve(srcDir, 'scripts/palette.js'),
-  game: path.resolve(srcDir, 'scripts/game.js'),
-};
+const INPUTS = [
+    '@/styles/lobby/lobby.scss',
+    '@/scripts/palette.js',
+    '@/styles/palette/palette.scss',
+    '@/scripts/game.js',
+    '@/styles/game/game.scss',
+];
 
 export default defineConfig({
   root: srcDir,
-  // server: {
-  // origin: 'http://localhost:3000',
-  // port: 3000,
-  // },
   build: {
-
-    ssr: true,
-    ssrManifest: true,
-    manifest: true,
     outDir,
+    emptyOutDir: true,
+    manifest: true,
     rollupOptions: {
-      input,
-      //     output: {
-      //       assetFileNames: getAssetOutputFilename,
-      //       chunkFileNames: 'scripts/[name]-[hash].js',
-      //       entryFileNames: 'scripts/[name]-[hash].js',
-      //     },
+      input: INPUTS.map(i => i.replace(/^@/, srcDir)),
     },
   },
   css: {

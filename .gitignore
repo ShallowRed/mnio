@@ -15,3 +15,6 @@ dist/
 docker-compose.template.yml
 
 data/
+
+.DS_Store
+.stylelintcache

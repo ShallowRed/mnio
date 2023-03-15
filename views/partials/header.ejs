@@ -3,9 +3,9 @@
 <head>
 	<title>MN.io<%= locals.title ? ' | ' + title : '' %></title>
 	<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-	<% if (!locals.isDev && locals.stylesheets) { %>
-	  <% for (const stylesheet of stylesheets) { %>
-      <link rel="stylesheet" href="/assets/<%= stylesheet %>.css" />
+	<% if (locals.stylesheets) { %>
+	  <% for (const name of stylesheets) { %>
+      <link rel="stylesheet" href="<%= name %>" />
 	  <% } %>
 	<% } %>
 </head>

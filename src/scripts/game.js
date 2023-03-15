@@ -1,5 +1,3 @@
-import '@/styles/game/index.scss';
-
 import io from 'socket.io-client';
 
 import Game from '@/scripts/game/game';
