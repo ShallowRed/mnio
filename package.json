@@ -63,7 +63,7 @@
 		"postcss-combine-media-query": "^1.0.1",
 		"postcss-normalize": "^10.0.1",
 		"sass": "^1.57.1",
-		"stylelint": "^14.16.1",
+		"stylelint": "^15.10.1",
 		"stylelint-config-standard-scss": "^6.1.0",
 		"vite-plugin-eslint": "^1.8.1",
 		"vite-plugin-stylelint": "^4.1.6",
