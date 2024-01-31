@@ -38,70 +38,44 @@ export default class Game {
 	};
 
 	constructor(socket, data) {
-
 		this.isAdmin = data.isAdmin;
-		
 		this.socket = socket;
-
 		this.map = new GameMap(this, data.map);
-
 		this.player = new SelfPlayer(this, data.player);
-
 		this.players = new Players(this, data.players);
-
 		this.events = {
 			...FILL_EVENTS,
 			...MOVE_EVENTS,
 			...ZOOM_EVENTS
 		};
-
 		this.fillAnimation = fillAnimation.bind(this);
-
 		this.animationTimeout = animationTimeout.bind(this);
 	}
 
 	emit(eventName, ...args) {
-
 		this.events[eventName].call(this, ...args);
 	}
 
 	init() {
-
 		listenClickEvents.call(this);
-
 		listenKeyboardEvents.call(this);
-
 		listenTouchEvents.call(this);
-
 		listenWindowEvents.call(this);
-
 		listenServerEvents.call(this);
-
 		this.emit("SELECT_COLOR", 0);
-
 		this.render();
 	}
 
 	render = () => {
-
 		this.map.setViewSize();
-
 		this.map.updateCellsLayout();
-
 		this.player.updateCoordsInView();
-
 		this.map.updateCanvasOffset();
-
 		this.map.updateCanvasLayout();
-
 		this.map.translate(0);
-
 		this.map.renderCells();
-
 		this.player.translate(0);
-
 		this.player.setSize();
-
 		this.players.update(0);
 	};
 }
