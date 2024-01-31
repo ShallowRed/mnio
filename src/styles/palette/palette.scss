@@ -1,17 +1,17 @@
-@import '../lobby/lobby';
+@import "../lobby/lobby";
 
 section.palette-container {
-	display: flex;
-	justify-content: space-around;
-	margin: 3rem 0;
+  display: flex;
+  justify-content: space-around;
+  margin: 3rem 0;
 
-	& .palette-element {
-		box-sizing: border-box;
-		border-radius: 0.25rem;
-		border: solid 1px $color__font-dark;
-		box-shadow: #ccc 5px 5px;
-		width: min(3.5rem, 10vw);
-		height: min(3.5rem, 10vw);
-		transition: background 0.2s ease;
-	}
+  & .palette-element {
+    box-sizing: border-box;
+    border-radius: 0.25rem;
+    border: solid 1px $color__font-dark;
+    box-shadow: #ccc 5px 5px;
+    width: min(3.5rem, 10vw);
+    height: min(3.5rem, 10vw);
+    transition: background 0.2s ease;
+  }
 }
